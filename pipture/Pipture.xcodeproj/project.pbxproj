@@ -7,85 +7,138 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		38989CB8147A52AD004DE1E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CB7147A52AD004DE1E0 /* UIKit.framework */; };
-		38989CBA147A52AD004DE1E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CB9147A52AD004DE1E0 /* Foundation.framework */; };
-		38989CBC147A52AD004DE1E0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CBB147A52AD004DE1E0 /* CoreGraphics.framework */; };
-		38989CC2147A52AD004DE1E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 38989CC0147A52AD004DE1E0 /* InfoPlist.strings */; };
-		38989CC4147A52AD004DE1E0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989CC3147A52AD004DE1E0 /* main.m */; };
-		38989CC8147A52AE004DE1E0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989CC7147A52AE004DE1E0 /* AppDelegate.m */; };
+		38989CE3147A631E004DE1E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE2147A631E004DE1E0 /* UIKit.framework */; };
+		38989CE5147A631E004DE1E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE4147A631E004DE1E0 /* Foundation.framework */; };
+		38989CE7147A631E004DE1E0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE6147A631E004DE1E0 /* CoreGraphics.framework */; };
+		38989CED147A631F004DE1E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 38989CEB147A631F004DE1E0 /* InfoPlist.strings */; };
+		38989CEF147A631F004DE1E0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989CEE147A631F004DE1E0 /* main.m */; };
+		38989CF3147A631F004DE1E0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989CF2147A631F004DE1E0 /* AppDelegate.m */; };
+		38989CFB147A6320004DE1E0 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CFA147A6320004DE1E0 /* SenTestingKit.framework */; };
+		38989CFC147A6320004DE1E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE2147A631E004DE1E0 /* UIKit.framework */; };
+		38989CFD147A6320004DE1E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE4147A631E004DE1E0 /* Foundation.framework */; };
+		38989D05147A6320004DE1E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 38989D03147A6320004DE1E0 /* InfoPlist.strings */; };
+		38989D08147A6320004DE1E0 /* PiptureTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989D07147A6320004DE1E0 /* PiptureTests.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		38989CFE147A6320004DE1E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 38989CD5147A631E004DE1E0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 38989CDD147A631E004DE1E0;
+			remoteInfo = Pipture;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		38989CB3147A52AD004DE1E0 /* Pipture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pipture.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		38989CB7147A52AD004DE1E0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		38989CB9147A52AD004DE1E0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		38989CBB147A52AD004DE1E0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		38989CBF147A52AD004DE1E0 /* Pipture-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Pipture-Info.plist"; sourceTree = "<group>"; };
-		38989CC1147A52AD004DE1E0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		38989CC3147A52AD004DE1E0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		38989CC5147A52AE004DE1E0 /* Pipture-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Pipture-Prefix.pch"; sourceTree = "<group>"; };
-		38989CC6147A52AE004DE1E0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		38989CC7147A52AE004DE1E0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		38989CDE147A631E004DE1E0 /* Pipture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pipture.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		38989CE2147A631E004DE1E0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		38989CE4147A631E004DE1E0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		38989CE6147A631E004DE1E0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		38989CEA147A631F004DE1E0 /* Pipture-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Pipture-Info.plist"; sourceTree = "<group>"; };
+		38989CEC147A631F004DE1E0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		38989CEE147A631F004DE1E0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		38989CF0147A631F004DE1E0 /* Pipture-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Pipture-Prefix.pch"; sourceTree = "<group>"; };
+		38989CF1147A631F004DE1E0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		38989CF2147A631F004DE1E0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		38989CF9147A6320004DE1E0 /* PiptureTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PiptureTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		38989CFA147A6320004DE1E0 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		38989D02147A6320004DE1E0 /* PiptureTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PiptureTests-Info.plist"; sourceTree = "<group>"; };
+		38989D04147A6320004DE1E0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		38989D06147A6320004DE1E0 /* PiptureTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiptureTests.h; sourceTree = "<group>"; };
+		38989D07147A6320004DE1E0 /* PiptureTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PiptureTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		38989CB0147A52AD004DE1E0 /* Frameworks */ = {
+		38989CDB147A631E004DE1E0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38989CB8147A52AD004DE1E0 /* UIKit.framework in Frameworks */,
-				38989CBA147A52AD004DE1E0 /* Foundation.framework in Frameworks */,
-				38989CBC147A52AD004DE1E0 /* CoreGraphics.framework in Frameworks */,
+				38989CE3147A631E004DE1E0 /* UIKit.framework in Frameworks */,
+				38989CE5147A631E004DE1E0 /* Foundation.framework in Frameworks */,
+				38989CE7147A631E004DE1E0 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		38989CF5147A6320004DE1E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				38989CFB147A6320004DE1E0 /* SenTestingKit.framework in Frameworks */,
+				38989CFC147A6320004DE1E0 /* UIKit.framework in Frameworks */,
+				38989CFD147A6320004DE1E0 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		38989CA8147A52AD004DE1E0 = {
+		38989CD3147A631E004DE1E0 = {
 			isa = PBXGroup;
 			children = (
-				38989CBD147A52AD004DE1E0 /* Pipture */,
-				38989CB6147A52AD004DE1E0 /* Frameworks */,
-				38989CB4147A52AD004DE1E0 /* Products */,
+				38989CE8147A631F004DE1E0 /* Pipture */,
+				38989D00147A6320004DE1E0 /* PiptureTests */,
+				38989CE1147A631E004DE1E0 /* Frameworks */,
+				38989CDF147A631E004DE1E0 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		38989CB4147A52AD004DE1E0 /* Products */ = {
+		38989CDF147A631E004DE1E0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				38989CB3147A52AD004DE1E0 /* Pipture.app */,
+				38989CDE147A631E004DE1E0 /* Pipture.app */,
+				38989CF9147A6320004DE1E0 /* PiptureTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		38989CB6147A52AD004DE1E0 /* Frameworks */ = {
+		38989CE1147A631E004DE1E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				38989CB7147A52AD004DE1E0 /* UIKit.framework */,
-				38989CB9147A52AD004DE1E0 /* Foundation.framework */,
-				38989CBB147A52AD004DE1E0 /* CoreGraphics.framework */,
+				38989CE2147A631E004DE1E0 /* UIKit.framework */,
+				38989CE4147A631E004DE1E0 /* Foundation.framework */,
+				38989CE6147A631E004DE1E0 /* CoreGraphics.framework */,
+				38989CFA147A6320004DE1E0 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		38989CBD147A52AD004DE1E0 /* Pipture */ = {
+		38989CE8147A631F004DE1E0 /* Pipture */ = {
 			isa = PBXGroup;
 			children = (
-				38989CC6147A52AE004DE1E0 /* AppDelegate.h */,
-				38989CC7147A52AE004DE1E0 /* AppDelegate.m */,
-				38989CBE147A52AD004DE1E0 /* Supporting Files */,
+				38989CF1147A631F004DE1E0 /* AppDelegate.h */,
+				38989CF2147A631F004DE1E0 /* AppDelegate.m */,
+				38989CE9147A631F004DE1E0 /* Supporting Files */,
 			);
 			path = Pipture;
 			sourceTree = "<group>";
 		};
-		38989CBE147A52AD004DE1E0 /* Supporting Files */ = {
+		38989CE9147A631F004DE1E0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				38989CBF147A52AD004DE1E0 /* Pipture-Info.plist */,
-				38989CC0147A52AD004DE1E0 /* InfoPlist.strings */,
-				38989CC3147A52AD004DE1E0 /* main.m */,
-				38989CC5147A52AE004DE1E0 /* Pipture-Prefix.pch */,
+				38989CEA147A631F004DE1E0 /* Pipture-Info.plist */,
+				38989CEB147A631F004DE1E0 /* InfoPlist.strings */,
+				38989CEE147A631F004DE1E0 /* main.m */,
+				38989CF0147A631F004DE1E0 /* Pipture-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		38989D00147A6320004DE1E0 /* PiptureTests */ = {
+			isa = PBXGroup;
+			children = (
+				38989D06147A6320004DE1E0 /* PiptureTests.h */,
+				38989D07147A6320004DE1E0 /* PiptureTests.m */,
+				38989D01147A6320004DE1E0 /* Supporting Files */,
+			);
+			path = PiptureTests;
+			sourceTree = "<group>";
+		};
+		38989D01147A6320004DE1E0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				38989D02147A6320004DE1E0 /* PiptureTests-Info.plist */,
+				38989D03147A6320004DE1E0 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -93,13 +146,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		38989CB2147A52AD004DE1E0 /* Pipture */ = {
+		38989CDD147A631E004DE1E0 /* Pipture */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 38989CCB147A52AE004DE1E0 /* Build configuration list for PBXNativeTarget "Pipture" */;
+			buildConfigurationList = 38989D0B147A6320004DE1E0 /* Build configuration list for PBXNativeTarget "Pipture" */;
 			buildPhases = (
-				38989CAF147A52AD004DE1E0 /* Sources */,
-				38989CB0147A52AD004DE1E0 /* Frameworks */,
-				38989CB1147A52AD004DE1E0 /* Resources */,
+				38989CDA147A631E004DE1E0 /* Sources */,
+				38989CDB147A631E004DE1E0 /* Frameworks */,
+				38989CDC147A631E004DE1E0 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -107,62 +160,130 @@
 			);
 			name = Pipture;
 			productName = Pipture;
-			productReference = 38989CB3147A52AD004DE1E0 /* Pipture.app */;
+			productReference = 38989CDE147A631E004DE1E0 /* Pipture.app */;
 			productType = "com.apple.product-type.application";
+		};
+		38989CF8147A6320004DE1E0 /* PiptureTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 38989D0E147A6320004DE1E0 /* Build configuration list for PBXNativeTarget "PiptureTests" */;
+			buildPhases = (
+				38989CF4147A6320004DE1E0 /* Sources */,
+				38989CF5147A6320004DE1E0 /* Frameworks */,
+				38989CF6147A6320004DE1E0 /* Resources */,
+				38989CF7147A6320004DE1E0 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				38989CFF147A6320004DE1E0 /* PBXTargetDependency */,
+			);
+			name = PiptureTests;
+			productName = PiptureTests;
+			productReference = 38989CF9147A6320004DE1E0 /* PiptureTests.octest */;
+			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		38989CAA147A52AD004DE1E0 /* Project object */ = {
+		38989CD5147A631E004DE1E0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0420;
 			};
-			buildConfigurationList = 38989CAD147A52AD004DE1E0 /* Build configuration list for PBXProject "Pipture" */;
+			buildConfigurationList = 38989CD8147A631E004DE1E0 /* Build configuration list for PBXProject "Pipture" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = 38989CA8147A52AD004DE1E0;
-			productRefGroup = 38989CB4147A52AD004DE1E0 /* Products */;
+			mainGroup = 38989CD3147A631E004DE1E0;
+			productRefGroup = 38989CDF147A631E004DE1E0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				38989CB2147A52AD004DE1E0 /* Pipture */,
+				38989CDD147A631E004DE1E0 /* Pipture */,
+				38989CF8147A6320004DE1E0 /* PiptureTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		38989CB1147A52AD004DE1E0 /* Resources */ = {
+		38989CDC147A631E004DE1E0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38989CC2147A52AD004DE1E0 /* InfoPlist.strings in Resources */,
+				38989CED147A631F004DE1E0 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		38989CF6147A6320004DE1E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				38989D05147A6320004DE1E0 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		38989CF7147A6320004DE1E0 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
-		38989CAF147A52AD004DE1E0 /* Sources */ = {
+		38989CDA147A631E004DE1E0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38989CC4147A52AD004DE1E0 /* main.m in Sources */,
-				38989CC8147A52AE004DE1E0 /* AppDelegate.m in Sources */,
+				38989CEF147A631F004DE1E0 /* main.m in Sources */,
+				38989CF3147A631F004DE1E0 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		38989CF4147A6320004DE1E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				38989D08147A6320004DE1E0 /* PiptureTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		38989CFF147A6320004DE1E0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 38989CDD147A631E004DE1E0 /* Pipture */;
+			targetProxy = 38989CFE147A6320004DE1E0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
-		38989CC0147A52AD004DE1E0 /* InfoPlist.strings */ = {
+		38989CEB147A631F004DE1E0 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				38989CC1147A52AD004DE1E0 /* en */,
+				38989CEC147A631F004DE1E0 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		38989D03147A6320004DE1E0 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				38989D04147A6320004DE1E0 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -170,12 +291,11 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		38989CC9147A52AE004DE1E0 /* Debug */ = {
+		38989D09147A6320004DE1E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -195,12 +315,11 @@
 			};
 			name = Debug;
 		};
-		38989CCA147A52AE004DE1E0 /* Release */ = {
+		38989D0A147A6320004DE1E0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -215,7 +334,7 @@
 			};
 			name = Release;
 		};
-		38989CCC147A52AE004DE1E0 /* Debug */ = {
+		38989D0C147A6320004DE1E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -226,7 +345,7 @@
 			};
 			name = Debug;
 		};
-		38989CCD147A52AE004DE1E0 /* Release */ = {
+		38989D0D147A6320004DE1E0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -237,28 +356,69 @@
 			};
 			name = Release;
 		};
+		38989D0F147A6320004DE1E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Pipture.app/Pipture";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
+				INFOPLIST_FILE = "PiptureTests/PiptureTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		38989D10147A6320004DE1E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Pipture.app/Pipture";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
+				INFOPLIST_FILE = "PiptureTests/PiptureTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		38989CAD147A52AD004DE1E0 /* Build configuration list for PBXProject "Pipture" */ = {
+		38989CD8147A631E004DE1E0 /* Build configuration list for PBXProject "Pipture" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				38989CC9147A52AE004DE1E0 /* Debug */,
-				38989CCA147A52AE004DE1E0 /* Release */,
+				38989D09147A6320004DE1E0 /* Debug */,
+				38989D0A147A6320004DE1E0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		38989CCB147A52AE004DE1E0 /* Build configuration list for PBXNativeTarget "Pipture" */ = {
+		38989D0B147A6320004DE1E0 /* Build configuration list for PBXNativeTarget "Pipture" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				38989CCC147A52AE004DE1E0 /* Debug */,
-				38989CCD147A52AE004DE1E0 /* Release */,
+				38989D0C147A6320004DE1E0 /* Debug */,
+				38989D0D147A6320004DE1E0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+		};
+		38989D0E147A6320004DE1E0 /* Build configuration list for PBXNativeTarget "PiptureTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				38989D0F147A6320004DE1E0 /* Debug */,
+				38989D10147A6320004DE1E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 38989CAA147A52AD004DE1E0 /* Project object */;
+	rootObject = 38989CD5147A631E004DE1E0 /* Project object */;
 }

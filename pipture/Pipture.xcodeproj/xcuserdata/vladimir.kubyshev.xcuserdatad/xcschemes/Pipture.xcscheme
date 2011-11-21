@@ -13,7 +13,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "38989CB2147A52AD004DE1E0"
+               BlueprintIdentifier = "38989CDD147A631E004DE1E0"
                BuildableName = "Pipture.app"
                BlueprintName = "Pipture"
                ReferencedContainer = "container:Pipture.xcodeproj">
@@ -27,11 +27,21 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "38989CF8147A6320004DE1E0"
+               BuildableName = "PiptureTests.octest"
+               BlueprintName = "PiptureTests"
+               ReferencedContainer = "container:Pipture.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "38989CB2147A52AD004DE1E0"
+            BlueprintIdentifier = "38989CDD147A631E004DE1E0"
             BuildableName = "Pipture.app"
             BlueprintName = "Pipture"
             ReferencedContainer = "container:Pipture.xcodeproj">
@@ -49,7 +59,7 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "38989CB2147A52AD004DE1E0"
+            BlueprintIdentifier = "38989CDD147A631E004DE1E0"
             BuildableName = "Pipture.app"
             BlueprintName = "Pipture"
             ReferencedContainer = "container:Pipture.xcodeproj">
@@ -67,7 +77,7 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "38989CB2147A52AD004DE1E0"
+            BlueprintIdentifier = "38989CDD147A631E004DE1E0"
             BuildableName = "Pipture.app"
             BlueprintName = "Pipture"
             ReferencedContainer = "container:Pipture.xcodeproj">
