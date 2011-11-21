@@ -12,12 +12,14 @@
 		38989CE7147A631E004DE1E0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE6147A631E004DE1E0 /* CoreGraphics.framework */; };
 		38989CED147A631F004DE1E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 38989CEB147A631F004DE1E0 /* InfoPlist.strings */; };
 		38989CEF147A631F004DE1E0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989CEE147A631F004DE1E0 /* main.m */; };
-		38989CF3147A631F004DE1E0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989CF2147A631F004DE1E0 /* AppDelegate.m */; };
+		38989CF3147A631F004DE1E0 /* PiptureAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989CF2147A631F004DE1E0 /* PiptureAppDelegate.m */; };
 		38989CFB147A6320004DE1E0 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CFA147A6320004DE1E0 /* SenTestingKit.framework */; };
 		38989CFC147A6320004DE1E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE2147A631E004DE1E0 /* UIKit.framework */; };
 		38989CFD147A6320004DE1E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE4147A631E004DE1E0 /* Foundation.framework */; };
 		38989D05147A6320004DE1E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 38989D03147A6320004DE1E0 /* InfoPlist.strings */; };
 		38989D08147A6320004DE1E0 /* PiptureTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989D07147A6320004DE1E0 /* PiptureTests.m */; };
+		38989D19147A6568004DE1E0 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38989D18147A6568004DE1E0 /* MainWindow.xib */; };
+		38989D20147A66A7004DE1E0 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989D1F147A66A7004DE1E0 /* LoginView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,14 +41,17 @@
 		38989CEC147A631F004DE1E0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		38989CEE147A631F004DE1E0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		38989CF0147A631F004DE1E0 /* Pipture-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Pipture-Prefix.pch"; sourceTree = "<group>"; };
-		38989CF1147A631F004DE1E0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		38989CF2147A631F004DE1E0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		38989CF1147A631F004DE1E0 /* PiptureAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiptureAppDelegate.h; sourceTree = "<group>"; };
+		38989CF2147A631F004DE1E0 /* PiptureAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PiptureAppDelegate.m; sourceTree = "<group>"; };
 		38989CF9147A6320004DE1E0 /* PiptureTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PiptureTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		38989CFA147A6320004DE1E0 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		38989D02147A6320004DE1E0 /* PiptureTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PiptureTests-Info.plist"; sourceTree = "<group>"; };
 		38989D04147A6320004DE1E0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		38989D06147A6320004DE1E0 /* PiptureTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiptureTests.h; sourceTree = "<group>"; };
 		38989D07147A6320004DE1E0 /* PiptureTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PiptureTests.m; sourceTree = "<group>"; };
+		38989D18147A6568004DE1E0 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		38989D1E147A66A7004DE1E0 /* LoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginView.h; sourceTree = "<group>"; };
+		38989D1F147A66A7004DE1E0 /* LoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,8 +111,10 @@
 		38989CE8147A631F004DE1E0 /* Pipture */ = {
 			isa = PBXGroup;
 			children = (
-				38989CF1147A631F004DE1E0 /* AppDelegate.h */,
-				38989CF2147A631F004DE1E0 /* AppDelegate.m */,
+				38989D1D147A6696004DE1E0 /* Classes */,
+				38989D17147A6483004DE1E0 /* Resources */,
+				38989CF1147A631F004DE1E0 /* PiptureAppDelegate.h */,
+				38989CF2147A631F004DE1E0 /* PiptureAppDelegate.m */,
 				38989CE9147A631F004DE1E0 /* Supporting Files */,
 			);
 			path = Pipture;
@@ -141,6 +148,23 @@
 				38989D03147A6320004DE1E0 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		38989D17147A6483004DE1E0 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				38989D18147A6568004DE1E0 /* MainWindow.xib */,
+			);
+			path = Resources;
+			sourceTree = SOURCE_ROOT;
+		};
+		38989D1D147A6696004DE1E0 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				38989D1E147A66A7004DE1E0 /* LoginView.h */,
+				38989D1F147A66A7004DE1E0 /* LoginView.m */,
+			);
+			path = Classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,6 +238,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				38989CED147A631F004DE1E0 /* InfoPlist.strings in Resources */,
+				38989D19147A6568004DE1E0 /* MainWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,7 +274,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				38989CEF147A631F004DE1E0 /* main.m in Sources */,
-				38989CF3147A631F004DE1E0 /* AppDelegate.m in Sources */,
+				38989CF3147A631F004DE1E0 /* PiptureAppDelegate.m in Sources */,
+				38989D20147A66A7004DE1E0 /* LoginView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,6 +435,7 @@
 				38989D0D147A6320004DE1E0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		38989D0E147A6320004DE1E0 /* Build configuration list for PBXNativeTarget "PiptureTests" */ = {
 			isa = XCConfigurationList;
@@ -417,6 +444,7 @@
 				38989D10147A6320004DE1E0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

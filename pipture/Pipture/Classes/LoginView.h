@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  LoginView.h
 //  Pipture
 //
 //  Created by Vladimir Kubyshev on 21.11.11.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
-
-@property (strong, nonatomic) UIWindow *window;
+@interface LoginView : UIViewController
 
 @end

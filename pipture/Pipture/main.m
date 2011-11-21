@@ -8,11 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-#import "AppDelegate.h"
+#import "PiptureAppDelegate.h"
 
 int main(int argc, char *argv[])
 {
-    @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
-    }
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    int retVal = UIApplicationMain(argc, argv, nil, nil);
+    [pool release];
+    return retVal;
+    
+    /*@autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([PiptureAppDelegate class]));
+    }*/
 }
