@@ -19,7 +19,9 @@
 		38989D05147A6320004DE1E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 38989D03147A6320004DE1E0 /* InfoPlist.strings */; };
 		38989D08147A6320004DE1E0 /* PiptureTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989D07147A6320004DE1E0 /* PiptureTests.m */; };
 		38989D19147A6568004DE1E0 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38989D18147A6568004DE1E0 /* MainWindow.xib */; };
-		38989D20147A66A7004DE1E0 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989D1F147A66A7004DE1E0 /* LoginView.m */; };
+		38989D20147A66A7004DE1E0 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989D1F147A66A7004DE1E0 /* LoginViewController.m */; };
+		8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8811ED94147B6FC5008CC877 /* HomeView.xib */; };
+		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,8 +52,11 @@
 		38989D06147A6320004DE1E0 /* PiptureTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiptureTests.h; sourceTree = "<group>"; };
 		38989D07147A6320004DE1E0 /* PiptureTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PiptureTests.m; sourceTree = "<group>"; };
 		38989D18147A6568004DE1E0 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
-		38989D1E147A66A7004DE1E0 /* LoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginView.h; sourceTree = "<group>"; };
-		38989D1F147A66A7004DE1E0 /* LoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginView.m; sourceTree = "<group>"; };
+		38989D1E147A66A7004DE1E0 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		38989D1F147A66A7004DE1E0 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		8811ED94147B6FC5008CC877 /* HomeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeView.xib; sourceTree = "<group>"; };
+		88D84207147B626C00E47EF8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
+		88D84208147B626C00E47EF8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +158,7 @@
 		38989D17147A6483004DE1E0 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8811ED94147B6FC5008CC877 /* HomeView.xib */,
 				38989D18147A6568004DE1E0 /* MainWindow.xib */,
 			);
 			path = Resources;
@@ -161,8 +167,10 @@
 		38989D1D147A6696004DE1E0 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				38989D1E147A66A7004DE1E0 /* LoginView.h */,
-				38989D1F147A66A7004DE1E0 /* LoginView.m */,
+				38989D1E147A66A7004DE1E0 /* LoginViewController.h */,
+				38989D1F147A66A7004DE1E0 /* LoginViewController.m */,
+				88D84207147B626C00E47EF8 /* HomeViewController.h */,
+				88D84208147B626C00E47EF8 /* HomeViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -239,6 +247,7 @@
 			files = (
 				38989CED147A631F004DE1E0 /* InfoPlist.strings in Resources */,
 				38989D19147A6568004DE1E0 /* MainWindow.xib in Resources */,
+				8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,7 +284,8 @@
 			files = (
 				38989CEF147A631F004DE1E0 /* main.m in Sources */,
 				38989CF3147A631F004DE1E0 /* PiptureAppDelegate.m in Sources */,
-				38989D20147A66A7004DE1E0 /* LoginView.m in Sources */,
+				38989D20147A66A7004DE1E0 /* LoginViewController.m in Sources */,
+				88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,7 +346,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -353,7 +363,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -366,6 +376,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
 				INFOPLIST_FILE = "Pipture/Pipture-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -377,6 +388,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
 				INFOPLIST_FILE = "Pipture/Pipture-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
