@@ -12,14 +12,25 @@
 
 @synthesize window = _window;
 @synthesize navigationController = _navigationController;
-@synthesize loginView = _loginView;
+@synthesize loginViewController = _loginViewController;
+
+static PiptureAppDelegate *instance;
 
 - (void)dealloc
 {
-    [_loginView release];
+    [_loginViewController release];
     [_navigationController release];
     [_window release];
     [super dealloc];
+}
+
+- (id) init {
+    instance = nil;
+    self = [super init];
+    if (self) {
+        instance = self;
+    }
+    return self;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -27,9 +38,13 @@
     //self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
     //self.window.backgroundColor = [UIColor whiteColor];
-    [self.window addSubview:_loginView.view];
+    [self.window addSubview:_loginViewController.view];
     [self.window makeKeyAndVisible];
     return YES;
+}
+
++ (PiptureAppDelegate*) instance {
+    return instance;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -69,6 +84,12 @@
      Save data if appropriate.
      See also applicationDidEnterBackground:.
      */
+}
+
+- (void) onLogin {
+    [_loginViewController.view removeFromSuperview];
+    [self.window addSubview:_navigationController.view];
+    [self.window setRootViewController:_navigationController];
 }
 
 @end

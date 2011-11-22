@@ -6,9 +6,10 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "LoginView.h"
+#import "LoginViewController.h"
+#import "PiptureAppDelegate.h"
 
-@implementation LoginView
+@implementation LoginViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -55,6 +56,19 @@
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)dealloc {
+    [firstNameLabel release];
+    [lastNameLabel release];
+    [emailLabel release];    
+    [super dealloc];
+}
+
+- (IBAction)donePressed:(id)sender {
+    //TODO Validation, login processing
+    [[PiptureAppDelegate instance] onLogin];
+    
 }
 
 @end

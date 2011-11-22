@@ -7,12 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LoginView.h"
+#import "LoginViewController.h"
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate>
 
 //@property (strong, nonatomic) IBOutlet UIImageView * backgroundImage;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * navigationController;
-@property (retain, nonatomic) IBOutlet LoginView * loginView;
+@property (retain, nonatomic) IBOutlet LoginViewController * loginViewController;
+
++(PiptureAppDelegate*) instance;
+
+- (void) onLogin;
 @end
