@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		385FC399147CD7A6001CDF43 /* VideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 385FC397147CD7A6001CDF43 /* VideoViewController.m */; };
+		385FC39D147CD818001CDF43 /* VideoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 385FC39C147CD818001CDF43 /* VideoViewController.xib */; };
 		38989CE3147A631E004DE1E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE2147A631E004DE1E0 /* UIKit.framework */; };
 		38989CE5147A631E004DE1E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE4147A631E004DE1E0 /* Foundation.framework */; };
 		38989CE7147A631E004DE1E0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE6147A631E004DE1E0 /* CoreGraphics.framework */; };
@@ -36,6 +38,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		385FC396147CD7A6001CDF43 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoViewController.h; sourceTree = "<group>"; };
+		385FC397147CD7A6001CDF43 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoViewController.m; sourceTree = "<group>"; };
+		385FC39C147CD818001CDF43 /* VideoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoViewController.xib; sourceTree = "<group>"; };
 		38989CDE147A631E004DE1E0 /* Pipture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pipture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38989CE2147A631E004DE1E0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		38989CE4147A631E004DE1E0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -160,6 +165,7 @@
 		38989D17147A6483004DE1E0 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				385FC39C147CD818001CDF43 /* VideoViewController.xib */,
 				38989D31147CA97F004DE1E0 /* Vincent.png */,
 				8811ED94147B6FC5008CC877 /* HomeView.xib */,
 				38989D18147A6568004DE1E0 /* MainWindow.xib */,
@@ -174,6 +180,8 @@
 				38989D1F147A66A7004DE1E0 /* LoginViewController.m */,
 				88D84207147B626C00E47EF8 /* HomeViewController.h */,
 				88D84208147B626C00E47EF8 /* HomeViewController.m */,
+				385FC396147CD7A6001CDF43 /* VideoViewController.h */,
+				385FC397147CD7A6001CDF43 /* VideoViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -252,6 +260,7 @@
 				38989D19147A6568004DE1E0 /* MainWindow.xib in Resources */,
 				8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */,
 				38989D32147CA97F004DE1E0 /* Vincent.png in Resources */,
+				385FC39D147CD818001CDF43 /* VideoViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,6 +299,7 @@
 				38989CF3147A631F004DE1E0 /* PiptureAppDelegate.m in Sources */,
 				38989D20147A66A7004DE1E0 /* LoginViewController.m in Sources */,
 				88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */,
+				385FC399147CD7A6001CDF43 /* VideoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

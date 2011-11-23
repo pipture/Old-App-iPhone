@@ -10,9 +10,19 @@
 
 @interface HomeViewController : UIViewController <UIScrollViewDelegate>
 {
-    NSMutableArray * imagesArray;
+    //container for timeslots
+    NSMutableArray * timelineArray;
+    BOOL scheduleMode;
 }
 
+//returns current visible page in scrollview
+- (int)getPageNumber;
+- (void)prepareImageFor:(int)timeslot;
+- (void)updateControls;
+
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (retain, nonatomic) IBOutlet UIView *actionBar;
+@property (retain, nonatomic) IBOutlet UIView *libraryBar;
+@property (retain, nonatomic) IBOutlet UIView *pageControl;
 
 @end
