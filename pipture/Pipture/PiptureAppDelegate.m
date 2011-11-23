@@ -39,6 +39,7 @@ static PiptureAppDelegate *instance;
     // Override point for customization after application launch.
     //self.window.backgroundColor = [UIColor whiteColor];
     [self.window addSubview:_loginViewController.view];
+    //self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -87,9 +88,17 @@ static PiptureAppDelegate *instance;
 }
 
 - (void) onLogin {
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(animationDidStop:animationIDfinished:finished:context:)];
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.5];
+    
+    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:_navigationController.view cache:YES];
+    
     [_loginViewController.view removeFromSuperview];
-    [self.window addSubview:_navigationController.view];
+    //[self.window addSubview:_navigationController.view];
     [self.window setRootViewController:_navigationController];
+    [UIView commitAnimations];
 }
 
 @end
