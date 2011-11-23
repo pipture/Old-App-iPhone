@@ -20,6 +20,7 @@
 		38989D08147A6320004DE1E0 /* PiptureTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989D07147A6320004DE1E0 /* PiptureTests.m */; };
 		38989D19147A6568004DE1E0 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38989D18147A6568004DE1E0 /* MainWindow.xib */; };
 		38989D20147A66A7004DE1E0 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989D1F147A66A7004DE1E0 /* LoginViewController.m */; };
+		38989D32147CA97F004DE1E0 /* Vincent.png in Resources */ = {isa = PBXBuildFile; fileRef = 38989D31147CA97F004DE1E0 /* Vincent.png */; };
 		8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8811ED94147B6FC5008CC877 /* HomeView.xib */; };
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
 /* End PBXBuildFile section */
@@ -54,6 +55,7 @@
 		38989D18147A6568004DE1E0 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		38989D1E147A66A7004DE1E0 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		38989D1F147A66A7004DE1E0 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		38989D31147CA97F004DE1E0 /* Vincent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Vincent.png; sourceTree = "<group>"; };
 		8811ED94147B6FC5008CC877 /* HomeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeView.xib; sourceTree = "<group>"; };
 		88D84207147B626C00E47EF8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		88D84208147B626C00E47EF8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 		38989D17147A6483004DE1E0 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				38989D31147CA97F004DE1E0 /* Vincent.png */,
 				8811ED94147B6FC5008CC877 /* HomeView.xib */,
 				38989D18147A6568004DE1E0 /* MainWindow.xib */,
 			);
@@ -248,6 +251,7 @@
 				38989CED147A631F004DE1E0 /* InfoPlist.strings in Resources */,
 				38989D19147A6568004DE1E0 /* MainWindow.xib in Resources */,
 				8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */,
+				38989D32147CA97F004DE1E0 /* Vincent.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -35,11 +35,9 @@ static PiptureAppDelegate *instance;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    //self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    // Override point for customization after application launch.
-    //self.window.backgroundColor = [UIColor whiteColor];
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+//    [UIApplication sharedApplication].statusBarHidden = YES;
     [self.window addSubview:_loginViewController.view];
-    //self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
     return YES;
 }
