@@ -17,6 +17,8 @@
 #define ITEM_COUNT 40
 
 @implementation AlbumsListView
+@synthesize libraryDelegate;
+
 
 - (void)dealloc {
     [albumsArray release];
@@ -29,10 +31,15 @@
         albumsArray = [[NSMutableArray alloc] initWithCapacity:40];
     }
     
-    
+
     for (int i = 0; i < ITEM_COUNT; i++) {
         AlbumItemView * item = [[AlbumItemView alloc] initWithNibName:@"AlbumItemView" bundle:nil];
         [item loadView];
+        
+        //The setup code (in viewDidLoad in your view controller)
+        item.detailButton.tag = i;
+        [item.detailButton addTarget:self action:@selector(detailAlbumShow:) forControlEvents:UIControlEventTouchUpInside];
+
         [albumsArray addObject:item];
         [item release];
     }
@@ -60,6 +67,10 @@
             [self addSubview:item.view];
         }
     }
+}
+
+- (void)detailAlbumShow:(id)sender {
+    [self.libraryDelegate showAlbumDetail:[sender tag]];
 }
 
 @end

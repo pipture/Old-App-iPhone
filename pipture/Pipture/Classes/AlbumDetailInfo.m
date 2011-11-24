@@ -9,6 +9,8 @@
 #import "AlbumDetailInfo.h"
 
 @implementation AlbumDetailInfo
+@synthesize tabController;
+@synthesize subViewContainer;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -46,6 +48,8 @@
 
 - (void)viewDidUnload
 {
+    [self setTabController:nil];
+    [self setSubViewContainer:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -57,4 +61,9 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (void)dealloc {
+    [tabController release];
+    [subViewContainer release];
+    [super dealloc];
+}
 @end

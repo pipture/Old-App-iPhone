@@ -9,15 +9,20 @@
 #import "AlbumItemView.h"
 
 @implementation AlbumItemView
-@synthesize thumbnailImage;
 @synthesize titleLabel;
 @synthesize tagLabel;
+@synthesize detailButton;
 
 
 - (void)dealloc {
-    [thumbnailImage release];
     [titleLabel release];
     [tagLabel release];
+    [detailButton release];
     [super dealloc];
+}
+
+- (void)viewDidUnload {
+    [self setDetailButton:nil];
+    [super viewDidUnload];
 }
 @end

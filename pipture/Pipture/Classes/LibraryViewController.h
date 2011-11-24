@@ -6,26 +6,25 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "AlbumsListView.h"
+#import "LibraryDelegateProtocol.h"
+#import "LibraryStartPage.h"
+#import "AlbumDetailInfo.h"
+#import <QuartzCore/QuartzCore.h>
 
-enum LibraryViewType {
-    LibraryViewType_Albums,
-    LibraryViewType_New,
-    LibraryViewType_Top
-};
-
-@interface LibraryViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
+@interface LibraryViewController : UIViewController<LibraryViewDelegate>
 {
-    enum LibraryViewType viewType;
+
 }
 
-- (IBAction)tabChanged:(id)sender;
 - (IBAction)closeLibrary:(id)sender;
+- (void)showAlbumDetail:(int)albumId;
+- (void)animateFrom:(UIView *)view1 to:(UIView*)view2;
 
-@property (retain, nonatomic) IBOutlet UISegmentedControl *tabViewController;
-@property (retain, nonatomic) IBOutlet AlbumsListView *albumsView;
-@property (retain, nonatomic) IBOutlet UITableView *libraryTableView;
+@property (retain, nonatomic) IBOutlet UIView *libraryParts;
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *closeLibraryButton;
-@property (retain, nonatomic) IBOutlet UIView *subViewContainer;
+@property (retain, nonatomic) IBOutlet UINavigationBar *navigationBar;
+
+@property (retain, nonatomic) LibraryStartPage * startPage;
+@property (retain, nonatomic) AlbumDetailInfo * albumInfo;
 
 @end

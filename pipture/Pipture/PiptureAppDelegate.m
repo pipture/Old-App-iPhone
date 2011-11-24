@@ -37,6 +37,7 @@ static PiptureAppDelegate *instance;
 {
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
 //    [UIApplication sharedApplication].statusBarHidden = YES;
+    
     [self.window addSubview:_loginViewController.view];
     [self.window makeKeyAndVisible];
     return YES;
@@ -94,7 +95,6 @@ static PiptureAppDelegate *instance;
     [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:_navigationController.view cache:YES];
     
     [_loginViewController.view removeFromSuperview];
-    //[self.window addSubview:_navigationController.view];
     [self.window setRootViewController:_navigationController];
     [UIView commitAnimations];
 }

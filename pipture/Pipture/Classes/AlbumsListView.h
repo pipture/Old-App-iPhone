@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LibraryDelegateProtocol.h"
 
 @interface AlbumsListView : UIScrollView
 {
@@ -15,5 +16,7 @@
 
 - (void)readAlbums;
 - (void)prepareLayout;
+
+@property (assign, nonatomic) IBOutlet id<LibraryViewDelegate> libraryDelegate;
 
 @end

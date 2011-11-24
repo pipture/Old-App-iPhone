@@ -8,6 +8,8 @@
 
 
 
-@interface AlbumDetailInfo : UIViewContainer
+@interface AlbumDetailInfo : UIViewController
+@property (retain, nonatomic) IBOutlet UISegmentedControl *tabController;
+@property (retain, nonatomic) IBOutlet UIView *subViewContainer;
 
 @end

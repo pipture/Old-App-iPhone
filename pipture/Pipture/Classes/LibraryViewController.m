@@ -7,41 +7,30 @@
 //
 
 #import "LibraryViewController.h"
+#import "VideoViewController.h"
 
 @implementation LibraryViewController
-@synthesize tabViewController;
-@synthesize albumsView;
-@synthesize libraryTableView;
+@synthesize libraryParts;
 @synthesize closeLibraryButton;
-@synthesize subViewContainer;
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
+@synthesize navigationBar;
+@synthesize startPage;
+@synthesize albumInfo;
 
 #pragma mark - View lifecycle
-
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView
-{
-}
-*/
-
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    [albumsView readAlbums];
+    startPage = [[LibraryStartPage alloc] initWithNibName:@"LibraryStartPage" bundle:nil];
+    CGRect rect = CGRectMake(0, 0, libraryParts.frame.size.width, libraryParts.frame.size.height);
+    startPage.view.frame = rect;
+    startPage.albumsView.libraryDelegate = self; 
+    [libraryParts addSubview:startPage.view];
     
-    [tabViewController setSelectedSegmentIndex:LibraryViewType_Albums];
-    [self tabChanged:tabViewController];
+    albumInfo = [[AlbumDetailInfo alloc] initWithNibName:@"AlbumDetailInfoPage" bundle:nil];
+    albumInfo.view.frame = rect;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -56,11 +45,11 @@
 
 - (void)viewDidUnload
 {
-    [self setAlbumsView:nil];
-    [self setLibraryTableView:nil];
-    [self setTabViewController:nil];
+    [self setAlbumInfo:nil];
+    [self setStartPage:nil];
     [self setCloseLibraryButton:nil];
-    [self setSubViewContainer:nil];
+    [self setNavigationBar:nil];
+    [self setLibraryParts:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -73,72 +62,42 @@
 }
 
 - (void)dealloc {
-    [albumsView release];
-    [libraryTableView release];
-    [tabViewController release];
+    [albumInfo release];
+    [startPage release];
     [closeLibraryButton release];
-    [subViewContainer release];
+    [navigationBar release];
+    [libraryParts release];
     [super dealloc];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    //TODO: 
-    return 10;
-}
-
-// Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
-// Cell gets various attributes set automatically based on table (separators) and data source (accessory views, editing controls)
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    //TODO: 
-    static NSString * const kCellID = @"CellID";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
-    int row = indexPath.row;
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:kCellID] autorelease];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    
-    switch (viewType) {
-        case LibraryViewType_New:
-            cell.textLabel.text = [NSString stringWithFormat:@"new row %d", row];
-            break;
-        case LibraryViewType_Top:
-            cell.textLabel.text = [NSString stringWithFormat:@"top row %d", row];
-            break;
-        case LibraryViewType_Albums:
-            //do nothing
-            break;
-
-    }
-   
-    return cell;
-}
-
-- (IBAction)tabChanged:(id)sender {
-    viewType = [tabViewController selectedSegmentIndex];
-    
-    if ([[subViewContainer subviews] count] > 0) {
-        [[[subViewContainer subviews] objectAtIndex:0] removeFromSuperview];
-    }
-    
-    switch (viewType) {
-        case LibraryViewType_Albums:
-            albumsView.frame = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height);
-            [albumsView prepareLayout];
-            [subViewContainer addSubview:albumsView];
-            break;
-        case LibraryViewType_New:
-            break;
-        case LibraryViewType_Top:
-            break;
-    }
-}
 
 - (IBAction)closeLibrary:(id)sender {
     [self dismissModalViewControllerAnimated:YES];
-   
+}
+
+- (void)animateFrom:(UIView *)view1 to:(UIView *)view2 :(BOOL)forward {
+    
+    [view1 removeFromSuperview];
+    [libraryParts addSubview:view2];
+    
+    // set up an animation for the transition between the views
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.5];
+    [animation setType:kCATransitionPush];
+    [animation setSubtype:forward?kCATransitionFromRight:kCATransitionFromLeft];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    
+    [[libraryParts layer] addAnimation:animation forKey:@"SwitchToView1"];
+    
+}
+
+- (void)showAlbumDetail:(int)albumId {
+    
+    UINavigationItem * navItem = [[UINavigationItem alloc]initWithTitle:@"Test"];
+    [navigationBar pushNavigationItem:navItem animated:YES];
+    [navItem release];
+    
+    [self animateFrom:[[libraryParts subviews] objectAtIndex:0] to:albumInfo.view:YES];
 }
 
 @end
