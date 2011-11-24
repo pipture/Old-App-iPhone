@@ -12,8 +12,8 @@
 @synthesize tabViewController;
 @synthesize albumsView;
 @synthesize libraryTableView;
-@synthesize libraryCell;
 @synthesize closeLibraryButton;
+@synthesize subViewContainer;
 
 - (void)didReceiveMemoryWarning
 {
@@ -38,9 +38,10 @@
 {
     [super viewDidLoad];
     
-    viewType = LibraryViewType_Albums;
+    [albumsView readAlbums];
     
-    [tabViewController setSelectedSegmentIndex:viewType];
+    [tabViewController setSelectedSegmentIndex:LibraryViewType_Albums];
+    [self tabChanged:tabViewController];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -57,9 +58,9 @@
 {
     [self setAlbumsView:nil];
     [self setLibraryTableView:nil];
-    [self setLibraryCell:nil];
     [self setTabViewController:nil];
     [self setCloseLibraryButton:nil];
+    [self setSubViewContainer:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -74,9 +75,9 @@
 - (void)dealloc {
     [albumsView release];
     [libraryTableView release];
-    [libraryCell release];
     [tabViewController release];
     [closeLibraryButton release];
+    [subViewContainer release];
     [super dealloc];
 }
 
@@ -118,8 +119,15 @@
 - (IBAction)tabChanged:(id)sender {
     viewType = [tabViewController selectedSegmentIndex];
     
+    if ([[subViewContainer subviews] count] > 0) {
+        [[[subViewContainer subviews] objectAtIndex:0] removeFromSuperview];
+    }
+    
     switch (viewType) {
         case LibraryViewType_Albums:
+            albumsView.frame = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height);
+            [albumsView prepareLayout];
+            [subViewContainer addSubview:albumsView];
             break;
         case LibraryViewType_New:
             break;
@@ -130,6 +138,7 @@
 
 - (IBAction)closeLibrary:(id)sender {
     [self dismissModalViewControllerAnimated:YES];
+   
 }
 
 @end

@@ -12,6 +12,9 @@
 		381935C1147D04540049B30E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 381935C0147D04540049B30E /* MessageUI.framework */; };
 		381935C3147D06430049B30E /* LibraryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935C2147D06430049B30E /* LibraryViewController.xib */; };
 		381935C6147D067D0049B30E /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C5147D067D0049B30E /* LibraryViewController.m */; };
+		381935C9147E29920049B30E /* AlbumsListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C8147E29920049B30E /* AlbumsListView.m */; };
+		381935CC147E2C850049B30E /* AlbumItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935CB147E2C850049B30E /* AlbumItemView.xib */; };
+		381935CF147E2F180049B30E /* AlbumItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935CE147E2F180049B30E /* AlbumItemView.m */; };
 		385FC399147CD7A6001CDF43 /* VideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 385FC397147CD7A6001CDF43 /* VideoViewController.m */; };
 		385FC39D147CD818001CDF43 /* VideoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 385FC39C147CD818001CDF43 /* VideoViewController.xib */; };
 		38989CE3147A631E004DE1E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE2147A631E004DE1E0 /* UIKit.framework */; };
@@ -50,6 +53,11 @@
 		381935C2147D06430049B30E /* LibraryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryViewController.xib; sourceTree = "<group>"; };
 		381935C4147D067D0049B30E /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
 		381935C5147D067D0049B30E /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
+		381935C8147E29920049B30E /* AlbumsListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumsListView.m; sourceTree = "<group>"; };
+		381935CA147E29DB0049B30E /* AlbumsListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumsListView.h; sourceTree = "<group>"; };
+		381935CB147E2C850049B30E /* AlbumItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumItemView.xib; sourceTree = "<group>"; };
+		381935CD147E2F180049B30E /* AlbumItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumItemView.h; sourceTree = "<group>"; };
+		381935CE147E2F180049B30E /* AlbumItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumItemView.m; sourceTree = "<group>"; };
 		385FC396147CD7A6001CDF43 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoViewController.h; sourceTree = "<group>"; };
 		385FC397147CD7A6001CDF43 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoViewController.m; sourceTree = "<group>"; };
 		385FC39C147CD818001CDF43 /* VideoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoViewController.xib; sourceTree = "<group>"; };
@@ -185,6 +193,7 @@
 				38989D18147A6568004DE1E0 /* MainWindow.xib */,
 				381935BE147CED6A0049B30E /* HistoryViewController.xib */,
 				381935C2147D06430049B30E /* LibraryViewController.xib */,
+				381935CB147E2C850049B30E /* AlbumItemView.xib */,
 			);
 			path = Resources;
 			sourceTree = SOURCE_ROOT;
@@ -202,6 +211,10 @@
 				381935BB147CED4F0049B30E /* HistoryViewController.m */,
 				381935C4147D067D0049B30E /* LibraryViewController.h */,
 				381935C5147D067D0049B30E /* LibraryViewController.m */,
+				381935CA147E29DB0049B30E /* AlbumsListView.h */,
+				381935C8147E29920049B30E /* AlbumsListView.m */,
+				381935CD147E2F180049B30E /* AlbumItemView.h */,
+				381935CE147E2F180049B30E /* AlbumItemView.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -283,6 +296,7 @@
 				385FC39D147CD818001CDF43 /* VideoViewController.xib in Resources */,
 				381935BF147CED6A0049B30E /* HistoryViewController.xib in Resources */,
 				381935C3147D06430049B30E /* LibraryViewController.xib in Resources */,
+				381935CC147E2C850049B30E /* AlbumItemView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +338,8 @@
 				385FC399147CD7A6001CDF43 /* VideoViewController.m in Sources */,
 				381935BC147CED4F0049B30E /* HistoryViewController.m in Sources */,
 				381935C6147D067D0049B30E /* LibraryViewController.m in Sources */,
+				381935C9147E29920049B30E /* AlbumsListView.m in Sources */,
+				381935CF147E2F180049B30E /* AlbumItemView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
