@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AlbumsListView : UIView
+@interface AlbumsListView : UIScrollView
+{
+    NSMutableArray * albumsArray;
+}
+
+- (void)readAlbums;
+- (void)prepareLayout;
 
 @end

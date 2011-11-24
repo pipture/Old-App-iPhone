@@ -7,54 +7,59 @@
 //
 
 #import "AlbumsListView.h"
+#import "AlbumItemView.h"
+
+//TODO: maybe not hardcode?
+#define ITEM_HEIGHT 180
+#define ITEM_WIDTH 106
+
+//TODO: temporary
+#define ITEM_COUNT 40
 
 @implementation AlbumsListView
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
+- (void)dealloc {
+    [albumsArray release];
+    [super dealloc];
+}
+
+- (void)readAlbums{
+    //TODO: from server
+    if (albumsArray == nil) {
+        albumsArray = [[NSMutableArray alloc] initWithCapacity:40];
     }
-    return self;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
     
-    // Release any cached data, images, etc that aren't in use.
+    
+    for (int i = 0; i < ITEM_COUNT; i++) {
+        AlbumItemView * item = [[AlbumItemView alloc] initWithNibName:@"AlbumItemView" bundle:nil];
+        [item loadView];
+        [albumsArray addObject:item];
+        [item release];
+    }
 }
 
-#pragma mark - View lifecycle
-
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView
-{
-}
-*/
-
-/*
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-}
-*/
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+- (void) prepareLayout {
+    //clear scroll view
+    for (int i = 0; i < [self.subviews count]; i++) {
+        [[[self subviews] objectAtIndex:i] removeFromSuperview];
+    }
+    
+    CGRect rect = self.frame;
+    
+    int rows = (ITEM_COUNT + (3 - 1)) / 3;
+    self.contentSize = CGSizeMake(rect.size.width, ITEM_HEIGHT * rows);
+    
+    int i = 0;
+    
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < 3; x++) {
+            if (i >= [albumsArray count])
+                break;
+            AlbumItemView * item = [albumsArray objectAtIndex:i++];
+            item.view.frame = CGRectMake(1+ (x * ITEM_WIDTH), y * ITEM_HEIGHT, ITEM_WIDTH, ITEM_HEIGHT);
+            [self addSubview:item.view];
+        }
+    }
 }
 
 @end
