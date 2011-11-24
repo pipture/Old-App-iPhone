@@ -20,6 +20,12 @@
 - (void)prepareImageFor:(int)timeslot;
 - (void)updateControls;
 
+- (void)actionBarResponder:(UITapGestureRecognizer *)recognizer;
+- (void)libraryBarResponder:(UITapGestureRecognizer *)recognizer;
+- (void)scheduleAction:(id)sender;
+
+@property (retain, nonatomic) UIBarButtonItem *scheduleButton;
+
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (retain, nonatomic) IBOutlet UIView *actionBar;
 @property (retain, nonatomic) IBOutlet UIView *libraryBar;

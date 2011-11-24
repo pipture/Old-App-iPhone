@@ -8,12 +8,14 @@
 
 #import "HomeViewController.h"
 #import "VideoViewController.h"
+#import "LibraryViewController.h"
 
 @implementation HomeViewController
 @synthesize scrollView;
 @synthesize actionBar;
 @synthesize libraryBar;
 @synthesize pageControl;
+@synthesize scheduleButton;
 
 - (void)didReceiveMemoryWarning
 {
@@ -58,7 +60,19 @@
     
     //prepare actionBar
     
-    actionBar respondsToSelector:actionBarResponder
+    //The setup code (in viewDidLoad in your view controller)
+    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionBarResponder:)];
+    [actionBar addGestureRecognizer:singleFingerTap];
+    [singleFingerTap release];
+    
+    singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(libraryBarResponder:)];
+    [libraryBar addGestureRecognizer:singleFingerTap];
+    [singleFingerTap release];
+
+
+    //preparing navigation bar schedule button
+    scheduleButton = [[UIBarButtonItem alloc] initWithTitle:@"Schedule" style:UIBarButtonItemStylePlain target:self action:@selector(scheduleAction:)];
+    self.navigationItem.leftBarButtonItem = scheduleButton;
 }
 
 - (void)viewDidUnload
@@ -91,6 +105,7 @@
 }
 
 - (void)dealloc {
+    [scheduleButton release];
     [timelineArray release];
     [scrollView release];
     [actionBar release];
@@ -98,15 +113,24 @@
     [pageControl release];
     [super dealloc];
 }
-
-- (void)scrollViewDidScroll:(UIScrollView *)sender {
-    scheduleMode = YES;
-    
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     int page = [self getPageNumber];
 	
     // load images for the next 2 timeslots
     [self prepareImageFor:page + 1];
     [self prepareImageFor:page + 2];
+    
+    NSLog(@"page: %d", page);
+    
+    //redraw controls
+    [self updateControls];
+}
+
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    int page = [self getPageNumber];
+    NSLog(@"page: %d", page);
+
     
     //redraw controls
     [self updateControls];
@@ -128,33 +152,62 @@
         //TODO: set power button
         actionBar.backgroundColor = [UIColor yellowColor];
     } else {
+        NSLog(@"scheduled");
+        scheduleMode = YES;
         //TODO: set back button
         actionBar.backgroundColor = [UIColor greenColor];
     }
     
-    pageControl.hidden = !scheduleMode;
-}
-
-- (void)actionBarResponder {
-    VideoViewController* vvc = [[VideoViewController alloc] initWithNibName:@"VideoViewController" bundle:nil];
+    if (scheduleMode) {
+        pageControl.hidden = NO;
+        scheduleButton.style = UIBarButtonItemStyleDone;
+        scheduleButton.title = @"Done";
+    } else {
+        pageControl.hidden = YES;
+        scheduleButton.style = UIBarButtonItemStylePlain;
+        scheduleButton.title = @"Schedule";
+    }
     
-//    vvc.navigationItem.title = @"Video";
-    [self.navigationController pushViewController:vvc animated:YES];
-    [vvc release];
 }
-
-//The setup code (in viewDidLoad in your view controller)
-UITapGestureRecognizer *singleFingerTap = 
-[[UITapGestureRecognizer alloc] initWithTarget:self 
-                                        action:@selector(handleSingleTap:)];
-[self.view addGestureRecognizer:singleFingerTap];
-[singleFingerTap release];
 
 //The event handling method
-- (void)handleSingleTap:(UITapGestureRecognizer *)recognizer {
-    CGPoint location = [recognizer locationInView:[recognizer.view superview]];
+- (void)actionBarResponder:(UITapGestureRecognizer *)recognizer {
+    //TODO: check for current timeslot
+    if (scheduleMode && [self getPageNumber] != 0) {
+        [self scheduleAction:nil];
+    } else {
+        VideoViewController* vc = [[VideoViewController alloc] initWithNibName:@"VideoViewController" bundle:nil];
+        
+        //    vvc.navigationItem.title = @"Video";
+        [self.navigationController pushViewController:vc animated:YES];
+        [vc release];    
+    }
+}
+
+//The event handling method
+- (void)libraryBarResponder:(UITapGestureRecognizer *)recognizer {
+    //TODO: show Library
+    LibraryViewController* vc = [[LibraryViewController alloc] initWithNibName:@"LibraryViewController" bundle:nil];
     
-    //Do stuff here...
+    vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    [self presentModalViewController:vc animated:YES];
+    [vc release];  
+    
+}
+
+- (void)scheduleAction:(id)sender {
+    scheduleMode = !scheduleMode;
+    
+    if (!scheduleMode) {
+        //scroll to top
+        if ([self getPageNumber] == 0) {
+            [self updateControls];
+        } else {
+            [scrollView scrollRectToVisible:CGRectMake(0, 0, 10, 10) animated:YES];
+        }
+    } else {
+        [self updateControls];
+    }
 }
 
 @end

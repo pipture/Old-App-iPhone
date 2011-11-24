@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		381935BC147CED4F0049B30E /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935BB147CED4F0049B30E /* HistoryViewController.m */; };
+		381935BF147CED6A0049B30E /* HistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935BE147CED6A0049B30E /* HistoryViewController.xib */; };
+		381935C1147D04540049B30E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 381935C0147D04540049B30E /* MessageUI.framework */; };
+		381935C3147D06430049B30E /* LibraryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935C2147D06430049B30E /* LibraryViewController.xib */; };
+		381935C6147D067D0049B30E /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C5147D067D0049B30E /* LibraryViewController.m */; };
 		385FC399147CD7A6001CDF43 /* VideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 385FC397147CD7A6001CDF43 /* VideoViewController.m */; };
 		385FC39D147CD818001CDF43 /* VideoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 385FC39C147CD818001CDF43 /* VideoViewController.xib */; };
 		38989CE3147A631E004DE1E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE2147A631E004DE1E0 /* UIKit.framework */; };
@@ -38,6 +43,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		381935BA147CED4F0049B30E /* HistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryViewController.h; sourceTree = "<group>"; };
+		381935BB147CED4F0049B30E /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
+		381935BE147CED6A0049B30E /* HistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HistoryViewController.xib; sourceTree = "<group>"; };
+		381935C0147D04540049B30E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		381935C2147D06430049B30E /* LibraryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryViewController.xib; sourceTree = "<group>"; };
+		381935C4147D067D0049B30E /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
+		381935C5147D067D0049B30E /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
 		385FC396147CD7A6001CDF43 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoViewController.h; sourceTree = "<group>"; };
 		385FC397147CD7A6001CDF43 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoViewController.m; sourceTree = "<group>"; };
 		385FC39C147CD818001CDF43 /* VideoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoViewController.xib; sourceTree = "<group>"; };
@@ -71,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				381935C1147D04540049B30E /* MessageUI.framework in Frameworks */,
 				38989CE3147A631E004DE1E0 /* UIKit.framework in Frameworks */,
 				38989CE5147A631E004DE1E0 /* Foundation.framework in Frameworks */,
 				38989CE7147A631E004DE1E0 /* CoreGraphics.framework in Frameworks */,
@@ -112,6 +125,7 @@
 		38989CE1147A631E004DE1E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				381935C0147D04540049B30E /* MessageUI.framework */,
 				38989CE2147A631E004DE1E0 /* UIKit.framework */,
 				38989CE4147A631E004DE1E0 /* Foundation.framework */,
 				38989CE6147A631E004DE1E0 /* CoreGraphics.framework */,
@@ -169,6 +183,8 @@
 				38989D31147CA97F004DE1E0 /* Vincent.png */,
 				8811ED94147B6FC5008CC877 /* HomeView.xib */,
 				38989D18147A6568004DE1E0 /* MainWindow.xib */,
+				381935BE147CED6A0049B30E /* HistoryViewController.xib */,
+				381935C2147D06430049B30E /* LibraryViewController.xib */,
 			);
 			path = Resources;
 			sourceTree = SOURCE_ROOT;
@@ -182,6 +198,10 @@
 				88D84208147B626C00E47EF8 /* HomeViewController.m */,
 				385FC396147CD7A6001CDF43 /* VideoViewController.h */,
 				385FC397147CD7A6001CDF43 /* VideoViewController.m */,
+				381935BA147CED4F0049B30E /* HistoryViewController.h */,
+				381935BB147CED4F0049B30E /* HistoryViewController.m */,
+				381935C4147D067D0049B30E /* LibraryViewController.h */,
+				381935C5147D067D0049B30E /* LibraryViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -261,6 +281,8 @@
 				8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */,
 				38989D32147CA97F004DE1E0 /* Vincent.png in Resources */,
 				385FC39D147CD818001CDF43 /* VideoViewController.xib in Resources */,
+				381935BF147CED6A0049B30E /* HistoryViewController.xib in Resources */,
+				381935C3147D06430049B30E /* LibraryViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,6 +322,8 @@
 				38989D20147A66A7004DE1E0 /* LoginViewController.m in Sources */,
 				88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */,
 				385FC399147CD7A6001CDF43 /* VideoViewController.m in Sources */,
+				381935BC147CED4F0049B30E /* HistoryViewController.m in Sources */,
+				381935C6147D067D0049B30E /* LibraryViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
