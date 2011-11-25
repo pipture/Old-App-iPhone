@@ -41,7 +41,7 @@
     albumInfo = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfoPage" bundle:nil];
     albumInfo.view.frame = rect;
     
-    videoView = [[VideoViewController alloc] initWithNibName:@"VideoViewController" bundle:nil];
+    videoView = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
     [videoView loadView];
     //videoView.view.frame = rect;
 }

@@ -177,8 +177,7 @@
         [self scheduleAction:nil];
     } else {
         VideoViewController* vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
-        
-        //    vvc.navigationItem.title = @"Video";
+        vc.wantsFullScreenLayout = YES;
         [self.navigationController pushViewController:vc animated:YES];
         [vc release];    
     }
@@ -186,11 +185,11 @@
 
 //The event handling method
 - (void)libraryBarResponder:(UITapGestureRecognizer *)recognizer {
-    //TODO: show Library
     LibraryViewController* vc = [[LibraryViewController alloc] initWithNibName:@"LibraryView" bundle:nil];
     
     vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentModalViewController:vc animated:YES];
+    //TODO: learn this point
     //[vc release];
 }
 

@@ -46,7 +46,7 @@
     singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sendResponder:)];
     [controlsPanel addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];
-    
+   
     //preparing navigation bar history button
     //image = [UIImage imageNamed:@"feedback.png"];
     //histroyButton = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStyleBordered target:self action:@selector(feedbackAction:)];
