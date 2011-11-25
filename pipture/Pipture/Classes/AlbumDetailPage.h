@@ -8,6 +8,10 @@
 
 
 
-@interface AlbumDetailPage : UIViewContainer
+@interface AlbumDetailPage : UIScrollView
 
+- (void)prepareLayout;
+
+@property (retain, nonatomic) IBOutlet UIImageView *posterImage;
+@property (retain, nonatomic) IBOutlet UILabel *cretitsLabel;
 @end
