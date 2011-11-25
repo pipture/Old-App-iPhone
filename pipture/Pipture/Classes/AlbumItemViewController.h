@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AlbumItemView : UIViewController
+@interface AlbumItemViewController : UIViewController
 @property (retain, nonatomic) IBOutlet UILabel *titleLabel;
 @property (retain, nonatomic) IBOutlet UILabel *tagLabel;
 @property (retain, nonatomic) IBOutlet UIButton *detailButton;

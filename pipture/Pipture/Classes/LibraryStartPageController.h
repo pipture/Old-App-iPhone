@@ -14,7 +14,7 @@ enum LibraryViewType {
     LibraryViewType_Top
 };
 
-@interface LibraryStartPage : UIViewController<UITableViewDelegate, UITableViewDataSource>
+@interface LibraryStartPageController : UIViewController<UITableViewDelegate, UITableViewDataSource>
 {
     enum LibraryViewType viewType;
 }

@@ -6,9 +6,9 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "AlbumItemView.h"
+#import "AlbumItemViewController.h"
 
-@implementation AlbumItemView
+@implementation AlbumItemViewController
 @synthesize titleLabel;
 @synthesize tagLabel;
 @synthesize detailButton;

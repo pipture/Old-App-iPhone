@@ -13,7 +13,7 @@ enum DetailAlbumViewType {
     DetailAlbumViewType_Credits,
 };
 
-@interface AlbumDetailInfo : UIViewController<UITableViewDelegate, UITableViewDataSource>
+@interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource>
 {
     enum DetailAlbumViewType viewType;    
 }

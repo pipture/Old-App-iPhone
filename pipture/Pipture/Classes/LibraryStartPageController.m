@@ -6,9 +6,9 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "LibraryStartPage.h"
+#import "LibraryStartPageController.h"
 
-@implementation LibraryStartPage
+@implementation LibraryStartPageController
 
 @synthesize tabViewController;
 @synthesize albumsView;
@@ -103,8 +103,6 @@
             break;
             
     }
-    
-    NSSting * labgel = NSLocalizedString("adsfadsf", "bla bla bla");
     
     return cell;
 }
