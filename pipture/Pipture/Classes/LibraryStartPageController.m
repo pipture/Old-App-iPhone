@@ -14,6 +14,7 @@
 @synthesize albumsView;
 @synthesize libraryTableView;
 @synthesize subViewContainer;
+@synthesize libraryDelegate;
 
 - (void)didReceiveMemoryWarning
 {
@@ -111,7 +112,7 @@
     int row = indexPath.row;
    
     if (self.libraryDelegate != nil) {
-        [[self libraryDelegate] showAlbumDetail:row];
+        [[self libraryDelegate] showVideo:row];
     }
 }
 

@@ -191,7 +191,7 @@
     
     vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentModalViewController:vc animated:YES];
-    [vc release];
+    //[vc release];
 }
 
 - (void)scheduleAction:(id)sender {

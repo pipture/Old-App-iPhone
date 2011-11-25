@@ -15,7 +15,7 @@
 - (void)showAlbumDetail:(int)albumId;
 
 //TODO; now just number
-- (void)showAlbumDetail:(int)albumId;
+- (void)showVideo:(int)videoId;
 
 @end
 
