@@ -16,6 +16,7 @@
 @synthesize navigationBar;
 @synthesize startPage;
 @synthesize albumInfo;
+@synthesize videoView;
 
 #pragma mark - View lifecycle
 
@@ -28,6 +29,7 @@
     
     startPage = [[LibraryStartPageController alloc] initWithNibName:@"LibraryStartPage" bundle:nil];
     CGRect rect = CGRectMake(0, 0, libraryParts.frame.size.width, libraryParts.frame.size.height);
+    startPage.libraryDelegate = self;
     startPage.view.frame = rect;
     startPage.albumsView.libraryDelegate = self; 
     [libraryParts addSubview:startPage.view];
@@ -55,6 +57,7 @@
     [viewStack release];
     viewStack = nil;
     
+    [self setVideoView:nil];
     [self setAlbumInfo:nil];
     [self setStartPage:nil];
     [self setCloseLibraryButton:nil];
@@ -76,6 +79,7 @@
     if (viewStack != nil) {
         [viewStack release];
     }
+    [videoView release];
     [albumInfo release];
     [startPage release];
     [closeLibraryButton release];
@@ -132,11 +136,19 @@
 
 - (void)showAlbumDetail:(int)albumId {
     
-    UINavigationItem * navItem = [[UINavigationItem alloc]initWithTitle:@"Test"];
+    UINavigationItem * navItem = [[UINavigationItem alloc]initWithTitle:@"Album"];
     [navigationBar pushNavigationItem:navItem animated:YES];
     [navItem release];
     
     [self animateForward:albumInfo.view];
+}
+
+- (void)showVideo:(int)videoId {
+    UINavigationItem * navItem = [[UINavigationItem alloc]initWithTitle:@"Video"];
+    [navigationBar pushNavigationItem:navItem animated:YES];
+    [navItem release];
+    
+    [self animateForward:videoView.view];
 }
 
 - (BOOL)navigationBar:(UINavigationBar *)navigationBar shouldPopItem:(UINavigationItem *)item {

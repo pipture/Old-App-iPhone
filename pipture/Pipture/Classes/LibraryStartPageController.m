@@ -107,6 +107,14 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    int row = indexPath.row;
+   
+    if (self.libraryDelegate != nil) {
+        [[self libraryDelegate] showAlbumDetail:row];
+    }
+}
+
 - (IBAction)tabChanged:(id)sender {
     viewType = [tabViewController selectedSegmentIndex];
     

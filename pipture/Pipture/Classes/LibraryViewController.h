@@ -9,6 +9,7 @@
 #import "LibraryDelegateProtocol.h"
 #import "LibraryStartPageController.h"
 #import "AlbumDetailInfoController.h"
+#import "VideoViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface LibraryViewController : UIViewController<LibraryViewDelegate, UINavigationBarDelegate>
@@ -27,7 +28,7 @@
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *closeLibraryButton;
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 @property (retain, nonatomic) IBOutlet UINavigationBar *navigationBar;
-
+@property (retain, nonatomic) VideoViewController *videoView;
 @property (retain, nonatomic) LibraryStartPageController * startPage;
 @property (retain, nonatomic) AlbumDetailInfoController * albumInfo;
 
