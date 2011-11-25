@@ -30,8 +30,8 @@
 		38989D19147A6568004DE1E0 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38989D18147A6568004DE1E0 /* MainWindow.xib */; };
 		38989D20147A66A7004DE1E0 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989D1F147A66A7004DE1E0 /* LoginViewController.m */; };
 		38989D32147CA97F004DE1E0 /* Vincent.png in Resources */ = {isa = PBXBuildFile; fileRef = 38989D31147CA97F004DE1E0 /* Vincent.png */; };
-		38D7454E147E640100062441 /* LibraryStartPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D7454D147E640100062441 /* LibraryStartPage.m */; };
-		38D74550147E660B00062441 /* LibraryStartPage.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D7454F147E660B00062441 /* LibraryStartPage.xib */; };
+		38D7454E147E640100062441 /* LibraryStartPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D7454D147E640100062441 /* LibraryStartPageController.m */; };
+		38D74550147E660B00062441 /* LibraryStartPageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D7454F147E660B00062441 /* LibraryStartPageController.xib */; };
 		38D74553147E6AA600062441 /* AlbumDetailInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D74552147E6AA600062441 /* AlbumDetailInfo.m */; };
 		38D74555147E6ABC00062441 /* AlbumDetailInfoPage.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D74554147E6ABC00062441 /* AlbumDetailInfoPage.xib */; };
 		38D74557147E6DAB00062441 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D74556147E6DAB00062441 /* QuartzCore.framework */; };
@@ -88,9 +88,9 @@
 		38989D1F147A66A7004DE1E0 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		38989D31147CA97F004DE1E0 /* Vincent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Vincent.png; sourceTree = "<group>"; };
 		38D7454A147E604B00062441 /* LibraryDelegateProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryDelegateProtocol.h; sourceTree = "<group>"; };
-		38D7454C147E640100062441 /* LibraryStartPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryStartPage.h; sourceTree = "<group>"; };
-		38D7454D147E640100062441 /* LibraryStartPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryStartPage.m; sourceTree = "<group>"; };
-		38D7454F147E660B00062441 /* LibraryStartPage.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryStartPage.xib; sourceTree = "<group>"; };
+		38D7454C147E640100062441 /* LibraryStartPageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryStartPageController.h; sourceTree = "<group>"; };
+		38D7454D147E640100062441 /* LibraryStartPageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryStartPageController.m; sourceTree = "<group>"; };
+		38D7454F147E660B00062441 /* LibraryStartPageController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryStartPageController.xib; sourceTree = "<group>"; };
 		38D74551147E6AA600062441 /* AlbumDetailInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailInfo.h; sourceTree = "<group>"; };
 		38D74552147E6AA600062441 /* AlbumDetailInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailInfo.m; sourceTree = "<group>"; };
 		38D74554147E6ABC00062441 /* AlbumDetailInfoPage.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumDetailInfoPage.xib; sourceTree = "<group>"; };
@@ -212,7 +212,7 @@
 				381935BE147CED6A0049B30E /* HistoryViewController.xib */,
 				381935C2147D06430049B30E /* LibraryViewController.xib */,
 				381935CB147E2C850049B30E /* AlbumItemView.xib */,
-				38D7454F147E660B00062441 /* LibraryStartPage.xib */,
+				38D7454F147E660B00062441 /* LibraryStartPageController.xib */,
 				38D74554147E6ABC00062441 /* AlbumDetailInfoPage.xib */,
 			);
 			path = Resources;
@@ -244,8 +244,8 @@
 				381935CD147E2F180049B30E /* AlbumItemView.h */,
 				381935CE147E2F180049B30E /* AlbumItemView.m */,
 				38D7454A147E604B00062441 /* LibraryDelegateProtocol.h */,
-				38D7454C147E640100062441 /* LibraryStartPage.h */,
-				38D7454D147E640100062441 /* LibraryStartPage.m */,
+				38D7454C147E640100062441 /* LibraryStartPageController.h */,
+				38D7454D147E640100062441 /* LibraryStartPageController.m */,
 				38D74551147E6AA600062441 /* AlbumDetailInfo.h */,
 				38D74552147E6AA600062441 /* AlbumDetailInfo.m */,
 				38D7455A147F728200062441 /* AlbumDetailPage.h */,
@@ -333,7 +333,7 @@
 				381935BF147CED6A0049B30E /* HistoryViewController.xib in Resources */,
 				381935C3147D06430049B30E /* LibraryViewController.xib in Resources */,
 				381935CC147E2C850049B30E /* AlbumItemView.xib in Resources */,
-				38D74550147E660B00062441 /* LibraryStartPage.xib in Resources */,
+				38D74550147E660B00062441 /* LibraryStartPageController.xib in Resources */,
 				38D74555147E6ABC00062441 /* AlbumDetailInfoPage.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -378,7 +378,7 @@
 				381935C6147D067D0049B30E /* LibraryViewController.m in Sources */,
 				381935C9147E29920049B30E /* AlbumsListView.m in Sources */,
 				381935CF147E2F180049B30E /* AlbumItemView.m in Sources */,
-				38D7454E147E640100062441 /* LibraryStartPage.m in Sources */,
+				38D7454E147E640100062441 /* LibraryStartPageController.m in Sources */,
 				38D74553147E6AA600062441 /* AlbumDetailInfo.m in Sources */,
 				38D7455C147F728200062441 /* AlbumDetailPage.m in Sources */,
 			);
