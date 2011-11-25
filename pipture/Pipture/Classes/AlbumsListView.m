@@ -7,7 +7,7 @@
 //
 
 #import "AlbumsListView.h"
-#import "AlbumItemView.h"
+#import "AlbumItemViewController.h"
 
 //TODO: maybe not hardcode?
 #define ITEM_HEIGHT 180
@@ -33,7 +33,7 @@
     
 
     for (int i = 0; i < ITEM_COUNT; i++) {
-        AlbumItemView * item = [[AlbumItemView alloc] initWithNibName:@"AlbumItemView" bundle:nil];
+        AlbumItemViewController * item = [[AlbumItemViewController alloc] initWithNibName:@"AlbumItemView" bundle:nil];
         [item loadView];
         
         //The setup code (in viewDidLoad in your view controller)
@@ -62,7 +62,7 @@
         for (int x = 0; x < 3; x++) {
             if (i >= [albumsArray count])
                 break;
-            AlbumItemView * item = [albumsArray objectAtIndex:i++];
+            AlbumItemViewController * item = [albumsArray objectAtIndex:i++];
             item.view.frame = CGRectMake(1+ (x * ITEM_WIDTH), y * ITEM_HEIGHT, ITEM_WIDTH, ITEM_HEIGHT);
             [self addSubview:item.view];
         }

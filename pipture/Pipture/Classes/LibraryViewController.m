@@ -38,7 +38,7 @@
     [viewStack addObject:startPage.view];
     [startPage.view release];
     
-    albumInfo = [[AlbumDetailInfo alloc] initWithNibName:@"AlbumDetailInfoPage" bundle:nil];
+    albumInfo = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfoPage" bundle:nil];
     albumInfo.view.frame = rect;
     
     videoView = [[VideoViewController alloc] initWithNibName:@"VideoViewController" bundle:nil];

@@ -6,9 +6,9 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "AlbumDetailInfo.h"
+#import "AlbumDetailInfoController.h"
 
-@implementation AlbumDetailInfo
+@implementation AlbumDetailInfoController
 @synthesize tabController;
 @synthesize subViewContainer;
 @synthesize detailPage;

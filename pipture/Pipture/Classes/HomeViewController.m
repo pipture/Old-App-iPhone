@@ -176,7 +176,7 @@
     if (scheduleMode && [self getPageNumber] != 0) {
         [self scheduleAction:nil];
     } else {
-        VideoViewController* vc = [[VideoViewController alloc] initWithNibName:@"VideoViewController" bundle:nil];
+        VideoViewController* vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
         
         //    vvc.navigationItem.title = @"Video";
         [self.navigationController pushViewController:vc animated:YES];
@@ -187,7 +187,7 @@
 //The event handling method
 - (void)libraryBarResponder:(UITapGestureRecognizer *)recognizer {
     //TODO: show Library
-    LibraryViewController* vc = [[LibraryViewController alloc] initWithNibName:@"LibraryViewController" bundle:nil];
+    LibraryViewController* vc = [[LibraryViewController alloc] initWithNibName:@"LibraryView" bundle:nil];
     
     vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentModalViewController:vc animated:YES];
