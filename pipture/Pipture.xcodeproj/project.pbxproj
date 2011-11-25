@@ -36,6 +36,7 @@
 		38D74555147E6ABC00062441 /* AlbumDetailInfoPage.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D74554147E6ABC00062441 /* AlbumDetailInfoPage.xib */; };
 		38D74557147E6DAB00062441 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D74556147E6DAB00062441 /* QuartzCore.framework */; };
 		38D74558147E6DBE00062441 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE6147A631E004DE1E0 /* CoreGraphics.framework */; };
+		38D7455C147F728200062441 /* AlbumDetailPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D7455B147F728200062441 /* AlbumDetailPage.m */; };
 		8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8811ED94147B6FC5008CC877 /* HomeView.xib */; };
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
 /* End PBXBuildFile section */
@@ -94,6 +95,8 @@
 		38D74552147E6AA600062441 /* AlbumDetailInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailInfo.m; sourceTree = "<group>"; };
 		38D74554147E6ABC00062441 /* AlbumDetailInfoPage.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumDetailInfoPage.xib; sourceTree = "<group>"; };
 		38D74556147E6DAB00062441 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		38D7455A147F728200062441 /* AlbumDetailPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailPage.h; sourceTree = "<group>"; };
+		38D7455B147F728200062441 /* AlbumDetailPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailPage.m; sourceTree = "<group>"; };
 		8811ED94147B6FC5008CC877 /* HomeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeView.xib; sourceTree = "<group>"; };
 		88D84207147B626C00E47EF8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		88D84208147B626C00E47EF8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
@@ -218,6 +221,7 @@
 		38989D1D147A6696004DE1E0 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				38D74559147F701200062441 /* Library */,
 				38989D1E147A66A7004DE1E0 /* LoginViewController.h */,
 				38989D1F147A66A7004DE1E0 /* LoginViewController.m */,
 				88D84207147B626C00E47EF8 /* HomeViewController.h */,
@@ -226,6 +230,13 @@
 				385FC397147CD7A6001CDF43 /* VideoViewController.m */,
 				381935BA147CED4F0049B30E /* HistoryViewController.h */,
 				381935BB147CED4F0049B30E /* HistoryViewController.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		38D74559147F701200062441 /* Library */ = {
+			isa = PBXGroup;
+			children = (
 				381935C4147D067D0049B30E /* LibraryViewController.h */,
 				381935C5147D067D0049B30E /* LibraryViewController.m */,
 				381935CA147E29DB0049B30E /* AlbumsListView.h */,
@@ -237,8 +248,10 @@
 				38D7454D147E640100062441 /* LibraryStartPage.m */,
 				38D74551147E6AA600062441 /* AlbumDetailInfo.h */,
 				38D74552147E6AA600062441 /* AlbumDetailInfo.m */,
+				38D7455A147F728200062441 /* AlbumDetailPage.h */,
+				38D7455B147F728200062441 /* AlbumDetailPage.m */,
 			);
-			path = Classes;
+			name = Library;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -294,6 +307,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				ru,
 			);
 			mainGroup = 38989CD3147A631E004DE1E0;
 			productRefGroup = 38989CDF147A631E004DE1E0 /* Products */;
@@ -366,6 +380,7 @@
 				381935CF147E2F180049B30E /* AlbumItemView.m in Sources */,
 				38D7454E147E640100062441 /* LibraryStartPage.m in Sources */,
 				38D74553147E6AA600062441 /* AlbumDetailInfo.m in Sources */,
+				38D7455C147F728200062441 /* AlbumDetailPage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -11,17 +11,21 @@
 #import "AlbumDetailInfo.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface LibraryViewController : UIViewController<LibraryViewDelegate>
+@interface LibraryViewController : UIViewController<LibraryViewDelegate, UINavigationBarDelegate>
 {
-
+    NSMutableArray * viewStack;
 }
 
+
+- (void)animateTransition:(NSString *)type;
+
 - (IBAction)closeLibrary:(id)sender;
+- (IBAction)purchaseCredits:(id)sender;
 - (void)showAlbumDetail:(int)albumId;
-- (void)animateFrom:(UIView *)view1 to:(UIView*)view2;
 
 @property (retain, nonatomic) IBOutlet UIView *libraryParts;
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *closeLibraryButton;
+@property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 @property (retain, nonatomic) IBOutlet UINavigationBar *navigationBar;
 
 @property (retain, nonatomic) LibraryStartPage * startPage;

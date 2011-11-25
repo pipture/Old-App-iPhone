@@ -104,6 +104,8 @@
             
     }
     
+    NSSting * labgel = NSLocalizedString("adsfadsf", "bla bla bla");
+    
     return cell;
 }
 

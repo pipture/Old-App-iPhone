@@ -43,7 +43,7 @@
 						<string key="NSFrameSize">{320, 44}</string>
 						<reference key="NSSuperview" ref="1018162678"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="297210924"/>
+						<reference key="NSNextKeyView" ref="576544384"/>
 						<string key="NSReuseIdentifierKey">_NS:260</string>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIBarStyle">1</int>
@@ -57,11 +57,17 @@
 									<int key="IBUIStyle">1</int>
 									<reference key="IBUINavigationItem" ref="136056857"/>
 								</object>
+								<object class="IBUIBarButtonItem" key="IBUIRightBarButtonItem" id="1064337004">
+									<string key="IBUITitle">$ 0.0</string>
+									<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+									<int key="IBUIStyle">1</int>
+									<reference key="IBUINavigationItem" ref="136056857"/>
+								</object>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							</object>
 						</array>
 					</object>
-					<object class="IBUIView" id="297210924">
+					<object class="IBUIView" id="576544384">
 						<reference key="NSNextResponder" ref="1018162678"/>
 						<int key="NSvFlags">274</int>
 						<string key="NSFrame">{{0, 44}, {320, 416}}</string>
@@ -122,9 +128,25 @@
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">libraryParts</string>
 						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="297210924"/>
+						<reference key="destination" ref="576544384"/>
 					</object>
 					<int key="connectionID">35</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">buyButton</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="1064337004"/>
+					</object>
+					<int key="connectionID">42</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="122924826"/>
+						<reference key="destination" ref="372490531"/>
+					</object>
+					<int key="connectionID">40</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -133,6 +155,14 @@
 						<reference key="destination" ref="372490531"/>
 					</object>
 					<int key="connectionID">26</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">purchaseCredits:</string>
+						<reference key="source" ref="1064337004"/>
+						<reference key="destination" ref="372490531"/>
+					</object>
+					<int key="connectionID">43</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -159,7 +189,7 @@
 						<reference key="object" ref="1018162678"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="122924826"/>
-							<reference ref="297210924"/>
+							<reference ref="576544384"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -176,6 +206,7 @@
 						<reference key="object" ref="136056857"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="116085237"/>
+							<reference ref="1064337004"/>
 						</array>
 						<reference key="parent" ref="122924826"/>
 					</object>
@@ -186,9 +217,14 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">34</int>
-						<reference key="object" ref="297210924"/>
+						<reference key="object" ref="576544384"/>
 						<reference key="parent" ref="1018162678"/>
 						<string key="objectName">librarypartsContainer</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">41</int>
+						<reference key="object" ref="1064337004"/>
+						<reference key="parent" ref="136056857"/>
 					</object>
 				</array>
 			</object>
@@ -202,35 +238,44 @@
 				<string key="23.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="24.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="34.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="41.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">39</int>
+			<int key="maxID">43</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
 					<string key="className">LibraryViewController</string>
 					<string key="superclassName">UIViewController</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">closeLibrary:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">closeLibrary:</string>
-						<object class="IBActionInfo" key="NS.object.0">
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="closeLibrary:">id</string>
+						<string key="purchaseCredits:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="closeLibrary:">
 							<string key="name">closeLibrary:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-					</object>
+						<object class="IBActionInfo" key="purchaseCredits:">
+							<string key="name">purchaseCredits:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="buyButton">UIBarButtonItem</string>
 						<string key="closeLibraryButton">UIBarButtonItem</string>
 						<string key="libraryParts">UIView</string>
 						<string key="navigationBar">UINavigationBar</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="buyButton">
+							<string key="name">buyButton</string>
+							<string key="candidateClassName">UIBarButtonItem</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="closeLibraryButton">
 							<string key="name">closeLibraryButton</string>
 							<string key="candidateClassName">UIBarButtonItem</string>

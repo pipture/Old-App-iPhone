@@ -12,6 +12,7 @@
 @implementation LibraryViewController
 @synthesize libraryParts;
 @synthesize closeLibraryButton;
+@synthesize buyButton;
 @synthesize navigationBar;
 @synthesize startPage;
 @synthesize albumInfo;
@@ -23,11 +24,17 @@
 {
     [super viewDidLoad];
     
+    viewStack = [[NSMutableArray alloc] initWithCapacity:20];
+    
     startPage = [[LibraryStartPage alloc] initWithNibName:@"LibraryStartPage" bundle:nil];
     CGRect rect = CGRectMake(0, 0, libraryParts.frame.size.width, libraryParts.frame.size.height);
     startPage.view.frame = rect;
     startPage.albumsView.libraryDelegate = self; 
     [libraryParts addSubview:startPage.view];
+    
+    //place to stack root view
+    [viewStack addObject:startPage.view];
+    [startPage.view release];
     
     albumInfo = [[AlbumDetailInfo alloc] initWithNibName:@"AlbumDetailInfoPage" bundle:nil];
     albumInfo.view.frame = rect;
@@ -45,11 +52,15 @@
 
 - (void)viewDidUnload
 {
+    [viewStack release];
+    viewStack = nil;
+    
     [self setAlbumInfo:nil];
     [self setStartPage:nil];
     [self setCloseLibraryButton:nil];
     [self setNavigationBar:nil];
     [self setLibraryParts:nil];
+    [self setBuyButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -62,11 +73,15 @@
 }
 
 - (void)dealloc {
+    if (viewStack != nil) {
+        [viewStack release];
+    }
     [albumInfo release];
     [startPage release];
     [closeLibraryButton release];
     [navigationBar release];
     [libraryParts release];
+    [buyButton release];
     [super dealloc];
 }
 
@@ -75,20 +90,44 @@
     [self dismissModalViewControllerAnimated:YES];
 }
 
-- (void)animateFrom:(UIView *)view1 to:(UIView *)view2 :(BOOL)forward {
+- (IBAction)purchaseCredits:(id)sender {
+    //TODO: In App Purchase
+}
+
+- (void)animateForward:(UIView*)toView {
+    UIView * fromView = [viewStack lastObject];
     
-    [view1 removeFromSuperview];
-    [libraryParts addSubview:view2];
+    [fromView removeFromSuperview];
+    [libraryParts addSubview:toView];
+
+    [viewStack addObject:toView];
+    [toView release];
+    
+    [self animateTransition:kCATransitionFromRight];
+}
+
+- (void)animateBackward {
+    UIView * fromView = [viewStack lastObject];
+    [viewStack removeLastObject];
+    [fromView retain];
+    UIView * toView = [viewStack lastObject];
+    
+    [fromView removeFromSuperview];
+    [libraryParts addSubview:toView];
+    
+    [self animateTransition:kCATransitionFromLeft];
+}
+
+- (void)animateTransition:(NSString *)type {
     
     // set up an animation for the transition between the views
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.5];
     [animation setType:kCATransitionPush];
-    [animation setSubtype:forward?kCATransitionFromRight:kCATransitionFromLeft];
+    [animation setSubtype:type];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     
     [[libraryParts layer] addAnimation:animation forKey:@"SwitchToView1"];
-    
 }
 
 - (void)showAlbumDetail:(int)albumId {
@@ -97,7 +136,16 @@
     [navigationBar pushNavigationItem:navItem animated:YES];
     [navItem release];
     
-    [self animateFrom:[[libraryParts subviews] objectAtIndex:0] to:albumInfo.view:YES];
+    [self animateForward:albumInfo.view];
+}
+
+- (BOOL)navigationBar:(UINavigationBar *)navigationBar shouldPopItem:(UINavigationItem *)item {
+    [self animateBackward];
+    return YES;
+}
+
+- (BOOL)navigationBar:(UINavigationBar *)navigationBar shouldPushItem:(UINavigationItem *)item {
+    return YES;
 }
 
 @end
