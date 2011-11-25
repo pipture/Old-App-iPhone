@@ -7,8 +7,8 @@
 //
 
 #import "LibraryDelegateProtocol.h"
-#import "LibraryStartPage.h"
-#import "AlbumDetailInfo.h"
+#import "LibraryStartPageController.h"
+#import "AlbumDetailInfoController.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface LibraryViewController : UIViewController<LibraryViewDelegate, UINavigationBarDelegate>
@@ -28,7 +28,7 @@
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 @property (retain, nonatomic) IBOutlet UINavigationBar *navigationBar;
 
-@property (retain, nonatomic) LibraryStartPage * startPage;
-@property (retain, nonatomic) AlbumDetailInfo * albumInfo;
+@property (retain, nonatomic) LibraryStartPageController * startPage;
+@property (retain, nonatomic) AlbumDetailInfoController * albumInfo;
 
 @end

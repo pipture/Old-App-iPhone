@@ -119,7 +119,7 @@
 }
 
 - (void)historyAction:(id)sender {
-    HistoryViewController* vc = [[HistoryViewController alloc] initWithNibName:@"HistoryViewController" bundle:nil];
+    HistoryViewController* vc = [[HistoryViewController alloc] initWithNibName:@"HistoryView" bundle:nil];
     
     //    vvc.navigationItem.title = @"Video";
     [self.navigationController pushViewController:vc animated:YES];

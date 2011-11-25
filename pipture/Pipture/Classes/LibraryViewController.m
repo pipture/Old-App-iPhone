@@ -26,7 +26,7 @@
     
     viewStack = [[NSMutableArray alloc] initWithCapacity:20];
     
-    startPage = [[LibraryStartPage alloc] initWithNibName:@"LibraryStartPage" bundle:nil];
+    startPage = [[LibraryStartPageController alloc] initWithNibName:@"LibraryStartPage" bundle:nil];
     CGRect rect = CGRectMake(0, 0, libraryParts.frame.size.width, libraryParts.frame.size.height);
     startPage.view.frame = rect;
     startPage.albumsView.libraryDelegate = self; 
@@ -36,7 +36,7 @@
     [viewStack addObject:startPage.view];
     [startPage.view release];
     
-    albumInfo = [[AlbumDetailInfo alloc] initWithNibName:@"AlbumDetailInfoPage" bundle:nil];
+    albumInfo = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfoPage" bundle:nil];
     albumInfo.view.frame = rect;
 }
 
