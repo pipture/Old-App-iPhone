@@ -6,9 +6,9 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "LibraryStartPage.h"
+#import "LibraryStartPageController.h"
 
-@implementation LibraryStartPage
+@implementation LibraryStartPageController
 
 @synthesize tabViewController;
 @synthesize albumsView;
@@ -104,9 +104,15 @@
             
     }
     
-    NSSting * labgel = NSLocalizedString("adsfadsf", "bla bla bla");
-    
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    int row = indexPath.row;
+   
+    if (self.libraryDelegate != nil) {
+        [[self libraryDelegate] showAlbumDetail:row];
+    }
 }
 
 - (IBAction)tabChanged:(id)sender {
