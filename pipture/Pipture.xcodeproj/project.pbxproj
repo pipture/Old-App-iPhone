@@ -10,7 +10,6 @@
 		381935BC147CED4F0049B30E /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935BB147CED4F0049B30E /* HistoryViewController.m */; };
 		381935BF147CED6A0049B30E /* HistoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935BE147CED6A0049B30E /* HistoryView.xib */; };
 		381935C1147D04540049B30E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 381935C0147D04540049B30E /* MessageUI.framework */; };
-		381935C3147D06430049B30E /* LibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935C2147D06430049B30E /* LibraryView.xib */; };
 		381935C6147D067D0049B30E /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C5147D067D0049B30E /* LibraryViewController.m */; };
 		381935C9147E29920049B30E /* AlbumsListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C8147E29920049B30E /* AlbumsListView.m */; };
 		381935CC147E2C850049B30E /* AlbumItemViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935CB147E2C850049B30E /* AlbumItemViewController.xib */; };
@@ -56,7 +55,6 @@
 		381935BB147CED4F0049B30E /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
 		381935BE147CED6A0049B30E /* HistoryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HistoryView.xib; sourceTree = "<group>"; };
 		381935C0147D04540049B30E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		381935C2147D06430049B30E /* LibraryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryView.xib; sourceTree = "<group>"; };
 		381935C4147D067D0049B30E /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
 		381935C5147D067D0049B30E /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
 		381935C8147E29920049B30E /* AlbumsListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumsListView.m; sourceTree = "<group>"; };
@@ -64,8 +62,8 @@
 		381935CB147E2C850049B30E /* AlbumItemViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumItemViewController.xib; sourceTree = "<group>"; };
 		381935CD147E2F180049B30E /* AlbumItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumItemViewController.h; sourceTree = "<group>"; };
 		381935CE147E2F180049B30E /* AlbumItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumItemViewController.m; sourceTree = "<group>"; };
-		385FC396147CD7A6001CDF43 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoViewController.h; sourceTree = "<group>"; };
-		385FC397147CD7A6001CDF43 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoViewController.m; sourceTree = "<group>"; };
+		385FC396147CD7A6001CDF43 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoViewController.h; path = Classes/VideoViewController.h; sourceTree = "<group>"; };
+		385FC397147CD7A6001CDF43 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoViewController.m; path = Classes/VideoViewController.m; sourceTree = "<group>"; };
 		385FC39C147CD818001CDF43 /* VideoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoView.xib; sourceTree = "<group>"; };
 		38989CDE147A631E004DE1E0 /* Pipture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pipture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38989CE2147A631E004DE1E0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -128,6 +126,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		38441FD9147FA5AD009B9D4E /* HomeScreen */ = {
+			isa = PBXGroup;
+			children = (
+				38989D1E147A66A7004DE1E0 /* LoginViewController.h */,
+				38989D1F147A66A7004DE1E0 /* LoginViewController.m */,
+				88D84207147B626C00E47EF8 /* HomeViewController.h */,
+				88D84208147B626C00E47EF8 /* HomeViewController.m */,
+				381935BA147CED4F0049B30E /* HistoryViewController.h */,
+				381935BB147CED4F0049B30E /* HistoryViewController.m */,
+			);
+			name = HomeScreen;
+			sourceTree = "<group>";
+		};
 		38989CD3147A631E004DE1E0 = {
 			isa = PBXGroup;
 			children = (
@@ -167,6 +178,8 @@
 				38989D17147A6483004DE1E0 /* Resources */,
 				38989CF1147A631F004DE1E0 /* PiptureAppDelegate.h */,
 				38989CF2147A631F004DE1E0 /* PiptureAppDelegate.m */,
+				385FC396147CD7A6001CDF43 /* VideoViewController.h */,
+				385FC397147CD7A6001CDF43 /* VideoViewController.m */,
 				38989CE9147A631F004DE1E0 /* Supporting Files */,
 			);
 			path = Pipture;
@@ -210,7 +223,6 @@
 				8811ED94147B6FC5008CC877 /* HomeView.xib */,
 				38989D18147A6568004DE1E0 /* MainWindow.xib */,
 				381935BE147CED6A0049B30E /* HistoryView.xib */,
-				381935C2147D06430049B30E /* LibraryView.xib */,
 				381935CB147E2C850049B30E /* AlbumItemViewController.xib */,
 				38D7454F147E660B00062441 /* LibraryStartPageController.xib */,
 				38D74554147E6ABC00062441 /* AlbumDetailInfoPage.xib */,
@@ -221,15 +233,8 @@
 		38989D1D147A6696004DE1E0 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				38441FD9147FA5AD009B9D4E /* HomeScreen */,
 				38D74559147F701200062441 /* Library */,
-				38989D1E147A66A7004DE1E0 /* LoginViewController.h */,
-				38989D1F147A66A7004DE1E0 /* LoginViewController.m */,
-				88D84207147B626C00E47EF8 /* HomeViewController.h */,
-				88D84208147B626C00E47EF8 /* HomeViewController.m */,
-				385FC396147CD7A6001CDF43 /* VideoViewController.h */,
-				385FC397147CD7A6001CDF43 /* VideoViewController.m */,
-				381935BA147CED4F0049B30E /* HistoryViewController.h */,
-				381935BB147CED4F0049B30E /* HistoryViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -331,7 +336,6 @@
 				38989D32147CA97F004DE1E0 /* Vincent.png in Resources */,
 				385FC39D147CD818001CDF43 /* VideoView.xib in Resources */,
 				381935BF147CED6A0049B30E /* HistoryView.xib in Resources */,
-				381935C3147D06430049B30E /* LibraryView.xib in Resources */,
 				381935CC147E2C850049B30E /* AlbumItemViewController.xib in Resources */,
 				38D74550147E660B00062441 /* LibraryStartPageController.xib in Resources */,
 				38D74555147E6ABC00062441 /* AlbumDetailInfoPage.xib in Resources */,

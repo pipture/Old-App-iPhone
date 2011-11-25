@@ -13,6 +13,7 @@
 @synthesize subViewContainer;
 @synthesize detailPage;
 @synthesize videosTable;
+@synthesize libraryDelegate;
 
 #pragma mark - View lifecycle
 
@@ -75,6 +76,14 @@
     cell.textLabel.text = [NSString stringWithFormat:@"video %d", row];
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    int row = indexPath.row;
+    
+    if (self.libraryDelegate != nil) {
+        [[self libraryDelegate] showVideo:row];
+    }
 }
 
 - (IBAction)tabChanged:(id)sender {

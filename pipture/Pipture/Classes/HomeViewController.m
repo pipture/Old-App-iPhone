@@ -6,6 +6,7 @@
 //  Copyright 2011 Thumbtack Technology. All rights reserved.
 //
 
+#import "PiptureAppDelegate.h"
 #import "HomeViewController.h"
 #import "VideoViewController.h"
 #import "LibraryViewController.h"
@@ -185,12 +186,13 @@
 
 //The event handling method
 - (void)libraryBarResponder:(UITapGestureRecognizer *)recognizer {
-    LibraryViewController* vc = [[LibraryViewController alloc] initWithNibName:@"LibraryView" bundle:nil];
-    
+    /*LibraryViewController* vc = [[LibraryViewController alloc] initWithNibName:@"LibraryViewController" bundle:nil];
     vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentModalViewController:vc animated:YES];
     //TODO: learn this point
-    //[vc release];
+    //[vc release];*/
+    
+    [[PiptureAppDelegate instance] onLibrary];
 }
 
 - (void)scheduleAction:(id)sender {

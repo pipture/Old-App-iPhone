@@ -26,6 +26,10 @@
 {
     [super viewDidLoad];
     self.navigationItem.title = @"History";
+    
+    lastStatusStyle = [UIApplication sharedApplication].statusBarStyle;
+    lastNaviStyle = self.navigationController.navigationBar.barStyle;
+    
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
 }
@@ -36,13 +40,11 @@
     [self setHistoryTableView:nil];
 
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    [UIApplication sharedApplication].statusBarStyle = lastStatusStyle;
+    self.navigationController.navigationBar.barStyle = lastNaviStyle;
     
     [super viewWillDisappear:animated];
 }

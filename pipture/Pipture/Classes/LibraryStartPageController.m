@@ -48,6 +48,7 @@
 {
     [super viewDidLoad];
     
+    albumsView.libraryDelegate = libraryDelegate;
     [albumsView readAlbums];
     
     [tabViewController setSelectedSegmentIndex:LibraryViewType_Albums];

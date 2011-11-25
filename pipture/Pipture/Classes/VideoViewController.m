@@ -53,6 +53,13 @@
     self.navigationItem.title = @"Video";
     histroyButton = [[UIBarButtonItem alloc] initWithTitle:@"History" style:UIBarButtonItemStylePlain target:self action:@selector(historyAction:)];
     self.navigationItem.rightBarButtonItem = histroyButton;
+    
+    lastStatusStyle = [UIApplication sharedApplication].statusBarStyle;
+    lastNaviStyle = self.navigationController.navigationBar.barStyle;
+    
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    
     //[image release];
 
 }
@@ -71,6 +78,13 @@
     controlsHidded = YES;
     
     [self updateControlsAnimated:NO];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [UIApplication sharedApplication].statusBarStyle = lastStatusStyle;
+    self.navigationController.navigationBar.barStyle = lastNaviStyle;
+    
+    [super viewWillDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

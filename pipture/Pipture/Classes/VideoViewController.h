@@ -11,6 +11,8 @@
 
 @interface VideoViewController : UIViewController <MFMailComposeViewControllerDelegate>
 {
+    UIStatusBarStyle lastStatusStyle;
+    UIBarStyle lastNaviStyle;
     BOOL controlsHidded;
 }
 

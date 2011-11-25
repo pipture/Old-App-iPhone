@@ -11,7 +11,8 @@
 @implementation PiptureAppDelegate
 
 @synthesize window = _window;
-@synthesize navigationController = _navigationController;
+@synthesize homeNavigationController;
+@synthesize libraryNavigationController;
 @synthesize loginViewController = _loginViewController;
 
 static PiptureAppDelegate *instance;
@@ -19,7 +20,8 @@ static PiptureAppDelegate *instance;
 - (void)dealloc
 {
     [_loginViewController release];
-    [_navigationController release];
+    [libraryNavigationController release];
+    [homeNavigationController release];
     [_window release];
     [super dealloc];
 }
@@ -86,17 +88,46 @@ static PiptureAppDelegate *instance;
      */
 }
 
+- (void) onHome {
+    // set up an animation for the transition between the views
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.5];
+    [animation setType:kCATransitionPush];
+    [animation setSubtype:kCATransitionFromBottom];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    
+    [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+    
+    [self.window setRootViewController:homeNavigationController];
+}
+
 - (void) onLogin {
-    [UIView setAnimationDelegate:self];
+    [_loginViewController.view removeFromSuperview];
+    
+    [self onHome];
+}
+
+- (void) onLibrary {
+    // set up an animation for the transition between the views
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.5];
+    [animation setType:kCATransitionPush];
+    [animation setSubtype:kCATransitionFromTop];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    
+    [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+    
+    [self.window setRootViewController:libraryNavigationController];
+    
+/*    [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:animationIDfinished:finished:context:)];
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.5];
     
-    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:_navigationController.view cache:YES];
-    
-    [_loginViewController.view removeFromSuperview];
-    [self.window setRootViewController:_navigationController];
-    [UIView commitAnimations];
+    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:libraryNavigationController.view cache:YES];
+
+    [self.window setRootViewController:libraryNavigationController];
+    [UIView commitAnimations];*/
 }
 
 @end

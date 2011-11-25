@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface HistoryViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
-
+{
+    UIStatusBarStyle lastStatusStyle;
+    UIBarStyle lastNaviStyle;
+}
 @property (retain, nonatomic) IBOutlet UITableView *historyTableView;
 @end
