@@ -10,4 +10,9 @@
 
 @interface Timeslot : NSObject
 
+@property(retain, nonatomic) NSDate* startTime;
+@property(retain, nonatomic) NSDate* endTime;
+@property(retain, nonatomic) NSString* title;
+@property(retain, nonatomic) NSString* screenImageURL;
+
 @end

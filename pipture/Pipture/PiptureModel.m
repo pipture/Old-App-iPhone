@@ -20,4 +20,14 @@
     return self;
 }
 
+
+-(void)getTimeslotsFromId:(NSString*)timeslotId maxCount:(int)maxCount forTarget:(id)target withCallback:(SEL)callback
+{
+    [target performSelector:callback withObject:[NSArray arrayWithObjects:nil]];
+}
+
+-(void)getTimeslotsFromCurrentWithMaxCount:(int)maxCount forTarget:(id)target withCallback:(SEL)callback
+{
+    [target performSelector:callback withObject:[NSArray arrayWithObjects:nil]];    
+}
 @end

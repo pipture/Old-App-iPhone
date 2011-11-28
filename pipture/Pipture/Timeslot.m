@@ -10,11 +10,17 @@
 
 @implementation Timeslot
 
+@synthesize startTime;
+@synthesize endTime;
+@synthesize title;
+@synthesize screenImageURL;
+
 - (id)init
 {
     self = [super init];
     if (self) {
         // Initialization code here.
+        
     }
     
     return self;

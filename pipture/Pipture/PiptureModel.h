@@ -10,4 +10,10 @@
 
 @interface PiptureModel : NSObject
 
+//SEL:NSArray of Timeslots ordered by startTime ascending
+-(void)getTimeslotsFromId:(NSString*)timeslotId maxCount:(int)maxCount forTarget:(id)target withCallback:(SEL)callback;
+
+//SEL:NSArray of Timeslots ordered by startTime ascending
+-(void)getTimeslotsFromCurrentWithMaxCount:(int)maxCount forTarget:(id)target withCallback:(SEL)callback;;
+
 @end

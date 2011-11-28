@@ -10,23 +10,49 @@
 
 @implementation PiptureModelTest
 
-#if USE_APPLICATION_UNIT_TEST     // all code under test is in the iPhone Application
+PiptureModel*target;
 
-- (void)testAppDelegate {
+- (void)setUp
+{
+    [super setUp];
     
-    id yourApplicationDelegate = [[UIApplication sharedApplication] delegate];
-    STAssertNotNil(yourApplicationDelegate, @"UIApplication failed to find the AppDelegate");
-    
+    target = [[PiptureModel alloc] init];
 }
 
-#else                           // all code under test must be linked into the Unit Test bundle
-
-- (void)testMath {
+- (void)tearDown
+{
+    // Tear-down code here.
     
-    STAssertTrue((1+1)==2, @"Compiler isn't feeling well today :-(" );
-    
+    [super tearDown];
+    [target release];
 }
 
-#endif
+    
+-(void)testGetTimeslotsFromCurrentWithMaxCount {
+    [target getTimeslotsFromCurrentWithMaxCount:3 forTarget:self withCallback:@selector(GetTimeSlotsFromCurrentWithMaxCountCallback:)];
+}
+
+-(void)GetTimeSlotsFromCurrentWithMaxCountCallback:(NSArray*)result {
+    int cnt = [result count];
+    STAssertTrue(3 == cnt, @"Result number of timeslots is not 3");
+    Timeslot*ts;
+    
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"yyyy-MM-dd hh:mm"];
+    NSDate *startTime = [df dateFromString: @"2011-11-29 11:00"];                      
+    NSDate *endTime = [df dateFromString: @"2011-11-29 11:30"];                      
+
+    ts = [result objectAtIndex:0];
+    STAssertEquals(ts.startTime, startTime, @"Wrong start time for first timeslot");
+    STAssertEquals(ts.endTime, endTime, @"Wrong end time for first timeslot");    
+
+    ts = [result objectAtIndex:1];    
+    STAssertEquals(ts.title, @"TitleTest", @"Wrong title for second timeslot");
+
+    ts = [result objectAtIndex:2];    
+    STAssertEquals([ts screenImageURL], @"http://pipture.test/screenImage3", @"Wrong screen image URL for third timeslot");
+    
+    
+}
 
 @end
