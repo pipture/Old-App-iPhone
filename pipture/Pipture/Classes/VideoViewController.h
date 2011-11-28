@@ -17,11 +17,13 @@
 }
 
 - (void)updateControlsAnimated:(BOOL)animated;
-- (void)tapResponder:(UITapGestureRecognizer *)recognizer;
+- (IBAction)sendAction:(id)sender;
 - (void)historyAction:(id)sender;
+- (void)tapResponder:(UITapGestureRecognizer *)recognizer;
 
 @property (retain, nonatomic) IBOutlet UIView *controlsPanel;
 @property (retain, nonatomic) UIBarButtonItem *histroyButton;
+@property (retain, nonatomic) IBOutlet UIButton *sendButton;
 
 
 @end

@@ -131,6 +131,7 @@
     switch (viewType) {
         case LibraryViewType_Albums:
             albumsView.frame = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height);
+            albumsView.albumsDelegate = self;
             [albumsView prepareLayout];
             [subViewContainer addSubview:albumsView];
             break;
