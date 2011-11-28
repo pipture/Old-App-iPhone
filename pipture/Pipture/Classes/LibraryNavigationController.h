@@ -7,7 +7,7 @@
 //
 
 #import "LibraryDelegateProtocol.h"
-#import "LibraryStartPageController.h"
+#import "LibraryViewController.h"
 #import "AlbumDetailInfoController.h"
 #import "VideoViewController.h"
 
@@ -21,6 +21,6 @@
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *closeLibraryButton;
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 
-@property (retain, nonatomic) IBOutlet LibraryStartPageController *startPage;
+@property (retain, nonatomic) IBOutlet LibraryViewController *startPage;
 
 @end
