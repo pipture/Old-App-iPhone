@@ -13,9 +13,10 @@
 
 @implementation HomeViewController
 @synthesize scrollView;
-@synthesize actionBar;
 @synthesize libraryBar;
-@synthesize pageControl;
+@synthesize actionButton;
+@synthesize prevButton;
+@synthesize nextButton;
 @synthesize scheduleButton;
 
 - (void)didReceiveMemoryWarning
@@ -59,14 +60,7 @@
         //TODO: view release?
     }
     
-    //prepare actionBar
-    
-    //The setup code (in viewDidLoad in your view controller)
-    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionBarResponder:)];
-    [actionBar addGestureRecognizer:singleFingerTap];
-    [singleFingerTap release];
-    
-    singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(libraryBarResponder:)];
+    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(libraryBarResponder:)];
     [libraryBar addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];
 
@@ -74,14 +68,18 @@
     //preparing navigation bar schedule button
     scheduleButton = [[UIBarButtonItem alloc] initWithTitle:@"Schedule" style:UIBarButtonItemStylePlain target:self action:@selector(scheduleAction:)];
     self.navigationItem.leftBarButtonItem = scheduleButton;
+    
+    [self prepareImageFor:0];
+    [self prepareImageFor:1];
 }
 
 - (void)viewDidUnload
 {
     [self setScrollView:nil];
-    [self setActionBar:nil];
     [self setLibraryBar:nil];
-    [self setPageControl:nil];
+    [self setActionButton:nil];
+    [self setPrevButton:nil];
+    [self setNextButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -109,17 +107,18 @@
     [scheduleButton release];
     [timelineArray release];
     [scrollView release];
-    [actionBar release];
     [libraryBar release];
-    [pageControl release];
+    [actionButton release];
+    [prevButton release];
+    [nextButton release];
     [super dealloc];
 }
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     int page = [self getPageNumber];
 	
-    // load images for the next 2 timeslots
+    // load images for the near timeslots
+    [self prepareImageFor:page - 1];
     [self prepareImageFor:page + 1];
-    [self prepareImageFor:page + 2];
     
     NSLog(@"page: %d", page);
     
@@ -151,28 +150,68 @@
     //TODO: check for current timeslot
     if (page == 0) {
         //TODO: set power button
-        actionBar.backgroundColor = [UIColor yellowColor];
+        actionButton.titleLabel.text = @"Watch";
     } else {
-        NSLog(@"scheduled");
         scheduleMode = YES;
         //TODO: set back button
-        actionBar.backgroundColor = [UIColor greenColor];
+        actionButton.titleLabel.text = @"Home";
     }
     
     if (scheduleMode) {
-        pageControl.hidden = NO;
+        prevButton.hidden = NO;
+        nextButton.hidden = NO;
         scheduleButton.style = UIBarButtonItemStyleDone;
         scheduleButton.title = @"Done";
+        
+        if (page == 0) {
+            prevButton.alpha = 0.3;
+            prevButton.enabled = NO;
+        } else {
+            prevButton.alpha = 0.7;
+            prevButton.enabled = YES;
+        }
+        
+        if (page == [timelineArray count] - 1) {
+            nextButton.alpha = 0.3;
+            nextButton.enabled = NO;
+        } else {
+            nextButton.alpha = 0.7;
+            nextButton.enabled = YES;
+        }
     } else {
-        pageControl.hidden = YES;
+        prevButton.hidden = YES;
+        nextButton.hidden = YES;
         scheduleButton.style = UIBarButtonItemStylePlain;
         scheduleButton.title = @"Schedule";
     }
     
 }
 
+- (void)scrollToPage:(int) page {
+    if (page < [timelineArray count] && page >= 0) {
+        CGRect frame = scrollView.frame;
+        frame.origin.x = 0;
+        frame.origin.y = frame.size.height * page;
+        [scrollView scrollRectToVisible:frame animated:YES];
+    }
+}
+
+- (IBAction)prevAction:(id)sender {
+    int page = [self getPageNumber] - 1;
+    [self prepareImageFor:page];
+    [self prepareImageFor:page - 1];
+    [self scrollToPage:page];
+}
+
+- (IBAction)nextAction:(id)sender {
+    int page = [self getPageNumber] + 1;
+    [self prepareImageFor:page];
+    [self prepareImageFor:page + 1];
+    [self scrollToPage:page];
+}
+
 //The event handling method
-- (void)actionBarResponder:(UITapGestureRecognizer *)recognizer {
+- (void)actionButton:(id)sender {
     //TODO: check for current timeslot
     if (scheduleMode && [self getPageNumber] != 0) {
         [self scheduleAction:nil];
@@ -183,12 +222,6 @@
 
 //The event handling method
 - (void)libraryBarResponder:(UITapGestureRecognizer *)recognizer {
-    /*LibraryViewController* vc = [[LibraryViewController alloc] initWithNibName:@"LibraryViewController" bundle:nil];
-    vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    [self presentModalViewController:vc animated:YES];
-    //TODO: learn this point
-    //[vc release];*/
-    
     [[PiptureAppDelegate instance] onLibrary];
 }
 

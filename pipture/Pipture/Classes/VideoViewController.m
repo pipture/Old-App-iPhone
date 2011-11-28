@@ -12,23 +12,7 @@
 @implementation VideoViewController
 @synthesize controlsPanel;
 @synthesize histroyButton;
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
+@synthesize sendButton;
 
 #pragma mark - View lifecycle
 
@@ -42,14 +26,7 @@
     [self.view addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];
     
-    //The setup code (in viewDidLoad in your view controller)
-    singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sendResponder:)];
-    [controlsPanel addGestureRecognizer:singleFingerTap];
-    [singleFingerTap release];
-   
-    //preparing navigation bar history button
-    //image = [UIImage imageNamed:@"feedback.png"];
-    //histroyButton = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStyleBordered target:self action:@selector(feedbackAction:)];
+  
     self.navigationItem.title = @"Video";
     histroyButton = [[UIBarButtonItem alloc] initWithTitle:@"History" style:UIBarButtonItemStylePlain target:self action:@selector(historyAction:)];
     self.navigationItem.rightBarButtonItem = histroyButton;
@@ -59,14 +36,12 @@
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
-    
-    //[image release];
-
 }
 
 - (void)viewDidUnload
 {
     [self setControlsPanel:nil];
+    [self setSendButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -114,7 +89,7 @@
 }
 
 //The event handling method
-- (void)sendResponder:(UITapGestureRecognizer *)recognizer {
+- (IBAction)sendAction:(id)sender{
     MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
     controller.mailComposeDelegate = self;
     [controller setSubject:@"Look at this video!"];
@@ -142,6 +117,7 @@
 
 - (void)dealloc {
     [controlsPanel release];
+    [sendButton release];
     [super dealloc];
 }
 @end
