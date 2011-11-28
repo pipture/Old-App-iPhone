@@ -11,11 +11,7 @@
 
 @protocol LibraryViewDelegate <NSObject>
 
-//TODO: now just number
-- (void)showAlbumDetail:(int)albumId;
-
-//TODO; now just number
-- (void)showVideo:(int)videoId;
+//Refactored and moved methods to other places. This delegate can be used for other library's common things in future.
 
 @end
 

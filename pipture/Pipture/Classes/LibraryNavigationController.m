@@ -7,10 +7,10 @@
 //
 
 #import "PiptureAppDelegate.h"
-#import "LibraryViewController.h"
+#import "LibraryNavigationController.h"
 #import "VideoViewController.h"
 
-@implementation LibraryViewController
+@implementation LibraryNavigationController
 @synthesize closeLibraryButton;
 @synthesize buyButton;
 @synthesize startPage;
@@ -21,8 +21,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    startPage.libraryDelegate = self;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -53,18 +51,5 @@
     //TODO: In App Purchase
 }
 
-- (void)showAlbumDetail:(int)albumId {
-    AlbumDetailInfoController* vc = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfoPage" bundle:nil];
-    vc.libraryDelegate = self;
-    [self pushViewController:vc animated:YES];
-    [vc release];
-}
-
-- (void)showVideo:(int)videoId {
-    VideoViewController* vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
-    vc.wantsFullScreenLayout = YES;
-    [self pushViewController:vc animated:YES];
-    [vc release];
-}
 
 @end

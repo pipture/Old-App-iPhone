@@ -10,7 +10,7 @@
 		381935BC147CED4F0049B30E /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935BB147CED4F0049B30E /* HistoryViewController.m */; };
 		381935BF147CED6A0049B30E /* HistoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935BE147CED6A0049B30E /* HistoryView.xib */; };
 		381935C1147D04540049B30E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 381935C0147D04540049B30E /* MessageUI.framework */; };
-		381935C6147D067D0049B30E /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C5147D067D0049B30E /* LibraryViewController.m */; };
+		381935C6147D067D0049B30E /* LibraryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C5147D067D0049B30E /* LibraryNavigationController.m */; };
 		381935C9147E29920049B30E /* AlbumsListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C8147E29920049B30E /* AlbumsListView.m */; };
 		381935CC147E2C850049B30E /* AlbumItemViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935CB147E2C850049B30E /* AlbumItemViewController.xib */; };
 		381935CF147E2F180049B30E /* AlbumItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935CE147E2F180049B30E /* AlbumItemViewController.m */; };
@@ -55,8 +55,8 @@
 		381935BB147CED4F0049B30E /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
 		381935BE147CED6A0049B30E /* HistoryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HistoryView.xib; sourceTree = "<group>"; };
 		381935C0147D04540049B30E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		381935C4147D067D0049B30E /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
-		381935C5147D067D0049B30E /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
+		381935C4147D067D0049B30E /* LibraryNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = LibraryNavigationController.h; sourceTree = "<group>"; };
+		381935C5147D067D0049B30E /* LibraryNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryNavigationController.m; sourceTree = "<group>"; };
 		381935C8147E29920049B30E /* AlbumsListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumsListView.m; sourceTree = "<group>"; };
 		381935CA147E29DB0049B30E /* AlbumsListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumsListView.h; sourceTree = "<group>"; };
 		381935CB147E2C850049B30E /* AlbumItemViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumItemViewController.xib; sourceTree = "<group>"; };
@@ -242,8 +242,8 @@
 		38D74559147F701200062441 /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				381935C4147D067D0049B30E /* LibraryViewController.h */,
-				381935C5147D067D0049B30E /* LibraryViewController.m */,
+				381935C4147D067D0049B30E /* LibraryNavigationController.h */,
+				381935C5147D067D0049B30E /* LibraryNavigationController.m */,
 				381935CA147E29DB0049B30E /* AlbumsListView.h */,
 				381935C8147E29920049B30E /* AlbumsListView.m */,
 				381935CD147E2F180049B30E /* AlbumItemViewController.h */,
@@ -379,7 +379,7 @@
 				88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */,
 				385FC399147CD7A6001CDF43 /* VideoViewController.m in Sources */,
 				381935BC147CED4F0049B30E /* HistoryViewController.m in Sources */,
-				381935C6147D067D0049B30E /* LibraryViewController.m in Sources */,
+				381935C6147D067D0049B30E /* LibraryNavigationController.m in Sources */,
 				381935C9147E29920049B30E /* AlbumsListView.m in Sources */,
 				381935CF147E2F180049B30E /* AlbumItemViewController.m in Sources */,
 				38D7454E147E640100062441 /* LibraryStartPageController.m in Sources */,

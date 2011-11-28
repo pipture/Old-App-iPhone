@@ -22,7 +22,7 @@
 
 - (void)actionBarResponder:(UITapGestureRecognizer *)recognizer;
 - (void)libraryBarResponder:(UITapGestureRecognizer *)recognizer;
-- (void)scheduleAction:(id)sender;
+- (void) scheduleAction:(id)sender;
 
 @property (retain, nonatomic) UIBarButtonItem *scheduleButton;
 
@@ -30,5 +30,6 @@
 @property (retain, nonatomic) IBOutlet UIView *actionBar;
 @property (retain, nonatomic) IBOutlet UIView *libraryBar;
 @property (retain, nonatomic) IBOutlet UIView *pageControl;
+
 
 @end

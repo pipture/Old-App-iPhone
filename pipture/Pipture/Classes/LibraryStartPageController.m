@@ -7,6 +7,7 @@
 //
 
 #import "LibraryStartPageController.h"
+#import "PiptureAppDelegate.h"
 
 @implementation LibraryStartPageController
 
@@ -14,7 +15,7 @@
 @synthesize albumsView;
 @synthesize libraryTableView;
 @synthesize subViewContainer;
-@synthesize libraryDelegate;
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -48,7 +49,6 @@
 {
     [super viewDidLoad];
     
-    albumsView.libraryDelegate = libraryDelegate;
     [albumsView readAlbums];
     
     [tabViewController setSelectedSegmentIndex:LibraryViewType_Albums];
@@ -77,6 +77,12 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     //TODO: 
     return 40;
+}
+
+- (void)showAlbumDetail:(int)albumId {
+    AlbumDetailInfoController* vc = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfoPage" bundle:nil];
+    [self.navigationController pushViewController:vc animated:YES];
+    [vc release];
 }
 
 // Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
@@ -112,9 +118,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     int row = indexPath.row;
    
-    if (self.libraryDelegate != nil) {
-        [[self libraryDelegate] showVideo:row];
-    }
+    [[PiptureAppDelegate instance] showVideo:row navigationController:self.navigationController];
 }
 
 - (IBAction)tabChanged:(id)sender {

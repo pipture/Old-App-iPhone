@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "LoginViewController.h"
+#import "VideoViewController.h"
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -23,4 +24,5 @@
 - (void) onLogin;
 - (void) onHome;
 - (void) onLibrary;
+- (void) showVideo:(int)videoId navigationController:(UINavigationController*)navigationController;//TODO: add video mode, playlist, e .t.c
 @end

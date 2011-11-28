@@ -7,6 +7,7 @@
 //
 
 #import "AlbumDetailInfoController.h"
+#import "PiptureAppDelegate.h"
 
 @implementation AlbumDetailInfoController
 @synthesize tabController;
@@ -81,9 +82,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     int row = indexPath.row;
     
-    if (self.libraryDelegate != nil) {
-        [[self libraryDelegate] showVideo:row];
-    }
+    [[PiptureAppDelegate instance] showVideo:row navigationController:self.navigationController];    
 }
 
 - (IBAction)tabChanged:(id)sender {

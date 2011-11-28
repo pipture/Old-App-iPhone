@@ -9,6 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "LibraryDelegateProtocol.h"
 
+
+@protocol AlbumListViewDelegate <NSObject>
+
+- (void)showAlbumDetail:(int)albumId;
+
+@end
+
 @interface AlbumsListView : UIScrollView
 {
     NSMutableArray * albumsArray;
@@ -17,6 +24,6 @@
 - (void)readAlbums;
 - (void)prepareLayout;
 
-@property (assign, nonatomic) IBOutlet id<LibraryViewDelegate> libraryDelegate;
+@property (assign, nonatomic) IBOutlet id<AlbumListViewDelegate> albumsDelegate;
 
 @end

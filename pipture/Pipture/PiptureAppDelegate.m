@@ -88,6 +88,13 @@ static PiptureAppDelegate *instance;
      */
 }
 
+- (void)showVideo:(int)videoId navigationController:(UINavigationController*)navigationController {
+    VideoViewController* vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
+    vc.wantsFullScreenLayout = YES;
+    [navigationController pushViewController:vc animated:YES];
+    [vc release];
+}
+
 - (void) onHome {
     // set up an animation for the transition between the views
     CATransition *animation = [CATransition animation];

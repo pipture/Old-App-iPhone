@@ -17,8 +17,7 @@
 #define ITEM_COUNT 40
 
 @implementation AlbumsListView
-@synthesize libraryDelegate;
-
+@synthesize albumsDelegate;
 
 - (void)dealloc {
     [albumsArray release];
@@ -70,7 +69,7 @@
 }
 
 - (void)detailAlbumShow:(id)sender {
-    [self.libraryDelegate showAlbumDetail:[sender tag]];
+    [albumsDelegate showAlbumDetail:[sender tag]];
 }
 
 @end

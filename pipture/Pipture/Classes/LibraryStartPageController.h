@@ -8,6 +8,7 @@
 
 #import "AlbumsListView.h"
 #import "LibraryDelegateProtocol.h"
+#import "AlbumDetailInfoController.h"
 
 enum LibraryViewType {
     LibraryViewType_Albums,
@@ -15,7 +16,7 @@ enum LibraryViewType {
     LibraryViewType_Top
 };
 
-@interface LibraryStartPageController : UIViewController<UITableViewDelegate, UITableViewDataSource>
+@interface LibraryStartPageController : UIViewController<UITableViewDelegate, UITableViewDataSource,AlbumListViewDelegate>
 {
     enum LibraryViewType viewType;
 }
@@ -25,6 +26,6 @@ enum LibraryViewType {
 @property (retain, nonatomic) IBOutlet AlbumsListView *albumsView;
 @property (retain, nonatomic) IBOutlet UITableView *libraryTableView;
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;
-@property (assign, nonatomic) id<LibraryViewDelegate> libraryDelegate;
+
 
 @end

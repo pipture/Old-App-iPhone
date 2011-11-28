@@ -11,7 +11,7 @@
 #import "AlbumDetailInfoController.h"
 #import "VideoViewController.h"
 
-@interface LibraryViewController : UINavigationController<LibraryViewDelegate>
+@interface LibraryNavigationController : UINavigationController<LibraryViewDelegate>
 {
 }
 
@@ -22,4 +22,5 @@
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 
 @property (retain, nonatomic) IBOutlet LibraryStartPageController *startPage;
+
 @end

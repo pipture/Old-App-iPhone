@@ -177,10 +177,7 @@
     if (scheduleMode && [self getPageNumber] != 0) {
         [self scheduleAction:nil];
     } else {
-        VideoViewController* vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
-        vc.wantsFullScreenLayout = YES;
-        [self.navigationController pushViewController:vc animated:YES];
-        [vc release];    
+        [[PiptureAppDelegate instance] showVideo:0 navigationController:self.navigationController];
     }
 }
 
