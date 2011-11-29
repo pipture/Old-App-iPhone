@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 
-@interface LoginViewController : UIViewController {
+@interface LoginViewController : UIViewController <UITextFieldDelegate> {
     
     IBOutlet UITextField *firstNameLabel;
     IBOutlet UITextField *lastNameLabel;
