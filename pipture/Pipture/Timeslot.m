@@ -15,6 +15,9 @@
 @synthesize title;
 @synthesize screenImageURL;
 
+@synthesize desc;
+@synthesize image;
+
 - (id)init
 {
     self = [super init];
@@ -26,4 +29,24 @@
     return self;
 }
 
+- (id)initWith:(NSString*)_title desc:(NSString*)_desc image:(UIImage*)_image {
+    self = [self init];
+    if (self) {
+        self.title = _title;
+        self.desc = _desc;
+        self.image = _image;
+    }
+    
+    return self;
+}
+
+- (void)dealloc {
+    [startTime release];
+    [endTime release];
+    [title release];
+    [screenImageURL release];
+    [desc release];
+    [image release];
+    [super dealloc];
+}
 @end
