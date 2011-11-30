@@ -10,4 +10,11 @@
 
 @interface DataRequest : NSObject
 
+- (id)initWithURL:(NSURL*)url callback:(void (^)(void))callback;
+@end
+
+@interface DefaultDataRequestFactory : NSObject
+
+- (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(void (^)(void))callback;
+
 @end

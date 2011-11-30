@@ -20,4 +20,14 @@
     return self;
 }
 
+
+@end
+
+@implementation DefaultDataRequestFactory : NSObject
+
+- (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(void (^)(void))callback
+{
+    return [[[DataRequest alloc]initWithURL:url callback:callback]autorelease];
+}
+
 @end
