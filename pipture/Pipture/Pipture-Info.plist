@@ -36,5 +36,11 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>Rest end point</key>
+	<string>https://mobile.pipture.com/rest</string>
+	<key>Rest Get current timeslots</key>
+	<string>?method=getTimeslots&amp;count=%d</string>
+	<key>Rest Get timeslots</key>
+	<string>?method=getTimeslots&amp;fromId=%@&amp;count=%d</string>
 </dict>
 </plist>

@@ -36,6 +36,8 @@
 		38D74558147E6DBE00062441 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE6147A631E004DE1E0 /* CoreGraphics.framework */; };
 		38D7455C147F728200062441 /* AlbumDetailPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D7455B147F728200062441 /* AlbumDetailPage.m */; };
 		8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8811ED94147B6FC5008CC877 /* HomeView.xib */; };
+		88139DC31484795D001ACA98 /* DataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88139DC21484795D001ACA98 /* DataRequest.m */; };
+		88139DF41484C299001ACA98 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88139DF31484C299001ACA98 /* libOCMock.a */; };
 		88BE44A21483893C002D30ED /* PiptureModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44A11483893C002D30ED /* PiptureModel.m */; };
 		88BE44A614838A31002D30ED /* Timeslot.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44A514838A31002D30ED /* Timeslot.m */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
@@ -96,6 +98,9 @@
 		38D7455A147F728200062441 /* AlbumDetailPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailPage.h; sourceTree = "<group>"; };
 		38D7455B147F728200062441 /* AlbumDetailPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailPage.m; sourceTree = "<group>"; };
 		8811ED94147B6FC5008CC877 /* HomeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeView.xib; sourceTree = "<group>"; };
+		88139DC11484795D001ACA98 /* DataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequest.h; sourceTree = "<group>"; };
+		88139DC21484795D001ACA98 /* DataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequest.m; sourceTree = "<group>"; };
+		88139DF31484C299001ACA98 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOCMock.a; sourceTree = "<group>"; };
 		88BE44A01483893C002D30ED /* PiptureModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureModel.h; sourceTree = "<group>"; };
 		88BE44A11483893C002D30ED /* PiptureModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModel.m; sourceTree = "<group>"; };
 		88BE44A414838A31002D30ED /* Timeslot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timeslot.h; sourceTree = "<group>"; };
@@ -126,6 +131,7 @@
 				38989CFB147A6320004DE1E0 /* SenTestingKit.framework in Frameworks */,
 				38989CFC147A6320004DE1E0 /* UIKit.framework in Frameworks */,
 				38989CFD147A6320004DE1E0 /* Foundation.framework in Frameworks */,
+				88139DF41484C299001ACA98 /* libOCMock.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,6 +156,7 @@
 			children = (
 				38989CE8147A631F004DE1E0 /* Pipture */,
 				38989D00147A6320004DE1E0 /* PiptureTests */,
+				88139DEA1484C299001ACA98 /* Libraries */,
 				38989CE1147A631E004DE1E0 /* Frameworks */,
 				38989CDF147A631E004DE1E0 /* Products */,
 			);
@@ -267,11 +274,22 @@
 			name = Library;
 			sourceTree = "<group>";
 		};
+		88139DEA1484C299001ACA98 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				88139DF31484C299001ACA98 /* libOCMock.a */,
+			);
+			name = Libraries;
+			path = PiptureTests/Libraries;
+			sourceTree = "<group>";
+		};
 		88BE449F148387DB002D30ED /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				88BE44A01483893C002D30ED /* PiptureModel.h */,
 				88BE44A11483893C002D30ED /* PiptureModel.m */,
+				88139DC11484795D001ACA98 /* DataRequest.h */,
+				88139DC21484795D001ACA98 /* DataRequest.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -413,6 +431,7 @@
 				38D7455C147F728200062441 /* AlbumDetailPage.m in Sources */,
 				88BE44A21483893C002D30ED /* PiptureModel.m in Sources */,
 				88BE44A614838A31002D30ED /* Timeslot.m in Sources */,
+				88139DC31484795D001ACA98 /* DataRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -526,6 +545,7 @@
 		38989D0F147A6320004DE1E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Pipture.app/Pipture";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -533,7 +553,24 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/PiptureTests/Libraries/Headers";
 				INFOPLIST_FILE = "PiptureTests/PiptureTests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(PROJECT_DIR)/PiptureTests/Libraries\"",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+					"$(PROJECT_DIR)/PiptureTests/Libraries/libOCMock.a",
+					"-framework",
+					Foundation,
+					"-framework",
+					SenTestingKit,
+					"-framework",
+					UIKit,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
@@ -543,6 +580,7 @@
 		38989D10147A6320004DE1E0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Pipture.app/Pipture";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -550,7 +588,24 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/PiptureTests/Libraries/Headers";
 				INFOPLIST_FILE = "PiptureTests/PiptureTests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(PROJECT_DIR)/PiptureTests/Libraries\"",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+					"$(PROJECT_DIR)/PiptureTests/Libraries/libOCMock.a",
+					"-framework",
+					Foundation,
+					"-framework",
+					SenTestingKit,
+					"-framework",
+					UIKit,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
