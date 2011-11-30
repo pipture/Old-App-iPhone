@@ -15,6 +15,8 @@
 #define ITEM_HEIGHT 180
 #define ITEM_WIDTH 106
 
+#define ITEM_COUNT 40
+
 @implementation AlbumsListView
 @synthesize albumsDelegate;
 
