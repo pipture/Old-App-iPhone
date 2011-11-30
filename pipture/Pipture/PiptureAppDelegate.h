@@ -24,5 +24,5 @@
 - (void) onLogin;
 - (void) onHome;
 - (void) onLibrary;
-- (void) showVideo:(int)videoId navigationController:(UINavigationController*)navigationController;//TODO: add video mode, playlist, e .t.c
+- (void)showVideo:(int)videoId navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi;//TODO: add video mode, playlist, e .t.c
 @end

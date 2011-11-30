@@ -7,19 +7,14 @@
 //
 
 #import "HistoryViewController.h"
+#import "PiptureAppDelegate.h"
+#import "Timeslot.h"
 
 @implementation HistoryViewController
 @synthesize historyTableView;
+@synthesize historyTableCell;
 
 #pragma mark - View lifecycle
-
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView
-{
-}
-*/
-
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
@@ -27,19 +22,93 @@
     [super viewDidLoad];
     self.navigationItem.title = @"History";
     
-    lastStatusStyle = [UIApplication sharedApplication].statusBarStyle;
-    lastNaviStyle = self.navigationController.navigationBar.barStyle;
+    historyArray = [[NSMutableArray alloc] initWithCapacity:20];
     
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    //TODO: temporary put images, not timeslots (get timeline from server in future)
+    UIImage * image = [UIImage imageNamed:@"thumb1"];
+    Timeslot * slot = [[Timeslot alloc] initWith:@"Living at my parents" desc:@"Season1, Album1, Pip 1\nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
+    //TODO: if we will get different images (different adresses in memory) - release is neccessary
+    //[image release];
+    [historyArray addObject:slot];
+    [slot release];
+    
+    
+    image = [UIImage imageNamed:@"thumb2"];
+    slot = [[Timeslot alloc] initWith:@"Season 2" desc:@"Trailer" image:image];
+    [historyArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb3"];
+    slot = [[Timeslot alloc] initWith:@"The Aimless Loser" desc:@"Season 1, Album 2\nTrailer" image:image];
+    [historyArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb1"];
+    slot = [[Timeslot alloc] initWith:@"Living at my parents" desc:@"Season1, Album1, Pip 1\nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
+    [historyArray addObject:slot];
+    [slot release];
+    
+    
+    image = [UIImage imageNamed:@"thumb2"];
+    slot = [[Timeslot alloc] initWith:@"Season 2" desc:@"Trailer" image:image];
+    [historyArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb3"];
+    slot = [[Timeslot alloc] initWith:@"The Aimless Loser" desc:@"Season 1, Album 2\nTrailer" image:image];
+    [historyArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb1"];
+    slot = [[Timeslot alloc] initWith:@"Living at my parents" desc:@"Season1, Album1, Pip 1\nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
+    [historyArray addObject:slot];
+    [slot release];
+    
+    
+    image = [UIImage imageNamed:@"thumb2"];
+    slot = [[Timeslot alloc] initWith:@"Season 2" desc:@"Trailer" image:image];
+    [historyArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb3"];
+    slot = [[Timeslot alloc] initWith:@"The Aimless Loser" desc:@"Season 1, Album 2\nTrailer" image:image];
+    [historyArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb1"];
+    slot = [[Timeslot alloc] initWith:@"Living at my parents" desc:@"Season1, Album1, Pip 1\nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
+    [historyArray addObject:slot];
+    [slot release];
+    
+    
+    image = [UIImage imageNamed:@"thumb2"];
+    slot = [[Timeslot alloc] initWith:@"Season 2" desc:@"Trailer" image:image];
+    [historyArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb3"];
+    slot = [[Timeslot alloc] initWith:@"The Aimless Loser" desc:@"Season 1, Album 2\nTrailer" image:image];
+    [historyArray addObject:slot];
+    [slot release];
+    
 }
-
 
 - (void)viewDidUnload
 {
     [self setHistoryTableView:nil];
 
+    [self setHistoryTableCell:nil];
     [super viewDidUnload];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    lastStatusStyle = [UIApplication sharedApplication].statusBarStyle;
+    lastNaviStyle = self.navigationController.navigationBar.barStyle;
+    
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    
+    [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -50,34 +119,50 @@
 }
 
 - (void)dealloc {
+    [historyArray release];
     [historyTableView release];
+    [historyTableCell release];
     [super dealloc];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    //TODO: 
-    return 10;
+    return [historyArray count];
 }
 
-// Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
-// Cell gets various attributes set automatically based on table (separators) and data source (accessory views, editing controls)
+- (void)fillCell:(int)row cell:(UITableViewCell *)cell{
+    Timeslot * slot = [historyArray objectAtIndex:row];
+    
+    if (slot != nil) {
+        UIImageView * image = (UIImageView*)[cell viewWithTag:1];
+        UILabel * series = (UILabel*)[cell viewWithTag:2];
+        UILabel * title = (UILabel*)[cell viewWithTag:3];
+        
+        image.image = slot.image;
+        series.text = slot.title;
+        title.text = slot.desc;
+    }
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     //TODO: 
     static NSString * const kCellID = @"CellID";
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
-    int row = indexPath.row;
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:kCellID] autorelease];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        [[NSBundle mainBundle] loadNibNamed:@"HistoryTableItemView" owner:self options:nil];
+        cell = historyTableCell;
+        historyTableCell = nil;
     }
     
-    cell.textLabel.text = [NSString stringWithFormat:@"row %d", row];
-//    cell.textLabel.text = @"row";
-        
-    return cell;
+    [self fillCell:[indexPath row] cell:cell];
+    
+    return cell;    
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    int row = indexPath.row;
+    
+    [[PiptureAppDelegate instance] showVideo:row navigationController:self.navigationController noNavi:YES];
+}
 
 @end

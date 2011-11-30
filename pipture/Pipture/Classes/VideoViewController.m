@@ -13,7 +13,7 @@
 @synthesize controlsPanel;
 @synthesize histroyButton;
 @synthesize sendButton;
-
+@synthesize simpleMode;
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -27,15 +27,11 @@
     [singleFingerTap release];
     
   
-    self.navigationItem.title = @"Video";
-    histroyButton = [[UIBarButtonItem alloc] initWithTitle:@"History" style:UIBarButtonItemStylePlain target:self action:@selector(historyAction:)];
-    self.navigationItem.rightBarButtonItem = histroyButton;
-    
-    lastStatusStyle = [UIApplication sharedApplication].statusBarStyle;
-    lastNaviStyle = self.navigationController.navigationBar.barStyle;
-    
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    if (!simpleMode) {
+        self.navigationItem.title = @"Video";
+        histroyButton = [[UIBarButtonItem alloc] initWithTitle:@"History" style:UIBarButtonItemStylePlain target:self action:@selector(historyAction:)];
+        self.navigationItem.rightBarButtonItem = histroyButton;
+    }    
 }
 
 - (void)viewDidUnload
@@ -45,6 +41,16 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    lastStatusStyle = [UIApplication sharedApplication].statusBarStyle;
+    lastNaviStyle = self.navigationController.navigationBar.barStyle;
+    
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
 }
 
 - (void)viewDidAppear:(BOOL)animated {

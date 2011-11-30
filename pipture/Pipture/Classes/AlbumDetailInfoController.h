@@ -16,7 +16,8 @@ enum DetailAlbumViewType {
 
 @interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource>
 {
-    enum DetailAlbumViewType viewType;    
+    enum DetailAlbumViewType viewType;
+    NSMutableArray * videosArray;
 }
 - (IBAction)tabChanged:(id)sender;
 
@@ -26,5 +27,6 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) IBOutlet AlbumDetailPage *detailPage;
 @property (retain, nonatomic) IBOutlet UITableView *videosTable;
 @property (assign, nonatomic) id<LibraryViewDelegate> libraryDelegate;
+@property (retain, nonatomic) IBOutlet UITableViewCell *videoTableCell;
 
 @end

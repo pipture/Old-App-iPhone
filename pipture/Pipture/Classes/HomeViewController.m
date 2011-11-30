@@ -251,7 +251,7 @@
     if (scheduleMode && [self getPageNumber] != 0) {
         [self scheduleAction:nil];
     } else {
-        [[PiptureAppDelegate instance] showVideo:0 navigationController:self.navigationController];
+        [[PiptureAppDelegate instance] showVideo:0 navigationController:self.navigationController noNavi:NO];
     }
 }
 

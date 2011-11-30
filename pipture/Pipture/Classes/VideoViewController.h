@@ -25,5 +25,7 @@
 @property (retain, nonatomic) UIBarButtonItem *histroyButton;
 @property (retain, nonatomic) IBOutlet UIButton *sendButton;
 
+@property (assign, nonatomic) BOOL simpleMode;
+
 
 @end

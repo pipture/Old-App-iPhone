@@ -19,6 +19,9 @@ enum LibraryViewType {
 @interface LibraryViewController : UIViewController<UITableViewDelegate, UITableViewDataSource,AlbumListViewDelegate>
 {
     enum LibraryViewType viewType;
+    
+    NSMutableArray * topsArray;
+    NSMutableArray * newsArray;
 }
 - (IBAction)tabChanged:(id)sender;
 
@@ -26,6 +29,7 @@ enum LibraryViewType {
 @property (retain, nonatomic) IBOutlet AlbumsListView *albumsView;
 @property (retain, nonatomic) IBOutlet UITableView *libraryTableView;
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;
+@property (assign, nonatomic) IBOutlet UITableViewCell *libraryViewCell;
 
 
 @end

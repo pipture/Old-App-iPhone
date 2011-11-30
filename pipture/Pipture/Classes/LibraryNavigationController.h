@@ -21,6 +21,4 @@
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *closeLibraryButton;
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 
-@property (retain, nonatomic) IBOutlet LibraryViewController *startPage;
-
 @end

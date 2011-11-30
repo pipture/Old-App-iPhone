@@ -8,6 +8,7 @@
 
 #import "LibraryViewController.h"
 #import "PiptureAppDelegate.h"
+#import "Timeslot.h"
 
 @implementation LibraryViewController
 
@@ -15,6 +16,7 @@
 @synthesize albumsView;
 @synthesize libraryTableView;
 @synthesize subViewContainer;
+@synthesize libraryViewCell;
 
 
 - (void)didReceiveMemoryWarning
@@ -30,19 +32,13 @@
     [albumsView release];
     [libraryTableView release];
     [tabViewController release];
-
+    [newsArray release];
+    [topsArray release];
+    [libraryViewCell release];
     [super dealloc];
 }
 
 #pragma mark - View lifecycle
-
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView
-{
-}
-*/
-
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
@@ -50,6 +46,133 @@
     [super viewDidLoad];
     
     [albumsView readAlbums];
+
+    //TODO: load top, news
+    topsArray = [[NSMutableArray alloc] initWithCapacity:20];
+    newsArray = [[NSMutableArray alloc] initWithCapacity:20];
+    
+    
+    //TODO: temporary put images, not timeslots (get timeline from server in future)
+    UIImage * image = [UIImage imageNamed:@"thumb11"];
+    //TODO: need to remove in future
+    Timeslot * slot = [[Timeslot alloc] initWith:@"The NJ Bro" desc:@"Gemini" image:image];
+    [topsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb21"];
+    slot = [[Timeslot alloc] initWith:@"The Celebrity Quoter" desc:@"There's a guy" image:image];
+    [topsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb31"];
+    slot = [[Timeslot alloc] initWith:@"The Corporate Jerk" desc:@"I'm horny" image:image];
+    [topsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb41"];
+    slot = [[Timeslot alloc] initWith:@"The NJ Bro" desc:@"Gemini" image:image];
+    [topsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb51"];
+    slot = [[Timeslot alloc] initWith:@"The Celebrity Quoter" desc:@"There's a guy" image:image];
+    [topsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb61"];
+    slot = [[Timeslot alloc] initWith:@"The Corporate Jerk" desc:@"I'm horny" image:image];
+    [topsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb71"];
+    slot = [[Timeslot alloc] initWith:@"The NJ Bro" desc:@"Gemini" image:image];
+    [topsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb11"];
+    slot = [[Timeslot alloc] initWith:@"The Celebrity Quoter" desc:@"There's a guy" image:image];
+    [topsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb21"];
+    slot = [[Timeslot alloc] initWith:@"The Corporate Jerk" desc:@"I'm horny" image:image];
+    [topsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb31"];
+    slot = [[Timeslot alloc] initWith:@"The NJ Bro" desc:@"Gemini" image:image];
+    [topsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb41"];
+    slot = [[Timeslot alloc] initWith:@"The Celebrity Quoter" desc:@"There's a guy" image:image];
+    [topsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb51"];
+    slot = [[Timeslot alloc] initWith:@"The Corporate Jerk" desc:@"I'm horny" image:image];
+    [topsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb71"];
+    slot = [[Timeslot alloc] initWith:@"The NJ Bro" desc:@"Gemini" image:image];
+    [newsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb61"];
+    slot = [[Timeslot alloc] initWith:@"The Celebrity Quoter" desc:@"There's a guy" image:image];
+    [newsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb51"];
+    slot = [[Timeslot alloc] initWith:@"The Corporate Jerk" desc:@"I'm horny" image:image];
+    [newsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb41"];
+    slot = [[Timeslot alloc] initWith:@"The NJ Bro" desc:@"Gemini" image:image];
+    [newsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb31"];
+    slot = [[Timeslot alloc] initWith:@"The Celebrity Quoter" desc:@"There's a guy" image:image];
+    [newsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb21"];
+    slot = [[Timeslot alloc] initWith:@"The Corporate Jerk" desc:@"I'm horny" image:image];
+    [newsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb11"];
+    slot = [[Timeslot alloc] initWith:@"The NJ Bro" desc:@"Gemini" image:image];
+    [newsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb11"];
+    slot = [[Timeslot alloc] initWith:@"The Celebrity Quoter" desc:@"There's a guy" image:image];
+    [newsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb21"];
+    slot = [[Timeslot alloc] initWith:@"The Corporate Jerk" desc:@"I'm horny" image:image];
+    [newsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb31"];
+    slot = [[Timeslot alloc] initWith:@"The NJ Bro" desc:@"Gemini" image:image];
+    [newsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb41"];
+    slot = [[Timeslot alloc] initWith:@"The Celebrity Quoter" desc:@"There's a guy" image:image];
+    [newsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"thumb51"];
+    slot = [[Timeslot alloc] initWith:@"The Corporate Jerk" desc:@"I'm horny" image:image];
+    [newsArray addObject:slot];
+    [slot release];
     
     [tabViewController setSelectedSegmentIndex:LibraryViewType_Albums];
     [self tabChanged:tabViewController];
@@ -63,69 +186,80 @@
     [self setLibraryTableView:nil];
     [self setTabViewController:nil];
     
+    [self setLibraryViewCell:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    //TODO: 
-    return 40;
+    switch (viewType) {
+        case LibraryViewType_New:
+            return [newsArray count];
+        case LibraryViewType_Top:
+            return [topsArray count];
+        case LibraryViewType_Albums:
+            return 0;
+    }
 }
 
 - (void)showAlbumDetail:(int)albumId {
-    AlbumDetailInfoController* vc = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfoPage" bundle:nil];
+    AlbumDetailInfoController* vc = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
     [self.navigationController pushViewController:vc animated:YES];
     [vc release];
 }
 
-// Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
-// Cell gets various attributes set automatically based on table (separators) and data source (accessory views, editing controls)
+- (void)fillCell:(int)row cell:(UITableViewCell *)cell{
+    Timeslot * slot = nil;
+    
+    switch (viewType) {
+        case LibraryViewType_New:
+            slot = [newsArray objectAtIndex:row];
+            break;
+        case LibraryViewType_Top:
+            slot = [topsArray objectAtIndex:row];
+            break;
+        case LibraryViewType_Albums:
+            break;
+    }
+    
+    if (slot != nil) {
+        UIImageView * image = (UIImageView*)[cell viewWithTag:1];
+        UILabel * series = (UILabel*)[cell viewWithTag:2];
+        UILabel * title = (UILabel*)[cell viewWithTag:3];
+        
+        image.image = slot.image;
+        //[slot.image release];
+        series.text = slot.title;
+        title.text = slot.desc;
+    }
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     //TODO: 
     static NSString * const kCellID = @"CellID";
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
-    int row = indexPath.row;
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:kCellID] autorelease];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        [[NSBundle mainBundle] loadNibNamed:@"LibraryTableItemView" owner:self options:nil];
+        cell = libraryViewCell;
+        libraryViewCell = nil;
     }
     
-    switch (viewType) {
-        case LibraryViewType_New:
-            cell.textLabel.text = [NSString stringWithFormat:@"new row %d", row];
-            break;
-        case LibraryViewType_Top:
-            cell.textLabel.text = [NSString stringWithFormat:@"top row %d", row];
-            break;
-        case LibraryViewType_Albums:
-            //do nothing
-            break;
-            
-    }
-    
-    return cell;
+    [self fillCell:[indexPath row] cell:cell];
+        
+    return cell;    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     int row = indexPath.row;
    
-    [[PiptureAppDelegate instance] showVideo:row navigationController:self.navigationController];
+    [[PiptureAppDelegate instance] showVideo:row navigationController:self.navigationController noNavi:YES];
 }
 
 - (IBAction)tabChanged:(id)sender {
     viewType = [tabViewController selectedSegmentIndex];
     
-    if ([[subViewContainer subviews] count] > 0) {
-        [[[subViewContainer subviews] objectAtIndex:0] removeFromSuperview];
+    if ([[subViewContainer subviews] count] > 1) {//skip image view
+        [[[subViewContainer subviews] objectAtIndex:1] removeFromSuperview];
     }
     
     switch (viewType) {

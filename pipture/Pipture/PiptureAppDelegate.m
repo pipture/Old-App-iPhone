@@ -88,9 +88,10 @@ static PiptureAppDelegate *instance;
      */
 }
 
-- (void)showVideo:(int)videoId navigationController:(UINavigationController*)navigationController {
+- (void)showVideo:(int)videoId navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi{
     VideoViewController* vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
     vc.wantsFullScreenLayout = YES;
+    vc.simpleMode = noNavi;
     [navigationController pushViewController:vc animated:YES];
     [vc release];
 }
@@ -125,16 +126,6 @@ static PiptureAppDelegate *instance;
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
     
     [self.window setRootViewController:libraryNavigationController];
-    
-/*    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(animationDidStop:animationIDfinished:finished:context:)];
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.5];
-    
-    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:libraryNavigationController.view cache:YES];
-
-    [self.window setRootViewController:libraryNavigationController];
-    [UIView commitAnimations];*/
 }
 
 @end

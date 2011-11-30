@@ -13,7 +13,6 @@
 @implementation LibraryNavigationController
 @synthesize closeLibraryButton;
 @synthesize buyButton;
-@synthesize startPage;
 
 #pragma mark - View lifecycle
 
@@ -38,17 +37,20 @@
 - (void)dealloc {
     [closeLibraryButton release];
     [buyButton release];
-    [startPage release];
     [super dealloc];
 }
 
 - (IBAction)closeLibrary:(id)sender {
     [[PiptureAppDelegate instance] onHome];
-    //[self dismissModalViewControllerAnimated:YES];
 }
 
 - (IBAction)purchaseCredits:(id)sender {
     //TODO: In App Purchase
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Confirm your in-App Purchase" message:@"Do you want to comulate watching or sending up to 100 videos for $0.99?" delegate:self cancelButtonTitle:@"Close" otherButtonTitles:@"Buy",nil];
+    
+    [alert show];
+    [alert release];
 }
 
 

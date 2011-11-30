@@ -12,6 +12,9 @@
 {
     UIStatusBarStyle lastStatusStyle;
     UIBarStyle lastNaviStyle;
+    
+    NSMutableArray * historyArray;
 }
 @property (retain, nonatomic) IBOutlet UITableView *historyTableView;
+@property (retain, nonatomic) IBOutlet UITableViewCell *historyTableCell;
 @end
