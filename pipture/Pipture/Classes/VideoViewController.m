@@ -12,6 +12,7 @@
 @implementation VideoViewController
 @synthesize controlsPanel;
 @synthesize histroyButton;
+@synthesize videoContainer;
 @synthesize sendButton;
 @synthesize nextButton;
 @synthesize pauseButton;
@@ -25,12 +26,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    //The setup code (in viewDidLoad in your view controller)
-    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
-    [self.view addGestureRecognizer:singleFingerTap];
-    [singleFingerTap release];
-    
-  
     if (!simpleMode) {
         self.navigationItem.title = @"Video";
         histroyButton = [[UIBarButtonItem alloc] initWithTitle:@"History" style:UIBarButtonItemStylePlain target:self action:@selector(historyAction:)];
@@ -38,16 +33,58 @@
     } 
     prevButton.hidden = simpleMode;
     nextButton.hidden = simpleMode;
+
+    if (player != nil) {
+        [player release];
+    }
+    
+    //TODO: real url
+    NSString *url = [[NSBundle mainBundle] pathForResource:@"video1" ofType:@"mp4"];
+    player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL fileURLWithPath:url]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieFinishedCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:player];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieEnterFullScreen:) name:MPMoviePlayerWillEnterFullscreenNotification object:player];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieExitFullScreen:) name:MPMoviePlayerWillExitFullscreenNotification object:player];
+    
+    player.fullscreen = NO;
+    player.scalingMode = MPMovieScalingModeAspectFill;
+    player.controlStyle = MPMovieControlStyleNone;
+    
+    player.view.frame = CGRectMake(0, 0, 200, 100); //videoContainer.frame;
+    [videoContainer addSubview:player.view];
+
+    //The setup code (in viewDidLoad in your view controller)
+    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    [player.view addGestureRecognizer:singleFingerTap];
+    [singleFingerTap release];
+    
+    //---play movie---
+    [player play];    
+}
+
+- (void) movieEnterFullScreen:(NSNotification*) aNotification {
+    NSLog(@"fullscreen");
+}
+
+- (void) movieExitFullScreen:(NSNotification*) aNotification {
+    NSLog(@"not fullscreen");
+}
+
+- (void) movieFinishedCallback:(NSNotification*) aNotification {
+    //MPMoviePlayerController *curPlayer = [aNotification object];
 }
 
 - (void)viewDidUnload
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:player];    
+    
     [self setControlsPanel:nil];
     [self setSendButton:nil];
     [self setNextButton:nil];
     [self setPauseButton:nil];
     [self setPrevButton:nil];
     [self setSlider:nil];
+    [self setVideoContainer:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -126,18 +163,53 @@
 - (void)historyAction:(id)sender {
     HistoryViewController* vc = [[HistoryViewController alloc] initWithNibName:@"HistoryView" bundle:nil];
     
-    //    vvc.navigationItem.title = @"Video";
     [self.navigationController pushViewController:vc animated:YES];
     [vc release];  
 }
 
 - (void)dealloc {
+    [player release];
     [controlsPanel release];
     [sendButton release];
     [nextButton release];
     [pauseButton release];
     [prevButton release];
     [slider release];
+    [videoContainer release];
     [super dealloc];
 }
+
+// Prepares the current queue for playback, interrupting any active (non-mixible) audio sessions.
+// Automatically invoked when -play is called if the player is not already prepared.
+- (void)prepareToPlay {
+    NSLog(@"preparing");
+}
+
+// Plays items from the current queue, resuming paused playback if possible.
+- (void)play {
+    NSLog(@"playing");
+}
+
+// Pauses playback if playing.
+- (void)pause {
+    NSLog(@"paused");
+}
+
+// Ends playback. Calling -play again will start from the beginnning of the queue.
+- (void)stop {
+    NSLog(@"stopped");
+}
+
+- (void)beginSeekingForward {
+    NSLog(@"forw");
+}
+
+- (void)beginSeekingBackward {
+    NSLog(@"back");
+}
+
+- (void)endSeeking {
+    NSLog(@"seeked");
+}
+
 @end

@@ -8,21 +8,25 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MFMailComposeViewController.h>
+#import <MediaPlayer/MediaPlayer.h>
 
-@interface VideoViewController : UIViewController <MFMailComposeViewControllerDelegate>
+@interface VideoViewController : UIViewController <MFMailComposeViewControllerDelegate, MPMediaPlayback>
 {
     UIStatusBarStyle lastStatusStyle;
     UIBarStyle lastNaviStyle;
     BOOL controlsHidded;
+    MPMoviePlayerController *player;
 }
 
 - (void)updateControlsAnimated:(BOOL)animated;
 - (IBAction)sendAction:(id)sender;
 - (void)historyAction:(id)sender;
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer;
+- (void) movieFinishedCallback:(NSNotification*) aNotification;
 
 @property (retain, nonatomic) IBOutlet UIView *controlsPanel;
 @property (retain, nonatomic) UIBarButtonItem *histroyButton;
+@property (retain, nonatomic) IBOutlet UIView *videoContainer;
 
 @property (retain, nonatomic) IBOutlet UIButton *sendButton;
 @property (retain, nonatomic) IBOutlet UIButton *nextButton;

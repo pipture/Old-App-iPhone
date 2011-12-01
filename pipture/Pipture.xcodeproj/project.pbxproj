@@ -72,6 +72,8 @@
 		38D74557147E6DAB00062441 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D74556147E6DAB00062441 /* QuartzCore.framework */; };
 		38D74558147E6DBE00062441 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE6147A631E004DE1E0 /* CoreGraphics.framework */; };
 		38D7455C147F728200062441 /* AlbumDetailPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D7455B147F728200062441 /* AlbumDetailPage.m */; };
+		38FAFE30148766A2003EA542 /* video1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 38FAFE2F148766A2003EA542 /* video1.mp4 */; };
+		38FAFE33148768B5003EA542 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38FAFE32148768B5003EA542 /* MediaPlayer.framework */; };
 		8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8811ED94147B6FC5008CC877 /* HomeView.xib */; };
 		88BE44A21483893C002D30ED /* PiptureModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44A11483893C002D30ED /* PiptureModel.m */; };
 		88BE44A614838A31002D30ED /* Timeslot.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44A514838A31002D30ED /* Timeslot.m */; };
@@ -101,8 +103,8 @@
 		381935CB147E2C850049B30E /* AlbumItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumItemView.xib; sourceTree = "<group>"; };
 		381935CD147E2F180049B30E /* AlbumItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumItemViewController.h; sourceTree = "<group>"; };
 		381935CE147E2F180049B30E /* AlbumItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumItemViewController.m; sourceTree = "<group>"; };
-		385FC396147CD7A6001CDF43 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoViewController.h; path = Classes/VideoViewController.h; sourceTree = "<group>"; };
-		385FC397147CD7A6001CDF43 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoViewController.m; path = Classes/VideoViewController.m; sourceTree = "<group>"; };
+		385FC396147CD7A6001CDF43 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoViewController.h; sourceTree = "<group>"; };
+		385FC397147CD7A6001CDF43 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoViewController.m; sourceTree = "<group>"; };
 		385FC39C147CD818001CDF43 /* VideoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoView.xib; sourceTree = "<group>"; };
 		386448EF148739E3008893B5 /* playercontrols.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playercontrols.png; sourceTree = "<group>"; };
 		386448F0148739E3008893B5 /* powerbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = powerbutton.png; sourceTree = "<group>"; };
@@ -129,8 +131,8 @@
 		38989CEC147A631F004DE1E0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		38989CEE147A631F004DE1E0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		38989CF0147A631F004DE1E0 /* Pipture-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Pipture-Prefix.pch"; sourceTree = "<group>"; };
-		38989CF1147A631F004DE1E0 /* PiptureAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiptureAppDelegate.h; sourceTree = "<group>"; };
-		38989CF2147A631F004DE1E0 /* PiptureAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PiptureAppDelegate.m; sourceTree = "<group>"; };
+		38989CF1147A631F004DE1E0 /* PiptureAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PiptureAppDelegate.h; path = ../PiptureAppDelegate.h; sourceTree = "<group>"; };
+		38989CF2147A631F004DE1E0 /* PiptureAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PiptureAppDelegate.m; path = ../PiptureAppDelegate.m; sourceTree = "<group>"; };
 		38989CF9147A6320004DE1E0 /* PiptureTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PiptureTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		38989CFA147A6320004DE1E0 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		38989D02147A6320004DE1E0 /* PiptureTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PiptureTests-Info.plist"; sourceTree = "<group>"; };
@@ -169,6 +171,8 @@
 		38D74556147E6DAB00062441 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		38D7455A147F728200062441 /* AlbumDetailPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailPage.h; sourceTree = "<group>"; };
 		38D7455B147F728200062441 /* AlbumDetailPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailPage.m; sourceTree = "<group>"; };
+		38FAFE2F148766A2003EA542 /* video1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = video1.mp4; sourceTree = "<group>"; };
+		38FAFE32148768B5003EA542 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		8811ED94147B6FC5008CC877 /* HomeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeView.xib; sourceTree = "<group>"; };
 		88BE44A01483893C002D30ED /* PiptureModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureModel.h; sourceTree = "<group>"; };
 		88BE44A11483893C002D30ED /* PiptureModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModel.m; sourceTree = "<group>"; };
@@ -185,6 +189,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38FAFE33148768B5003EA542 /* MediaPlayer.framework in Frameworks */,
 				38D74558147E6DBE00062441 /* CoreGraphics.framework in Frameworks */,
 				38D74557147E6DAB00062441 /* QuartzCore.framework in Frameworks */,
 				381935C1147D04540049B30E /* MessageUI.framework in Frameworks */,
@@ -222,6 +227,7 @@
 		387A94641484F8C2000F9433 /* mockdata */ = {
 			isa = PBXGroup;
 			children = (
+				38FAFE2F148766A2003EA542 /* video1.mp4 */,
 				386448F614873BB2008893B5 /* sendBtn.png */,
 				386448F714873BB2008893B5 /* nextBtn.png */,
 				386448F814873BB2008893B5 /* pauseBtn.png */,
@@ -283,6 +289,7 @@
 		38989CE1147A631E004DE1E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				38FAFE32148768B5003EA542 /* MediaPlayer.framework */,
 				38D74556147E6DAB00062441 /* QuartzCore.framework */,
 				381935C0147D04540049B30E /* MessageUI.framework */,
 				38989CE2147A631E004DE1E0 /* UIKit.framework */,
@@ -300,10 +307,6 @@
 				88BE449F148387DB002D30ED /* Model */,
 				38989D1D147A6696004DE1E0 /* Classes */,
 				38989D17147A6483004DE1E0 /* Resources */,
-				38989CF1147A631F004DE1E0 /* PiptureAppDelegate.h */,
-				38989CF2147A631F004DE1E0 /* PiptureAppDelegate.m */,
-				385FC396147CD7A6001CDF43 /* VideoViewController.h */,
-				385FC397147CD7A6001CDF43 /* VideoViewController.m */,
 				38989CE9147A631F004DE1E0 /* Supporting Files */,
 			);
 			path = Pipture;
@@ -360,6 +363,10 @@
 		38989D1D147A6696004DE1E0 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				38989CF1147A631F004DE1E0 /* PiptureAppDelegate.h */,
+				38989CF2147A631F004DE1E0 /* PiptureAppDelegate.m */,
+				385FC396147CD7A6001CDF43 /* VideoViewController.h */,
+				385FC397147CD7A6001CDF43 /* VideoViewController.m */,
 				38441FD9147FA5AD009B9D4E /* HomeScreen */,
 				38D74559147F701200062441 /* Library */,
 			);
@@ -521,6 +528,7 @@
 				386448FB14873BB2008893B5 /* nextBtn.png in Resources */,
 				386448FC14873BB2008893B5 /* pauseBtn.png in Resources */,
 				386448FD14873BB2008893B5 /* prevBtn.png in Resources */,
+				38FAFE30148766A2003EA542 /* video1.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
