@@ -134,7 +134,10 @@
 }
 
 - (void)detailAlbumShow:(id)sender {
-    [albumsDelegate showAlbumDetail:[sender tag]];
+    //TODO: now opens only aimless looser 
+    if ([sender tag] == 4) {
+        [albumsDelegate showAlbumDetail:[sender tag]];
+    }
 }
 
 @end
