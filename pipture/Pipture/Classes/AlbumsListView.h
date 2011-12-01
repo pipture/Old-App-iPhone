@@ -19,6 +19,7 @@
 @interface AlbumsListView : UIScrollView
 {
     NSMutableArray * albumsArray;
+    NSMutableArray * albumsItemsArray;
 }
 
 - (void)readAlbums;

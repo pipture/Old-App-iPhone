@@ -15,7 +15,7 @@
 #define ITEM_HEIGHT 180
 #define ITEM_WIDTH 106
 
-#define ITEM_COUNT 40
+//#define ITEM_COUNT 40
 
 @implementation AlbumsListView
 @synthesize albumsDelegate;
@@ -26,84 +26,81 @@
 }
 
 - (void)readAlbums{
+    
+    albumsItemsArray = [[NSMutableArray alloc] initWithCapacity:20];
+    
+    //TODO: temporary put images, not timeslots (get timeline from server in future)
+    UIImage * image = [UIImage imageNamed:@"alb5"];
+    Timeslot * slot = [[Timeslot alloc] initWith:@"The Profesor Hayes" desc:@"PREMIERE" image:image];
+    [albumsItemsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"alb6"];
+    slot = [[Timeslot alloc] initWith:@"The Fighting Couple" desc:@"COMMING SOON" image:image];
+    [albumsItemsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"alb4"];
+    slot = [[Timeslot alloc] initWith:@"Brutally Honest" desc:@"COMMING SOON" image:image];
+    [albumsItemsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"alb2"];
+    slot = [[Timeslot alloc] initWith:@"Coach Leonard" desc:@"" image:image];
+    [albumsItemsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"alb3"];
+    slot = [[Timeslot alloc] initWith:@"The Aimless Loser" desc:@"" image:image];
+    [albumsItemsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"alb1"];
+    slot = [[Timeslot alloc] initWith:@"The Corporate Jerk" desc:@"" image:image];
+    [albumsItemsArray addObject:slot];
+    [slot release];
+    
+    
+    image = [UIImage imageNamed:@"alb5"];
+    slot = [[Timeslot alloc] initWith:@"The Profesor Hayes" desc:@"" image:image];
+    [albumsItemsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"alb6"];
+    slot = [[Timeslot alloc] initWith:@"The Fighting Couple" desc:@"" image:image];
+    [albumsItemsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"alb4"];
+    slot = [[Timeslot alloc] initWith:@"Brutally Honest" desc:@"" image:image];
+    [albumsItemsArray addObject:slot];
+    [slot release];
+    
+    
+    image = [UIImage imageNamed:@"alb2"];
+    slot = [[Timeslot alloc] initWith:@"Coach Leonard" desc:@"" image:image];
+    [albumsItemsArray addObject:slot];
+    [slot release];
+    
+    image = [UIImage imageNamed:@"alb3"];
+    slot = [[Timeslot alloc] initWith:@"The Aimless Loser" desc:@"" image:image];
+    [albumsItemsArray addObject:slot];
+    [slot release];
+    
     //TODO: from server
     if (albumsArray == nil) {
-        albumsArray = [[NSMutableArray alloc] initWithCapacity:40];
+        albumsArray = [[NSMutableArray alloc] initWithCapacity:[albumsItemsArray count]];
     }
-    /*
-    //TODO: temporary put images, not timeslots (get timeline from server in future)
-    UIImage * image = [UIImage imageNamed:@"thumb1"];
-    Timeslot * slot = [[Timeslot alloc] initWith:@"Living at my parents" desc:@"Season1, Album1, Pip 1\nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    //TODO: if we will get different images (different adresses in memory) - release is neccessary
-    //[image release];
-    [historyArray addObject:slot];
-    [slot release];
     
-    
-    image = [UIImage imageNamed:@"thumb2"];
-    slot = [[Timeslot alloc] initWith:@"Season 2" desc:@"Trailer" image:image];
-    [historyArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"thumb3"];
-    slot = [[Timeslot alloc] initWith:@"The Aimless Loser" desc:@"Season 1, Album 2\nTrailer" image:image];
-    [historyArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"thumb1"];
-    slot = [[Timeslot alloc] initWith:@"Living at my parents" desc:@"Season1, Album1, Pip 1\nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [historyArray addObject:slot];
-    [slot release];
-    
-    
-    image = [UIImage imageNamed:@"thumb2"];
-    slot = [[Timeslot alloc] initWith:@"Season 2" desc:@"Trailer" image:image];
-    [historyArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"thumb3"];
-    slot = [[Timeslot alloc] initWith:@"The Aimless Loser" desc:@"Season 1, Album 2\nTrailer" image:image];
-    [historyArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"thumb1"];
-    slot = [[Timeslot alloc] initWith:@"Living at my parents" desc:@"Season1, Album1, Pip 1\nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [historyArray addObject:slot];
-    [slot release];
-    
-    
-    image = [UIImage imageNamed:@"thumb2"];
-    slot = [[Timeslot alloc] initWith:@"Season 2" desc:@"Trailer" image:image];
-    [historyArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"thumb3"];
-    slot = [[Timeslot alloc] initWith:@"The Aimless Loser" desc:@"Season 1, Album 2\nTrailer" image:image];
-    [historyArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"thumb1"];
-    slot = [[Timeslot alloc] initWith:@"Living at my parents" desc:@"Season1, Album1, Pip 1\nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [historyArray addObject:slot];
-    [slot release];
-    
-    
-    image = [UIImage imageNamed:@"thumb2"];
-    slot = [[Timeslot alloc] initWith:@"Season 2" desc:@"Trailer" image:image];
-    [historyArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"thumb3"];
-    slot = [[Timeslot alloc] initWith:@"The Aimless Loser" desc:@"Season 1, Album 2\nTrailer" image:image];
-    [historyArray addObject:slot];
-    [slot release];*/
-    
-    
-    for (int i = 0; i < ITEM_COUNT; i++) {
+    for (int i = 0; i < [albumsItemsArray count]; i++) {
         AlbumItemViewController * item = [[AlbumItemViewController alloc] initWithNibName:@"AlbumItemView" bundle:nil];
         [item loadView];
         
+        Timeslot * slot = [albumsItemsArray objectAtIndex:i];
         //The setup code (in viewDidLoad in your view controller)
+        [item.detailButton setImage:slot.image forState:UIControlStateNormal];
+        item.titleLabel.text = slot.title;
+        item.tagLabel.text = slot.desc;
         item.detailButton.tag = i;
         [item.detailButton addTarget:self action:@selector(detailAlbumShow:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -120,7 +117,7 @@
     
     CGRect rect = self.frame;
     
-    int rows = (ITEM_COUNT + (3 - 1)) / 3;
+    int rows = ([albumsItemsArray count] + (3 - 1)) / 3;
     self.contentSize = CGSizeMake(rect.size.width, ITEM_HEIGHT * rows);
     
     int i = 0;

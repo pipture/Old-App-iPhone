@@ -9,9 +9,12 @@
 
 
 @interface AlbumDetailPage : UIScrollView
+{
+    NSMutableArray * credits;
+}
 
 - (void)prepareLayout;
 
 @property (retain, nonatomic) IBOutlet UIImageView *posterImage;
-@property (retain, nonatomic) IBOutlet UILabel *cretitsLabel;
+
 @end

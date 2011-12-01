@@ -23,7 +23,12 @@
 
 @property (retain, nonatomic) IBOutlet UIView *controlsPanel;
 @property (retain, nonatomic) UIBarButtonItem *histroyButton;
+
 @property (retain, nonatomic) IBOutlet UIButton *sendButton;
+@property (retain, nonatomic) IBOutlet UIButton *nextButton;
+@property (retain, nonatomic) IBOutlet UIButton *pauseButton;
+@property (retain, nonatomic) IBOutlet UIButton *prevButton;
+@property (retain, nonatomic) IBOutlet UISlider *slider;
 
 @property (assign, nonatomic) BOOL simpleMode;
 

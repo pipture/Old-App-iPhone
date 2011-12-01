@@ -124,7 +124,7 @@
 							<object class="IBUIButton" id="552258097">
 								<reference key="NSNextResponder" ref="981790129"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{124, 12}, {72, 37}}</string>
+								<string key="NSFrame">{{137, 7.5}, {46, 46}}</string>
 								<reference key="NSSuperview" ref="981790129"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="1031849712"/>
@@ -133,7 +133,6 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
-								<int key="IBUIButtonType">1</int>
 								<string key="IBUINormalTitle">Watch</string>
 								<reference key="IBUIHighlightedTitleColor" ref="548411468"/>
 								<object class="NSColor" key="IBUINormalTitleColor">
@@ -141,6 +140,10 @@
 									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 								</object>
 								<reference key="IBUINormalTitleShadowColor" ref="345376802"/>
+								<object class="NSCustomResource" key="IBUINormalImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">powerbutton.png</string>
+								</object>
 								<reference key="IBUIFontDescription" ref="287005382"/>
 								<reference key="IBUIFont" ref="469299034"/>
 							</object>
@@ -167,6 +170,7 @@
 								<string key="NSFrame">{{104, 10}, {112, 21}}</string>
 								<reference key="NSSuperview" ref="1031849712"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:328</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -544,6 +548,10 @@
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
+		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="NS.key.0">powerbutton.png</string>
+			<string key="NS.object.0">{46, 46}</string>
+		</object>
 		<string key="IBCocoaTouchPluginVersion">933</string>
 	</data>
 </archive>

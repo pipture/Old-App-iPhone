@@ -13,6 +13,10 @@
 @synthesize controlsPanel;
 @synthesize histroyButton;
 @synthesize sendButton;
+@synthesize nextButton;
+@synthesize pauseButton;
+@synthesize prevButton;
+@synthesize slider;
 @synthesize simpleMode;
 #pragma mark - View lifecycle
 
@@ -31,13 +35,19 @@
         self.navigationItem.title = @"Video";
         histroyButton = [[UIBarButtonItem alloc] initWithTitle:@"History" style:UIBarButtonItemStylePlain target:self action:@selector(historyAction:)];
         self.navigationItem.rightBarButtonItem = histroyButton;
-    }    
+    } 
+    prevButton.hidden = simpleMode;
+    nextButton.hidden = simpleMode;
 }
 
 - (void)viewDidUnload
 {
     [self setControlsPanel:nil];
     [self setSendButton:nil];
+    [self setNextButton:nil];
+    [self setPauseButton:nil];
+    [self setPrevButton:nil];
+    [self setSlider:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -124,6 +134,10 @@
 - (void)dealloc {
     [controlsPanel release];
     [sendButton release];
+    [nextButton release];
+    [pauseButton release];
+    [prevButton release];
+    [slider release];
     [super dealloc];
 }
 @end

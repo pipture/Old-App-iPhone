@@ -184,12 +184,10 @@
     
     //TODO: check for current timeslot
     if (page == 0) {
-        //TODO: set power button
-        actionButton.titleLabel.text = @"Watch";
+        [actionButton setImage:[UIImage imageNamed:@"powerbutton.png"] forState:UIControlStateNormal];
     } else {
         scheduleMode = YES;
-        //TODO: set back button
-        actionButton.titleLabel.text = @"Home";
+        [actionButton setImage:[UIImage imageNamed:@"rewertbutton.png"] forState:UIControlStateNormal];
     }
     
     if (scheduleMode) {
