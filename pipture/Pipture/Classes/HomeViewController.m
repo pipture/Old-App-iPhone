@@ -20,14 +20,6 @@
 @synthesize nextButton;
 @synthesize scheduleButton;
 
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -102,13 +94,6 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
-}
-
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 - (int)getPageNumber
@@ -243,18 +228,40 @@
     [self scrollToPage:page];
 }
 
+- (void)scrollToCurPage {
+    //scroll to top
+    int page = [self getPageNumber];
+    int top = page*scrollView.frame.size.height;
+    if (scrollView.contentOffset.y == top) {
+        [self updateControls];
+    } else {
+        [scrollView scrollRectToVisible:CGRectMake(0, top, 10, scrollView.frame.size.height) animated:YES];
+    }
+}
+
+- (void)scrollToTopPage {
+    //scroll to top
+    if (scrollView.contentOffset.y == 0) {
+        [self updateControls];
+    } else {
+        [scrollView scrollRectToVisible:CGRectMake(0, 0, 10, scrollView.frame.size.height) animated:YES];
+    }
+}
+
 //The event handling method
 - (void)actionButton:(id)sender {
     //TODO: check for current timeslot
     if (scheduleMode && [self getPageNumber] != 0) {
         [self scheduleAction:nil];
     } else {
+        [self scrollToCurPage];
         [[PiptureAppDelegate instance] showVideo:0 navigationController:self.navigationController noNavi:NO];
     }
 }
 
 //The event handling method
 - (void)libraryBarResponder:(UITapGestureRecognizer *)recognizer {
+    [self scrollToCurPage];
     [[PiptureAppDelegate instance] onLibrary];
 }
 
@@ -262,12 +269,7 @@
     scheduleMode = !scheduleMode;
     
     if (!scheduleMode) {
-        //scroll to top
-        if ([self getPageNumber] == 0) {
-            [self updateControls];
-        } else {
-            [scrollView scrollRectToVisible:CGRectMake(0, 0, 10, 10) animated:YES];
-        }
+        [self scrollToTopPage];
     } else {
         [self updateControls];
     }

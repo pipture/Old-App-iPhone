@@ -98,14 +98,15 @@
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    
+    controlsHidded = YES;
+    
+    [self updateControlsAnimated:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    controlsHidded = YES;
-    
-    [self updateControlsAnimated:NO];
+   
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
