@@ -18,6 +18,7 @@
 @synthesize pauseButton;
 @synthesize prevButton;
 @synthesize slider;
+@synthesize tapRecognizer;
 @synthesize simpleMode;
 #pragma mark - View lifecycle
 
@@ -43,31 +44,24 @@
     player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL fileURLWithPath:url]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieFinishedCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:player];
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieEnterFullScreen:) name:MPMoviePlayerWillEnterFullscreenNotification object:player];
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieExitFullScreen:) name:MPMoviePlayerWillExitFullscreenNotification object:player];
     
     player.fullscreen = NO;
     player.scalingMode = MPMovieScalingModeAspectFill;
     player.controlStyle = MPMovieControlStyleNone;
     
-    player.view.frame = CGRectMake(0, 0, 200, 100); //videoContainer.frame;
-    [videoContainer addSubview:player.view];
+    player.view.frame = videoContainer.frame;
 
     //The setup code (in viewDidLoad in your view controller)
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     [player.view addGestureRecognizer:singleFingerTap];
+    self.tapRecognizer = (UITapGestureRecognizer *)singleFingerTap;
+    tapRecognizer.delegate = self ;
     [singleFingerTap release];
+
+    [videoContainer addSubview:player.view];
     
     //---play movie---
     [player play];    
-}
-
-- (void) movieEnterFullScreen:(NSNotification*) aNotification {
-    NSLog(@"fullscreen");
-}
-
-- (void) movieExitFullScreen:(NSNotification*) aNotification {
-    NSLog(@"not fullscreen");
 }
 
 - (void) movieFinishedCallback:(NSNotification*) aNotification {
@@ -85,6 +79,7 @@
     [self setPrevButton:nil];
     [self setSlider:nil];
     [self setVideoContainer:nil];
+    [self setTapRecognizer:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -177,6 +172,7 @@
     [prevButton release];
     [slider release];
     [videoContainer release];
+    [tapRecognizer release];
     [super dealloc];
 }
 
@@ -211,6 +207,11 @@
 
 - (void)endSeeking {
     NSLog(@"seeked");
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    [self tapResponder:(UITapGestureRecognizer*)gestureRecognizer];
+    return YES;
 }
 
 @end

@@ -10,7 +10,7 @@
 #import <MessageUI/MFMailComposeViewController.h>
 #import <MediaPlayer/MediaPlayer.h>
 
-@interface VideoViewController : UIViewController <MFMailComposeViewControllerDelegate, MPMediaPlayback>
+@interface VideoViewController : UIViewController <MFMailComposeViewControllerDelegate, MPMediaPlayback, UIGestureRecognizerDelegate>
 {
     UIStatusBarStyle lastStatusStyle;
     UIBarStyle lastNaviStyle;
@@ -33,6 +33,7 @@
 @property (retain, nonatomic) IBOutlet UIButton *pauseButton;
 @property (retain, nonatomic) IBOutlet UIButton *prevButton;
 @property (retain, nonatomic) IBOutlet UISlider *slider;
+@property (retain, nonatomic) UITapGestureRecognizer *tapRecognizer;
 
 @property (assign, nonatomic) BOOL simpleMode;
 
