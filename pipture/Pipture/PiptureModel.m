@@ -10,7 +10,8 @@
 
 @interface PiptureModel(Private)
 
--(NSString*)buildURLWithRequest:(NSString*)request params:(id)params,...;
+-(NSURL*)buildURLWithRequest:(NSString*)request params:(id)params,...;
+- (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult;
 
 @end 
 
@@ -22,6 +23,8 @@
 NSString *END_POINT_URL;
 NSString *GET_TIMESLOTS_REQUEST;
 NSString *GET_CURRENT_TIMESLOTS_REQUEST;
+
+const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
 
 - (id)init
 {
@@ -47,23 +50,57 @@ NSString *GET_CURRENT_TIMESLOTS_REQUEST;
     [target performSelector:callback withObject:[NSArray arrayWithObjects:nil]];
 }
 
+
+
 -(void)getTimeslotsFromCurrentWithMaxCount:(NSInteger)maxCount forTarget:(id)target callback:(SEL)callback
 {
-    NSString* url = [self buildURLWithRequest:GET_CURRENT_TIMESLOTS_REQUEST params:[NSNumber numberWithInt:maxCount]];
-    __block DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^{
-        //parse response
-        [target performSelector:callback withObject:[NSArray arrayWithObjects:nil]];
-        [request release];
+    NSURL* url = [self buildURLWithRequest:GET_CURRENT_TIMESLOTS_REQUEST params:[NSNumber numberWithInt:maxCount]];
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(Byte resultCode, NSDictionary* jsonResult){
+        NSArray* timeslots = nil;
+        if (resultCode == 0) 
+        {
+            timeslots = [self parseTimeslotList: jsonResult];            
+        }   
+        [target performSelector:callback withObject:timeslots];
+        if (timeslots)
+        {
+            [timeslots release];
+        }
+    
     }];
-
-    [target performSelector:callback ];    
-    [request start];
+    
+    [request startExecute];
 }
 
--(NSString*)buildURLWithRequest:(NSString*)request params:(id)params,...
+- (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult {
+    NSMutableArray *timeslots= nil;
+
+    NSArray* jsonTimeslots = [jsonResult objectForKey:JSON_PARAM_TIMESLOTS];            
+    if (jsonTimeslots)
+    {
+        timeslots = [[NSMutableArray alloc] initWithCapacity:[jsonTimeslots count]];
+        for (NSDictionary*jsonTS in jsonTimeslots) {
+            Timeslot*t = [[Timeslot alloc] initWithJSON:jsonTS];
+            if (t)
+            {
+                [timeslots addObject:t];
+                [t release];
+            }
+            else
+            {
+                //TODO - process error
+            }            
+        }
+        
+    }
+    return timeslots;
+}
+
+
+-(NSURL*)buildURLWithRequest:(NSString*)request params:(id)params,...
 {
     //TODO
-    return END_POINT_URL;
+    return nil;
     
 }
 @end

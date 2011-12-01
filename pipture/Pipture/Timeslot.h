@@ -13,6 +13,8 @@
 @property(retain, nonatomic) NSDate* startTime;
 @property(retain, nonatomic) NSDate* endTime;
 @property(retain, nonatomic) NSString* title;
-@property(retain, nonatomic) NSString* screenImageURL;
+@property(retain, nonatomic) NSString* closupBackground;
+
+-(id)initWithJSON:(NSDictionary*)jsonData;
 
 @end

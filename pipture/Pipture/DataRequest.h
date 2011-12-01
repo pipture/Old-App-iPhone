@@ -8,13 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
-@interface DataRequest : NSObject
+typedef void (^DataRequestCallback)(Byte result, NSDictionary*);
 
-- (id)initWithURL:(NSURL*)url callback:(void (^)(void))callback;
+@interface DataRequest : NSObject<NSUR> {
+@private
+    DataRequestCallback callback_;
+}
+
+@property(readonly, nonatomic) NSURL* url;
+
+- (id)initWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
+- (void)startExecute;
+
 @end
 
 @interface DefaultDataRequestFactory : NSObject
-
-- (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(void (^)(void))callback;
+    NSURLConnection
+- (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
 
 @end

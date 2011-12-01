@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "DataRequest.h"
+#import "Timeslot.h"
+#import "SBJson.h"
 
 
 @interface PiptureModel : NSObject

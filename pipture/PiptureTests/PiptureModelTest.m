@@ -36,32 +36,32 @@ PiptureModel*target;
 }
 
 -(void)GetTimeSlotsFromCurrentWithMaxCountCallback:(NSArray*)result {
-    id mock = [OCMockObject  mockForClass:[Timeslot class]];
-    
-    
-    [[[mock stub] andReturn:@"stub"] title];
-    
-    Timeslot*d = [[Timeslot alloc] init];
-
-    NSLog([d title]);
-//    int cnt = [result count];
-//    STAssertTrue(3 == cnt, @"Result number of timeslots is not 3");
-//    Timeslot*ts;
+//    id mock = [OCMockObject  mockForClass:[Timeslot class]];
 //    
-//    NSDateFormatter *df = [[NSDateFormatter alloc] init];
-//    [df setDateFormat:@"yyyy-MM-dd hh:mm"];
-//    NSDate *startTime = [df dateFromString: @"2011-11-29 11:00"];                      
-//    NSDate *endTime = [df dateFromString: @"2011-11-29 11:30"];                      
+//    
+//    [[[mock stub] andReturn:@"stub"] title];
+//    
+//    Timeslot*d = [[Timeslot alloc] init];
 //
-//    ts = [result objectAtIndex:0];
-//    STAssertEquals(ts.startTime, startTime, @"Wrong start time for first timeslot");
-//    STAssertEquals(ts.endTime, endTime, @"Wrong end time for first timeslot");    
-//
-//    ts = [result objectAtIndex:1];    
-//    STAssertEquals(ts.title, @"TitleTest", @"Wrong title for second timeslot");
-//
-//    ts = [result objectAtIndex:2];    
-//    STAssertEquals([ts screenImageURL], @"http://pipture.test/screenImage3", @"Wrong screen image URL for third timeslot");
+//    NSLog([d title]);
+    int cnt = [result count];
+    STAssertTrue(3 == cnt, @"Result number of timeslots is not 3");
+    Timeslot*ts;
+    
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"yyyy-MM-dd hh:mm"];
+    NSDate *startTime = [df dateFromString: @"2011-11-29 11:00"];                      
+    NSDate *endTime = [df dateFromString: @"2011-11-29 11:30"];                      
+
+    ts = [result objectAtIndex:0];
+    STAssertEquals(ts.startTime, startTime, @"Wrong start time for first timeslot");
+    STAssertEquals(ts.endTime, endTime, @"Wrong end time for first timeslot");    
+
+    ts = [result objectAtIndex:1];    
+    STAssertEquals(ts.title, @"TitleTest", @"Wrong title for second timeslot");
+
+    ts = [result objectAtIndex:2];    
+    STAssertEquals([ts screenImageURL], @"http://pipture.test/screenImage3", @"Wrong screen image URL for third timeslot");
     
     
 }

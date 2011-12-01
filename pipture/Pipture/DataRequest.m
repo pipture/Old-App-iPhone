@@ -10,24 +10,32 @@
 
 @implementation DataRequest
 
-- (id)init
+@synthesize url = url_;
+
+- (id)initWithURL:(NSURL*)url callback:(DataRequestCallback)callback
 {
     self = [super init];
-    if (self) {
-        // Initialization code here.
+    if (self)
+    {
+        callback_ = callback;
+        url_ = url;
     }
-    
     return self;
 }
 
+- (void)startExecute 
+{
+    callback_(0, nil);
+}
 
 @end
 
 @implementation DefaultDataRequestFactory : NSObject
 
-- (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(void (^)(void))callback
+- (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback
 {
     return [[[DataRequest alloc]initWithURL:url callback:callback]autorelease];
 }
+
 
 @end
