@@ -12,11 +12,16 @@
 
 @interface VideoViewController : UIViewController <MFMailComposeViewControllerDelegate, MPMediaPlayback, UIGestureRecognizerDelegate>
 {
+    //for background loading
+    NSMutableArray * players;
+    
     UIStatusBarStyle lastStatusStyle;
     UIBarStyle lastNaviStyle;
     BOOL controlsHidded;
-    MPMoviePlayerController *player;
 }
+- (void)swapVideos;
+- (void)launchVideo:(MPMoviePlayerController *) player;
+- (void)stopVideo:(MPMoviePlayerController *) player;
 
 - (void)updateControlsAnimated:(BOOL)animated;
 - (IBAction)sendAction:(id)sender;
@@ -27,6 +32,7 @@
 @property (retain, nonatomic) IBOutlet UIView *controlsPanel;
 @property (retain, nonatomic) UIBarButtonItem *histroyButton;
 @property (retain, nonatomic) IBOutlet UIView *videoContainer;
+@property (retain, nonatomic) IBOutlet UIView *busyContainer;
 
 @property (retain, nonatomic) IBOutlet UIButton *sendButton;
 @property (retain, nonatomic) IBOutlet UIButton *nextButton;

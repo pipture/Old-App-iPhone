@@ -13,6 +13,7 @@
 @synthesize controlsPanel;
 @synthesize histroyButton;
 @synthesize videoContainer;
+@synthesize busyContainer;
 @synthesize sendButton;
 @synthesize nextButton;
 @synthesize pauseButton;
@@ -35,42 +36,138 @@
     prevButton.hidden = simpleMode;
     nextButton.hidden = simpleMode;
 
-    if (player != nil) {
-        [player release];
-    }
+    players = [[NSMutableArray alloc] initWithCapacity:2];
     
     //TODO: real url
-    NSString *url = [[NSBundle mainBundle] pathForResource:@"video1" ofType:@"mp4"];
-    player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL fileURLWithPath:url]];
+    //NSString * url = @"http://www.youtube.com/watch?v=QzLi9qlwG48";
+    //NSString * url = @"http://maxweber.hunter.cuny.edu/~mkuechle/kue_bio2_part_ref3_fast.mov";
+    //NSString * url = @"http://h264-demo.code-shop.com/demo/apache/trailer2.mp4";
+    NSString * url = @"http://h264-demo.code-shop.com/demo/apache/workers_world_co64_box64.mp4?start=404";
+    //NSString * url = @"http://192.168.9.131:8080/video1.mp4";
+    MPMoviePlayerController * player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:url]];
+    //NSString * url = [[NSBundle mainBundle] pathForResource:@"video1" ofType:@"mp4"];
+    //player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL fileURLWithPath:url]];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieFinishedCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:player];
-    
+    player.shouldAutoplay = NO;
     player.fullscreen = NO;
     player.scalingMode = MPMovieScalingModeAspectFill;
     player.controlStyle = MPMovieControlStyleNone;
     
     player.view.frame = videoContainer.frame;
 
+    self.busyContainer.hidden = NO;
+
+    //[players addObject:[NSNull null]];
+    //[self launchVideo:player];
+    //[self swapVideos];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieFinishedCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:player];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieLoadingCallback:) name:MPMoviePlayerLoadStateDidChangeNotification object:player];
+    
+    //[players addObject:player];
+    //[player release];
+    
     //The setup code (in viewDidLoad in your view controller)
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     [player.view addGestureRecognizer:singleFingerTap];
     self.tapRecognizer = (UITapGestureRecognizer *)singleFingerTap;
     tapRecognizer.delegate = self ;
     [singleFingerTap release];
-
+    
     [videoContainer addSubview:player.view];
     
-    //---play movie---
-    [player play];    
+    [player prepareToPlay];
+    
+}
+
+- (void)swapVideos {
+    //current player
+    MPMoviePlayerController * pl1 = ([players count] > 0)? [players objectAtIndex:0]: [NSNull null];
+    //next player
+    MPMoviePlayerController * pl2 = ([players count] > 1)? [players objectAtIndex:1]: [NSNull null];
+    
+    //first remove current player
+    if ((NSNull*)pl1 != [NSNull null]) {
+        [pl1.view removeGestureRecognizer:tapRecognizer];
+        tapRecognizer.delegate = nil;
+        [tapRecognizer release];
+        
+        [pl1.view removeFromSuperview];
+        
+    }
+    
+    //add next player
+    if ((NSNull*)pl2 != [NSNull null]) {
+        //The setup code (in viewDidLoad in your view controller)
+        UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+        [pl2.view addGestureRecognizer:singleFingerTap];
+        self.tapRecognizer = (UITapGestureRecognizer *)singleFingerTap;
+        tapRecognizer.delegate = self ;
+        [singleFingerTap release];
+        
+        [videoContainer addSubview:pl2.view];
+    }
+    
+    [players removeAllObjects];
+    [players addObject:pl2];
+    [pl2 release];
+    [players addObject:pl1];
+    [pl1 release];
+}
+
+- (void)launchVideo:(MPMoviePlayerController *) player {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieFinishedCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:player];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieLoadingCallback:) name:MPMoviePlayerLoadStateDidChangeNotification object:player];
+
+    [players addObject:player];
+    [player release];
+    
+    [player prepareToPlay];
+}
+
+- (void)stopVideo:(MPMoviePlayerController *) player {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:player];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerLoadStateDidChangeNotification object:player];
+    
+    
 }
 
 - (void) movieFinishedCallback:(NSNotification*) aNotification {
-    //MPMoviePlayerController *curPlayer = [aNotification object];
+    MPMoviePlayerController *player = [aNotification object];
+    NSDictionary * error = [aNotification.userInfo objectForKey:@"error"];
+    if (error != nil) {
+        //[self stopVideo:player];
+        
+        //error happened
+        //TODO: show error
+        self.busyContainer.hidden = YES;
+        controlsHidded = NO;
+        
+        [self updateControlsAnimated:YES];
+    }
+    NSLog(@"finish");
+}
+
+- (void) movieLoadingCallback:(NSNotification*) aNotification {
+    MPMoviePlayerController *curPlayer = [aNotification object];
+    
+    NSLog(@"%d", curPlayer.loadState);
+    switch (curPlayer.loadState) {
+        case MPMovieLoadStateUnknown:
+            self.busyContainer.hidden = NO;
+            break;
+        default:
+            self.busyContainer.hidden = YES;
+            [curPlayer play];
+            break;
+    }
 }
 
 - (void)viewDidUnload
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:player];    
+    //TODO:
+    //[[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:player];    
+    //[[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerLoadStateDidChangeNotification object:player];    
     
     [self setControlsPanel:nil];
     [self setSendButton:nil];
@@ -80,6 +177,7 @@
     [self setSlider:nil];
     [self setVideoContainer:nil];
     [self setTapRecognizer:nil];
+    [self setBusyContainer:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -164,7 +262,7 @@
 }
 
 - (void)dealloc {
-    [player release];
+    [players release];
     [controlsPanel release];
     [sendButton release];
     [nextButton release];
@@ -173,6 +271,7 @@
     [slider release];
     [videoContainer release];
     [tapRecognizer release];
+    [busyContainer release];
     [super dealloc];
 }
 
