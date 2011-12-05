@@ -12,6 +12,7 @@
 		381935C9147E29920049B30E /* AlbumsListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C8147E29920049B30E /* AlbumsListView.m */; };
 		381935CC147E2C850049B30E /* AlbumItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935CB147E2C850049B30E /* AlbumItemView.xib */; };
 		381935CF147E2F180049B30E /* AlbumItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935CE147E2F180049B30E /* AlbumItemViewController.m */; };
+		381A61A9148CFC7D00B7139F /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 381A61A8148CFC7D00B7139F /* PlayerView.m */; };
 		385FC399147CD7A6001CDF43 /* VideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 385FC397147CD7A6001CDF43 /* VideoViewController.m */; };
 		385FC39D147CD818001CDF43 /* VideoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 385FC39C147CD818001CDF43 /* VideoView.xib */; };
 		386448F2148739E3008893B5 /* playercontrols.png in Resources */ = {isa = PBXBuildFile; fileRef = 386448EF148739E3008893B5 /* playercontrols.png */; };
@@ -32,7 +33,6 @@
 		387A94741484F8D7000F9433 /* thumb3.png in Resources */ = {isa = PBXBuildFile; fileRef = 387A946C1484F8D7000F9433 /* thumb3.png */; };
 		387A94761484F918000F9433 /* face3.png in Resources */ = {isa = PBXBuildFile; fileRef = 387A94751484F918000F9433 /* face3.png */; };
 		389830C5148CA82F00D8BF93 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389830C4148CA82F00D8BF93 /* AVFoundation.framework */; };
-		389830C8148CAD4300D8BF93 /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 389830C7148CAD4300D8BF93 /* PlayerView.m */; };
 		389830CA148CCDAF00D8BF93 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389830C9148CCDAF00D8BF93 /* CoreMedia.framework */; };
 		38989CE3147A631E004DE1E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE2147A631E004DE1E0 /* UIKit.framework */; };
 		38989CE5147A631E004DE1E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE4147A631E004DE1E0 /* Foundation.framework */; };
@@ -113,6 +113,8 @@
 		381935CB147E2C850049B30E /* AlbumItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumItemView.xib; sourceTree = "<group>"; };
 		381935CD147E2F180049B30E /* AlbumItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumItemViewController.h; sourceTree = "<group>"; };
 		381935CE147E2F180049B30E /* AlbumItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumItemViewController.m; sourceTree = "<group>"; };
+		381A61A7148CFC7D00B7139F /* PlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerView.h; sourceTree = "<group>"; };
+		381A61A8148CFC7D00B7139F /* PlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerView.m; sourceTree = "<group>"; };
 		385FC396147CD7A6001CDF43 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoViewController.h; sourceTree = "<group>"; };
 		385FC397147CD7A6001CDF43 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoViewController.m; sourceTree = "<group>"; };
 		385FC39C147CD818001CDF43 /* VideoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoView.xib; sourceTree = "<group>"; };
@@ -134,8 +136,6 @@
 		387A946C1484F8D7000F9433 /* thumb3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = thumb3.png; sourceTree = "<group>"; };
 		387A94751484F918000F9433 /* face3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face3.png; sourceTree = "<group>"; };
 		389830C4148CA82F00D8BF93 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		389830C6148CAD4300D8BF93 /* PlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerView.h; sourceTree = "<group>"; };
-		389830C7148CAD4300D8BF93 /* PlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerView.m; sourceTree = "<group>"; };
 		389830C9148CCDAF00D8BF93 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		38989CDE147A631E004DE1E0 /* Pipture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pipture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38989CE2147A631E004DE1E0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -401,13 +401,13 @@
 		38989D1D147A6696004DE1E0 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				88751776148CAD3B00AFFFAC /* SBJSON */,
+				381A61A7148CFC7D00B7139F /* PlayerView.h */,
+				381A61A8148CFC7D00B7139F /* PlayerView.m */,
 				887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */,
 				887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */,
 				385FC396147CD7A6001CDF43 /* VideoViewController.h */,
 				385FC397147CD7A6001CDF43 /* VideoViewController.m */,
-				389830C6148CAD4300D8BF93 /* PlayerView.h */,
-				389830C7148CAD4300D8BF93 /* PlayerView.m */,
+				88751776148CAD3B00AFFFAC /* SBJSON */,
 				88BE44A314838A00002D30ED /* Entities */,
 				88BE449F148387DB002D30ED /* Model */,
 				38441FD9147FA5AD009B9D4E /* HomeScreen */,
@@ -668,6 +668,7 @@
 				887517A7148CAE3400AFFFAC /* PiptureAppDelegate.m in Sources */,
 				887517A8148CAE3400AFFFAC /* PiptureModel.m in Sources */,
 				887517AB148CAE4B00AFFFAC /* Timeslot.m in Sources */,
+				381A61A9148CFC7D00B7139F /* PlayerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
