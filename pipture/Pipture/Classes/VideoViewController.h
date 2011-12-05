@@ -7,31 +7,38 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreMedia/CoreMedia.h>
 #import <MessageUI/MFMailComposeViewController.h>
-#import <MediaPlayer/MediaPlayer.h>
+#import "PlayerView.h"
 
-@interface VideoViewController : UIViewController <MFMailComposeViewControllerDelegate, MPMediaPlayback, UIGestureRecognizerDelegate>
+@interface VideoViewController : UIViewController <MFMailComposeViewControllerDelegate>
 {
-    //for background loading
-    NSMutableArray * players;
+    NSTimer *progressUpdateTimer;
+    
+    int pos;
+    NSMutableArray * playlist;
+    AVPlayer * player;
+
+    AVPlayerItem * nextPlayerItem;
     
     UIStatusBarStyle lastStatusStyle;
     UIBarStyle lastNaviStyle;
     BOOL controlsHidded;
+    BOOL pausedStatus;
 }
-- (void)swapVideos;
-- (void)launchVideo:(MPMoviePlayerController *) player;
-- (void)stopVideo:(MPMoviePlayerController *) player;
+- (AVPlayerItem *)createItem:(NSString*)url;
 
 - (void)updateControlsAnimated:(BOOL)animated;
 - (IBAction)sendAction:(id)sender;
-- (void)historyAction:(id)sender;
+- (IBAction)prevAction:(id)sender;
+- (IBAction)playpauseAction:(id)sender;
+- (IBAction)nextAction:(id)sender;
+- (IBAction)sliderChanged:(id)sender;
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer;
 - (void) movieFinishedCallback:(NSNotification*) aNotification;
 
 @property (retain, nonatomic) IBOutlet UIView *controlsPanel;
-@property (retain, nonatomic) UIBarButtonItem *histroyButton;
-@property (retain, nonatomic) IBOutlet UIView *videoContainer;
+@property (retain, nonatomic) IBOutlet PlayerView *videoContainer;
 @property (retain, nonatomic) IBOutlet UIView *busyContainer;
 
 @property (retain, nonatomic) IBOutlet UIButton *sendButton;
@@ -39,7 +46,6 @@
 @property (retain, nonatomic) IBOutlet UIButton *pauseButton;
 @property (retain, nonatomic) IBOutlet UIButton *prevButton;
 @property (retain, nonatomic) IBOutlet UISlider *slider;
-@property (retain, nonatomic) UITapGestureRecognizer *tapRecognizer;
 
 @property (assign, nonatomic) BOOL simpleMode;
 

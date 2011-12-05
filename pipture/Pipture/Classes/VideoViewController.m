@@ -7,11 +7,9 @@
 //
 
 #import "VideoViewController.h"
-#import "HistoryViewController.h"
 
 @implementation VideoViewController
 @synthesize controlsPanel;
-@synthesize histroyButton;
 @synthesize videoContainer;
 @synthesize busyContainer;
 @synthesize sendButton;
@@ -19,123 +17,112 @@
 @synthesize pauseButton;
 @synthesize prevButton;
 @synthesize slider;
-@synthesize tapRecognizer;
 @synthesize simpleMode;
-#pragma mark - View lifecycle
 
-- (void)viewDidLoad
+- (void)updateProgress:(NSTimer *)updatedTimer
 {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    
-    if (!simpleMode) {
-        self.navigationItem.title = @"Video";
-        histroyButton = [[UIBarButtonItem alloc] initWithTitle:@"History" style:UIBarButtonItemStylePlain target:self action:@selector(historyAction:)];
-        self.navigationItem.rightBarButtonItem = histroyButton;
-    } 
-    prevButton.hidden = simpleMode;
-    nextButton.hidden = simpleMode;
+    static float prevPosition = 0;
 
-    players = [[NSMutableArray alloc] initWithCapacity:2];
-    
-    //TODO: real url
-    //NSString * url = @"http://www.youtube.com/watch?v=QzLi9qlwG48";
-    //NSString * url = @"http://maxweber.hunter.cuny.edu/~mkuechle/kue_bio2_part_ref3_fast.mov";
-    //NSString * url = @"http://h264-demo.code-shop.com/demo/apache/trailer2.mp4";
-    NSString * url = @"http://h264-demo.code-shop.com/demo/apache/workers_world_co64_box64.mp4?start=404";
-    //NSString * url = @"http://192.168.9.131:8080/video1.mp4";
-    MPMoviePlayerController * player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:url]];
-    //NSString * url = [[NSBundle mainBundle] pathForResource:@"video1" ofType:@"mp4"];
-    //player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL fileURLWithPath:url]];
-    
-    player.shouldAutoplay = NO;
-    player.fullscreen = NO;
-    player.scalingMode = MPMovieScalingModeAspectFill;
-    player.controlStyle = MPMovieControlStyleNone;
-    
-    player.view.frame = videoContainer.frame;
+    if (player != nil) {
+        float duration = CMTimeGetSeconds(player.currentItem.asset.duration);
+        float position = CMTimeGetSeconds(player.currentItem.currentTime);
+        
+        self.busyContainer.hidden = (prevPosition != position || pausedStatus);
+        
+        if (player.currentItem.status == AVPlayerStatusReadyToPlay && !pausedStatus) {
+            [player play];
+        }
+        
+        prevPosition = position;
+        
+        NSLog(@"Pos: %f, len: %f", position, duration);
+        if (duration > 0 && duration - position < 10 && nextPlayerItem == nil && pos + 1 < [playlist count]) {
+            NSLog(@"Precaching");
+            nextPlayerItem = [self createItem:[playlist objectAtIndex:pos + 1]];
+        }
+        
+        [slider setMaximumValue:duration];
+        [slider setValue:position animated:YES];
+    }
+}
 
+- (void)stopTimer {
+    if (progressUpdateTimer != nil) {
+        [progressUpdateTimer invalidate];
+        progressUpdateTimer = nil;
+    }
+}
+
+- (void)startTimer {
+    [self stopTimer];
+    progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(updateProgress:) userInfo:nil repeats:YES];
+}
+
+- (AVPlayerItem *)createItem:(NSString*)url {
+    AVPlayerItem * item = [[AVPlayerItem alloc] initWithURL:[NSURL URLWithString:url]];
+    static const NSString *ItemStatusContext;
+    
+    [item addObserver:self forKeyPath:@"status" options:0 context:&ItemStatusContext];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieFinishedCallback:) name:AVPlayerItemDidPlayToEndTimeNotification object:item];
+   
+    return item;
+}
+
+- (BOOL)playNextItem {
+    if (nextPlayerItem != nil) {
+        [player replaceCurrentItemWithPlayerItem:nextPlayerItem];
+        if (nextPlayerItem.status == AVPlayerStatusReadyToPlay) {
+            [self startTimer];
+            [player play];
+        }
+        
+        nextPlayerItem = nil;  
+        
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (void)prevVideo {
+    [self stopTimer];
+    
+    //next player ready for playback
     self.busyContainer.hidden = NO;
+    if (pos > 0) pos--;
 
-    //[players addObject:[NSNull null]];
-    //[self launchVideo:player];
-    //[self swapVideos];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieFinishedCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:player];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieLoadingCallback:) name:MPMoviePlayerLoadStateDidChangeNotification object:player];
-    
-    //[players addObject:player];
-    //[player release];
-    
-    //The setup code (in viewDidLoad in your view controller)
-    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
-    [player.view addGestureRecognizer:singleFingerTap];
-    self.tapRecognizer = (UITapGestureRecognizer *)singleFingerTap;
-    tapRecognizer.delegate = self ;
-    [singleFingerTap release];
-    
-    [videoContainer addSubview:player.view];
-    
-    [player prepareToPlay];
-    
+    nextPlayerItem = [self createItem:[playlist objectAtIndex:pos]];
+    [self playNextItem];
 }
 
-- (void)swapVideos {
-    //current player
-    MPMoviePlayerController * pl1 = ([players count] > 0)? [players objectAtIndex:0]: [NSNull null];
-    //next player
-    MPMoviePlayerController * pl2 = ([players count] > 1)? [players objectAtIndex:1]: [NSNull null];
+- (void)nextVideo {
+    [self stopTimer];
     
-    //first remove current player
-    if ((NSNull*)pl1 != [NSNull null]) {
-        [pl1.view removeGestureRecognizer:tapRecognizer];
-        tapRecognizer.delegate = nil;
-        [tapRecognizer release];
-        
-        [pl1.view removeFromSuperview];
-        
+    //next player ready for playback
+    if (![self playNextItem]) {
+        self.busyContainer.hidden = NO;
+        if (pos == -1 || pos < [playlist count] - 1) {
+            nextPlayerItem = [self createItem:[playlist objectAtIndex:++pos]];
+            if (player == nil) {
+                player = [[AVPlayer alloc] initWithPlayerItem:nextPlayerItem];
+                videoContainer.player = player;
+                nextPlayerItem = nil;
+            } else {
+                [self playNextItem];
+            }
+        } else {
+            self.busyContainer.hidden = YES;
+            //reached end of playlist
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
-    
-    //add next player
-    if ((NSNull*)pl2 != [NSNull null]) {
-        //The setup code (in viewDidLoad in your view controller)
-        UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
-        [pl2.view addGestureRecognizer:singleFingerTap];
-        self.tapRecognizer = (UITapGestureRecognizer *)singleFingerTap;
-        tapRecognizer.delegate = self ;
-        [singleFingerTap release];
-        
-        [videoContainer addSubview:pl2.view];
-    }
-    
-    [players removeAllObjects];
-    [players addObject:pl2];
-    [pl2 release];
-    [players addObject:pl1];
-    [pl1 release];
-}
-
-- (void)launchVideo:(MPMoviePlayerController *) player {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieFinishedCallback:) name:MPMoviePlayerPlaybackDidFinishNotification object:player];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieLoadingCallback:) name:MPMoviePlayerLoadStateDidChangeNotification object:player];
-
-    [players addObject:player];
-    [player release];
-    
-    [player prepareToPlay];
-}
-
-- (void)stopVideo:(MPMoviePlayerController *) player {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:player];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerLoadStateDidChangeNotification object:player];
-    
-    
 }
 
 - (void) movieFinishedCallback:(NSNotification*) aNotification {
-    MPMoviePlayerController *player = [aNotification object];
+    //AVPlayerItem * item = [aNotification object];
     NSDictionary * error = [aNotification.userInfo objectForKey:@"error"];
-    if (error != nil) {
+    
+    if (error != nil) { //error happened
         //[self stopVideo:player];
         
         //error happened
@@ -144,31 +131,86 @@
         controlsHidded = NO;
         
         [self updateControlsAnimated:YES];
+    } else {
+        //if (player == currentPlayer) {
+            [self nextVideo];
+        //}
     }
+    
     NSLog(@"finish");
 }
 
-- (void) movieLoadingCallback:(NSNotification*) aNotification {
-    MPMoviePlayerController *curPlayer = [aNotification object];
+/*- (void) movieLoadingCallback:(NSNotification*) aNotification {
+    MPMoviePlayerController *player = [aNotification object];
+    NSLog(@"Load State: %d", player.loadState);
     
-    NSLog(@"%d", curPlayer.loadState);
-    switch (curPlayer.loadState) {
-        case MPMovieLoadStateUnknown:
-            self.busyContainer.hidden = NO;
-            break;
-        default:
+    if (player == currentPlayer) {
+        self.busyContainer.hidden = NO;
+        if (player.loadState != 0 && player.loadState != 5) {
             self.busyContainer.hidden = YES;
-            [curPlayer play];
+        }
+    }
+}*/
+
+- (void)observeValueForKeyPath:(NSString*) path ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+{
+    AVPlayerItem * item = object;
+    if (item == player.currentItem) {
+        self.busyContainer.hidden = NO;
+    }
+    switch (player.status) {
+        case AVPlayerStatusUnknown:
+            //
+            break;
+        case AVPlayerStatusFailed:
+            if (item == player.currentItem) {
+                self.busyContainer.hidden = YES;
+            }
+            //TODO:
+            break;
+        case AVPlayerStatusReadyToPlay:
+            if (item == player.currentItem) {
+                self.busyContainer.hidden = YES;
+                [self startTimer];
+                [player play];
+            }
             break;
     }
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+ 
+    pausedStatus = NO;
+    nextPlayerItem = nil;
+    pos = -1;
+    
+    if (!simpleMode) {
+        self.navigationItem.title = @"Video";
+    } 
+    prevButton.hidden = simpleMode;
+    nextButton.hidden = simpleMode;
+
+    //TODO: init from external
+    playlist = [[NSMutableArray alloc] initWithCapacity:4];
+    
+    [playlist addObject:@"http://s3.amazonaws.com/net_thumbtack_pipture/4461d7166d2a8379a296bd18de6208207c0e260f.mp4"];
+    [playlist addObject:@"http://s3.amazonaws.com/net_thumbtack_pipture/video2.mp4"];
+    //[playlist addObject:@"http://h264-demo.code-shop.com/demo/apache/workers_world_co64_box64.mp4?start=404"];
+    //[playlist addObject:@"http://h264-demo.code-shop.com/demo/apache/trailer2.mp4"];
+    //NSString * url = @"http://192.168.9.131:8080/video1.mp4";
+    
+    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    [videoContainer addGestureRecognizer:singleFingerTap];
+    [singleFingerTap release];
+    
+    [self nextVideo];
 }
 
 - (void)viewDidUnload
 {
-    //TODO:
-    //[[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:player];    
-    //[[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerLoadStateDidChangeNotification object:player];    
-    
     [self setControlsPanel:nil];
     [self setSendButton:nil];
     [self setNextButton:nil];
@@ -176,11 +218,8 @@
     [self setPrevButton:nil];
     [self setSlider:nil];
     [self setVideoContainer:nil];
-    [self setTapRecognizer:nil];
     [self setBusyContainer:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -202,17 +241,26 @@
    
 }
 
+- (void)clearPlayer {
+    if (nextPlayerItem != nil) {
+        [nextPlayerItem release];
+        nextPlayerItem = nil;
+    }
+    if (player != nil) {
+        [self stopTimer];
+        [videoContainer setPlayer:nil];
+        [player release];
+        player = nil;
+    }
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [UIApplication sharedApplication].statusBarStyle = lastStatusStyle;
     self.navigationController.navigationBar.barStyle = lastNaviStyle;
     
+    [self clearPlayer];
+    
     [super viewWillDisappear:animated];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 - (void)updateControlsAnimated:(BOOL)animated {
@@ -248,21 +296,58 @@
     [controller release];
 }
 
+- (IBAction)prevAction:(id)sender {
+    if (nextPlayerItem != nil) {
+        [nextPlayerItem release];
+        nextPlayerItem = nil;
+    }
+    if (player != nil) {
+        [self prevVideo];
+    }
+}
+
+- (IBAction)playpauseAction:(id)sender {
+    if (player != nil) {
+        if (pausedStatus) {//paused
+            [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
+            [player play];
+            pausedStatus = NO;
+        } else { //played
+            [pauseButton setImage:[UIImage imageNamed:@"playBtn.png"] forState:UIControlStateNormal];
+            [player pause];
+            pausedStatus = YES;
+        }
+    }
+}
+
+- (IBAction)nextAction:(id)sender {
+    if (nextPlayerItem != nil) {
+        [nextPlayerItem release];
+        nextPlayerItem = nil;
+    }
+    if (player != nil) {
+        [self nextVideo];
+    }
+}
+
+- (IBAction)sliderChanged:(id)sender {
+    float position = slider.value;
+    
+    if (player != nil) {
+        [player seekToTime:CMTimeMake(position, 60)];
+    }
+}
+
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error;
 {
     //TODO: process result
     [self dismissModalViewControllerAnimated:YES];
 }
 
-- (void)historyAction:(id)sender {
-    HistoryViewController* vc = [[HistoryViewController alloc] initWithNibName:@"HistoryView" bundle:nil];
-    
-    [self.navigationController pushViewController:vc animated:YES];
-    [vc release];  
-}
-
 - (void)dealloc {
-    [players release];
+    [self clearPlayer];
+    
+    [playlist release];
     [controlsPanel release];
     [sendButton release];
     [nextButton release];
@@ -270,47 +355,8 @@
     [prevButton release];
     [slider release];
     [videoContainer release];
-    [tapRecognizer release];
     [busyContainer release];
     [super dealloc];
-}
-
-// Prepares the current queue for playback, interrupting any active (non-mixible) audio sessions.
-// Automatically invoked when -play is called if the player is not already prepared.
-- (void)prepareToPlay {
-    NSLog(@"preparing");
-}
-
-// Plays items from the current queue, resuming paused playback if possible.
-- (void)play {
-    NSLog(@"playing");
-}
-
-// Pauses playback if playing.
-- (void)pause {
-    NSLog(@"paused");
-}
-
-// Ends playback. Calling -play again will start from the beginnning of the queue.
-- (void)stop {
-    NSLog(@"stopped");
-}
-
-- (void)beginSeekingForward {
-    NSLog(@"forw");
-}
-
-- (void)beginSeekingBackward {
-    NSLog(@"back");
-}
-
-- (void)endSeeking {
-    NSLog(@"seeked");
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    [self tapResponder:(UITapGestureRecognizer*)gestureRecognizer];
-    return YES;
 }
 
 @end

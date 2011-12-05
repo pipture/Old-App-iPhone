@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		381935BC147CED4F0049B30E /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935BB147CED4F0049B30E /* HistoryViewController.m */; };
-		381935BF147CED6A0049B30E /* HistoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935BE147CED6A0049B30E /* HistoryView.xib */; };
 		381935C1147D04540049B30E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 381935C0147D04540049B30E /* MessageUI.framework */; };
 		381935C6147D067D0049B30E /* LibraryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C5147D067D0049B30E /* LibraryNavigationController.m */; };
 		381935C9147E29920049B30E /* AlbumsListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C8147E29920049B30E /* AlbumsListView.m */; };
@@ -33,6 +31,9 @@
 		387A94731484F8D7000F9433 /* thumb2.png in Resources */ = {isa = PBXBuildFile; fileRef = 387A946B1484F8D7000F9433 /* thumb2.png */; };
 		387A94741484F8D7000F9433 /* thumb3.png in Resources */ = {isa = PBXBuildFile; fileRef = 387A946C1484F8D7000F9433 /* thumb3.png */; };
 		387A94761484F918000F9433 /* face3.png in Resources */ = {isa = PBXBuildFile; fileRef = 387A94751484F918000F9433 /* face3.png */; };
+		389830C5148CA82F00D8BF93 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389830C4148CA82F00D8BF93 /* AVFoundation.framework */; };
+		389830C8148CAD4300D8BF93 /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 389830C7148CAD4300D8BF93 /* PlayerView.m */; };
+		389830CA148CCDAF00D8BF93 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389830C9148CCDAF00D8BF93 /* CoreMedia.framework */; };
 		38989CE3147A631E004DE1E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE2147A631E004DE1E0 /* UIKit.framework */; };
 		38989CE5147A631E004DE1E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE4147A631E004DE1E0 /* Foundation.framework */; };
 		38989CED147A631F004DE1E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 38989CEB147A631F004DE1E0 /* InfoPlist.strings */; };
@@ -45,7 +46,6 @@
 		38989D19147A6568004DE1E0 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38989D18147A6568004DE1E0 /* MainWindow.xib */; };
 		38989D20147A66A7004DE1E0 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989D1F147A66A7004DE1E0 /* LoginViewController.m */; };
 		38989D32147CA97F004DE1E0 /* Vincent.png in Resources */ = {isa = PBXBuildFile; fileRef = 38989D31147CA97F004DE1E0 /* Vincent.png */; };
-		389C54E21486466C00AF70A9 /* HistoryTableItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 389C54E11486466C00AF70A9 /* HistoryTableItemView.xib */; };
 		389C54E414865A6100AF70A9 /* DetailTableItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 389C54E314865A6100AF70A9 /* DetailTableItemView.xib */; };
 		389C54F71486676C00AF70A9 /* poster.png in Resources */ = {isa = PBXBuildFile; fileRef = 389C54E51486676C00AF70A9 /* poster.png */; };
 		389C54F81486676C00AF70A9 /* vid2.png in Resources */ = {isa = PBXBuildFile; fileRef = 389C54E61486676C00AF70A9 /* vid2.png */; };
@@ -72,8 +72,8 @@
 		38D74557147E6DAB00062441 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D74556147E6DAB00062441 /* QuartzCore.framework */; };
 		38D74558147E6DBE00062441 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE6147A631E004DE1E0 /* CoreGraphics.framework */; };
 		38D7455C147F728200062441 /* AlbumDetailPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D7455B147F728200062441 /* AlbumDetailPage.m */; };
+		38E9FA89148CEE1E0075463E /* playBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E9FA88148CEE1E0075463E /* playBtn.png */; };
 		38FAFE30148766A2003EA542 /* video1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 38FAFE2F148766A2003EA542 /* video1.mp4 */; };
-		38FAFE33148768B5003EA542 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38FAFE32148768B5003EA542 /* MediaPlayer.framework */; };
 		8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8811ED94147B6FC5008CC877 /* HomeView.xib */; };
 		88BE44A21483893C002D30ED /* PiptureModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44A11483893C002D30ED /* PiptureModel.m */; };
 		88BE44A614838A31002D30ED /* Timeslot.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44A514838A31002D30ED /* Timeslot.m */; };
@@ -92,9 +92,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		381935BA147CED4F0049B30E /* HistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryViewController.h; sourceTree = "<group>"; };
-		381935BB147CED4F0049B30E /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
-		381935BE147CED6A0049B30E /* HistoryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HistoryView.xib; sourceTree = "<group>"; };
 		381935C0147D04540049B30E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		381935C4147D067D0049B30E /* LibraryNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryNavigationController.h; sourceTree = "<group>"; };
 		381935C5147D067D0049B30E /* LibraryNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryNavigationController.m; sourceTree = "<group>"; };
@@ -123,6 +120,10 @@
 		387A946B1484F8D7000F9433 /* thumb2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = thumb2.png; sourceTree = "<group>"; };
 		387A946C1484F8D7000F9433 /* thumb3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = thumb3.png; sourceTree = "<group>"; };
 		387A94751484F918000F9433 /* face3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face3.png; sourceTree = "<group>"; };
+		389830C4148CA82F00D8BF93 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		389830C6148CAD4300D8BF93 /* PlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerView.h; sourceTree = "<group>"; };
+		389830C7148CAD4300D8BF93 /* PlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerView.m; sourceTree = "<group>"; };
+		389830C9148CCDAF00D8BF93 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		38989CDE147A631E004DE1E0 /* Pipture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pipture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38989CE2147A631E004DE1E0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		38989CE4147A631E004DE1E0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -141,7 +142,6 @@
 		38989D1E147A66A7004DE1E0 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		38989D1F147A66A7004DE1E0 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		38989D31147CA97F004DE1E0 /* Vincent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Vincent.png; sourceTree = "<group>"; };
-		389C54E11486466C00AF70A9 /* HistoryTableItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HistoryTableItemView.xib; sourceTree = "<group>"; };
 		389C54E314865A6100AF70A9 /* DetailTableItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailTableItemView.xib; sourceTree = "<group>"; };
 		389C54E51486676C00AF70A9 /* poster.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = poster.png; sourceTree = "<group>"; };
 		389C54E61486676C00AF70A9 /* vid2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vid2.png; sourceTree = "<group>"; };
@@ -171,8 +171,8 @@
 		38D74556147E6DAB00062441 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		38D7455A147F728200062441 /* AlbumDetailPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailPage.h; sourceTree = "<group>"; };
 		38D7455B147F728200062441 /* AlbumDetailPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailPage.m; sourceTree = "<group>"; };
+		38E9FA88148CEE1E0075463E /* playBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playBtn.png; sourceTree = "<group>"; };
 		38FAFE2F148766A2003EA542 /* video1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = video1.mp4; sourceTree = "<group>"; };
-		38FAFE32148768B5003EA542 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		8811ED94147B6FC5008CC877 /* HomeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeView.xib; sourceTree = "<group>"; };
 		88BE44A01483893C002D30ED /* PiptureModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureModel.h; sourceTree = "<group>"; };
 		88BE44A11483893C002D30ED /* PiptureModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModel.m; sourceTree = "<group>"; };
@@ -189,7 +189,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38FAFE33148768B5003EA542 /* MediaPlayer.framework in Frameworks */,
+				389830CA148CCDAF00D8BF93 /* CoreMedia.framework in Frameworks */,
+				389830C5148CA82F00D8BF93 /* AVFoundation.framework in Frameworks */,
 				38D74558147E6DBE00062441 /* CoreGraphics.framework in Frameworks */,
 				38D74557147E6DAB00062441 /* QuartzCore.framework in Frameworks */,
 				381935C1147D04540049B30E /* MessageUI.framework in Frameworks */,
@@ -218,8 +219,6 @@
 				38989D1F147A66A7004DE1E0 /* LoginViewController.m */,
 				88D84207147B626C00E47EF8 /* HomeViewController.h */,
 				88D84208147B626C00E47EF8 /* HomeViewController.m */,
-				381935BA147CED4F0049B30E /* HistoryViewController.h */,
-				381935BB147CED4F0049B30E /* HistoryViewController.m */,
 			);
 			name = HomeScreen;
 			sourceTree = "<group>";
@@ -227,6 +226,7 @@
 		387A94641484F8C2000F9433 /* mockdata */ = {
 			isa = PBXGroup;
 			children = (
+				38E9FA88148CEE1E0075463E /* playBtn.png */,
 				38FAFE2F148766A2003EA542 /* video1.mp4 */,
 				386448F614873BB2008893B5 /* sendBtn.png */,
 				386448F714873BB2008893B5 /* nextBtn.png */,
@@ -289,7 +289,8 @@
 		38989CE1147A631E004DE1E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				38FAFE32148768B5003EA542 /* MediaPlayer.framework */,
+				389830C9148CCDAF00D8BF93 /* CoreMedia.framework */,
+				389830C4148CA82F00D8BF93 /* AVFoundation.framework */,
 				38D74556147E6DAB00062441 /* QuartzCore.framework */,
 				381935C0147D04540049B30E /* MessageUI.framework */,
 				38989CE2147A631E004DE1E0 /* UIKit.framework */,
@@ -349,12 +350,10 @@
 				385FC39C147CD818001CDF43 /* VideoView.xib */,
 				8811ED94147B6FC5008CC877 /* HomeView.xib */,
 				38989D18147A6568004DE1E0 /* MainWindow.xib */,
-				381935BE147CED6A0049B30E /* HistoryView.xib */,
 				381935CB147E2C850049B30E /* AlbumItemView.xib */,
 				38D7454F147E660B00062441 /* LibraryView.xib */,
 				38D74554147E6ABC00062441 /* AlbumDetailInfo.xib */,
 				387A94621484F4CB000F9433 /* LibraryTableItemView.xib */,
-				389C54E11486466C00AF70A9 /* HistoryTableItemView.xib */,
 				389C54E314865A6100AF70A9 /* DetailTableItemView.xib */,
 			);
 			path = Resources;
@@ -367,6 +366,8 @@
 				38989CF2147A631F004DE1E0 /* PiptureAppDelegate.m */,
 				385FC396147CD7A6001CDF43 /* VideoViewController.h */,
 				385FC397147CD7A6001CDF43 /* VideoViewController.m */,
+				389830C6148CAD4300D8BF93 /* PlayerView.h */,
+				389830C7148CAD4300D8BF93 /* PlayerView.m */,
 				38441FD9147FA5AD009B9D4E /* HomeScreen */,
 				38D74559147F701200062441 /* Library */,
 			);
@@ -487,7 +488,6 @@
 				8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */,
 				38989D32147CA97F004DE1E0 /* Vincent.png in Resources */,
 				385FC39D147CD818001CDF43 /* VideoView.xib in Resources */,
-				381935BF147CED6A0049B30E /* HistoryView.xib in Resources */,
 				381935CC147E2C850049B30E /* AlbumItemView.xib in Resources */,
 				38D74550147E660B00062441 /* LibraryView.xib in Resources */,
 				38D74555147E6ABC00062441 /* AlbumDetailInfo.xib in Resources */,
@@ -501,7 +501,6 @@
 				387A94731484F8D7000F9433 /* thumb2.png in Resources */,
 				387A94741484F8D7000F9433 /* thumb3.png in Resources */,
 				387A94761484F918000F9433 /* face3.png in Resources */,
-				389C54E21486466C00AF70A9 /* HistoryTableItemView.xib in Resources */,
 				389C54E414865A6100AF70A9 /* DetailTableItemView.xib in Resources */,
 				389C54F71486676C00AF70A9 /* poster.png in Resources */,
 				389C54F81486676C00AF70A9 /* vid2.png in Resources */,
@@ -529,6 +528,7 @@
 				386448FC14873BB2008893B5 /* pauseBtn.png in Resources */,
 				386448FD14873BB2008893B5 /* prevBtn.png in Resources */,
 				38FAFE30148766A2003EA542 /* video1.mp4 in Resources */,
+				38E9FA89148CEE1E0075463E /* playBtn.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -568,7 +568,6 @@
 				38989D20147A66A7004DE1E0 /* LoginViewController.m in Sources */,
 				88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */,
 				385FC399147CD7A6001CDF43 /* VideoViewController.m in Sources */,
-				381935BC147CED4F0049B30E /* HistoryViewController.m in Sources */,
 				381935C6147D067D0049B30E /* LibraryNavigationController.m in Sources */,
 				381935C9147E29920049B30E /* AlbumsListView.m in Sources */,
 				381935CF147E2F180049B30E /* AlbumItemViewController.m in Sources */,
@@ -577,6 +576,7 @@
 				38D7455C147F728200062441 /* AlbumDetailPage.m in Sources */,
 				88BE44A21483893C002D30ED /* PiptureModel.m in Sources */,
 				88BE44A614838A31002D30ED /* Timeslot.m in Sources */,
+				389830C8148CAD4300D8BF93 /* PlayerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
