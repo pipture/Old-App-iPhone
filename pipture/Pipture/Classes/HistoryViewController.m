@@ -139,7 +139,7 @@
         
         image.image = slot.image;
         series.text = slot.title;
-        title.text = slot.desc;
+        title.text = slot.description;
     }
 }
 

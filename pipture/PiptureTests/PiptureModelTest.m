@@ -6,7 +6,7 @@
 //  Copyright 2011 Thumbtack Technology. All rights reserved.
 //
 
-#import <OCMock/OCMock.h>
+//#import <OCMock/OCMock.h>
 #import "PiptureModelTest.h"
 #import "Timeslot.h"
 
@@ -21,13 +21,13 @@ BOOL finished;
 
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback 
 {
-    id mock = [OCMockObject mockForClass:[DataRequest class]];
-    
-    [[[mock stub] andDo:^(NSInvocation*inv){
-        [mock connection:nil didReceiveData:nil];
-        [mock connectionDidFinishLoading:nil];
-    } ] startExecute];
-    return mock;    
+//    id mock = [OCMockObject mockForClass:[DataRequest class]];
+//    
+//    [[[mock stub] andDo:^(NSInvocation*inv){
+//        [mock connection:nil didReceiveData:nil];
+//        [mock connectionDidFinishLoading:nil];
+//    } ] startExecute];
+//    return mock;    
 }
 @end
 

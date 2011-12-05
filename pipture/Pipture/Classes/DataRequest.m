@@ -26,7 +26,7 @@ NSURLConnection* connection;
     self = [super init];
     if (self)
     {
-        callback_ = callback;
+        callback_ = [callback copy];
         url_ = [url retain];
     }
     return self;
@@ -63,6 +63,7 @@ NSURLConnection* connection;
         [connection cancel];
         [connection release];
     }
+    [callback_ release];
     
     [super dealloc];
 }

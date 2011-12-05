@@ -16,11 +16,13 @@
 @property(retain, nonatomic) NSDate* endTime;
 @property(retain, nonatomic) NSString* title;
 @property(retain, nonatomic) NSString* closupBackground;
+@property(assign, nonatomic) BOOL current;
+@property(readonly, nonatomic) NSString* description;
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
 
-//mock temporary variables
-@property(retain, nonatomic) NSString* desc;
+
+
 @property(retain, nonatomic) UIImage* image;
 
 @end

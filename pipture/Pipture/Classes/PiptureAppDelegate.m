@@ -14,6 +14,7 @@
 @synthesize homeNavigationController;
 @synthesize libraryNavigationController;
 @synthesize loginViewController = _loginViewController;
+@synthesize model = model_;
 
 static PiptureAppDelegate *instance;
 
@@ -23,6 +24,7 @@ static PiptureAppDelegate *instance;
     [libraryNavigationController release];
     [homeNavigationController release];
     [_window release];
+    [model_ release];
     [super dealloc];
 }
 
@@ -31,6 +33,7 @@ static PiptureAppDelegate *instance;
     self = [super init];
     if (self) {
         instance = self;
+        model_ = [[PiptureModel alloc] init];
     }
     return self;
 }

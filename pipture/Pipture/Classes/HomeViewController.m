@@ -36,36 +36,39 @@
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     
+    
     timelineArray = [[NSMutableArray alloc] initWithCapacity:20];
     
+    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 forTarget:self callback:@selector(getTimeSlotsFromCurrentWithMaxCountCallback:)];
     //TODO: temporary put images, not timeslots (get timeline from server in future)
-    UIImage * image = [UIImage imageNamed:@"face1"];
-    Timeslot * slot = [[Timeslot alloc] initWith:@"The NJ Bro" desc:@"Playing now" image:image];
-    [image release];
-    [timelineArray addObject:slot];
-    [slot release];
     
-    image = [UIImage imageNamed:@"face2"];
-    slot = [[Timeslot alloc] initWith:@"The Feminist" desc:@"8AM to 11AM" image:image];
-    [image release];
-    [timelineArray addObject:slot];
-    [slot release];
-    
-    
-    image = [UIImage imageNamed:@"face3"];
-    slot = [[Timeslot alloc] initWith:@"The Other" desc:@"11AM - 2PM" image:image];
-    [image release];
-    [timelineArray addObject:slot];
-    [slot release];
-    
-    int height = scrollView.frame.size.height;
-    for (int i = 0; i < [timelineArray count]; i++) {
-        Timeslot * slot = [timelineArray objectAtIndex:i];
-        UIImageView *view = [[UIImageView alloc] initWithImage:slot.image];
-        view.frame = CGRectMake(0, height * i, scrollView.frame.size.width, height);
-        [scrollView addSubview:view];
-        //TODO: view release?
-    }
+//    UIImage * image = [UIImage imageNamed:@"face1"];
+//    Timeslot * slot = [[Timeslot alloc] initWith:@"The NJ Bro" desc:@"Playing now" image:image];
+//    [image release];
+//    [timelineArray addObject:slot];
+//    [slot release];
+//    
+//    image = [UIImage imageNamed:@"face2"];
+//    slot = [[Timeslot alloc] initWith:@"The Feminist" desc:@"8AM to 11AM" image:image];
+//    [image release];
+//    [timelineArray addObject:slot];
+//    [slot release];
+//    
+//    
+//    image = [UIImage imageNamed:@"face3"];
+//    slot = [[Timeslot alloc] initWith:@"The Other" desc:@"11AM - 2PM" image:image];
+//    [image release];
+//    [timelineArray addObject:slot];
+//    [slot release];
+//    
+//    int height = scrollView.frame.size.height;
+//    for (int i = 0; i < [timelineArray count]; i++) {
+//        Timeslot * slot = [timelineArray objectAtIndex:i];
+//        UIImageView *view = [[UIImageView alloc] initWithImage:slot.image];
+//        view.frame = CGRectMake(0, height * i, scrollView.frame.size.width, height);
+//        [scrollView addSubview:view];
+//        //TODO: view release?
+//    }
     
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(libraryBarResponder:)];
     [libraryBar addGestureRecognizer:singleFingerTap];
@@ -76,10 +79,28 @@
     scheduleButton = [[UIBarButtonItem alloc] initWithTitle:@"Schedule" style:UIBarButtonItemStylePlain target:self action:@selector(scheduleAction:)];
     self.navigationItem.leftBarButtonItem = scheduleButton;
     
-    [self prepareImageFor:0];
-    [self prepareImageFor:1];
+//    [self prepareImageFor:0];
+//    [self prepareImageFor:1];
     
     [self updateControls];
+}
+
+-(void)getTimeSlotsFromCurrentWithMaxCountCallback:(NSArray*)timeslots {
+
+    int height = scrollView.frame.size.height;
+    for (int i = 0; i < [timeslots count]; i++) {
+        Timeslot * slot = [timeslots objectAtIndex:i];
+        [timelineArray addObject:slot];        
+        UIImageView *view = [[UIImageView alloc] init];//initWithImage:[UIImage imageNamed:[slot closupBackground]]];
+        view.frame = CGRectMake(0, height * i, scrollView.frame.size.width, height);
+        [scrollView addSubview:view];
+        //TODO: view release?
+    }
+    [self prepareImageFor:0];
+    [self prepareImageFor:1];
+    [self updateControls];
+    
+
 }
 
 - (void)viewDidUnload
@@ -146,20 +167,23 @@
 
 - (void)customNavBarTitle: (int)page
 {
-    Timeslot * slot = [timelineArray objectAtIndex:page];
-    
-    NSString * title = [NSString stringWithFormat:@"%@\n%@", slot.title, slot.desc];
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 130,44)];
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.numberOfLines = 2;
-    titleLabel.font = [UIFont boldSystemFontOfSize: 14.0f];
-    titleLabel.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
-    titleLabel.textAlignment = UITextAlignmentCenter;
-    titleLabel.textColor = [UIColor whiteColor];
-    titleLabel.text = title ;
-    self.navigationItem.titleView = titleLabel;
-    [titleLabel release];
+    if (page < [timelineArray count])
+    {
+        Timeslot * slot = [timelineArray objectAtIndex:page];
+        
+        NSString * title = [NSString stringWithFormat:@"%@\n%@", slot.title, slot.description];
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 130,44)];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.numberOfLines = 2;
+        titleLabel.font = [UIFont boldSystemFontOfSize: 14.0f];
+        titleLabel.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
+        titleLabel.textAlignment = UITextAlignmentCenter;
+        titleLabel.textColor = [UIColor whiteColor];
+        titleLabel.text = title ;
+        self.navigationItem.titleView = titleLabel;
+        [titleLabel release];
+    }
 }
 
 - (void)updateControls {

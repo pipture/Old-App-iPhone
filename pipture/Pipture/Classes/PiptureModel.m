@@ -11,7 +11,7 @@
 @interface PiptureModel(Private)
 
 -(NSURL*)buildURLWithRequest:(NSString*)request params:(id)params,...;
-- (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult;
++ (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult;
 
 @end 
 
@@ -61,17 +61,23 @@ const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
 -(void)getTimeslotsFromCurrentWithMaxCount:(NSInteger)maxCount forTarget:(id)target callback:(SEL)callback
 {
     NSURL* url = [self buildURLWithRequest:GET_CURRENT_TIMESLOTS_REQUEST params:[NSNumber numberWithInt:maxCount]];
+
+    id callbackTarget = target;
+    SEL callbackSelector = callback;    
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(Byte resultCode, NSDictionary* jsonResult){
+        NSLog(@"inside callback");
         NSArray* timeslots = nil;
         if (resultCode == 0) 
         {
-            timeslots = [self parseTimeslotList: jsonResult];            
+            NSLog(@"parse timeslots");            
+            timeslots = [PiptureModel parseTimeslotList: jsonResult];            
         }   
-        [target performSelector:callback withObject:timeslots];
+        [callbackTarget performSelectorOnMainThread:callbackSelector withObject:timeslots waitUntilDone:YES];
         if (timeslots)
         {
             [timeslots release];
         }
+        NSLog(@"end callback");
     
     }];
     
@@ -79,7 +85,7 @@ const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
 
 }
 
-- (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult {
++ (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult {
     NSMutableArray *timeslots= nil;
 
     NSArray* jsonTimeslots = [jsonResult objectForKey:JSON_PARAM_TIMESLOTS];            

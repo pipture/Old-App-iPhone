@@ -100,7 +100,7 @@
         //The setup code (in viewDidLoad in your view controller)
         [item.detailButton setImage:slot.image forState:UIControlStateNormal];
         item.titleLabel.text = slot.title;
-        item.tagLabel.text = slot.desc;
+        item.tagLabel.text = slot.description;
         item.detailButton.tag = i;
         [item.detailButton addTarget:self action:@selector(detailAlbumShow:) forControlEvents:UIControlEventTouchUpInside];
 
