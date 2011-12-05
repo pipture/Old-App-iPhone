@@ -17,7 +17,7 @@
 
 const NSString*JSON_PARAM_START_TIME = @"StartTime";
 const NSString*JSON_PARAM_END_TIME = @"EndTime";
-const NSString*JSON_PARAM_TITLE = @"EndTime";
+const NSString*JSON_PARAM_TITLE = @"Title";
 const NSString*JSON_PARAM_CLOSEUP_BACKGROUND = @"CloseupBackground";
 
 

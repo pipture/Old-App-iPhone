@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+
 typedef void (^DataRequestCallback)(Byte result, NSDictionary*);
 
-@interface DataRequest : NSObject<NSUR> {
+@interface DataRequest : NSObject<NSURLConnectionDataDelegate> {
 @private
     DataRequestCallback callback_;
 }
@@ -23,7 +24,7 @@ typedef void (^DataRequestCallback)(Byte result, NSDictionary*);
 @end
 
 @interface DefaultDataRequestFactory : NSObject
-    NSURLConnection
+
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
 
 @end

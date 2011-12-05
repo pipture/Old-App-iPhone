@@ -37,10 +37,12 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>Rest end point</key>
-	<string>https://mobile.pipture.com/rest</string>
+	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
+	<key>Rest API version</key>
+	<integer>1</integer>
 	<key>Rest Get current timeslots</key>
-	<string>?method=getTimeslots&amp;count=%d</string>
+	<string>getTimeslots?API=%@&amp;max=%@</string>
 	<key>Rest Get timeslots</key>
-	<string>?method=getTimeslots&amp;fromId=%@&amp;count=%d</string>
+	<string>getTimeslots?API=%@&amp;fromId=%@&amp;max=%@</string>
 </dict>
 </plist>

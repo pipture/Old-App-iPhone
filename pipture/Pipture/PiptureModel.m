@@ -21,6 +21,7 @@
 @synthesize dataRequestFactory = dataRequestFactory_; 
 
 NSString *END_POINT_URL;
+NSNumber *API_VERSION;
 NSString *GET_TIMESLOTS_REQUEST;
 NSString *GET_CURRENT_TIMESLOTS_REQUEST;
 
@@ -30,9 +31,10 @@ const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
 {
     self = [super init];
     if (self) {
-        END_POINT_URL = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest end point"];
-        GET_TIMESLOTS_REQUEST = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get current timeslots"];
-        GET_CURRENT_TIMESLOTS_REQUEST = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get timeslots"];        
+        END_POINT_URL = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest end point"] retain];
+        API_VERSION = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest API version"] retain];
+        GET_CURRENT_TIMESLOTS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get current timeslots"] retain];
+        GET_TIMESLOTS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get timeslots"] retain];        
         
         DefaultDataRequestFactory* factory = [[[DefaultDataRequestFactory alloc] init] autorelease];
         [self setDataRequestFactory:factory];
@@ -42,6 +44,10 @@ const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
 
 - (void)dealloc {
     [dataRequestFactory_ release];
+    [END_POINT_URL release];
+    [API_VERSION release];
+    [GET_TIMESLOTS_REQUEST release];
+    [GET_CURRENT_TIMESLOTS_REQUEST release];   
     [super dealloc];
 }
 
@@ -70,6 +76,7 @@ const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
     }];
     
     [request startExecute];
+
 }
 
 - (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult {
@@ -99,8 +106,8 @@ const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
 
 -(NSURL*)buildURLWithRequest:(NSString*)request params:(id)params,...
 {
-    //TODO
-    return nil;
-    
+
+
+    return [NSURL URLWithString:[END_POINT_URL stringByAppendingFormat:request, API_VERSION , params]];
 }
 @end
