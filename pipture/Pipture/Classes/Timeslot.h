@@ -15,10 +15,14 @@
 @property(retain, nonatomic) NSDate* startTime;
 @property(retain, nonatomic) NSDate* endTime;
 @property(retain, nonatomic) NSString* title;
-@property(retain, nonatomic) NSString* screenImageURL;
+@property(retain, nonatomic) NSString* closupBackground;
+@property(assign, nonatomic) BOOL current;
+@property(readonly, nonatomic) NSString* description;
 
-//mock temporary variables
-@property(retain, nonatomic) NSString* desc;
+-(id)initWithJSON:(NSDictionary*)jsonData;
+
+
+
 @property(retain, nonatomic) UIImage* image;
 
 @end

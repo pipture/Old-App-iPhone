@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "LoginViewController.h"
 #import "VideoViewController.h"
+#import "PiptureModel.h"
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -18,6 +19,7 @@
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
 @property (retain, nonatomic) IBOutlet UINavigationController * libraryNavigationController;
 @property (retain, nonatomic) IBOutlet LoginViewController * loginViewController;
+@property (readonly, nonatomic) PiptureModel * model;
 
 +(PiptureAppDelegate*) instance;
 

@@ -229,7 +229,7 @@
         image.image = slot.image;
         //[slot.image release];
         series.text = slot.title;
-        title.text = slot.desc;
+        title.text = slot.description;
     }
 }
 
