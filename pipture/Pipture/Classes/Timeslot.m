@@ -19,7 +19,6 @@
 @synthesize desc;
 @synthesize image;
 
-- (id)init
 
 const NSString*JSON_PARAM_START_TIME = @"StartTime";
 const NSString*JSON_PARAM_END_TIME = @"EndTime";
@@ -56,7 +55,7 @@ const NSString*JSON_PARAM_CLOSEUP_BACKGROUND = @"CloseupBackground";
     [startTime release];
     [endTime release];
     [title release];
-    [screenImageURL release];
+    [closupBackground release];
     [desc release];
     [image release];
     [super dealloc];
