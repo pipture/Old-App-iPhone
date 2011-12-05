@@ -8,26 +8,106 @@
 
 #import "PiptureModel.h"
 
+@interface PiptureModel(Private)
+
+-(NSURL*)buildURLWithRequest:(NSString*)request params:(id)params,...;
+- (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult;
+
+@end 
+
+
 @implementation PiptureModel
+
+@synthesize dataRequestFactory = dataRequestFactory_; 
+
+NSString *END_POINT_URL;
+NSNumber *API_VERSION;
+NSString *GET_TIMESLOTS_REQUEST;
+NSString *GET_CURRENT_TIMESLOTS_REQUEST;
+
+const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        // Initialization code here.
-    }
-    
+        END_POINT_URL = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest end point"] retain];
+        API_VERSION = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest API version"] retain];
+        GET_CURRENT_TIMESLOTS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get current timeslots"] retain];
+        GET_TIMESLOTS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get timeslots"] retain];        
+        
+        DefaultDataRequestFactory* factory = [[[DefaultDataRequestFactory alloc] init] autorelease];
+        [self setDataRequestFactory:factory];
+    }    
     return self;
 }
 
+- (void)dealloc {
+    [dataRequestFactory_ release];
+    [END_POINT_URL release];
+    [API_VERSION release];
+    [GET_TIMESLOTS_REQUEST release];
+    [GET_CURRENT_TIMESLOTS_REQUEST release];   
+    [super dealloc];
+}
 
--(void)getTimeslotsFromId:(NSString*)timeslotId maxCount:(int)maxCount forTarget:(id)target withCallback:(SEL)callback
+-(void)getTimeslotsFromId:(NSString*)timeslotId maxCount:(int)maxCount forTarget:(id)target callback:(SEL)callback
 {
     [target performSelector:callback withObject:[NSArray arrayWithObjects:nil]];
 }
 
--(void)getTimeslotsFromCurrentWithMaxCount:(int)maxCount forTarget:(id)target withCallback:(SEL)callback
+
+
+-(void)getTimeslotsFromCurrentWithMaxCount:(NSInteger)maxCount forTarget:(id)target callback:(SEL)callback
 {
-    [target performSelector:callback withObject:[NSArray arrayWithObjects:nil]];    
+    NSURL* url = [self buildURLWithRequest:GET_CURRENT_TIMESLOTS_REQUEST params:[NSNumber numberWithInt:maxCount]];
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(Byte resultCode, NSDictionary* jsonResult){
+        NSArray* timeslots = nil;
+        if (resultCode == 0) 
+        {
+            timeslots = [self parseTimeslotList: jsonResult];            
+        }   
+        [target performSelector:callback withObject:timeslots];
+        if (timeslots)
+        {
+            [timeslots release];
+        }
+    
+    }];
+    
+    [request startExecute];
+
+}
+
+- (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult {
+    NSMutableArray *timeslots= nil;
+
+    NSArray* jsonTimeslots = [jsonResult objectForKey:JSON_PARAM_TIMESLOTS];            
+    if (jsonTimeslots)
+    {
+        timeslots = [[NSMutableArray alloc] initWithCapacity:[jsonTimeslots count]];
+        for (NSDictionary*jsonTS in jsonTimeslots) {
+            Timeslot*t = [[Timeslot alloc] initWithJSON:jsonTS];
+            if (t)
+            {
+                [timeslots addObject:t];
+                [t release];
+            }
+            else
+            {
+                //TODO - process error
+            }            
+        }
+        
+    }
+    return timeslots;
+}
+
+
+-(NSURL*)buildURLWithRequest:(NSString*)request params:(id)params,...
+{
+
+
+    return [NSURL URLWithString:[END_POINT_URL stringByAppendingFormat:request, API_VERSION , params]];
 }
 @end

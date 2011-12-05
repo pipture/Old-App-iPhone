@@ -7,13 +7,20 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "DataRequest.h"
+#import "Timeslot.h"
+#import "SBJson.h"
+
 
 @interface PiptureModel : NSObject
 
-//SEL:NSArray of Timeslots ordered by startTime ascending
--(void)getTimeslotsFromId:(NSString*)timeslotId maxCount:(int)maxCount forTarget:(id)target withCallback:(SEL)callback;
+//Using standard factory by default
+@property (retain,nonatomic) DefaultDataRequestFactory* dataRequestFactory; 
 
 //SEL:NSArray of Timeslots ordered by startTime ascending
--(void)getTimeslotsFromCurrentWithMaxCount:(int)maxCount forTarget:(id)target withCallback:(SEL)callback;;
+-(void)getTimeslotsFromId:(NSString*)timeslotId maxCount:(int)maxCount forTarget:(id)target callback:(SEL)callback;
+
+//SEL:NSArray of Timeslots ordered by startTime ascending
+-(void)getTimeslotsFromCurrentWithMaxCount:(int)maxCount forTarget:(id)target callback:(SEL)callback;;
 
 @end
