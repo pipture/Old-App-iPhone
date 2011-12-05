@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		381935BC147CED4F0049B30E /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935BB147CED4F0049B30E /* HistoryViewController.m */; };
-		381935BF147CED6A0049B30E /* HistoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935BE147CED6A0049B30E /* HistoryView.xib */; };
 		381935C1147D04540049B30E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 381935C0147D04540049B30E /* MessageUI.framework */; };
 		381935C6147D067D0049B30E /* LibraryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C5147D067D0049B30E /* LibraryNavigationController.m */; };
 		381935C9147E29920049B30E /* AlbumsListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C8147E29920049B30E /* AlbumsListView.m */; };
@@ -33,11 +31,13 @@
 		387A94731484F8D7000F9433 /* thumb2.png in Resources */ = {isa = PBXBuildFile; fileRef = 387A946B1484F8D7000F9433 /* thumb2.png */; };
 		387A94741484F8D7000F9433 /* thumb3.png in Resources */ = {isa = PBXBuildFile; fileRef = 387A946C1484F8D7000F9433 /* thumb3.png */; };
 		387A94761484F918000F9433 /* face3.png in Resources */ = {isa = PBXBuildFile; fileRef = 387A94751484F918000F9433 /* face3.png */; };
+		389830C5148CA82F00D8BF93 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389830C4148CA82F00D8BF93 /* AVFoundation.framework */; };
+		389830C8148CAD4300D8BF93 /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 389830C7148CAD4300D8BF93 /* PlayerView.m */; };
+		389830CA148CCDAF00D8BF93 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389830C9148CCDAF00D8BF93 /* CoreMedia.framework */; };
 		38989CE3147A631E004DE1E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE2147A631E004DE1E0 /* UIKit.framework */; };
 		38989CE5147A631E004DE1E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE4147A631E004DE1E0 /* Foundation.framework */; };
 		38989CED147A631F004DE1E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 38989CEB147A631F004DE1E0 /* InfoPlist.strings */; };
 		38989CEF147A631F004DE1E0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989CEE147A631F004DE1E0 /* main.m */; };
-		38989CF3147A631F004DE1E0 /* PiptureAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989CF2147A631F004DE1E0 /* PiptureAppDelegate.m */; };
 		38989CFB147A6320004DE1E0 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CFA147A6320004DE1E0 /* SenTestingKit.framework */; };
 		38989CFC147A6320004DE1E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE2147A631E004DE1E0 /* UIKit.framework */; };
 		38989CFD147A6320004DE1E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE4147A631E004DE1E0 /* Foundation.framework */; };
@@ -45,7 +45,6 @@
 		38989D19147A6568004DE1E0 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38989D18147A6568004DE1E0 /* MainWindow.xib */; };
 		38989D20147A66A7004DE1E0 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989D1F147A66A7004DE1E0 /* LoginViewController.m */; };
 		38989D32147CA97F004DE1E0 /* Vincent.png in Resources */ = {isa = PBXBuildFile; fileRef = 38989D31147CA97F004DE1E0 /* Vincent.png */; };
-		389C54E21486466C00AF70A9 /* HistoryTableItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 389C54E11486466C00AF70A9 /* HistoryTableItemView.xib */; };
 		389C54E414865A6100AF70A9 /* DetailTableItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 389C54E314865A6100AF70A9 /* DetailTableItemView.xib */; };
 		389C54F71486676C00AF70A9 /* poster.png in Resources */ = {isa = PBXBuildFile; fileRef = 389C54E51486676C00AF70A9 /* poster.png */; };
 		389C54F81486676C00AF70A9 /* vid2.png in Resources */ = {isa = PBXBuildFile; fileRef = 389C54E61486676C00AF70A9 /* vid2.png */; };
@@ -72,11 +71,25 @@
 		38D74557147E6DAB00062441 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D74556147E6DAB00062441 /* QuartzCore.framework */; };
 		38D74558147E6DBE00062441 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE6147A631E004DE1E0 /* CoreGraphics.framework */; };
 		38D7455C147F728200062441 /* AlbumDetailPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D7455B147F728200062441 /* AlbumDetailPage.m */; };
+		38E9FA89148CEE1E0075463E /* playBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E9FA88148CEE1E0075463E /* playBtn.png */; };
 		38FAFE30148766A2003EA542 /* video1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 38FAFE2F148766A2003EA542 /* video1.mp4 */; };
-		38FAFE33148768B5003EA542 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38FAFE32148768B5003EA542 /* MediaPlayer.framework */; };
 		8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8811ED94147B6FC5008CC877 /* HomeView.xib */; };
-		88BE44A21483893C002D30ED /* PiptureModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44A11483893C002D30ED /* PiptureModel.m */; };
-		88BE44A614838A31002D30ED /* Timeslot.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44A514838A31002D30ED /* Timeslot.m */; };
+		88751791148CAD3B00AFFFAC /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */; };
+		88751792148CAD3B00AFFFAC /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875177C148CAD3B00AFFFAC /* SBJsonParser.m */; };
+		88751793148CAD3B00AFFFAC /* SBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875177E148CAD3B00AFFFAC /* SBJsonStreamParser.m */; };
+		88751794148CAD3B00AFFFAC /* SBJsonStreamParserAccumulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751780148CAD3B00AFFFAC /* SBJsonStreamParserAccumulator.m */; };
+		88751795148CAD3B00AFFFAC /* SBJsonStreamParserAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751782148CAD3B00AFFFAC /* SBJsonStreamParserAdapter.m */; };
+		88751796148CAD3B00AFFFAC /* SBJsonStreamParserState.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751784148CAD3B00AFFFAC /* SBJsonStreamParserState.m */; };
+		88751797148CAD3B00AFFFAC /* SBJsonStreamWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751786148CAD3B00AFFFAC /* SBJsonStreamWriter.m */; };
+		88751798148CAD3B00AFFFAC /* SBJsonStreamWriterAccumulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751788148CAD3B00AFFFAC /* SBJsonStreamWriterAccumulator.m */; };
+		88751799148CAD3B00AFFFAC /* SBJsonStreamWriterState.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875178A148CAD3B00AFFFAC /* SBJsonStreamWriterState.m */; };
+		8875179A148CAD3B00AFFFAC /* SBJsonTokeniser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875178C148CAD3B00AFFFAC /* SBJsonTokeniser.m */; };
+		8875179B148CAD3B00AFFFAC /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875178E148CAD3B00AFFFAC /* SBJsonUTF8Stream.m */; };
+		8875179C148CAD3B00AFFFAC /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751790148CAD3B00AFFFAC /* SBJsonWriter.m */; };
+		887517A6148CAE3400AFFFAC /* DataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517A1148CAE3400AFFFAC /* DataRequest.m */; };
+		887517A7148CAE3400AFFFAC /* PiptureAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */; };
+		887517A8148CAE3400AFFFAC /* PiptureModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517A5148CAE3400AFFFAC /* PiptureModel.m */; };
+		887517AB148CAE4B00AFFFAC /* Timeslot.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517AA148CAE4B00AFFFAC /* Timeslot.m */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
 /* End PBXBuildFile section */
@@ -92,9 +105,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		381935BA147CED4F0049B30E /* HistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryViewController.h; sourceTree = "<group>"; };
-		381935BB147CED4F0049B30E /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
-		381935BE147CED6A0049B30E /* HistoryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HistoryView.xib; sourceTree = "<group>"; };
 		381935C0147D04540049B30E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		381935C4147D067D0049B30E /* LibraryNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryNavigationController.h; sourceTree = "<group>"; };
 		381935C5147D067D0049B30E /* LibraryNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryNavigationController.m; sourceTree = "<group>"; };
@@ -123,6 +133,10 @@
 		387A946B1484F8D7000F9433 /* thumb2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = thumb2.png; sourceTree = "<group>"; };
 		387A946C1484F8D7000F9433 /* thumb3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = thumb3.png; sourceTree = "<group>"; };
 		387A94751484F918000F9433 /* face3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face3.png; sourceTree = "<group>"; };
+		389830C4148CA82F00D8BF93 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		389830C6148CAD4300D8BF93 /* PlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerView.h; sourceTree = "<group>"; };
+		389830C7148CAD4300D8BF93 /* PlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerView.m; sourceTree = "<group>"; };
+		389830C9148CCDAF00D8BF93 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		38989CDE147A631E004DE1E0 /* Pipture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pipture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38989CE2147A631E004DE1E0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		38989CE4147A631E004DE1E0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -131,8 +145,6 @@
 		38989CEC147A631F004DE1E0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		38989CEE147A631F004DE1E0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		38989CF0147A631F004DE1E0 /* Pipture-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Pipture-Prefix.pch"; sourceTree = "<group>"; };
-		38989CF1147A631F004DE1E0 /* PiptureAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PiptureAppDelegate.h; path = ../PiptureAppDelegate.h; sourceTree = "<group>"; };
-		38989CF2147A631F004DE1E0 /* PiptureAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PiptureAppDelegate.m; path = ../PiptureAppDelegate.m; sourceTree = "<group>"; };
 		38989CF9147A6320004DE1E0 /* PiptureTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PiptureTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		38989CFA147A6320004DE1E0 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		38989D02147A6320004DE1E0 /* PiptureTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PiptureTests-Info.plist"; sourceTree = "<group>"; };
@@ -141,7 +153,6 @@
 		38989D1E147A66A7004DE1E0 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		38989D1F147A66A7004DE1E0 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		38989D31147CA97F004DE1E0 /* Vincent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Vincent.png; sourceTree = "<group>"; };
-		389C54E11486466C00AF70A9 /* HistoryTableItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HistoryTableItemView.xib; sourceTree = "<group>"; };
 		389C54E314865A6100AF70A9 /* DetailTableItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailTableItemView.xib; sourceTree = "<group>"; };
 		389C54E51486676C00AF70A9 /* poster.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = poster.png; sourceTree = "<group>"; };
 		389C54E61486676C00AF70A9 /* vid2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vid2.png; sourceTree = "<group>"; };
@@ -171,13 +182,43 @@
 		38D74556147E6DAB00062441 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		38D7455A147F728200062441 /* AlbumDetailPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailPage.h; sourceTree = "<group>"; };
 		38D7455B147F728200062441 /* AlbumDetailPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailPage.m; sourceTree = "<group>"; };
+		38E9FA88148CEE1E0075463E /* playBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playBtn.png; sourceTree = "<group>"; };
 		38FAFE2F148766A2003EA542 /* video1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = video1.mp4; sourceTree = "<group>"; };
-		38FAFE32148768B5003EA542 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		8811ED94147B6FC5008CC877 /* HomeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeView.xib; sourceTree = "<group>"; };
-		88BE44A01483893C002D30ED /* PiptureModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureModel.h; sourceTree = "<group>"; };
-		88BE44A11483893C002D30ED /* PiptureModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModel.m; sourceTree = "<group>"; };
-		88BE44A414838A31002D30ED /* Timeslot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timeslot.h; sourceTree = "<group>"; };
-		88BE44A514838A31002D30ED /* Timeslot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Timeslot.m; sourceTree = "<group>"; };
+		88751777148CAD3B00AFFFAC /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
+		88751778148CAD3B00AFFFAC /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJson.h"; sourceTree = "<group>"; };
+		88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJson.m"; sourceTree = "<group>"; };
+		8875177A148CAD3B00AFFFAC /* SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJson.h; sourceTree = "<group>"; };
+		8875177B148CAD3B00AFFFAC /* SBJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonParser.h; sourceTree = "<group>"; };
+		8875177C148CAD3B00AFFFAC /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
+		8875177D148CAD3B00AFFFAC /* SBJsonStreamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamParser.h; sourceTree = "<group>"; };
+		8875177E148CAD3B00AFFFAC /* SBJsonStreamParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamParser.m; sourceTree = "<group>"; };
+		8875177F148CAD3B00AFFFAC /* SBJsonStreamParserAccumulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamParserAccumulator.h; sourceTree = "<group>"; };
+		88751780148CAD3B00AFFFAC /* SBJsonStreamParserAccumulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamParserAccumulator.m; sourceTree = "<group>"; };
+		88751781148CAD3B00AFFFAC /* SBJsonStreamParserAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamParserAdapter.h; sourceTree = "<group>"; };
+		88751782148CAD3B00AFFFAC /* SBJsonStreamParserAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamParserAdapter.m; sourceTree = "<group>"; };
+		88751783148CAD3B00AFFFAC /* SBJsonStreamParserState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamParserState.h; sourceTree = "<group>"; };
+		88751784148CAD3B00AFFFAC /* SBJsonStreamParserState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamParserState.m; sourceTree = "<group>"; };
+		88751785148CAD3B00AFFFAC /* SBJsonStreamWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamWriter.h; sourceTree = "<group>"; };
+		88751786148CAD3B00AFFFAC /* SBJsonStreamWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamWriter.m; sourceTree = "<group>"; };
+		88751787148CAD3B00AFFFAC /* SBJsonStreamWriterAccumulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamWriterAccumulator.h; sourceTree = "<group>"; };
+		88751788148CAD3B00AFFFAC /* SBJsonStreamWriterAccumulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamWriterAccumulator.m; sourceTree = "<group>"; };
+		88751789148CAD3B00AFFFAC /* SBJsonStreamWriterState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamWriterState.h; sourceTree = "<group>"; };
+		8875178A148CAD3B00AFFFAC /* SBJsonStreamWriterState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamWriterState.m; sourceTree = "<group>"; };
+		8875178B148CAD3B00AFFFAC /* SBJsonTokeniser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonTokeniser.h; sourceTree = "<group>"; };
+		8875178C148CAD3B00AFFFAC /* SBJsonTokeniser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonTokeniser.m; sourceTree = "<group>"; };
+		8875178D148CAD3B00AFFFAC /* SBJsonUTF8Stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonUTF8Stream.h; sourceTree = "<group>"; };
+		8875178E148CAD3B00AFFFAC /* SBJsonUTF8Stream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonUTF8Stream.m; sourceTree = "<group>"; };
+		8875178F148CAD3B00AFFFAC /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
+		88751790148CAD3B00AFFFAC /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		887517A0148CAE3400AFFFAC /* DataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataRequest.h; path = Classes/DataRequest.h; sourceTree = "<group>"; };
+		887517A1148CAE3400AFFFAC /* DataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataRequest.m; path = Classes/DataRequest.m; sourceTree = "<group>"; };
+		887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureAppDelegate.h; sourceTree = "<group>"; };
+		887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureAppDelegate.m; sourceTree = "<group>"; };
+		887517A4148CAE3400AFFFAC /* PiptureModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PiptureModel.h; path = Classes/PiptureModel.h; sourceTree = "<group>"; };
+		887517A5148CAE3400AFFFAC /* PiptureModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PiptureModel.m; path = Classes/PiptureModel.m; sourceTree = "<group>"; };
+		887517A9148CAE4B00AFFFAC /* Timeslot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Timeslot.h; path = Classes/Timeslot.h; sourceTree = "<group>"; };
+		887517AA148CAE4B00AFFFAC /* Timeslot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Timeslot.m; path = Classes/Timeslot.m; sourceTree = "<group>"; };
 		88BE44B11483A341002D30ED /* PiptureModelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureModelTest.h; sourceTree = "<group>"; };
 		88BE44B21483A341002D30ED /* PiptureModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModelTest.m; sourceTree = "<group>"; };
 		88D84207147B626C00E47EF8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
@@ -189,7 +230,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38FAFE33148768B5003EA542 /* MediaPlayer.framework in Frameworks */,
+				389830CA148CCDAF00D8BF93 /* CoreMedia.framework in Frameworks */,
+				389830C5148CA82F00D8BF93 /* AVFoundation.framework in Frameworks */,
 				38D74558147E6DBE00062441 /* CoreGraphics.framework in Frameworks */,
 				38D74557147E6DAB00062441 /* QuartzCore.framework in Frameworks */,
 				381935C1147D04540049B30E /* MessageUI.framework in Frameworks */,
@@ -218,8 +260,6 @@
 				38989D1F147A66A7004DE1E0 /* LoginViewController.m */,
 				88D84207147B626C00E47EF8 /* HomeViewController.h */,
 				88D84208147B626C00E47EF8 /* HomeViewController.m */,
-				381935BA147CED4F0049B30E /* HistoryViewController.h */,
-				381935BB147CED4F0049B30E /* HistoryViewController.m */,
 			);
 			name = HomeScreen;
 			sourceTree = "<group>";
@@ -227,6 +267,7 @@
 		387A94641484F8C2000F9433 /* mockdata */ = {
 			isa = PBXGroup;
 			children = (
+				38E9FA88148CEE1E0075463E /* playBtn.png */,
 				38FAFE2F148766A2003EA542 /* video1.mp4 */,
 				386448F614873BB2008893B5 /* sendBtn.png */,
 				386448F714873BB2008893B5 /* nextBtn.png */,
@@ -289,7 +330,8 @@
 		38989CE1147A631E004DE1E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				38FAFE32148768B5003EA542 /* MediaPlayer.framework */,
+				389830C9148CCDAF00D8BF93 /* CoreMedia.framework */,
+				389830C4148CA82F00D8BF93 /* AVFoundation.framework */,
 				38D74556147E6DAB00062441 /* QuartzCore.framework */,
 				381935C0147D04540049B30E /* MessageUI.framework */,
 				38989CE2147A631E004DE1E0 /* UIKit.framework */,
@@ -303,8 +345,6 @@
 		38989CE8147A631F004DE1E0 /* Pipture */ = {
 			isa = PBXGroup;
 			children = (
-				88BE44A314838A00002D30ED /* Entities */,
-				88BE449F148387DB002D30ED /* Model */,
 				38989D1D147A6696004DE1E0 /* Classes */,
 				38989D17147A6483004DE1E0 /* Resources */,
 				38989CE9147A631F004DE1E0 /* Supporting Files */,
@@ -349,12 +389,10 @@
 				385FC39C147CD818001CDF43 /* VideoView.xib */,
 				8811ED94147B6FC5008CC877 /* HomeView.xib */,
 				38989D18147A6568004DE1E0 /* MainWindow.xib */,
-				381935BE147CED6A0049B30E /* HistoryView.xib */,
 				381935CB147E2C850049B30E /* AlbumItemView.xib */,
 				38D7454F147E660B00062441 /* LibraryView.xib */,
 				38D74554147E6ABC00062441 /* AlbumDetailInfo.xib */,
 				387A94621484F4CB000F9433 /* LibraryTableItemView.xib */,
-				389C54E11486466C00AF70A9 /* HistoryTableItemView.xib */,
 				389C54E314865A6100AF70A9 /* DetailTableItemView.xib */,
 			);
 			path = Resources;
@@ -363,10 +401,15 @@
 		38989D1D147A6696004DE1E0 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				38989CF1147A631F004DE1E0 /* PiptureAppDelegate.h */,
-				38989CF2147A631F004DE1E0 /* PiptureAppDelegate.m */,
+				88751776148CAD3B00AFFFAC /* SBJSON */,
+				887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */,
+				887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */,
 				385FC396147CD7A6001CDF43 /* VideoViewController.h */,
 				385FC397147CD7A6001CDF43 /* VideoViewController.m */,
+				389830C6148CAD4300D8BF93 /* PlayerView.h */,
+				389830C7148CAD4300D8BF93 /* PlayerView.m */,
+				88BE44A314838A00002D30ED /* Entities */,
+				88BE449F148387DB002D30ED /* Model */,
 				38441FD9147FA5AD009B9D4E /* HomeScreen */,
 				38D74559147F701200062441 /* Library */,
 			);
@@ -393,22 +436,59 @@
 			name = Library;
 			sourceTree = "<group>";
 		};
+		88751776148CAD3B00AFFFAC /* SBJSON */ = {
+			isa = PBXGroup;
+			children = (
+				88751777148CAD3B00AFFFAC /* JSON.h */,
+				88751778148CAD3B00AFFFAC /* NSObject+SBJson.h */,
+				88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */,
+				8875177A148CAD3B00AFFFAC /* SBJson.h */,
+				8875177B148CAD3B00AFFFAC /* SBJsonParser.h */,
+				8875177C148CAD3B00AFFFAC /* SBJsonParser.m */,
+				8875177D148CAD3B00AFFFAC /* SBJsonStreamParser.h */,
+				8875177E148CAD3B00AFFFAC /* SBJsonStreamParser.m */,
+				8875177F148CAD3B00AFFFAC /* SBJsonStreamParserAccumulator.h */,
+				88751780148CAD3B00AFFFAC /* SBJsonStreamParserAccumulator.m */,
+				88751781148CAD3B00AFFFAC /* SBJsonStreamParserAdapter.h */,
+				88751782148CAD3B00AFFFAC /* SBJsonStreamParserAdapter.m */,
+				88751783148CAD3B00AFFFAC /* SBJsonStreamParserState.h */,
+				88751784148CAD3B00AFFFAC /* SBJsonStreamParserState.m */,
+				88751785148CAD3B00AFFFAC /* SBJsonStreamWriter.h */,
+				88751786148CAD3B00AFFFAC /* SBJsonStreamWriter.m */,
+				88751787148CAD3B00AFFFAC /* SBJsonStreamWriterAccumulator.h */,
+				88751788148CAD3B00AFFFAC /* SBJsonStreamWriterAccumulator.m */,
+				88751789148CAD3B00AFFFAC /* SBJsonStreamWriterState.h */,
+				8875178A148CAD3B00AFFFAC /* SBJsonStreamWriterState.m */,
+				8875178B148CAD3B00AFFFAC /* SBJsonTokeniser.h */,
+				8875178C148CAD3B00AFFFAC /* SBJsonTokeniser.m */,
+				8875178D148CAD3B00AFFFAC /* SBJsonUTF8Stream.h */,
+				8875178E148CAD3B00AFFFAC /* SBJsonUTF8Stream.m */,
+				8875178F148CAD3B00AFFFAC /* SBJsonWriter.h */,
+				88751790148CAD3B00AFFFAC /* SBJsonWriter.m */,
+			);
+			path = SBJSON;
+			sourceTree = "<group>";
+		};
 		88BE449F148387DB002D30ED /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				88BE44A01483893C002D30ED /* PiptureModel.h */,
-				88BE44A11483893C002D30ED /* PiptureModel.m */,
+				887517A0148CAE3400AFFFAC /* DataRequest.h */,
+				887517A1148CAE3400AFFFAC /* DataRequest.m */,
+				887517A4148CAE3400AFFFAC /* PiptureModel.h */,
+				887517A5148CAE3400AFFFAC /* PiptureModel.m */,
 			);
 			name = Model;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		88BE44A314838A00002D30ED /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				88BE44A414838A31002D30ED /* Timeslot.h */,
-				88BE44A514838A31002D30ED /* Timeslot.m */,
+				887517A9148CAE4B00AFFFAC /* Timeslot.h */,
+				887517AA148CAE4B00AFFFAC /* Timeslot.m */,
 			);
 			name = Entities;
+			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -487,7 +567,6 @@
 				8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */,
 				38989D32147CA97F004DE1E0 /* Vincent.png in Resources */,
 				385FC39D147CD818001CDF43 /* VideoView.xib in Resources */,
-				381935BF147CED6A0049B30E /* HistoryView.xib in Resources */,
 				381935CC147E2C850049B30E /* AlbumItemView.xib in Resources */,
 				38D74550147E660B00062441 /* LibraryView.xib in Resources */,
 				38D74555147E6ABC00062441 /* AlbumDetailInfo.xib in Resources */,
@@ -501,7 +580,6 @@
 				387A94731484F8D7000F9433 /* thumb2.png in Resources */,
 				387A94741484F8D7000F9433 /* thumb3.png in Resources */,
 				387A94761484F918000F9433 /* face3.png in Resources */,
-				389C54E21486466C00AF70A9 /* HistoryTableItemView.xib in Resources */,
 				389C54E414865A6100AF70A9 /* DetailTableItemView.xib in Resources */,
 				389C54F71486676C00AF70A9 /* poster.png in Resources */,
 				389C54F81486676C00AF70A9 /* vid2.png in Resources */,
@@ -529,6 +607,7 @@
 				386448FC14873BB2008893B5 /* pauseBtn.png in Resources */,
 				386448FD14873BB2008893B5 /* prevBtn.png in Resources */,
 				38FAFE30148766A2003EA542 /* video1.mp4 in Resources */,
+				38E9FA89148CEE1E0075463E /* playBtn.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,19 +643,31 @@
 			buildActionMask = 2147483647;
 			files = (
 				38989CEF147A631F004DE1E0 /* main.m in Sources */,
-				38989CF3147A631F004DE1E0 /* PiptureAppDelegate.m in Sources */,
 				38989D20147A66A7004DE1E0 /* LoginViewController.m in Sources */,
 				88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */,
 				385FC399147CD7A6001CDF43 /* VideoViewController.m in Sources */,
-				381935BC147CED4F0049B30E /* HistoryViewController.m in Sources */,
 				381935C6147D067D0049B30E /* LibraryNavigationController.m in Sources */,
 				381935C9147E29920049B30E /* AlbumsListView.m in Sources */,
 				381935CF147E2F180049B30E /* AlbumItemViewController.m in Sources */,
 				38D7454E147E640100062441 /* LibraryViewController.m in Sources */,
 				38D74553147E6AA600062441 /* AlbumDetailInfoController.m in Sources */,
 				38D7455C147F728200062441 /* AlbumDetailPage.m in Sources */,
-				88BE44A21483893C002D30ED /* PiptureModel.m in Sources */,
-				88BE44A614838A31002D30ED /* Timeslot.m in Sources */,
+				88751791148CAD3B00AFFFAC /* NSObject+SBJson.m in Sources */,
+				88751792148CAD3B00AFFFAC /* SBJsonParser.m in Sources */,
+				88751793148CAD3B00AFFFAC /* SBJsonStreamParser.m in Sources */,
+				88751794148CAD3B00AFFFAC /* SBJsonStreamParserAccumulator.m in Sources */,
+				88751795148CAD3B00AFFFAC /* SBJsonStreamParserAdapter.m in Sources */,
+				88751796148CAD3B00AFFFAC /* SBJsonStreamParserState.m in Sources */,
+				88751797148CAD3B00AFFFAC /* SBJsonStreamWriter.m in Sources */,
+				88751798148CAD3B00AFFFAC /* SBJsonStreamWriterAccumulator.m in Sources */,
+				88751799148CAD3B00AFFFAC /* SBJsonStreamWriterState.m in Sources */,
+				8875179A148CAD3B00AFFFAC /* SBJsonTokeniser.m in Sources */,
+				8875179B148CAD3B00AFFFAC /* SBJsonUTF8Stream.m in Sources */,
+				8875179C148CAD3B00AFFFAC /* SBJsonWriter.m in Sources */,
+				887517A6148CAE3400AFFFAC /* DataRequest.m in Sources */,
+				887517A7148CAE3400AFFFAC /* PiptureAppDelegate.m in Sources */,
+				887517A8148CAE3400AFFFAC /* PiptureModel.m in Sources */,
+				887517AB148CAE4B00AFFFAC /* Timeslot.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
