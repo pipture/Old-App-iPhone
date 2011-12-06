@@ -38,7 +38,7 @@ NSURLConnection* connection;
     
     
 	NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url_
-                                                cachePolicy:NSURLRequestReturnCacheDataElseLoad
+                                                cachePolicy:NSURLRequestUseProtocolCachePolicy
                                             timeoutInterval:5];
     
 	// Make asynchronous request

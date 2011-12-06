@@ -17,7 +17,9 @@
 #define kHEIGHT_FOR_KEYBOARD 216.0
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress>
-
+{
+    VideoViewController* vc;
+}
 //@property (strong, nonatomic) IBOutlet UIImageView * backgroundImage;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;

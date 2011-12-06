@@ -23,6 +23,47 @@
 
 #pragma mark - View lifecycle
 
+- (void)updateAction:(NSTimer *)updatedTimer
+{
+    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
+    
+    /*static float prevPosition = 0;
+    
+    if (player != nil) {
+        float duration = CMTimeGetSeconds(player.currentItem.asset.duration);
+        float position = CMTimeGetSeconds(player.currentItem.currentTime);
+        
+        self.busyContainer.hidden = (prevPosition != position || pausedStatus);
+        
+        if (player.currentItem.status == AVPlayerStatusReadyToPlay && !pausedStatus) {
+            [player play];
+        }
+        
+        prevPosition = position;
+        
+        NSLog(@"Pos: %f, len: %f", position, duration);
+        if (duration > 0 && duration - position < 10 && nextPlayerItem == nil && pos + 1 < [playlist count]) {
+            NSLog(@"Precaching");
+            nextPlayerItem = [self createItem:[playlist objectAtIndex:pos + 1]];
+        }
+        
+        [slider setMaximumValue:duration];
+        [slider setValue:position animated:YES];
+    }*/
+}
+
+- (void)stopTimer {
+    if (updateTimer != nil) {
+        [updateTimer invalidate];
+        updateTimer = nil;
+    }
+}
+
+- (void)startTimer {
+    [self stopTimer];
+    updateTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updateAction:) userInfo:nil repeats:YES];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -55,11 +96,24 @@
 }
 
 -(void)timeslotsReceived:(NSArray *)timeslots {
-    [timelineArray addObjectsFromArray:timeslots];
-    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height * [timeslots count]);
-    [self prepareImageFor:0];
-    [self prepareImageFor:1];
-    [self updateControls];   
+    @synchronized(self) {
+        NSLog(@"was size = %d", scrollView.subviews.count);
+        NSLog(@"new size = %d", timeslots.count);
+        [timelineArray removeAllObjects];
+        [timelineArray addObjectsFromArray:timeslots];
+        scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height * [timeslots count]);
+        //remove deprecated data
+        while (timelineArray.count < scrollView.subviews.count) {
+            [[scrollView.subviews lastObject] removeFromSuperview];
+        }
+
+        int page = [self getPageNumber];
+        NSLog(@"page is: %d", page);
+        [self prepareImageFor: page - 1];
+        [self prepareImageFor: page];
+        [self prepareImageFor: page + 1];
+        [self updateControls];
+    }
 }
 
 -(void)dataRequestFailed:(DataRequestError*)error
@@ -88,6 +142,13 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
+    
+    [self startTimer];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [self stopTimer];
+    [super viewDidDisappear:animated];
 }
 
 - (int)getPageNumber

@@ -20,6 +20,10 @@ static PiptureAppDelegate *instance;
 
 - (void)dealloc
 {
+    if (vc != nil) {
+        [vc release];
+        vc = nil;
+    }
     [_loginViewController release];
     [libraryNavigationController release];
     [homeNavigationController release];
@@ -29,6 +33,7 @@ static PiptureAppDelegate *instance;
 }
 
 - (id) init {
+    vc = nil;
     instance = nil;
     self = [super init];
     if (self) {
@@ -92,11 +97,22 @@ static PiptureAppDelegate *instance;
 }
 
 - (void)showVideo:(int)videoId navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi{
-    VideoViewController* vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
+    //TODO: init from external
+    NSMutableArray * playlist = [[NSMutableArray alloc] initWithCapacity:4];
+    
+    [playlist addObject:@"http://s3.amazonaws.com/net_thumbtack_pipture/4461d7166d2a8379a296bd18de6208207c0e260f.mp4"];
+    [playlist addObject:@"http://s3.amazonaws.com/net_thumbtack_pipture/video2.mp4"];
+    
+    if (vc == nil) {
+        vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
+    }
+    vc.playlist = playlist;
     vc.wantsFullScreenLayout = YES;
     vc.simpleMode = noNavi;
     [navigationController pushViewController:vc animated:YES];
-    [vc release];
+
+    [vc initVideo];
+    [playlist release];
 }
 
 - (void) onHome {

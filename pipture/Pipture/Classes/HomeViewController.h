@@ -10,6 +10,8 @@
 
 @interface HomeViewController : UIViewController <UIScrollViewDelegate,TimeslotsReceiver>
 {
+    NSTimer *updateTimer;
+    
     //container for timeslots
     NSMutableArray * timelineArray;
     BOOL scheduleMode;
