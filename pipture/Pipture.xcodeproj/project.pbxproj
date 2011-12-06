@@ -91,6 +91,7 @@
 		887517A7148CAE3400AFFFAC /* PiptureAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */; };
 		887517A8148CAE3400AFFFAC /* PiptureModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517A5148CAE3400AFFFAC /* PiptureModel.m */; };
 		887517AB148CAE4B00AFFFAC /* Timeslot.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517AA148CAE4B00AFFFAC /* Timeslot.m */; };
+		887517BA148DD2E400AFFFAC /* DataRequestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517B9148DD2E400AFFFAC /* DataRequestError.m */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
 /* End PBXBuildFile section */
@@ -222,6 +223,8 @@
 		887517A5148CAE3400AFFFAC /* PiptureModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PiptureModel.m; path = Classes/PiptureModel.m; sourceTree = "<group>"; };
 		887517A9148CAE4B00AFFFAC /* Timeslot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Timeslot.h; path = Classes/Timeslot.h; sourceTree = "<group>"; };
 		887517AA148CAE4B00AFFFAC /* Timeslot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Timeslot.m; path = Classes/Timeslot.m; sourceTree = "<group>"; };
+		887517B8148DD2E300AFFFAC /* DataRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataRequestError.h; path = Classes/DataRequestError.h; sourceTree = "<group>"; };
+		887517B9148DD2E400AFFFAC /* DataRequestError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataRequestError.m; path = Classes/DataRequestError.m; sourceTree = "<group>"; };
 		88BE44B11483A341002D30ED /* PiptureModelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureModelTest.h; sourceTree = "<group>"; };
 		88BE44B21483A341002D30ED /* PiptureModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModelTest.m; sourceTree = "<group>"; };
 		88D84207147B626C00E47EF8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
@@ -489,6 +492,8 @@
 				887517A1148CAE3400AFFFAC /* DataRequest.m */,
 				887517A4148CAE3400AFFFAC /* PiptureModel.h */,
 				887517A5148CAE3400AFFFAC /* PiptureModel.m */,
+				887517B8148DD2E300AFFFAC /* DataRequestError.h */,
+				887517B9148DD2E400AFFFAC /* DataRequestError.m */,
 			);
 			name = Model;
 			path = ..;
@@ -683,6 +688,7 @@
 				887517AB148CAE4B00AFFFAC /* Timeslot.m in Sources */,
 				381A61A9148CFC7D00B7139F /* PlayerView.m in Sources */,
 				38A7EC8C148DDC6D002120F3 /* AsyncImageView.m in Sources */,
+				887517BA148DD2E400AFFFAC /* DataRequestError.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

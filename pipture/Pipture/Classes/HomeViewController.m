@@ -31,7 +31,7 @@
    
     //prepare scrollView
     
-    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height * 3);
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.scrollsToTop = NO;
@@ -40,36 +40,7 @@
     
     timelineArray = [[NSMutableArray alloc] initWithCapacity:20];
     
-    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 forTarget:self callback:@selector(getTimeSlotsFromCurrentWithMaxCountCallback:)];
-    //TODO: temporary put images, not timeslots (get timeline from server in future)
-    
-//    UIImage * image = [UIImage imageNamed:@"face1"];
-//    Timeslot * slot = [[Timeslot alloc] initWith:@"The NJ Bro" desc:@"Playing now" image:image];
-//    [image release];
-//    [timelineArray addObject:slot];
-//    [slot release];
-//    
-//    image = [UIImage imageNamed:@"face2"];
-//    slot = [[Timeslot alloc] initWith:@"The Feminist" desc:@"8AM to 11AM" image:image];
-//    [image release];
-//    [timelineArray addObject:slot];
-//    [slot release];
-//    
-//    
-//    image = [UIImage imageNamed:@"face3"];
-//    slot = [[Timeslot alloc] initWith:@"The Other" desc:@"11AM - 2PM" image:image];
-//    [image release];
-//    [timelineArray addObject:slot];
-//    [slot release];
-//    
-//    int height = scrollView.frame.size.height;
-//    for (int i = 0; i < [timelineArray count]; i++) {
-//        Timeslot * slot = [timelineArray objectAtIndex:i];
-//        UIImageView *view = [[UIImageView alloc] initWithImage:slot.image];
-//        view.frame = CGRectMake(0, height * i, scrollView.frame.size.width, height);
-//        [scrollView addSubview:view];
-//        //TODO: view release?
-//    }
+    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
     
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(libraryBarResponder:)];
     [libraryBar addGestureRecognizer:singleFingerTap];
@@ -79,21 +50,30 @@
     //preparing navigation bar schedule button
     scheduleButton = [[UIBarButtonItem alloc] initWithTitle:@"Schedule" style:UIBarButtonItemStylePlain target:self action:@selector(scheduleAction:)];
     self.navigationItem.leftBarButtonItem = scheduleButton;
-    
-//    [self prepareImageFor:0];
-//    [self prepareImageFor:1];
-    
+        
     [self updateControls];
 }
 
--(void)getTimeSlotsFromCurrentWithMaxCountCallback:(NSArray*)timeslots {
-
+-(void)timeslotsReceived:(NSArray *)timeslots {
     [timelineArray addObjectsFromArray:timeslots];
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height * [timeslots count]);
     [self prepareImageFor:0];
     [self prepareImageFor:1];
-    [self updateControls];
-    
+    [self updateControls];   
+}
 
+-(void)dataRequestFailed:(DataRequestError*)error
+{
+    if (error.errorCode == DRErrorNoInternet)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No network connection" 
+                                                        message:@"You must be connected to the internet to use this app." 
+                                                       delegate:nil 
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];    
+    }
 }
 
 - (void)viewDidUnload
@@ -161,18 +141,27 @@
     Timeslot * slot = [timelineArray objectAtIndex:timeslot];
     
     NSURL * url = [NSURL URLWithString:[slot closupBackground]];
-    AsyncImageView * view = [[[AsyncImageView alloc] initWithFrame:frame] autorelease];
-    [view loadImageFromURL:url withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO];
-    [scrollView addSubview:view];
+    
+    AsyncImageView * imageView = nil;
+    if (timeslot >= 0 && timeslot < scrollView.subviews.count) {
+        imageView = [scrollView.subviews objectAtIndex:timeslot];
+    } else {
+        imageView = [[[AsyncImageView alloc] initWithFrame:frame] autorelease];
+        [scrollView addSubview:imageView];
+    }
+    [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO];
+    
+    NSLog(@"ScrollView subs: %d", [[scrollView subviews]count]);
 }
 
 - (void)customNavBarTitle: (int)page
 {
     if (page < [timelineArray count])
     {
+        //TODO Create custom view to have 2 separate labels: for title and for time to make sure title takes only 1 line.
         Timeslot * slot = [timelineArray objectAtIndex:page];
         
-        NSString * title = [NSString stringWithFormat:@"%@\n%@", slot.title, slot.description];
+        NSString * title = [NSString stringWithFormat:@"%@\n%@", slot.title, slot.timeDescription];
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 130,44)];
         titleLabel.backgroundColor = [UIColor clearColor];
