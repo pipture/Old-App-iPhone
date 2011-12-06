@@ -11,6 +11,7 @@
 #import "VideoViewController.h"
 #import "LibraryViewController.h"
 #import "Timeslot.h"
+#import "AsyncImageView.h"
 
 @implementation HomeViewController
 @synthesize scrollView;
@@ -87,15 +88,7 @@
 
 -(void)getTimeSlotsFromCurrentWithMaxCountCallback:(NSArray*)timeslots {
 
-    int height = scrollView.frame.size.height;
-    for (int i = 0; i < [timeslots count]; i++) {
-        Timeslot * slot = [timeslots objectAtIndex:i];
-        [timelineArray addObject:slot];        
-        UIImageView *view = [[UIImageView alloc] init];//initWithImage:[UIImage imageNamed:[slot closupBackground]]];
-        view.frame = CGRectMake(0, height * i, scrollView.frame.size.width, height);
-        [scrollView addSubview:view];
-        //TODO: view release?
-    }
+    [timelineArray addObjectsFromArray:timeslots];
     [self prepareImageFor:0];
     [self prepareImageFor:1];
     [self updateControls];
@@ -161,8 +154,16 @@
     //check for bounds
     if (timeslot < 0 || timeslot > [timelineArray count] - 1)
         return;
+
+    int height = scrollView.frame.size.height;
+    CGRect frame = CGRectMake(0, height * timeslot, scrollView.frame.size.width, height);
+
+    Timeslot * slot = [timelineArray objectAtIndex:timeslot];
     
-    //TODO: async load image for timeslot from server
+    NSURL * url = [NSURL URLWithString:[slot closupBackground]];
+    AsyncImageView * view = [[[AsyncImageView alloc] initWithFrame:frame] autorelease];
+    [view loadImageFromURL:url withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO];
+    [scrollView addSubview:view];
 }
 
 - (void)customNavBarTitle: (int)page
