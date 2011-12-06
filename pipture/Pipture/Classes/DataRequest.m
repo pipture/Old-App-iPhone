@@ -10,13 +10,14 @@
 #import "SBJson.h"
 
 @interface DataRequest(Private)
--(void)clearReceivedData;
+-(void)finish;
 
 @end
 
 @implementation DataRequest
 
 @synthesize url = url_;
+@synthesize progress;
 
 NSMutableData* receivedData;
 NSURLConnection* connection;
@@ -44,8 +45,16 @@ NSURLConnection* connection;
     connection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self startImmediately:YES];
     if (!connection)
     {
-        callback_(-1, nil);//TODO analyze errors    
+        callback_(nil, [[[DataRequestError alloc] initWithNSError:nil] autorelease]);//TODO analyze errors   
+        NSLog(@"Could not create NSURLconnection");
     }
+    else {
+        if (progress) 
+        {
+            [progress showRequestProgress];
+        }
+    }
+    
     
 }
 
@@ -79,6 +88,7 @@ NSURLConnection* connection;
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)lconnection {
+    NSDictionary* dctData = nil;
     if (receivedData) {
         NSString * strData = [[NSString alloc] initWithData:receivedData encoding:NSUTF8StringEncoding];
         [receivedData release];
@@ -87,38 +97,32 @@ NSURLConnection* connection;
         parser.maxDepth = 512;
         NSError *error;
         
-        NSDictionary* dctData = [parser objectWithString:strData error:&error];
+        dctData = [parser objectWithString:strData error:&error];
         [strData release];
         [parser release];
-        callback_(0, dctData);
     }
-    [connection release];
-    connection = nil; 
+    [self finish];
+    callback_(dctData, nil);    
 }
 
 - (void)connection:(NSURLConnection *)lconnection didFailWithError:(NSError *)error {
     if (receivedData) {
         [receivedData release];
     }
-    callback_(-1, nil);//TODO analyze errors    
+    NSLog(@"Error while executing request: %@",error);
+    [self finish];
+    callback_(nil, [[[DataRequestError alloc] initWithNSError:error] autorelease]);
+}
+
+-(void)finish
+{
     [connection release];
     connection = nil; 
-    
-}
-
--(void)clearReceivedData
-{
-
+    if (progress) 
+    {
+        [progress hideRequestProgress];
+    }    
 }
 
 @end
 
-@implementation DefaultDataRequestFactory : NSObject
-
-- (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback
-{
-    return [[[DataRequest alloc]initWithURL:url callback:callback]autorelease];
-}
-
-
-@end

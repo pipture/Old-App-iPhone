@@ -131,4 +131,28 @@ static PiptureAppDelegate *instance;
     [self.window setRootViewController:libraryNavigationController];
 }
 
+NSInteger networkActivityIndecatorCount;
+
+-(void) showRequestProgress {
+    @synchronized(self) {    
+        UIApplication* app = [UIApplication sharedApplication];
+        app.networkActivityIndicatorVisible = YES;    
+        networkActivityIndecatorCount++;
+    }
+}
+
+-(void) hideRequestProgress {
+    @synchronized(self) {
+        networkActivityIndecatorCount--;
+        if(networkActivityIndecatorCount == 0)
+        {
+            UIApplication* app = [UIApplication sharedApplication];
+            app.networkActivityIndicatorVisible = NO;
+        }
+        
+        if(networkActivityIndecatorCount < 0)
+            networkActivityIndecatorCount = 0;
+    }
+}
+
 @end

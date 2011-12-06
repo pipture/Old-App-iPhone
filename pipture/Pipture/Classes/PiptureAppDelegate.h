@@ -11,8 +11,11 @@
 #import "LoginViewController.h"
 #import "VideoViewController.h"
 #import "PiptureModel.h"
+#import "DataRequest.h"
 
-@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate>
+
+
+@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress>
 
 //@property (strong, nonatomic) IBOutlet UIImageView * backgroundImage;
 @property (retain, nonatomic) IBOutlet UIWindow *window;

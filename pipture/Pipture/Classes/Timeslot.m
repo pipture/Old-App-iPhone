@@ -57,9 +57,9 @@ const NSString*JSON_PARAM_CURRENT = @"Current";
     return retStr;
 }
 
--(NSString*)description {
+-(NSString*)timeDescription {
         
-    return self.current ? @"Playing now" : [NSString stringWithFormat:@"%@-%@",[self representTime:startTime],[self representTime:endTime]];
+    return self.current ? @"Playing now" : [NSString stringWithFormat:@"%@ to %@",[self representTime:startTime],[self representTime:endTime]];
 }
 
 - (id)initWith:(NSString*)_title desc:(NSString*)_desc image:(UIImage*)_image {

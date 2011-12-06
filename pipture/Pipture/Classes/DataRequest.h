@@ -7,9 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "DataRequestError.h"
 
 
-typedef void (^DataRequestCallback)(Byte result, NSDictionary*);
+typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
+
+@protocol DataRequestProgress <NSObject>
+
+-(void) showRequestProgress;
+-(void) hideRequestProgress;
+
+@end
+
 
 @interface DataRequest : NSObject<NSURLConnectionDataDelegate> {
 @private
@@ -17,14 +26,10 @@ typedef void (^DataRequestCallback)(Byte result, NSDictionary*);
 }
 
 @property(readonly, nonatomic) NSURL* url;
+@property(assign, nonatomic) id<DataRequestProgress> progress;
 
 - (id)initWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
 - (void)startExecute;
 
 @end
 
-@interface DefaultDataRequestFactory : NSObject
-
-- (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
-
-@end
