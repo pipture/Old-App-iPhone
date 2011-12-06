@@ -7,6 +7,7 @@
 //
 
 #import "VideoViewController.h"
+#import "MailComposerController.h"
 
 @implementation VideoViewController
 @synthesize controlsPanel;
@@ -178,11 +179,7 @@
     }
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
- 
+- (void)initVideo {
     pausedStatus = NO;
     nextPlayerItem = nil;
     pos = -1;
@@ -192,21 +189,24 @@
     } 
     prevButton.hidden = simpleMode;
     nextButton.hidden = simpleMode;
-
+    
     //TODO: init from external
     playlist = [[NSMutableArray alloc] initWithCapacity:4];
     
     [playlist addObject:@"http://s3.amazonaws.com/net_thumbtack_pipture/4461d7166d2a8379a296bd18de6208207c0e260f.mp4"];
     [playlist addObject:@"http://s3.amazonaws.com/net_thumbtack_pipture/video2.mp4"];
-    //[playlist addObject:@"http://h264-demo.code-shop.com/demo/apache/workers_world_co64_box64.mp4?start=404"];
-    //[playlist addObject:@"http://h264-demo.code-shop.com/demo/apache/trailer2.mp4"];
-    //NSString * url = @"http://192.168.9.131:8080/video1.mp4";
     
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     [videoContainer addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];
     
     [self nextVideo];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
 }
 
 - (void)viewDidUnload
@@ -230,6 +230,8 @@
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+
+    [self initVideo];
     
     controlsHidded = YES;
     
@@ -238,7 +240,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-   
+  
 }
 
 - (void)clearPlayer {
@@ -285,15 +287,14 @@
 
 //The event handling method
 - (IBAction)sendAction:(id)sender{
-    MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
-    controller.mailComposeDelegate = self;
-    [controller setSubject:@"Look at this video!"];
-    //TODO: snippet
-    [controller setMessageBody:@"Pipture link here:" isHTML:NO]; 
-    if (controller) {
-        [self presentModalViewController:controller animated:YES];
+    
+    if ([MFMailComposeViewController canSendMail]) {
+        MailComposerController* mcc = [[MailComposerController alloc] initWithNibName:@"MailComposer" bundle:nil];
+        [self.navigationController pushViewController:mcc animated:YES];
+        [mcc release];    
+    } else {
+        //TODO: can't send message
     }
-    [controller release];
 }
 
 - (IBAction)prevAction:(id)sender {
@@ -336,12 +337,6 @@
     if (player != nil) {
         [player seekToTime:CMTimeMake(position, 60)];
     }
-}
-
-- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error;
-{
-    //TODO: process result
-    [self dismissModalViewControllerAnimated:YES];
 }
 
 - (void)dealloc {

@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MFMailComposeViewController.h>
 
-@interface MailComposer : UIViewController
-
+@interface MailComposerController : UIViewController <UITextViewDelegate, MFMailComposeViewControllerDelegate>
+@property (retain, nonatomic) IBOutlet UITextView *messageEdit;
+@property (retain, nonatomic) UIBarButtonItem * nextButton;
 @end

@@ -13,7 +13,8 @@
 #import "PiptureModel.h"
 #import "DataRequest.h"
 
-
+#define kOFFSET_FOR_KEYBOARD 60.0
+#define kHEIGHT_FOR_KEYBOARD 216.0
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress>
 
