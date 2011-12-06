@@ -7,18 +7,20 @@
 //
 
 #import "PiptureModel.h"
+#import "PiptureAppDelegate.h"
 
 @interface PiptureModel(Private)
 
 -(NSURL*)buildURLWithRequest:(NSString*)request params:(id)params,...;
 + (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult;
-
++ (void)processError:(DataRequestError *)error receiver:(NSObject<TimeslotsReceiver>*)receiver;
 @end 
 
 
 @implementation PiptureModel
 
 @synthesize dataRequestFactory = dataRequestFactory_; 
+
 
 NSString *END_POINT_URL;
 NSNumber *API_VERSION;
@@ -51,38 +53,46 @@ const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
     [super dealloc];
 }
 
--(void)getTimeslotsFromId:(NSString*)timeslotId maxCount:(int)maxCount forTarget:(id)target callback:(SEL)callback
+-(void)getTimeslotsFromId:(NSString*)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver
 {
-    [target performSelector:callback withObject:[NSArray arrayWithObjects:nil]];
+    //[target performSelector:callback withObject:[NSArray arrayWithObjects:nil]];
 }
 
 
 
--(void)getTimeslotsFromCurrentWithMaxCount:(NSInteger)maxCount forTarget:(id)target callback:(SEL)callback
+-(void)getTimeslotsFromCurrentWithMaxCount:(NSInteger)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver
 {
     NSURL* url = [self buildURLWithRequest:GET_CURRENT_TIMESLOTS_REQUEST params:[NSNumber numberWithInt:maxCount]];
 
-    id callbackTarget = target;
-    SEL callbackSelector = callback;    
-    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(Byte resultCode, NSDictionary* jsonResult){
-        NSLog(@"inside callback");
-        NSArray* timeslots = nil;
-        if (resultCode == 0) 
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
+
+        if (error) 
         {
-            NSLog(@"parse timeslots");            
-            timeslots = [PiptureModel parseTimeslotList: jsonResult];            
-        }   
-        [callbackTarget performSelectorOnMainThread:callbackSelector withObject:timeslots waitUntilDone:YES];
-        if (timeslots)
+            [PiptureModel processError:error receiver:receiver];
+        } 
+        else
         {
-            [timeslots release];
+            NSArray* timeslots = [PiptureModel parseTimeslotList: jsonResult];                        
+            [receiver performSelectorOnMainThread:@selector(timeslotsReceived:) withObject:timeslots waitUntilDone:YES];
+            if (timeslots)
+            {
+                [timeslots release];
+            }
         }
-        NSLog(@"end callback");
     
     }];
     
     [request startExecute];
 
+}
+
++ (void)processError:(DataRequestError *)error receiver:(NSObject<TimeslotsReceiver>*)receiver {
+
+    if ([receiver respondsToSelector:@selector(dataRequestFailed:)])
+    {
+        [receiver dataRequestFailed:error];
+    }
+    
 }
 
 + (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult {
@@ -101,10 +111,10 @@ const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
             }
             else
             {
-                //TODO - process error
+                NSLog(@"Error while parsing timesheet");                
             }            
         }
-        
+
     }
     return timeslots;
 }
@@ -116,4 +126,16 @@ const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
 
     return [NSURL URLWithString:[END_POINT_URL stringByAppendingFormat:request, API_VERSION , params]];
 }
+@end
+
+@implementation DefaultDataRequestFactory : NSObject
+
+- (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback
+{
+    DataRequest* req = [[[DataRequest alloc]initWithURL:url callback:callback]autorelease];
+    req.progress = [PiptureAppDelegate instance];
+    return req;
+}
+
+
 @end

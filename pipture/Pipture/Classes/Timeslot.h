@@ -17,7 +17,7 @@
 @property(retain, nonatomic) NSString* title;
 @property(retain, nonatomic) NSString* closupBackground;
 @property(assign, nonatomic) BOOL current;
-@property(readonly, nonatomic) NSString* description;
+@property(readonly, nonatomic) NSString* timeDescription;
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
 

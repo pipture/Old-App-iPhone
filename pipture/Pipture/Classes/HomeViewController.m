@@ -39,7 +39,7 @@
     
     timelineArray = [[NSMutableArray alloc] initWithCapacity:20];
     
-    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 forTarget:self callback:@selector(getTimeSlotsFromCurrentWithMaxCountCallback:)];
+    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
     //TODO: temporary put images, not timeslots (get timeline from server in future)
     
 //    UIImage * image = [UIImage imageNamed:@"face1"];
@@ -85,8 +85,10 @@
     [self updateControls];
 }
 
--(void)getTimeSlotsFromCurrentWithMaxCountCallback:(NSArray*)timeslots {
+-(void)timeslotsReceived:(NSArray *)timeslots {
 
+    int cnt = [timeslots count];
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height * cnt);
     int height = scrollView.frame.size.height;
     for (int i = 0; i < [timeslots count]; i++) {
         Timeslot * slot = [timeslots objectAtIndex:i];
@@ -94,13 +96,25 @@
         UIImageView *view = [[UIImageView alloc] init];//initWithImage:[UIImage imageNamed:[slot closupBackground]]];
         view.frame = CGRectMake(0, height * i, scrollView.frame.size.width, height);
         [scrollView addSubview:view];
+        [self prepareImageFor:i];
         //TODO: view release?
     }
-    [self prepareImageFor:0];
-    [self prepareImageFor:1];
     [self updateControls];
     
+}
 
+-(void)dataRequestFailed:(DataRequestError*)error
+{
+    if (error.errorCode == DRErrorNoInternet)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No network connection" 
+                                                        message:@"You must be connected to the internet to use this app." 
+                                                       delegate:nil 
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];    
+    }
 }
 
 - (void)viewDidUnload
@@ -169,9 +183,10 @@
 {
     if (page < [timelineArray count])
     {
+        //TODO Create custom view to have 2 separate labels: for title and for time to make sure title takes only 1 line.
         Timeslot * slot = [timelineArray objectAtIndex:page];
         
-        NSString * title = [NSString stringWithFormat:@"%@\n%@", slot.title, slot.description];
+        NSString * title = [NSString stringWithFormat:@"%@\n%@", slot.title, slot.timeDescription];
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 130,44)];
         titleLabel.backgroundColor = [UIColor clearColor];
