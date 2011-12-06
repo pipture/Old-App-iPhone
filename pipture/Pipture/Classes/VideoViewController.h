@@ -8,10 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreMedia/CoreMedia.h>
-#import <MessageUI/MFMailComposeViewController.h>
 #import "PlayerView.h"
 
-@interface VideoViewController : UIViewController <MFMailComposeViewControllerDelegate>
+@interface VideoViewController : UIViewController
 {
     NSTimer *progressUpdateTimer;
     
