@@ -9,6 +9,7 @@
 #import "VideoViewController.h"
 #import "MailComposerController.h"
 #import "PlaylistItem.h"
+#import "PiptureAppDelegate.h"
 
 @implementation VideoViewController
 @synthesize controlsPanel;
@@ -22,6 +23,7 @@
 @synthesize simpleMode;
 @synthesize playlist;
 @synthesize videoTitleView;
+@synthesize timeslotId;
 
 - (void)customNavBarTitle
 {
@@ -51,9 +53,11 @@
         prevPosition = position;
         
         NSLog(@"Pos: %f, len: %f", position, duration);
-        if (duration > 0 && duration - position < 10 && nextPlayerItem == nil && pos + 1 < [playlist count]) {
+        if (duration > 0 && duration - position < 10 && nextPlayerItem == nil && playlist && pos + 1 < [playlist count]) {
             NSLog(@"Precaching");
-            nextPlayerItem = [self createItem:[playlist objectAtIndex:pos + 1]];
+            
+            PlaylistItem * item = [playlist objectAtIndex:pos + 1];
+            [[[PiptureAppDelegate instance] model] getVideoURL:item forTimeslotId:timeslotId receiver:self];
         }
         
         [slider setMaximumValue:duration];
@@ -123,28 +127,21 @@
     //next player ready for playback
     self.busyContainer.hidden = NO;
     if (pos > 0) pos--;
-
-    nextPlayerItem = [self createItem:[playlist objectAtIndex:pos]];
-    [self playNextItem];
+    waitForNext = YES;
+    PlaylistItem * item = [playlist objectAtIndex:pos];
+    [[[PiptureAppDelegate instance] model] getVideoURL:item forTimeslotId:[NSNumber numberWithInt:0] receiver:self];
 }
 
 - (void)nextVideo {
     if (videoContainer == nil) return;
     
-    [self stopTimer];
-    
     //next player ready for playback
     if (![self playNextItem]) {
         self.busyContainer.hidden = NO;
-        if (pos == -1 || pos < [playlist count] - 1) {
-            nextPlayerItem = [self createItem:[playlist objectAtIndex:++pos]];
-            if (player == nil) {
-                player = [[AVPlayer alloc] initWithPlayerItem:nextPlayerItem];
-                videoContainer.player = player;
-                nextPlayerItem = nil;
-            } else {
-                [self playNextItem];
-            }
+        if (playlist && (pos == -1 || pos < [playlist count] - 1)) {
+            PlaylistItem * item = [playlist objectAtIndex:++pos];
+            waitForNext = YES;
+            [[[PiptureAppDelegate instance] model] getVideoURL:item forTimeslotId:timeslotId receiver:self];
         } else {
             self.busyContainer.hidden = YES;
             //reached end of playlist
@@ -352,6 +349,7 @@
         player = nil;
     }
     
+    [timeslotId release];
     [playlist release];
     [controlsPanel release];
     [sendButton release];
@@ -364,5 +362,36 @@
     [videoTitleView release];
     [super dealloc];
 }
+
+#pragma mark VideoURLReceiver protocol
+
+-(void)videoURLReceived:(PlaylistItem*)playlistItem {
+    [self stopTimer];
+    
+    nextPlayerItem = [self createItem:[playlist objectAtIndex:pos]];
+    if (waitForNext) {
+        if (player == nil) {
+            player = [[AVPlayer alloc] initWithPlayerItem:nextPlayerItem];
+            videoContainer.player = player;
+            nextPlayerItem = nil;
+        } else {
+            [self playNextItem];
+        }
+        waitForNext = NO;
+    }    
+}
+
+-(void)videoNotPurchased:(PlaylistItem*)playlistItem {
+    //TODO:
+    self.busyContainer.hidden = YES;
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem {
+    //TODO:
+    self.busyContainer.hidden = YES;
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 
 @end

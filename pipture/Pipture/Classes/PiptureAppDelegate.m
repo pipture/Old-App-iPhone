@@ -96,11 +96,12 @@ static PiptureAppDelegate *instance;
      */
 }
 
-- (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi{
+- (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId{
    
     if (vc == nil) {
         vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
     }
+    vc.timeslotId = timeslotId;
     vc.playlist = playlist;
     vc.wantsFullScreenLayout = YES;
     vc.simpleMode = noNavi;

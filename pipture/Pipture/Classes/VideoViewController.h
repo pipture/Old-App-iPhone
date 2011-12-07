@@ -8,13 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreMedia/CoreMedia.h>
-#import "PlayerView.h"
 #import "VideoTitleViewController.h"
+#import "PlayerView.h"
+#import "PiptureModel.h"
 
-@interface VideoViewController : UIViewController
+@interface VideoViewController : UIViewController<VideoURLReceiver>
 {
     NSTimer *progressUpdateTimer;
     
+    BOOL waitForNext;
     int pos;
     AVPlayer * player;
 
@@ -40,6 +42,7 @@
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer;
 - (void) movieFinishedCallback:(NSNotification*) aNotification;
 
+@property (retain, nonatomic) NSNumber * timeslotId;
 @property (retain, nonatomic) NSArray * playlist;
 @property (retain, nonatomic) IBOutlet VideoTitleViewController *videoTitleView;
 @property (retain, nonatomic) IBOutlet UIView *controlsPanel;
