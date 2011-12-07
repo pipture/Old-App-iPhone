@@ -26,7 +26,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+ 
     nextButton = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStylePlain target:self action:@selector(nextButton:)];
     self.navigationItem.rightBarButtonItem = nextButton;
     [nextButton release];
@@ -86,14 +86,22 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    // register for keyboard notifications
+    [super viewWillAppear:animated];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
+    
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    // unregister for keyboard notifications while not visible.
+    [UIApplication sharedApplication].statusBarStyle = lastStatusStyle;
+    self.navigationController.navigationBar.barStyle = lastNaviStyle;
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil]; 
+    
+    [super viewWillDisappear:animated];
 }
 
 - (void)dealloc {

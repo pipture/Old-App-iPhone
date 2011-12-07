@@ -7,9 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HomeScreenTitleViewController.h"
 
-@interface HomeViewController : UIViewController <UIScrollViewDelegate,TimeslotsReceiver>
+#define TIMESLOT_CHANGE_POLL_INTERVAL 60
+#define TIMESLOT_REGULAR_POLL_INTERVAL 900
+
+@interface HomeViewController : UIViewController <UIScrollViewDelegate,TimeslotsReceiver, PlaylistReceiver>
 {
+    NSTimer *changeTimer;
     NSTimer *updateTimer;
     
     //container for timeslots
@@ -32,6 +37,7 @@
 
 @property (retain, nonatomic) UIBarButtonItem *scheduleButton;
 
+@property (retain, nonatomic) IBOutlet HomeScreenTitleViewController *homescreenTitle;
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (retain, nonatomic) IBOutlet UIView *libraryBar;
 @property (retain, nonatomic) IBOutlet UIButton *actionButton;

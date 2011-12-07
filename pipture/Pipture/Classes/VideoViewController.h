@@ -39,7 +39,7 @@
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer;
 - (void) movieFinishedCallback:(NSNotification*) aNotification;
 
-@property (retain, nonatomic) NSMutableArray * playlist;
+@property (retain, nonatomic) NSArray * playlist;
 @property (retain, nonatomic) IBOutlet UIView *controlsPanel;
 @property (retain, nonatomic) IBOutlet PlayerView *videoContainer;
 @property (retain, nonatomic) IBOutlet UIView *busyContainer;

@@ -89,6 +89,7 @@ NSURLConnection* connection;
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)lconnection {
     NSDictionary* dctData = nil;
+    DataRequestError* err = nil;
     if (receivedData) {
         NSString * strData = [[NSString alloc] initWithData:receivedData encoding:NSUTF8StringEncoding];
         [receivedData release];
@@ -98,11 +99,15 @@ NSURLConnection* connection;
         NSError *error;
         
         dctData = [parser objectWithString:strData error:&error];
+        if (dctData == nil)
+        {
+            err = [[DataRequestError alloc] initWithCode:DRErrorInvalidResponse];
+        }
         [strData release];
         [parser release];
     }
     [self finish];
-    callback_(dctData, nil);    
+    callback_(dctData, err);    
 }
 
 - (void)connection:(NSURLConnection *)lconnection didFailWithError:(NSError *)error {

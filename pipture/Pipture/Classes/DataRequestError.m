@@ -47,4 +47,12 @@
     return self;
 }
 
+- (id)initWithCode:(NSInteger)code
+{
+    self = [super init];
+    if (self) {
+        errorCode_ = code;
+    }
+    return self;
+}
 @end

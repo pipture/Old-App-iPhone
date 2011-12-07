@@ -20,36 +20,17 @@
 @synthesize prevButton;
 @synthesize nextButton;
 @synthesize scheduleButton;
+@synthesize homescreenTitle;
 
 #pragma mark - View lifecycle
 
-- (void)updateAction:(NSTimer *)updatedTimer
-{
+- (void)refreshTimeSlots {
     [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
-    
-    /*static float prevPosition = 0;
-    
-    if (player != nil) {
-        float duration = CMTimeGetSeconds(player.currentItem.asset.duration);
-        float position = CMTimeGetSeconds(player.currentItem.currentTime);
-        
-        self.busyContainer.hidden = (prevPosition != position || pausedStatus);
-        
-        if (player.currentItem.status == AVPlayerStatusReadyToPlay && !pausedStatus) {
-            [player play];
-        }
-        
-        prevPosition = position;
-        
-        NSLog(@"Pos: %f, len: %f", position, duration);
-        if (duration > 0 && duration - position < 10 && nextPlayerItem == nil && pos + 1 < [playlist count]) {
-            NSLog(@"Precaching");
-            nextPlayerItem = [self createItem:[playlist objectAtIndex:pos + 1]];
-        }
-        
-        [slider setMaximumValue:duration];
-        [slider setValue:position animated:YES];
-    }*/
+}
+
+- (void)updateAction:(NSTimer *)timer
+{
+    [self refreshTimeSlots];
 }
 
 - (void)stopTimer {
@@ -59,9 +40,9 @@
     }
 }
 
-- (void)startTimer {
+- (void)startTimer:(float)interval {
     [self stopTimer];
-    updateTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updateAction:) userInfo:nil repeats:YES];
+    updateTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(updateAction:) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidLoad
@@ -87,6 +68,10 @@
     [libraryBar addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];
 
+    //install out titleview to navigation controller
+    self.navigationItem.title = @"";
+    homescreenTitle.view.frame = CGRectMake(0, 0, 130,44);
+    self.navigationItem.titleView = homescreenTitle.view;
 
     //preparing navigation bar schedule button
     scheduleButton = [[UIBarButtonItem alloc] initWithTitle:@"Schedule" style:UIBarButtonItemStylePlain target:self action:@selector(scheduleAction:)];
@@ -95,39 +80,12 @@
     [self updateControls];
 }
 
--(void)timeslotsReceived:(NSArray *)timeslots {
-    @synchronized(self) {
-        NSLog(@"was size = %d", scrollView.subviews.count);
-        NSLog(@"new size = %d", timeslots.count);
-        [timelineArray removeAllObjects];
-        [timelineArray addObjectsFromArray:timeslots];
-        scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height * [timeslots count]);
-        //remove deprecated data
-        while (timelineArray.count < scrollView.subviews.count) {
-            [[scrollView.subviews lastObject] removeFromSuperview];
-        }
-
-        int page = [self getPageNumber];
-        NSLog(@"page is: %d", page);
-        [self prepareImageFor: page - 1];
-        [self prepareImageFor: page];
-        [self prepareImageFor: page + 1];
-        [self updateControls];
+- (void)scheduleTimeslotChange:(NSDate *)serverDate {
+    if (changeTimer != nil) {
+        [changeTimer invalidate];
+        changeTimer = nil;
     }
-}
-
--(void)dataRequestFailed:(DataRequestError*)error
-{
-    if (error.errorCode == DRErrorNoInternet)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No network connection" 
-                                                        message:@"You must be connected to the internet to use this app." 
-                                                       delegate:nil 
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-        [alert release];    
-    }
+    changeTimer = [[NSTimer alloc] initWithFireDate:serverDate interval:TIMESLOT_CHANGE_POLL_INTERVAL target:self selector:@selector(changeSlotFire:) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidUnload
@@ -137,16 +95,22 @@
     [self setActionButton:nil];
     [self setPrevButton:nil];
     [self setNextButton:nil];
+    [self setHomescreenTitle:nil];
     [super viewDidUnload];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
     
-    [self startTimer];
+    //[self refreshTimeSlots];
+    [self startTimer:TIMESLOT_REGULAR_POLL_INTERVAL];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
+    if (changeTimer != nil) {
+        [changeTimer invalidate];
+        changeTimer = nil;
+    }
     [self stopTimer];
     [super viewDidDisappear:animated];
 }
@@ -166,6 +130,7 @@
     [actionButton release];
     [prevButton release];
     [nextButton release];
+    [homescreenTitle release];
     [super dealloc];
 }
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -222,9 +187,12 @@
         //TODO Create custom view to have 2 separate labels: for title and for time to make sure title takes only 1 line.
         Timeslot * slot = [timelineArray objectAtIndex:page];
         
-        NSString * title = [NSString stringWithFormat:@"%@\n%@", slot.title, slot.timeDescription];
+        homescreenTitle.line1.text = slot.title;
+        homescreenTitle.line2.text = slot.timeDescription;
+        //NSString * title = [NSString stringWithFormat:@"%@\n%@", slot.title, slot.timeDescription];
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 130,44)];
+        
+        /*UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 130,44)];
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.numberOfLines = 2;
         titleLabel.font = [UIFont boldSystemFontOfSize: 14.0f];
@@ -233,7 +201,7 @@
         titleLabel.textColor = [UIColor whiteColor];
         titleLabel.text = title ;
         self.navigationItem.titleView = titleLabel;
-        [titleLabel release];
+        [titleLabel release];*/
     }
 }
 
@@ -329,8 +297,8 @@
     if (scheduleMode && [self getPageNumber] != 0) {
         [self scheduleAction:nil];
     } else {
-        [self scrollToCurPage];
-        [[PiptureAppDelegate instance] showVideo:0 navigationController:self.navigationController noNavi:NO];
+        Timeslot * slot = [timelineArray objectAtIndex:[self getPageNumber]];
+        [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:slot.timeslotId] receiver:self];
     }
 }
 
@@ -349,5 +317,89 @@
         [self updateControls];
     }
 }
+
+#pragma mark PiptureModelDelegate methods
+
+-(void)dataRequestFailed:(DataRequestError*)error
+{
+    //TODO:
+    NSString * title = nil;
+    NSString * message = nil;
+    switch (error.errorCode)
+    {
+        case DRErrorNoInternet:
+            title = @"No Internet Connection";
+            message = @"Check your Internet connection!";
+            break;
+        case DRErrorInvalidResponse:
+            NSLog(@"Invalid response!");
+            break;
+        case DRErrorOther:
+            NSLog(@"Other request error!");
+            break;
+        case DRErrorTimeout:
+            NSLog(@"Timeout!");
+            break;
+    }
+
+    if (title != nil && message != nil) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        [alert release]; 
+    }
+}
+
+#pragma mark TimeslotsReceiver methods
+
+-(void)timeslotsReceived:(NSArray *)timeslots {
+    @synchronized(self) {
+        NSLog(@"was size = %d", scrollView.subviews.count);
+        NSLog(@"new size = %d", timeslots.count);
+        int lastTimeSlotId = -1;
+        if (timelineArray.count > 0)
+            lastTimeSlotId = ((Timeslot*)[timelineArray objectAtIndex:0]).timeslotId;
+        
+        if (timeslots.count > 0) {
+            Timeslot * slot = [timeslots objectAtIndex:0];
+            if (lastTimeSlotId != slot.timeslotId) {
+                [timelineArray removeAllObjects];
+                [timelineArray addObjectsFromArray:timeslots];
+                scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height * [timeslots count]);
+                //remove deprecated data
+                while (timelineArray.count < scrollView.subviews.count) {
+                    [[scrollView.subviews lastObject] removeFromSuperview];
+                }
+                
+                int page = [self getPageNumber];
+                NSLog(@"page is: %d", page);
+                [self prepareImageFor: page - 1];
+                [self prepareImageFor: page];
+                [self prepareImageFor: page + 1];
+                [self updateControls];
+                
+                [self scheduleTimeslotChange:slot.endTime];
+            }
+        }
+    }
+}
+
+#pragma mark PlaylistReceiver methods
+
+-(void)playlistReceived:(NSArray*)playlistItems {
+    if (playlistItems) {
+        [self scrollToCurPage];
+        [[PiptureAppDelegate instance] showVideo:playlistItems navigationController:self.navigationController noNavi:NO];
+        [playlistItems release];
+    }
+}
+
+-(void)playlistCantBeReceivedForUnknownTimeslot:(NSInteger)timeslotId {
+    [self refreshTimeSlots];
+}
+                                                                       
+-(void)playlistCantBeReceivedForExpiredTimeslot:(NSInteger)timeslotId {
+    [self refreshTimeSlots];
+}
+
 
 @end
