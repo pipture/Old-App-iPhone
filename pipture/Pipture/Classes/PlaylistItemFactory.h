@@ -7,7 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "PlaylistItem.h"
 
 @interface PlaylistItemFactory : NSObject
+
++(PlaylistItem*)createItem:(NSDictionary*)jsonItem;
 
 @end

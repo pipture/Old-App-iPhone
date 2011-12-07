@@ -10,6 +10,7 @@
 
 @implementation Timeslot
 
+@synthesize timeslotId;
 @synthesize startTime;
 @synthesize endTime;
 @synthesize title;
@@ -19,22 +20,24 @@
 @synthesize image;
 
 
-const NSString*JSON_PARAM_START_TIME = @"StartTime";
-const NSString*JSON_PARAM_END_TIME = @"EndTime";
-const NSString*JSON_PARAM_TITLE = @"Title";
-const NSString*JSON_PARAM_CLOSEUP_BACKGROUND = @"CloseupBackground";
-const NSString*JSON_PARAM_CURRENT = @"Current";
+static const NSString*JSON_PARAM_TIMESLOT_ID = @"TimeslotId";
+static const NSString*JSON_PARAM_START_TIME = @"StartTime";
+static const NSString*JSON_PARAM_END_TIME = @"EndTime";
+static const NSString*JSON_PARAM_TIMESLOT_TITLE = @"Title";
+static const NSString*JSON_PARAM_CLOSEUP_BACKGROUND = @"CloseupBackground";
+static const NSString*JSON_PARAM_CURRENT = @"Current";
 
 
 -(id)initWithJSON:(NSDictionary*)jsonData
 {
     self = [super init];
-    if (self) {
+    if (self) {        
+        self.timeslotId = [(NSNumber*)[jsonData objectForKey:JSON_PARAM_TIMESLOT_ID] integerValue];
         NSNumber*millisecs = [jsonData objectForKey:JSON_PARAM_START_TIME];
         self.startTime = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]] ;
         millisecs = [jsonData objectForKey:JSON_PARAM_END_TIME];
         self.endTime = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]];
-        self.title = [jsonData objectForKey:JSON_PARAM_TITLE];
+        self.title = [jsonData objectForKey:JSON_PARAM_TIMESLOT_TITLE];
         self.closupBackground = [jsonData objectForKey:JSON_PARAM_CLOSEUP_BACKGROUND];                
         id curobj = [jsonData objectForKey:JSON_PARAM_CURRENT];
         self.current = [curobj isEqual:@"1"];

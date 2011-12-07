@@ -44,5 +44,11 @@
 	<string>getTimeslots?API=%@&amp;max=%@</string>
 	<key>Rest Get timeslots</key>
 	<string>getTimeslots?API=%@&amp;fromId=%@&amp;max=%@</string>
+	<key>Rest Get playlist</key>
+	<string>getPlaylist?API=%@&amp;timeslotId=%@</string>
+	<key>Rest Get video</key>
+	<string>getVideo?API=%@&amp;%@=%@</string>
+	<key>Rest Get video from timeslot</key>
+	<string>getVideo?API=%@&amp;%@=%@&amp;timeslotId=%@</string>
 </dict>
 </plist>

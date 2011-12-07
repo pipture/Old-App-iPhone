@@ -8,6 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-@interface PlaylistItem : NSObject
+// Abstract class
+@interface PlaylistItem  : NSObject 
+
+@property(readonly,nonatomic) NSString *videoName;
+@property(retain,nonatomic) NSString *videoUrl;
+
+-(BOOL)isVideoUrlLoaded;
+-(const NSString*)videoKeyName;
+-(NSInteger)videoKeyValue;
+
 
 @end

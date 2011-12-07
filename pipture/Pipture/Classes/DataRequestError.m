@@ -13,7 +13,10 @@
 @synthesize internalError = internalError_;
 
 - (void)dealloc {
-    [internalError_ release];
+    if (internalError_)
+    {
+        [internalError_ release];
+    }
     [super dealloc];
 }
 

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "DataRequest.h"
 #import "Timeslot.h"
+#import "PlaylistItem.h"
 #import "SBJson.h"
 
 @interface DefaultDataRequestFactory : NSObject
@@ -31,17 +32,26 @@
 
 @end
 
+@protocol PlaylistReceiver <PiptureModelDelegate>
+@required
+-(void)playlistReceived:(NSArray*)playlistItems;
+@optional
+-(void)playlistCantBeReceivedForUnknownTimeslot:(NSInteger)timeslotId;
+-(void)playlistCantBeReceivedForExpiredTimeslot:(NSInteger)timeslotId;
+
+@end
+
 @interface PiptureModel : NSObject
 
 //Using standard factory by default
 @property (retain,nonatomic) DefaultDataRequestFactory* dataRequestFactory; 
 
 
-//SEL:NSArray of Timeslots ordered by startTime ascending
--(void)getTimeslotsFromId:(NSString*)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver;
+-(void)getTimeslotsFromId:(NSInteger)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver;
 
-//SEL:NSArray of Timeslots ordered by startTime ascending
 -(void)getTimeslotsFromCurrentWithMaxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver;
+
+-(void)getPlaylistForTimeslot:(NSNumber*)timeslotId receiver:(NSObject<PlaylistReceiver>*)receiver;
 
 @end
 

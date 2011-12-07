@@ -12,6 +12,7 @@
 
 - (id)initWith:(NSString*)_title desc:(NSString*)_desc image:(UIImage*)_image;
 
+@property(assign, nonatomic) NSInteger timeslotId;
 @property(retain, nonatomic) NSDate* startTime;
 @property(retain, nonatomic) NSDate* endTime;
 @property(retain, nonatomic) NSString* title;
