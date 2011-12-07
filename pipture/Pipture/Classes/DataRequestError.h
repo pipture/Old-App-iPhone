@@ -11,6 +11,7 @@
 #define DRErrorNoInternet -1
 #define DRErrorTimeout -2
 #define DRErrorOther -3
+#define DRErrorInvalidResponse -4
 #define DRErrorUnknown -100;
 
 
@@ -20,5 +21,6 @@
 @property(readonly, nonatomic) NSError *internalError;
 
 - (id)initWithNSError:(NSError*)error;
+- (id)initWithCode:(NSInteger)code;
 
 @end

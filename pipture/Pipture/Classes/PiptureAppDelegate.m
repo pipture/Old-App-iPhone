@@ -96,13 +96,8 @@ static PiptureAppDelegate *instance;
      */
 }
 
-- (void)showVideo:(int)videoId navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi{
-    //TODO: init from external
-    NSMutableArray * playlist = [[NSMutableArray alloc] initWithCapacity:4];
-    
-    [playlist addObject:@"http://s3.amazonaws.com/net_thumbtack_pipture/4461d7166d2a8379a296bd18de6208207c0e260f.mp4"];
-    [playlist addObject:@"http://s3.amazonaws.com/net_thumbtack_pipture/video2.mp4"];
-    
+- (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi{
+   
     if (vc == nil) {
         vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
     }
@@ -112,7 +107,6 @@ static PiptureAppDelegate *instance;
     [navigationController pushViewController:vc animated:YES];
 
     [vc initVideo];
-    [playlist release];
 }
 
 - (void) onHome {

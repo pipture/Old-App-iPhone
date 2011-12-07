@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <MessageUI/MFMailComposeViewController.h>
 
-@interface MailComposerController : UIViewController <UITextViewDelegate, MFMailComposeViewControllerDelegate>
+@interface MailComposerController : UIViewController <UITextViewDelegate, MFMailComposeViewControllerDelegate> {
+    UIStatusBarStyle lastStatusStyle;
+    UIBarStyle lastNaviStyle;
+}
 @property (retain, nonatomic) IBOutlet UITextView *messageEdit;
 @property (retain, nonatomic) UIBarButtonItem * nextButton;
 @end
