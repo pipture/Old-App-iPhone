@@ -41,6 +41,13 @@
 
 @end
 
+@protocol VideoURLReceiver <PiptureModelDelegate>
+@required
+-(void)videoURLReceived:(PlaylistItem*)playlistItem;
+-(void)videoNotPurchased:(PlaylistItem*)playlistItem;
+-(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem;
+@end
+
 @interface PiptureModel : NSObject
 
 //Using standard factory by default
@@ -52,6 +59,11 @@
 -(void)getTimeslotsFromCurrentWithMaxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver;
 
 -(void)getPlaylistForTimeslot:(NSNumber*)timeslotId receiver:(NSObject<PlaylistReceiver>*)receiver;
+
+-(void)getVideoURL:(PlaylistItem*)playListItem receiver:(NSObject<VideoURLReceiver>*)receiver;
+
+-(void)getVideoURL:(PlaylistItem*)playListItem forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
+
 
 @end
 

@@ -18,7 +18,7 @@
 + (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult;
 + (NSMutableArray *)parsePlaylistItems:(NSDictionary *)jsonResult;
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver;
-
++ (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse;
 @end 
 
 
@@ -35,10 +35,11 @@ NSString *GET_PLAYLIST_FOR_TIMESLOT_REQUEST;
 NSString *GET_VIDEO_FROM_TIMESLOT_REQUEST;
 NSString *GET_VIDEO_REQUEST;
 
-const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
-const NSString*JSON_PARAM_VIDEOS = @"Videos";
-const NSString*JSON_PARAM_ERROR = @"Error";
-const NSString*JSON_PARAM_ERRORCODE = @"ErrorCode";
+static const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
+static const NSString*JSON_PARAM_VIDEOS = @"Videos";
+static const NSString*JSON_PARAM_ERROR = @"Error";
+static const NSString*JSON_PARAM_ERRORCODE = @"ErrorCode";
+static const NSString*JSON_PARAM_VIDEO_URL = @"VideoURL";
 
 
 - (id)init
@@ -149,44 +150,101 @@ const NSString*JSON_PARAM_ERRORCODE = @"ErrorCode";
         } 
         else
         {
-            NSDictionary* dct = [jsonResult objectForKey:JSON_PARAM_ERROR];
-            NSNumber* code = [dct objectForKey:JSON_PARAM_ERRORCODE];
-            if (code)
-            {
-                switch ([code intValue]) {
-                    case 1:
-                        if ([receiver respondsToSelector:@selector(playlistCantBeReceivedForExpiredTimeslot:)])
-                        {
-                            [receiver performSelectorOnMainThread:@selector(playlistCantBeReceivedForExpiredTimeslot:) withObject:timeslotId waitUntilDone:YES];
-                        }
-                        break;
-                    case 2:
-                        if ([receiver respondsToSelector:@selector(playlistCantBeReceivedForUnknownTimeslot:)])
-                        {
-                            [receiver performSelectorOnMainThread:@selector(playlistCantBeReceivedForUnknownTimeslot:) withObject:timeslotId waitUntilDone:YES];
-                        }
-                        break;                        
-                    default:
-                        NSLog(@"Unknown error code");
-                        break;
-                }
-            }
-            else
-            {
-                NSArray* playlistItems = [PiptureModel parsePlaylistItems: jsonResult];                        
-                [receiver performSelectorOnMainThread:@selector(playlistReceived:) withObject:playlistItems waitUntilDone:YES];
-                if (playlistItems)
+
+            switch ([PiptureModel parseErrorCode:jsonResult]) {
+                case 0:
                 {
-                    [playlistItems release];
-                }                
+                    NSArray *playlistItems = [PiptureModel parsePlaylistItems:jsonResult];
+                    [receiver performSelectorOnMainThread:@selector(playlistReceived:) withObject:playlistItems waitUntilDone:YES];
+                    if (playlistItems)
+                    {
+                        [playlistItems release];
+                    }                
+                    break;
+                }
+                case 1:
+                    if ([receiver respondsToSelector:@selector(playlistCantBeReceivedForExpiredTimeslot:)])
+                    {
+                        [receiver performSelectorOnMainThread:@selector(playlistCantBeReceivedForExpiredTimeslot:) withObject:timeslotId waitUntilDone:YES];
+                    }
+                    break;
+                case 2:
+                    if ([receiver respondsToSelector:@selector(playlistCantBeReceivedForUnknownTimeslot:)])
+                    {
+                        [receiver performSelectorOnMainThread:@selector(playlistCantBeReceivedForUnknownTimeslot:) withObject:timeslotId waitUntilDone:YES];
+                    }
+                    break;                        
+                default:
+                    NSLog(@"Unknown error code");
+                    break;
             }
         }
-        
+                        
     }];
     
     [request startExecute];    
 }
 
+
+-(void)getVideoURL:(PlaylistItem*)playListItem receiver:(NSObject<VideoURLReceiver>*)receiver
+{
+    [self getVideoURL:playListItem forTimeslotId:nil receiver:receiver];                
+}
+
+-(void)getVideoURL:(PlaylistItem*)playListItem forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver
+{
+    if ([playListItem isVideoUrlLoaded])
+    {
+        [receiver videoURLReceived:playListItem];
+    }
+    else
+    {
+        NSURL* url = timeslotId ? [self buildURLWithRequest:GET_VIDEO_REQUEST params:[playListItem videoKeyName],[playListItem videoKeyValue],timeslotId] :
+                                [self buildURLWithRequest:GET_VIDEO_REQUEST params:[playListItem videoKeyName],[playListItem videoKeyValue]];
+        
+        DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
+            
+            if (error) 
+            {
+                [PiptureModel processError:error receiver:receiver];
+            } 
+            else
+            {
+                switch ([PiptureModel parseErrorCode:jsonResult]) {
+                    case 0:   
+                    {
+                        NSString *videoUrl = [jsonResult objectForKey:JSON_PARAM_VIDEO_URL];
+                        if ([videoUrl length] > 0)
+                        {
+                            playListItem.videoUrl = videoUrl;
+                            [receiver performSelectorOnMainThread:@selector(videoURLReceived::) withObject:videoUrl waitUntilDone:YES];
+                        }
+                        else
+                        {
+                            NSLog(@"URL was not sent from server");
+                        }
+                        break;
+                    }
+                    case 1:
+                        [receiver performSelectorOnMainThread:@selector(timeslotExpiredForVideo:) withObject:playListItem waitUntilDone:YES];                    
+                        break;
+                    case 2:
+                        [receiver performSelectorOnMainThread:@selector(videoNotPurchased:) withObject:playListItem waitUntilDone:YES];
+                        break;                        
+                    default:
+                        NSLog(@"Unknown error code");
+                        break;
+                }                
+            }
+            
+        }];
+        
+        [request startExecute];        
+    }    
+      
+}
+
+                   
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver {
 
     if ([receiver respondsToSelector:@selector(dataRequestFailed:)])
@@ -196,6 +254,17 @@ const NSString*JSON_PARAM_ERRORCODE = @"ErrorCode";
     
 }
 
++ (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse {
+   
+    NSDictionary* dct = [jsonResponse objectForKey:JSON_PARAM_ERROR];
+    NSNumber* code = [dct objectForKey:JSON_PARAM_ERRORCODE];
+    if (code)
+    {
+        return [code intValue];
+    }
+    return 0;   
+}            
+                               
 + (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult {
     NSMutableArray *timeslots= nil;
 
