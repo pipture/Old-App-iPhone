@@ -11,6 +11,7 @@
 #import "VideoViewController.h"
 #import "LibraryViewController.h"
 #import "Timeslot.h"
+#import "AsyncImageView.h"
 
 @implementation HomeViewController
 @synthesize scrollView;
@@ -22,6 +23,47 @@
 
 #pragma mark - View lifecycle
 
+- (void)updateAction:(NSTimer *)updatedTimer
+{
+    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
+    
+    /*static float prevPosition = 0;
+    
+    if (player != nil) {
+        float duration = CMTimeGetSeconds(player.currentItem.asset.duration);
+        float position = CMTimeGetSeconds(player.currentItem.currentTime);
+        
+        self.busyContainer.hidden = (prevPosition != position || pausedStatus);
+        
+        if (player.currentItem.status == AVPlayerStatusReadyToPlay && !pausedStatus) {
+            [player play];
+        }
+        
+        prevPosition = position;
+        
+        NSLog(@"Pos: %f, len: %f", position, duration);
+        if (duration > 0 && duration - position < 10 && nextPlayerItem == nil && pos + 1 < [playlist count]) {
+            NSLog(@"Precaching");
+            nextPlayerItem = [self createItem:[playlist objectAtIndex:pos + 1]];
+        }
+        
+        [slider setMaximumValue:duration];
+        [slider setValue:position animated:YES];
+    }*/
+}
+
+- (void)stopTimer {
+    if (updateTimer != nil) {
+        [updateTimer invalidate];
+        updateTimer = nil;
+    }
+}
+
+- (void)startTimer {
+    [self stopTimer];
+    updateTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updateAction:) userInfo:nil repeats:YES];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -30,7 +72,7 @@
    
     //prepare scrollView
     
-    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height * 3);
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.scrollsToTop = NO;
@@ -40,35 +82,6 @@
     timelineArray = [[NSMutableArray alloc] initWithCapacity:20];
     
     [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
-    //TODO: temporary put images, not timeslots (get timeline from server in future)
-    
-//    UIImage * image = [UIImage imageNamed:@"face1"];
-//    Timeslot * slot = [[Timeslot alloc] initWith:@"The NJ Bro" desc:@"Playing now" image:image];
-//    [image release];
-//    [timelineArray addObject:slot];
-//    [slot release];
-//    
-//    image = [UIImage imageNamed:@"face2"];
-//    slot = [[Timeslot alloc] initWith:@"The Feminist" desc:@"8AM to 11AM" image:image];
-//    [image release];
-//    [timelineArray addObject:slot];
-//    [slot release];
-//    
-//    
-//    image = [UIImage imageNamed:@"face3"];
-//    slot = [[Timeslot alloc] initWith:@"The Other" desc:@"11AM - 2PM" image:image];
-//    [image release];
-//    [timelineArray addObject:slot];
-//    [slot release];
-//    
-//    int height = scrollView.frame.size.height;
-//    for (int i = 0; i < [timelineArray count]; i++) {
-//        Timeslot * slot = [timelineArray objectAtIndex:i];
-//        UIImageView *view = [[UIImageView alloc] initWithImage:slot.image];
-//        view.frame = CGRectMake(0, height * i, scrollView.frame.size.width, height);
-//        [scrollView addSubview:view];
-//        //TODO: view release?
-//    }
     
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(libraryBarResponder:)];
     [libraryBar addGestureRecognizer:singleFingerTap];
@@ -78,29 +91,29 @@
     //preparing navigation bar schedule button
     scheduleButton = [[UIBarButtonItem alloc] initWithTitle:@"Schedule" style:UIBarButtonItemStylePlain target:self action:@selector(scheduleAction:)];
     self.navigationItem.leftBarButtonItem = scheduleButton;
-    
-//    [self prepareImageFor:0];
-//    [self prepareImageFor:1];
-    
+        
     [self updateControls];
 }
 
 -(void)timeslotsReceived:(NSArray *)timeslots {
+    @synchronized(self) {
+        NSLog(@"was size = %d", scrollView.subviews.count);
+        NSLog(@"new size = %d", timeslots.count);
+        [timelineArray removeAllObjects];
+        [timelineArray addObjectsFromArray:timeslots];
+        scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height * [timeslots count]);
+        //remove deprecated data
+        while (timelineArray.count < scrollView.subviews.count) {
+            [[scrollView.subviews lastObject] removeFromSuperview];
+        }
 
-    int cnt = [timeslots count];
-    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height * cnt);
-    int height = scrollView.frame.size.height;
-    for (int i = 0; i < [timeslots count]; i++) {
-        Timeslot * slot = [timeslots objectAtIndex:i];
-        [timelineArray addObject:slot];        
-        UIImageView *view = [[UIImageView alloc] init];//initWithImage:[UIImage imageNamed:[slot closupBackground]]];
-        view.frame = CGRectMake(0, height * i, scrollView.frame.size.width, height);
-        [scrollView addSubview:view];
-        [self prepareImageFor:i];
-        //TODO: view release?
+        int page = [self getPageNumber];
+        NSLog(@"page is: %d", page);
+        [self prepareImageFor: page - 1];
+        [self prepareImageFor: page];
+        [self prepareImageFor: page + 1];
+        [self updateControls];
     }
-    [self updateControls];
-    
 }
 
 -(void)dataRequestFailed:(DataRequestError*)error
@@ -129,6 +142,13 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
+    
+    [self startTimer];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [self stopTimer];
+    [super viewDidDisappear:animated];
 }
 
 - (int)getPageNumber
@@ -175,8 +195,24 @@
     //check for bounds
     if (timeslot < 0 || timeslot > [timelineArray count] - 1)
         return;
+
+    int height = scrollView.frame.size.height;
+    CGRect frame = CGRectMake(0, height * timeslot, scrollView.frame.size.width, height);
+
+    Timeslot * slot = [timelineArray objectAtIndex:timeslot];
     
-    //TODO: async load image for timeslot from server
+    NSURL * url = [NSURL URLWithString:[slot closupBackground]];
+    
+    AsyncImageView * imageView = nil;
+    if (timeslot >= 0 && timeslot < scrollView.subviews.count) {
+        imageView = [scrollView.subviews objectAtIndex:timeslot];
+    } else {
+        imageView = [[[AsyncImageView alloc] initWithFrame:frame] autorelease];
+        [scrollView addSubview:imageView];
+    }
+    [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO];
+    
+    NSLog(@"ScrollView subs: %d", [[scrollView subviews]count]);
 }
 
 - (void)customNavBarTitle: (int)page

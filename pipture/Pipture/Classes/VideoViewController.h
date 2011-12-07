@@ -8,15 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreMedia/CoreMedia.h>
-#import <MessageUI/MFMailComposeViewController.h>
 #import "PlayerView.h"
 
-@interface VideoViewController : UIViewController <MFMailComposeViewControllerDelegate>
+@interface VideoViewController : UIViewController
 {
     NSTimer *progressUpdateTimer;
     
     int pos;
-    NSMutableArray * playlist;
     AVPlayer * player;
 
     AVPlayerItem * nextPlayerItem;
@@ -28,6 +26,10 @@
 }
 - (AVPlayerItem *)createItem:(NSString*)url;
 
+- (void)setPause;
+- (void)setPlay;
+- (void)initVideo;
+
 - (void)updateControlsAnimated:(BOOL)animated;
 - (IBAction)sendAction:(id)sender;
 - (IBAction)prevAction:(id)sender;
@@ -37,6 +39,7 @@
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer;
 - (void) movieFinishedCallback:(NSNotification*) aNotification;
 
+@property (retain, nonatomic) NSMutableArray * playlist;
 @property (retain, nonatomic) IBOutlet UIView *controlsPanel;
 @property (retain, nonatomic) IBOutlet PlayerView *videoContainer;
 @property (retain, nonatomic) IBOutlet UIView *busyContainer;

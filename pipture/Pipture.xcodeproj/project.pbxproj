@@ -74,7 +74,6 @@
 		38E9FA89148CEE1E0075463E /* playBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E9FA88148CEE1E0075463E /* playBtn.png */; };
 		38FAFE30148766A2003EA542 /* video1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 38FAFE2F148766A2003EA542 /* video1.mp4 */; };
 		8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8811ED94147B6FC5008CC877 /* HomeView.xib */; };
-		886496B8148F391900DE1966 /* PlaylistItemFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 886496B7148F391900DE1966 /* PlaylistItemFactory.m */; };
 		88751791148CAD3B00AFFFAC /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */; };
 		88751792148CAD3B00AFFFAC /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875177C148CAD3B00AFFFAC /* SBJsonParser.m */; };
 		88751793148CAD3B00AFFFAC /* SBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875177E148CAD3B00AFFFAC /* SBJsonStreamParser.m */; };
@@ -92,9 +91,6 @@
 		887517A8148CAE3400AFFFAC /* PiptureModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517A5148CAE3400AFFFAC /* PiptureModel.m */; };
 		887517AB148CAE4B00AFFFAC /* Timeslot.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517AA148CAE4B00AFFFAC /* Timeslot.m */; };
 		887517BA148DD2E400AFFFAC /* DataRequestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517B9148DD2E400AFFFAC /* DataRequestError.m */; };
-		887517C7148DF73000AFFFAC /* Episode.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517C6148DF73000AFFFAC /* Episode.m */; };
-		887517CA148DF74200AFFFAC /* Trailer.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517C9148DF74200AFFFAC /* Trailer.m */; };
-		887517CD148E0C3000AFFFAC /* PlaylistItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517CC148E0C2F00AFFFAC /* PlaylistItem.m */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
 /* End PBXBuildFile section */
@@ -190,8 +186,6 @@
 		38E9FA88148CEE1E0075463E /* playBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playBtn.png; sourceTree = "<group>"; };
 		38FAFE2F148766A2003EA542 /* video1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = video1.mp4; sourceTree = "<group>"; };
 		8811ED94147B6FC5008CC877 /* HomeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeView.xib; sourceTree = "<group>"; };
-		886496B6148F391900DE1966 /* PlaylistItemFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlaylistItemFactory.h; path = Classes/PlaylistItemFactory.h; sourceTree = "<group>"; };
-		886496B7148F391900DE1966 /* PlaylistItemFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlaylistItemFactory.m; path = Classes/PlaylistItemFactory.m; sourceTree = "<group>"; };
 		88751777148CAD3B00AFFFAC /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		88751778148CAD3B00AFFFAC /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJson.h"; sourceTree = "<group>"; };
 		88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJson.m"; sourceTree = "<group>"; };
@@ -228,12 +222,6 @@
 		887517AA148CAE4B00AFFFAC /* Timeslot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Timeslot.m; path = Classes/Timeslot.m; sourceTree = "<group>"; };
 		887517B8148DD2E300AFFFAC /* DataRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataRequestError.h; path = Classes/DataRequestError.h; sourceTree = "<group>"; };
 		887517B9148DD2E400AFFFAC /* DataRequestError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataRequestError.m; path = Classes/DataRequestError.m; sourceTree = "<group>"; };
-		887517C5148DF73000AFFFAC /* Episode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Episode.h; path = Classes/Episode.h; sourceTree = "<group>"; };
-		887517C6148DF73000AFFFAC /* Episode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Episode.m; path = Classes/Episode.m; sourceTree = "<group>"; };
-		887517C8148DF74200AFFFAC /* Trailer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Trailer.h; path = Classes/Trailer.h; sourceTree = "<group>"; };
-		887517C9148DF74200AFFFAC /* Trailer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Trailer.m; path = Classes/Trailer.m; sourceTree = "<group>"; };
-		887517CB148E0C2F00AFFFAC /* PlaylistItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlaylistItem.h; path = Classes/PlaylistItem.h; sourceTree = "<group>"; };
-		887517CC148E0C2F00AFFFAC /* PlaylistItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlaylistItem.m; path = Classes/PlaylistItem.m; sourceTree = "<group>"; };
 		88BE44B11483A341002D30ED /* PiptureModelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureModelTest.h; sourceTree = "<group>"; };
 		88BE44B21483A341002D30ED /* PiptureModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModelTest.m; sourceTree = "<group>"; };
 		88D84207147B626C00E47EF8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
@@ -503,14 +491,6 @@
 			children = (
 				887517A9148CAE4B00AFFFAC /* Timeslot.h */,
 				887517AA148CAE4B00AFFFAC /* Timeslot.m */,
-				887517C5148DF73000AFFFAC /* Episode.h */,
-				887517C6148DF73000AFFFAC /* Episode.m */,
-				887517C8148DF74200AFFFAC /* Trailer.h */,
-				887517C9148DF74200AFFFAC /* Trailer.m */,
-				887517CB148E0C2F00AFFFAC /* PlaylistItem.h */,
-				887517CC148E0C2F00AFFFAC /* PlaylistItem.m */,
-				886496B6148F391900DE1966 /* PlaylistItemFactory.h */,
-				886496B7148F391900DE1966 /* PlaylistItemFactory.m */,
 			);
 			name = Entities;
 			path = ..;
@@ -695,10 +675,6 @@
 				887517AB148CAE4B00AFFFAC /* Timeslot.m in Sources */,
 				381A61A9148CFC7D00B7139F /* PlayerView.m in Sources */,
 				887517BA148DD2E400AFFFAC /* DataRequestError.m in Sources */,
-				887517C7148DF73000AFFFAC /* Episode.m in Sources */,
-				887517CA148DF74200AFFFAC /* Trailer.m in Sources */,
-				887517CD148E0C3000AFFFAC /* PlaylistItem.m in Sources */,
-				886496B8148F391900DE1966 /* PlaylistItemFactory.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

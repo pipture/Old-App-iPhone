@@ -7,6 +7,7 @@
 //
 
 #import "VideoViewController.h"
+#import "MailComposerController.h"
 
 @implementation VideoViewController
 @synthesize controlsPanel;
@@ -18,6 +19,7 @@
 @synthesize prevButton;
 @synthesize slider;
 @synthesize simpleMode;
+@synthesize playlist;
 
 - (void)updateProgress:(NSTimer *)updatedTimer
 {
@@ -58,6 +60,24 @@
     progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(updateProgress:) userInfo:nil repeats:YES];
 }
 
+- (void)setPause {
+    if (player != nil) {
+        [self stopTimer];
+        [pauseButton setImage:[UIImage imageNamed:@"playBtn.png"] forState:UIControlStateNormal];
+        [player pause];
+        pausedStatus = YES;
+    }
+}
+
+- (void)setPlay {
+    if (player != nil) {
+        [self startTimer];
+        [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
+        [player play];
+        pausedStatus = NO;
+    }
+}
+
 - (AVPlayerItem *)createItem:(NSString*)url {
     AVPlayerItem * item = [[AVPlayerItem alloc] initWithURL:[NSURL URLWithString:url]];
     static const NSString *ItemStatusContext;
@@ -72,8 +92,7 @@
     if (nextPlayerItem != nil) {
         [player replaceCurrentItemWithPlayerItem:nextPlayerItem];
         if (nextPlayerItem.status == AVPlayerStatusReadyToPlay) {
-            [self startTimer];
-            [player play];
+            [self setPlay];
         }
         
         nextPlayerItem = nil;  
@@ -96,6 +115,8 @@
 }
 
 - (void)nextVideo {
+    if (videoContainer == nil) return;
+    
     [self stopTimer];
     
     //next player ready for playback
@@ -132,25 +153,11 @@
         
         [self updateControlsAnimated:YES];
     } else {
-        //if (player == currentPlayer) {
-            [self nextVideo];
-        //}
+        [self nextVideo];
     }
     
     NSLog(@"finish");
 }
-
-/*- (void) movieLoadingCallback:(NSNotification*) aNotification {
-    MPMoviePlayerController *player = [aNotification object];
-    NSLog(@"Load State: %d", player.loadState);
-    
-    if (player == currentPlayer) {
-        self.busyContainer.hidden = NO;
-        if (player.loadState != 0 && player.loadState != 5) {
-            self.busyContainer.hidden = YES;
-        }
-    }
-}*/
 
 - (void)observeValueForKeyPath:(NSString*) path ofObject:(id)object change:(NSDictionary*)change context:(void*)context
 {
@@ -178,11 +185,8 @@
     }
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
- 
+- (void)initVideo {
+    
     pausedStatus = NO;
     nextPlayerItem = nil;
     pos = -1;
@@ -192,25 +196,24 @@
     } 
     prevButton.hidden = simpleMode;
     nextButton.hidden = simpleMode;
-
-    //TODO: init from external
-    playlist = [[NSMutableArray alloc] initWithCapacity:4];
     
-    [playlist addObject:@"http://s3.amazonaws.com/net_thumbtack_pipture/4461d7166d2a8379a296bd18de6208207c0e260f.mp4"];
-    [playlist addObject:@"http://s3.amazonaws.com/net_thumbtack_pipture/video2.mp4"];
-    //[playlist addObject:@"http://h264-demo.code-shop.com/demo/apache/workers_world_co64_box64.mp4?start=404"];
-    //[playlist addObject:@"http://h264-demo.code-shop.com/demo/apache/trailer2.mp4"];
-    //NSString * url = @"http://192.168.9.131:8080/video1.mp4";
+    [self nextVideo];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
     
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     [videoContainer addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];
     
-    [self nextVideo];
+    NSLog(@"video player loaded");
 }
 
 - (void)viewDidUnload
 {
+    NSLog(@"video player unloaded");
     [self setControlsPanel:nil];
     [self setSendButton:nil];
     [self setNextButton:nil];
@@ -230,35 +233,17 @@
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
-    
+
     controlsHidded = YES;
     
     [self updateControlsAnimated:YES];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-   
-}
-
-- (void)clearPlayer {
-    if (nextPlayerItem != nil) {
-        [nextPlayerItem release];
-        nextPlayerItem = nil;
-    }
-    if (player != nil) {
-        [self stopTimer];
-        [videoContainer setPlayer:nil];
-        [player release];
-        player = nil;
-    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [UIApplication sharedApplication].statusBarStyle = lastStatusStyle;
     self.navigationController.navigationBar.barStyle = lastNaviStyle;
     
-    [self clearPlayer];
+    [self setPause];
     
     [super viewWillDisappear:animated];
 }
@@ -285,15 +270,14 @@
 
 //The event handling method
 - (IBAction)sendAction:(id)sender{
-    MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
-    controller.mailComposeDelegate = self;
-    [controller setSubject:@"Look at this video!"];
-    //TODO: snippet
-    [controller setMessageBody:@"Pipture link here:" isHTML:NO]; 
-    if (controller) {
-        [self presentModalViewController:controller animated:YES];
+    
+    if ([MFMailComposeViewController canSendMail]) {
+        MailComposerController* mcc = [[MailComposerController alloc] initWithNibName:@"MailComposer" bundle:nil];
+        [self.navigationController pushViewController:mcc animated:YES];
+        [mcc release];    
+    } else {
+        //TODO: can't send message
     }
-    [controller release];
 }
 
 - (IBAction)prevAction:(id)sender {
@@ -309,13 +293,9 @@
 - (IBAction)playpauseAction:(id)sender {
     if (player != nil) {
         if (pausedStatus) {//paused
-            [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
-            [player play];
-            pausedStatus = NO;
+            [self setPlay];
         } else { //played
-            [pauseButton setImage:[UIImage imageNamed:@"playBtn.png"] forState:UIControlStateNormal];
-            [player pause];
-            pausedStatus = YES;
+            [self setPause];
         }
     }
 }
@@ -338,14 +318,19 @@
     }
 }
 
-- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error;
-{
-    //TODO: process result
-    [self dismissModalViewControllerAnimated:YES];
-}
-
 - (void)dealloc {
-    [self clearPlayer];
+    NSLog(@"video released");
+    
+    if (nextPlayerItem != nil) {
+        [nextPlayerItem release];
+        nextPlayerItem = nil;
+    }
+    if (player != nil) {
+        [self stopTimer];
+        [videoContainer setPlayer:nil];
+        [player release];
+        player = nil;
+    }
     
     [playlist release];
     [controlsPanel release];
