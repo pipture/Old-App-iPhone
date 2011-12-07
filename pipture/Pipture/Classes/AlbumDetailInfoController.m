@@ -190,8 +190,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     int row = indexPath.row;
-    
-    [[PiptureAppDelegate instance] showVideo:row navigationController:self.navigationController noNavi:YES];    
+    //TODO: get playlist item from album videos
+    //[[PiptureAppDelegate instance] showVideo:row navigationController:self.navigationController noNavi:YES];    
 }
 
 - (IBAction)tabChanged:(id)sender {

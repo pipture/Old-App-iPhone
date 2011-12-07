@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HomeScreenTitleViewController : UIViewController
+@interface VideoTitleViewController : UIViewController
 @property (retain, nonatomic) IBOutlet UILabel *line1;
 @property (retain, nonatomic) IBOutlet UILabel *line2;
+@property (retain, nonatomic) IBOutlet UILabel *line3;
 
 @end

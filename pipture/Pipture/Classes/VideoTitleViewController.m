@@ -6,11 +6,12 @@
 //  Copyright (c) 2011 Thumbtack Technology Inc. All rights reserved.
 //
 
-#import "HomeScreenTitleViewController.h"
+#import "VideoTitleViewController.h"
 
-@implementation HomeScreenTitleViewController
+@implementation VideoTitleViewController
 @synthesize line1;
 @synthesize line2;
+@synthesize line3;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -50,6 +51,7 @@
 {
     [self setLine1:nil];
     [self setLine2:nil];
+    [self setLine3:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -64,6 +66,7 @@
 - (void)dealloc {
     [line1 release];
     [line2 release];
+    [line3 release];
     [super dealloc];
 }
 @end

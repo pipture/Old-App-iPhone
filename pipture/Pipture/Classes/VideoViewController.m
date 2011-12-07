@@ -8,6 +8,7 @@
 
 #import "VideoViewController.h"
 #import "MailComposerController.h"
+#import "PlaylistItem.h"
 
 @implementation VideoViewController
 @synthesize controlsPanel;
@@ -20,6 +21,18 @@
 @synthesize slider;
 @synthesize simpleMode;
 @synthesize playlist;
+@synthesize videoTitleView;
+
+- (void)customNavBarTitle
+{
+    if (playlist && pos >= 0 && pos < playlist.count) {
+        PlaylistItem * item = [playlist objectAtIndex:pos];
+        
+        videoTitleView.line1.text = @"Series name";
+        videoTitleView.line2.text = item.videoName;
+        videoTitleView.line3.text = @"Album 1, Series 1, Episode 1";
+    }
+}
 
 - (void)updateProgress:(NSTimer *)updatedTimer
 {
@@ -90,6 +103,7 @@
 
 - (BOOL)playNextItem {
     if (nextPlayerItem != nil) {
+        [self customNavBarTitle];
         [player replaceCurrentItemWithPlayerItem:nextPlayerItem];
         if (nextPlayerItem.status == AVPlayerStatusReadyToPlay) {
             [self setPlay];
@@ -208,6 +222,11 @@
     [videoContainer addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];
     
+    //install out titleview to navigation controller
+    self.navigationItem.title = @"";
+    videoTitleView.view.frame = CGRectMake(0, 0, 130,44);
+    self.navigationItem.titleView = videoTitleView.view;
+    
     NSLog(@"video player loaded");
 }
 
@@ -222,6 +241,7 @@
     [self setSlider:nil];
     [self setVideoContainer:nil];
     [self setBusyContainer:nil];
+    [self setVideoTitleView:nil];
     [super viewDidUnload];
 }
 
@@ -341,6 +361,7 @@
     [slider release];
     [videoContainer release];
     [busyContainer release];
+    [videoTitleView release];
     [super dealloc];
 }
 

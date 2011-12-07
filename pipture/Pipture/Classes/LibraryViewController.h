@@ -10,26 +10,12 @@
 #import "LibraryDelegateProtocol.h"
 #import "AlbumDetailInfoController.h"
 
-enum LibraryViewType {
-    LibraryViewType_Albums,
-    LibraryViewType_New,
-    LibraryViewType_Top
-};
-
-@interface LibraryViewController : UIViewController<UITableViewDelegate, UITableViewDataSource,AlbumListViewDelegate>
+@interface LibraryViewController : UIViewController<AlbumListViewDelegate>
 {
-    enum LibraryViewType viewType;
-    
-    NSMutableArray * topsArray;
-    NSMutableArray * newsArray;
 }
-- (IBAction)tabChanged:(id)sender;
 
-@property (retain, nonatomic) IBOutlet UISegmentedControl *tabViewController;
 @property (retain, nonatomic) IBOutlet AlbumsListView *albumsView;
-@property (retain, nonatomic) IBOutlet UITableView *libraryTableView;
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;
-@property (assign, nonatomic) IBOutlet UITableViewCell *libraryViewCell;
 
 
 @end

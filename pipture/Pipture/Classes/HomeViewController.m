@@ -184,24 +184,10 @@
 {
     if (page < [timelineArray count])
     {
-        //TODO Create custom view to have 2 separate labels: for title and for time to make sure title takes only 1 line.
         Timeslot * slot = [timelineArray objectAtIndex:page];
         
         homescreenTitle.line1.text = slot.title;
         homescreenTitle.line2.text = slot.timeDescription;
-        //NSString * title = [NSString stringWithFormat:@"%@\n%@", slot.title, slot.timeDescription];
-        
-        
-        /*UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 130,44)];
-        titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.numberOfLines = 2;
-        titleLabel.font = [UIFont boldSystemFontOfSize: 14.0f];
-        titleLabel.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
-        titleLabel.textAlignment = UITextAlignmentCenter;
-        titleLabel.textColor = [UIColor whiteColor];
-        titleLabel.text = title ;
-        self.navigationItem.titleView = titleLabel;
-        [titleLabel release];*/
     }
 }
 
@@ -293,11 +279,11 @@
 
 //The event handling method
 - (void)actionButton:(id)sender {
-    //TODO: check for current timeslot
-    if (scheduleMode && [self getPageNumber] != 0) {
+    int page = [self getPageNumber];
+    if (scheduleMode && page != 0) {
         [self scheduleAction:nil];
     } else {
-        Timeslot * slot = [timelineArray objectAtIndex:[self getPageNumber]];
+        Timeslot * slot = [timelineArray objectAtIndex:page];
         [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:slot.timeslotId] receiver:self];
     }
 }

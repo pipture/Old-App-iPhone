@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreMedia/CoreMedia.h>
 #import "PlayerView.h"
+#import "VideoTitleViewController.h"
 
 @interface VideoViewController : UIViewController
 {
@@ -40,6 +41,7 @@
 - (void) movieFinishedCallback:(NSNotification*) aNotification;
 
 @property (retain, nonatomic) NSArray * playlist;
+@property (retain, nonatomic) IBOutlet VideoTitleViewController *videoTitleView;
 @property (retain, nonatomic) IBOutlet UIView *controlsPanel;
 @property (retain, nonatomic) IBOutlet PlayerView *videoContainer;
 @property (retain, nonatomic) IBOutlet UIView *busyContainer;
