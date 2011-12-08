@@ -51,11 +51,12 @@
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="906773611"/>
 						<string key="NSReuseIdentifierKey">_NS:567</string>
+						<int key="IBUIContentMode">5</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
 							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">tablebackn.png</string>
+							<string key="NSResourceName">background.png</string>
 						</object>
 					</object>
 					<object class="IBUIScrollView" id="906773611">
@@ -244,7 +245,7 @@
 				</object>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
-			<object class="IBUIViewController" id="310076134">
+			<object class="IBUIViewController" id="74621631">
 				<object class="IBUISimulatedOrientationMetrics" key="IBUISimulatedOrientationMetrics">
 					<int key="IBUIInterfaceOrientation">1</int>
 					<int key="interfaceOrientation">1</int>
@@ -308,7 +309,7 @@
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">homescreenTitle</string>
 						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="310076134"/>
+						<reference key="destination" ref="74621631"/>
 					</object>
 					<int key="connectionID">35</int>
 				</object>
@@ -431,7 +432,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">34</int>
-						<reference key="object" ref="310076134"/>
+						<reference key="object" ref="74621631"/>
 						<reference key="parent" ref="0"/>
 					</object>
 				</object>
@@ -653,13 +654,13 @@
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>background.png</string>
 				<string>powerbutton.png</string>
-				<string>tablebackn.png</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>{640, 960}</string>
 				<string>{46, 46}</string>
-				<string>{320, 100}</string>
 			</object>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">933</string>

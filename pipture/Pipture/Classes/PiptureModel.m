@@ -12,7 +12,7 @@
 
 @interface PiptureModel(Private)
 
--(NSURL*)buildURLWithRequest:(NSString*)request params:(id)params,...;
+-(NSURL*)buildURLWithRequest:(NSString*)request;
 -(void)getTimeslotsWithURL:(NSURL*)url receiver:(NSObject<TimeslotsReceiver>*)receiver;
 
 + (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult;
@@ -99,7 +99,7 @@ static const NSString*JSON_PARAM_VIDEO_URL = @"VideoURL";
 
 -(void)getTimeslotsFromId:(NSInteger)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver
 {
-    NSURL* url = [self buildURLWithRequest:GET_TIMESLOTS_REQUEST params:[NSNumber numberWithInt:timeslotId], [NSNumber numberWithInt:maxCount]];
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_TIMESLOTS_REQUEST, [NSNumber numberWithInt:timeslotId], [NSNumber numberWithInt:maxCount]]];
     
     [self getTimeslotsWithURL:url receiver:receiver];
 }
@@ -108,7 +108,7 @@ static const NSString*JSON_PARAM_VIDEO_URL = @"VideoURL";
 
 -(void)getTimeslotsFromCurrentWithMaxCount:(NSInteger)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver
 {
-    NSURL* url = [self buildURLWithRequest:GET_CURRENT_TIMESLOTS_REQUEST params:[NSNumber numberWithInt:maxCount]];
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_CURRENT_TIMESLOTS_REQUEST, [NSNumber numberWithInt:maxCount]]];
 
     [self getTimeslotsWithURL:url receiver:receiver];
 }
@@ -134,13 +134,12 @@ static const NSString*JSON_PARAM_VIDEO_URL = @"VideoURL";
     }];
     
     [request startExecute];
-    
 }
 
 -(void)getPlaylistForTimeslot:(NSNumber*)timeslotId receiver:(NSObject<PlaylistReceiver>*)receiver
 {
 
-    NSURL* url = [self buildURLWithRequest:GET_PLAYLIST_FOR_TIMESLOT_REQUEST params:timeslotId];
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_PLAYLIST_FOR_TIMESLOT_REQUEST,timeslotId]];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
         
@@ -182,7 +181,7 @@ static const NSString*JSON_PARAM_VIDEO_URL = @"VideoURL";
                         
     }];
     
-    [request startExecute];    
+    [request startExecute];
 }
 
 
@@ -199,9 +198,9 @@ static const NSString*JSON_PARAM_VIDEO_URL = @"VideoURL";
     }
     else
     {
-        NSURL* url = timeslotId ? [self buildURLWithRequest:GET_VIDEO_REQUEST params:[playListItem videoKeyName],[playListItem videoKeyValue],timeslotId] :
-                                [self buildURLWithRequest:GET_VIDEO_REQUEST params:[playListItem videoKeyName],[playListItem videoKeyValue]];
-        
+        NSURL* url = timeslotId ? 
+            [self buildURLWithRequest:[NSString stringWithFormat:GET_VIDEO_FROM_TIMESLOT_REQUEST,[playListItem videoKeyName],[NSNumber numberWithInt:[playListItem videoKeyValue]],timeslotId]]:
+            [self buildURLWithRequest:[NSString stringWithFormat:GET_VIDEO_REQUEST, [playListItem videoKeyName],[NSNumber numberWithInt:[playListItem videoKeyValue]]]];
         DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
             
             if (error) 
@@ -217,7 +216,7 @@ static const NSString*JSON_PARAM_VIDEO_URL = @"VideoURL";
                         if ([videoUrl length] > 0)
                         {
                             playListItem.videoUrl = videoUrl;
-                            [receiver performSelectorOnMainThread:@selector(videoURLReceived::) withObject:videoUrl waitUntilDone:YES];
+                            [receiver performSelectorOnMainThread:@selector(videoURLReceived:) withObject:playListItem waitUntilDone:YES];
                         }
                         else
                         {
@@ -239,7 +238,7 @@ static const NSString*JSON_PARAM_VIDEO_URL = @"VideoURL";
             
         }];
         
-        [request startExecute];        
+        [request startExecute];
     }    
       
 }
@@ -314,10 +313,11 @@ static const NSString*JSON_PARAM_VIDEO_URL = @"VideoURL";
     return playlistItems;    
 }
 
-
--(NSURL*)buildURLWithRequest:(NSString*)request params:(id)params,...
-{
-    return [NSURL URLWithString:[END_POINT_URL stringByAppendingFormat:request, API_VERSION , params]];
+-(NSURL*)buildURLWithRequest:(NSString*)request
+{   
+    NSString * api = [request stringByAppendingString:[NSString stringWithFormat:@"&API=%@",API_VERSION]];
+    NSURL * url = [NSURL URLWithString:[END_POINT_URL stringByAppendingString:api]];
+    return url;
 }
 @end
 

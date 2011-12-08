@@ -49,6 +49,7 @@ NSURLConnection* connection;
         NSLog(@"Could not create NSURLconnection");
     }
     else {
+        
         if (progress) 
         {
             [progress showRequestProgress];
@@ -68,10 +69,7 @@ NSURLConnection* connection;
     if (url_) {
         [url_ release];
     }
-    if (connection) {
-        [connection cancel];
-        [connection release];
-    }
+
     [callback_ release];
     
     [super dealloc];
@@ -121,8 +119,9 @@ NSURLConnection* connection;
 
 -(void)finish
 {
-    [connection release];
+    NSURLConnection * tCo = connection;
     connection = nil; 
+    if (tCo) [tCo release];
     if (progress) 
     {
         [progress hideRequestProgress];

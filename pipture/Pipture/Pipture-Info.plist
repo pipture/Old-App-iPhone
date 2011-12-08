@@ -19,15 +19,29 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.0.1</string>
+	<string>0.0.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>4</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
+	<key>Rest API version</key>
+	<integer>1</integer>
+	<key>Rest Get current timeslots</key>
+	<string>getTimeslots?max=%@</string>
+	<key>Rest Get playlist</key>
+	<string>getPlaylist?TimeslotId=%@</string>
+	<key>Rest Get timeslots</key>
+	<string>getTimeslots?fromId=%@&amp;max=%@</string>
+	<key>Rest Get video</key>
+	<string>getVideo?%@=%@</string>
+	<key>Rest Get video from timeslot</key>
+	<string>getVideo?%@=%@&amp;TimeslotId=%@</string>
+	<key>Rest end point</key>
+	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
@@ -36,19 +50,5 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>Rest end point</key>
-	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
-	<key>Rest API version</key>
-	<integer>1</integer>
-	<key>Rest Get current timeslots</key>
-	<string>getTimeslots?API=%@&amp;max=%@</string>
-	<key>Rest Get timeslots</key>
-	<string>getTimeslots?API=%@&amp;fromId=%@&amp;max=%@</string>
-	<key>Rest Get playlist</key>
-	<string>getPlaylist?API=%@&amp;timeslotId=%@</string>
-	<key>Rest Get video</key>
-	<string>getVideo?API=%@&amp;%@=%@</string>
-	<key>Rest Get video from timeslot</key>
-	<string>getVideo?API=%@&amp;%@=%@&amp;timeslotId=%@</string>
 </dict>
 </plist>

@@ -18,6 +18,7 @@
     NSTimer *updateTimer;
     
     //container for timeslots
+    NSInteger reqTimeslotId;
     NSMutableArray * timelineArray;
     BOOL scheduleMode;
 }

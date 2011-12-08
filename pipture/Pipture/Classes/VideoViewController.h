@@ -17,6 +17,8 @@
     NSTimer *progressUpdateTimer;
     
     BOOL waitForNext;
+    BOOL precacheBegin;
+    
     int pos;
     AVPlayer * player;
 
@@ -27,7 +29,7 @@
     BOOL controlsHidded;
     BOOL pausedStatus;
 }
-- (AVPlayerItem *)createItem:(NSString*)url;
+- (AVPlayerItem *)createItem:(PlaylistItem*)item;
 
 - (void)setPause;
 - (void)setPlay;

@@ -53,11 +53,12 @@
         prevPosition = position;
         
         NSLog(@"Pos: %f, len: %f", position, duration);
-        if (duration > 0 && duration - position < 10 && nextPlayerItem == nil && playlist && pos + 1 < [playlist count]) {
+        if (duration > 0 && duration - position < 10 && nextPlayerItem == nil && !precacheBegin && playlist && pos + 1 < [playlist count]) {
             NSLog(@"Precaching");
             
             PlaylistItem * item = [playlist objectAtIndex:pos + 1];
             [[[PiptureAppDelegate instance] model] getVideoURL:item forTimeslotId:timeslotId receiver:self];
+            precacheBegin = YES;
         }
         
         [slider setMaximumValue:duration];
@@ -95,8 +96,8 @@
     }
 }
 
-- (AVPlayerItem *)createItem:(NSString*)url {
-    AVPlayerItem * item = [[AVPlayerItem alloc] initWithURL:[NSURL URLWithString:url]];
+- (AVPlayerItem *)createItem:(PlaylistItem*)plitem {
+    AVPlayerItem * item = [[AVPlayerItem alloc] initWithURL:[NSURL URLWithString:plitem.videoUrl]];
     static const NSString *ItemStatusContext;
     
     [item addObserver:self forKeyPath:@"status" options:0 context:&ItemStatusContext];
@@ -107,13 +108,14 @@
 
 - (BOOL)playNextItem {
     if (nextPlayerItem != nil) {
-        [self customNavBarTitle];
         [player replaceCurrentItemWithPlayerItem:nextPlayerItem];
         if (nextPlayerItem.status == AVPlayerStatusReadyToPlay) {
             [self setPlay];
         }
-        
-        nextPlayerItem = nil;  
+        pos++;
+        [self customNavBarTitle];
+        nextPlayerItem = nil;
+        precacheBegin = NO;
         
         return YES;
     }
@@ -198,6 +200,7 @@
 
 - (void)initVideo {
     
+    precacheBegin = NO;
     pausedStatus = NO;
     nextPlayerItem = nil;
     pos = -1;
@@ -220,7 +223,7 @@
     [singleFingerTap release];
     
     //install out titleview to navigation controller
-    self.navigationItem.title = @"";
+    //self.navigationItem.title = @"";
     videoTitleView.view.frame = CGRectMake(0, 0, 130,44);
     self.navigationItem.titleView = videoTitleView.view;
     
@@ -366,14 +369,14 @@
 #pragma mark VideoURLReceiver protocol
 
 -(void)videoURLReceived:(PlaylistItem*)playlistItem {
-    [self stopTimer];
-    
-    nextPlayerItem = [self createItem:[playlist objectAtIndex:pos]];
+    nextPlayerItem = [self createItem:playlistItem];
     if (waitForNext) {
+        [self stopTimer];
         if (player == nil) {
             player = [[AVPlayer alloc] initWithPlayerItem:nextPlayerItem];
             videoContainer.player = player;
             nextPlayerItem = nil;
+            [self customNavBarTitle];
         } else {
             [self playNextItem];
         }

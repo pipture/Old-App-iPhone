@@ -41,7 +41,7 @@
 						<string key="NSFrameSize">{320, 15}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="990135430"/>
+						<reference key="NSNextKeyView" ref="267314671"/>
 						<string key="NSReuseIdentifierKey">_NS:328</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -63,23 +63,23 @@
 						<float key="IBUIMinimumFontSize">10</float>
 						<int key="IBUITextAlignment">1</int>
 						<int key="IBUILineBreakMode">5</int>
-						<object class="IBUIFontDescription" key="IBUIFontDescription" id="1046650502">
+						<object class="IBUIFontDescription" key="IBUIFontDescription" id="403935473">
 							<int key="type">2</int>
 							<double key="pointSize">10</double>
 						</object>
-						<object class="NSFont" key="IBUIFont" id="634033628">
+						<object class="NSFont" key="IBUIFont" id="621455529">
 							<string key="NSName">Helvetica-Bold</string>
 							<double key="NSSize">10</double>
 							<int key="NSfFlags">16</int>
 						</object>
 					</object>
-					<object class="IBUILabel" id="990135430">
+					<object class="IBUILabel" id="267314671">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">290</int>
 						<string key="NSFrame">{{0, 14}, {320, 15}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="605420979"/>
+						<reference key="NSNextKeyView" ref="163360877"/>
 						<string key="NSReuseIdentifierKey">_NS:328</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -99,10 +99,10 @@
 						<float key="IBUIMinimumFontSize">10</float>
 						<int key="IBUITextAlignment">1</int>
 						<int key="IBUILineBreakMode">5</int>
-						<reference key="IBUIFontDescription" ref="1046650502"/>
-						<reference key="IBUIFont" ref="634033628"/>
+						<reference key="IBUIFontDescription" ref="403935473"/>
+						<reference key="IBUIFont" ref="621455529"/>
 					</object>
-					<object class="IBUILabel" id="605420979">
+					<object class="IBUILabel" id="163360877">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">290</int>
 						<string key="NSFrame">{{0, 28}, {320, 15}}</string>
@@ -128,8 +128,8 @@
 						<float key="IBUIMinimumFontSize">10</float>
 						<int key="IBUITextAlignment">1</int>
 						<int key="IBUILineBreakMode">5</int>
-						<reference key="IBUIFontDescription" ref="1046650502"/>
-						<reference key="IBUIFont" ref="634033628"/>
+						<reference key="IBUIFontDescription" ref="403935473"/>
+						<reference key="IBUIFont" ref="621455529"/>
 					</object>
 				</array>
 				<string key="NSFrameSize">{320, 44}</string>
@@ -165,7 +165,7 @@
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">line2</string>
 						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="990135430"/>
+						<reference key="destination" ref="267314671"/>
 					</object>
 					<int key="connectionID">12</int>
 				</object>
@@ -173,7 +173,7 @@
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">line3</string>
 						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="605420979"/>
+						<reference key="destination" ref="163360877"/>
 					</object>
 					<int key="connectionID">13</int>
 				</object>
@@ -191,8 +191,8 @@
 						<reference key="object" ref="191373211"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="751255463"/>
-							<reference ref="605420979"/>
-							<reference ref="990135430"/>
+							<reference ref="163360877"/>
+							<reference ref="267314671"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -215,13 +215,13 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">8</int>
-						<reference key="object" ref="990135430"/>
+						<reference key="object" ref="267314671"/>
 						<reference key="parent" ref="191373211"/>
 						<string key="objectName">line2</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">9</int>
-						<reference key="object" ref="605420979"/>
+						<reference key="object" ref="163360877"/>
 						<reference key="parent" ref="191373211"/>
 						<string key="objectName">line3</string>
 					</object>
@@ -251,6 +251,7 @@
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="line1">UILabel</string>
 						<string key="line2">UILabel</string>
+						<string key="line3">UILabel</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="line1">
@@ -259,6 +260,10 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="line2">
 							<string key="name">line2</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="line3">
+							<string key="name">line3</string>
 							<string key="candidateClassName">UILabel</string>
 						</object>
 					</dictionary>

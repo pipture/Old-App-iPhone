@@ -48,12 +48,12 @@
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="124546645"/>
 								<string key="NSReuseIdentifierKey">_NS:567</string>
+								<object class="NSColor" key="IBUIBackgroundColor" id="611335002">
+									<int key="NSColorSpace">3</int>
+									<bytes key="NSWhite">MCAwAA</bytes>
+								</object>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<object class="NSCustomResource" key="IBUIImage">
-									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">tablebackn.png</string>
-								</object>
 								<object class="NSCustomResource" key="IBUIHighlightedImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">tablebacks.png</string>
@@ -113,7 +113,6 @@
 								<string key="NSFrame">{{63, 28}, {248, 55}}</string>
 								<reference key="NSSuperview" ref="619726731"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:328</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -143,10 +142,7 @@
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="850355452"/>
 						<string key="NSReuseIdentifierKey">_NS:395</string>
-						<object class="NSColor" key="IBUIBackgroundColor">
-							<int key="NSColorSpace">3</int>
-							<bytes key="NSWhite">MCAwAA</bytes>
-						</object>
+						<reference key="IBUIBackgroundColor" ref="611335002"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">4</int>
@@ -297,20 +293,17 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">AlbumDetailPage</string>
 					<string key="superclassName">UIScrollView</string>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="cretitsLabel">UILabel</string>
-						<string key="posterImage">UIImageView</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="cretitsLabel">
-							<string key="name">cretitsLabel</string>
-							<string key="candidateClassName">UILabel</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="posterImage">
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">posterImage</string>
+						<string key="NS.object.0">UIImageView</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">posterImage</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
 							<string key="name">posterImage</string>
 							<string key="candidateClassName">UIImageView</string>
 						</object>
-					</dictionary>
+					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/AlbumDetailPage.h</string>
@@ -323,7 +316,6 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="tablebackn.png">{320, 100}</string>
 			<string key="tablebacks.png">{320, 92}</string>
 			<string key="thumb1.png">{46, 77}</string>
 		</dictionary>

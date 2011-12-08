@@ -69,7 +69,7 @@
     [singleFingerTap release];
 
     //install out titleview to navigation controller
-    self.navigationItem.title = @"";
+    self.navigationItem.title = @"Home";
     homescreenTitle.view.frame = CGRectMake(0, 0, 130,44);
     self.navigationItem.titleView = homescreenTitle.view;
 
@@ -283,8 +283,11 @@
     if (scheduleMode && page != 0) {
         [self scheduleAction:nil];
     } else {
-        Timeslot * slot = [timelineArray objectAtIndex:page];
-        [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:slot.timeslotId] receiver:self];
+        //Timeslot * slot = [timelineArray objectAtIndex:page];
+        //reqTimeslotId = slot.timeslotId;
+        //TODO:
+        reqTimeslotId = 1;
+        [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];
     }
 }
 
@@ -374,16 +377,18 @@
 -(void)playlistReceived:(NSArray*)playlistItems {
     if (playlistItems) {
         [self scrollToCurPage];
-        [[PiptureAppDelegate instance] showVideo:playlistItems navigationController:self.navigationController noNavi:NO];
-        [playlistItems release];
+        [[PiptureAppDelegate instance] showVideo:playlistItems navigationController:self.navigationController noNavi:NO timeslotId:[NSNumber numberWithInt:reqTimeslotId]];
     }
+    reqTimeslotId = -1;
 }
 
--(void)playlistCantBeReceivedForUnknownTimeslot:(NSInteger)timeslotId {
+-(void)playlistCantBeReceivedForUnknownTimeslot:(NSNumber*)timeslotId {
+    reqTimeslotId = -1;
     [self refreshTimeSlots];
 }
                                                                        
--(void)playlistCantBeReceivedForExpiredTimeslot:(NSInteger)timeslotId {
+-(void)playlistCantBeReceivedForExpiredTimeslot:(NSNumber*)timeslotId {
+    reqTimeslotId = -1;
     [self refreshTimeSlots];
 }
 
