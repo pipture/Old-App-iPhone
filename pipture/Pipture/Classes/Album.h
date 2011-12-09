@@ -37,9 +37,9 @@ enum AlbumStatus{
 // Key - Credit title, Value - NSArray of credit items
 // Each credit item is NSArray of NSString values
 @property(readonly, nonatomic) NSDictionary* credits;
-
 @property(readonly, nonatomic) Series* series;
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
+-(id)updateWithJSON:(NSDictionary*)jsonData;
 
 @end

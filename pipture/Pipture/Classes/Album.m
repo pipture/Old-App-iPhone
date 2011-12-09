@@ -8,6 +8,12 @@
 
 #import "Album.h"
 
+@interface Album(Private)
+-(id)parseJSON:(NSDictionary*)jsonData;
+-(NSString*)setIfNotEmpty:(NSString*)value either:(NSString*)otherValue;
+
+@end
+
 @implementation Album
 
 @synthesize albumId;
@@ -103,65 +109,125 @@ static NSString* const CREDITS_ITEM_TAB = @",";
         [series release];
         credits_ = [[NSMutableDictionary alloc] init];
         [credits_ release];
-                               
-        self.albumId = [(NSNumber*)[jsonData objectForKey:JSON_PARAM_ALBUM_ID] integerValue];        
-        self.title = [jsonData objectForKey:JSON_PARAM_TITLE];
-        self.series.title = [jsonData objectForKey:JSON_PARAM_SERIES_TITLE];
-        self.status = [(NSNumber*)[jsonData objectForKey:JSON_PARAM_STATUS] intValue];
-        self.albumDescription = [jsonData objectForKey:JSON_PARAM_ALBUM_DESCRIPTION];
-        self.season = [jsonData objectForKey:JSON_PARAM_SEASON];
-        self.rating = [jsonData objectForKey:JSON_PARAM_RATING];
-        self.cover = [jsonData objectForKey:JSON_PARAM_RATING];
-        
-        NSString* releaseDateStr = [jsonData objectForKey:JSON_PARAM_RELEASE_DATE];
-        if (releaseDateStr)
-        {
-            NSDateFormatter *df = [[NSDateFormatter alloc] init];
-            [df setDateFormat:@"yyyy-MM-dd"];
-            self.releaseDate = [df dateFromString:releaseDateStr];
-            [df release];
-        }
-        
-        self.thumbnail = [jsonData objectForKey:JSON_PARAM_THUMBNAIL];
-        self.closeupBackground = [jsonData objectForKey:JSON_PARAM_CLOSEUP];
-
-        NSString* creditsStr = [jsonData objectForKey:JSON_PARAM_CREDITS];
-        if (creditsStr)
-        {
-            
-            //Martin's text: First time I do that, is it okay? ":" means title "," means tab ";" means next line "." means next line new title
-            NSArray*creditsParts = [creditsStr componentsSeparatedByString:CREDITS_SEPARATOR];
-            for (NSString*part in creditsParts) {
-                NSArray*partTitleAndBody = [part componentsSeparatedByString:CREDITS_TITLE_SEPARATOR];
-                if ([partTitleAndBody count])
-                {
-                    NSString* partTitle = [partTitleAndBody objectAtIndex:0];
-                    NSString* partBody = [partTitleAndBody count] > 0 ? [partTitleAndBody objectAtIndex:1] : nil;
-                    if (partTitle)
-                    {
-                        NSMutableArray *partItems = [[NSMutableArray alloc] init];                        
-                        [credits_ setObject:partItems forKey:partTitle];
-                        [partItems release];
-                        
-                        if (partBody)
-                        {
-                            NSArray* partBodyItems = [partBody componentsSeparatedByString:CREDITS_ITEM_SEPARATOR];
-                            for (NSString* partBodyItem in partBodyItems) {
-                                NSArray* partBodyItemComponents = [partBodyItem componentsSeparatedByString:CREDITS_ITEM_TAB];
-                                [partItems addObject:partBodyItemComponents];
-                            }
-                        }
-                        
-                    }
-                }
-
-            }
-        }
+        [self parseJSON:jsonData];
     }
     return self;
     
 }
 
+-(id)updateWithJSON:(NSDictionary*)jsonData
+{
+    [self parseJSON:jsonData];    
+}
+
+-(NSString*)setIfNotEmpty:(NSString*)value either:(NSString*)otherValue;
+{
+//    NSString*str = [jsonData objectForKey:fieldName];
+//    if (str)
+//    {
+//        *field = str;
+//    }
+}
+
+-(id)parseJSON:(NSDictionary*)jsonData
+{
+    NSNumber* num = (NSNumber*)[jsonData objectForKey:JSON_PARAM_ALBUM_ID];
+    if (num)
+    {
+        self.albumId = [num integerValue];
+    }
+    NSString*str;
+    str = [jsonData objectForKey:JSON_PARAM_TITLE];
+    if (str)
+    {
+        self.title = str;
+    }
+    str = [jsonData objectForKey:JSON_PARAM_SERIES_TITLE];
+    if (str)
+    {
+        self.series.title = str;
+    }
+    str = [jsonData objectForKey:JSON_PARAM_SERIES_TITLE];
+    num = (NSNumber*)[jsonData objectForKey:JSON_PARAM_STATUS];
+    if (num)
+    {
+        self.status = [num intValue];
+    }
+    str = [jsonData objectForKey:JSON_PARAM_ALBUM_DESCRIPTION];
+    if (str)
+    {
+        self.albumDescription = str;
+    };
+    str =  [jsonData objectForKey:JSON_PARAM_SEASON];
+    if (str)
+    {
+        self.season = str;
+    }
+    str =  [jsonData objectForKey:JSON_PARAM_RATING];
+    if (str)
+    {
+        self.rating = str;    
+    }
+
+    str = [jsonData objectForKey:JSON_PARAM_RATING];
+    if (str)
+    {
+        self.cover = str;
+    }
+    
+    NSString* releaseDateStr = [jsonData objectForKey:JSON_PARAM_RELEASE_DATE];
+    if (releaseDateStr)
+    {
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        [df setDateFormat:@"yyyy-MM-dd"];
+        self.releaseDate = [df dateFromString:releaseDateStr];
+        [df release];
+    }
+    
+    str = [jsonData objectForKey:JSON_PARAM_THUMBNAIL];
+    if (str)
+    {
+        self.thumbnail = str;
+    }
+    str = [jsonData objectForKey:JSON_PARAM_CLOSEUP];
+    {
+        self.closeupBackground = str;
+    }
+    
+    NSString* creditsStr = [jsonData objectForKey:JSON_PARAM_CREDITS];
+    if (creditsStr)
+    {
+        
+        //Martin's text: First time I do that, is it okay? ":" means title "," means tab ";" means next line "." means next line new title
+        NSArray*creditsParts = [creditsStr componentsSeparatedByString:CREDITS_SEPARATOR];
+        for (NSString*part in creditsParts) {
+            NSArray*partTitleAndBody = [part componentsSeparatedByString:CREDITS_TITLE_SEPARATOR];
+            if ([partTitleAndBody count])
+            {
+                NSString* partTitle = [partTitleAndBody objectAtIndex:0];
+                NSString* partBody = [partTitleAndBody count] > 0 ? [partTitleAndBody objectAtIndex:1] : nil;
+                if (partTitle)
+                {
+                    NSMutableArray *partItems = [[NSMutableArray alloc] init];                        
+                    [credits_ setObject:partItems forKey:partTitle];
+                    [partItems release];
+                    
+                    if (partBody)
+                    {
+                        NSArray* partBodyItems = [partBody componentsSeparatedByString:CREDITS_ITEM_SEPARATOR];
+                        for (NSString* partBodyItem in partBodyItems) {
+                            NSArray* partBodyItemComponents = [partBodyItem componentsSeparatedByString:CREDITS_ITEM_TAB];
+                            [partItems addObject:partBodyItemComponents];
+                        }
+                    }
+                    
+                }
+            }
+            
+        }
+    }
+
+}
 
 @end
 

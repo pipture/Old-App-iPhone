@@ -48,6 +48,15 @@
 -(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem;
 @end
 
+@protocol AlbumsReceiver <PiptureModelDelegate>
+@required
+-(void)albumsReceived:(NSArray*)albums;
+-(void)albumsReceived:(NSArray*)albums;
+
+-(void)videoNotPurchased:(PlaylistItem*)playlistItem;
+-(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem;
+@end
+
 @interface PiptureModel : NSObject
 
 //Using standard factory by default
