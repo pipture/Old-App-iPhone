@@ -21,7 +21,7 @@
 
 
 
-static NSString* const JSON_PARAM_TIMESLOT_ID = @"TimeslotId";
+static NSString* const JSON_PARAM_TIMESLOT_ID = @"TimeSlotId";
 static NSString* const JSON_PARAM_START_TIME = @"StartTime";
 static NSString* const JSON_PARAM_END_TIME = @"EndTime";
 static NSString* const JSON_PARAM_TIMESLOT_TITLE = @"Title";
