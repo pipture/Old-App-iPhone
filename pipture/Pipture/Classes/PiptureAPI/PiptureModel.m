@@ -15,8 +15,8 @@
 -(NSURL*)buildURLWithRequest:(NSString*)request;
 -(void)getTimeslotsWithURL:(NSURL*)url receiver:(NSObject<TimeslotsReceiver>*)receiver;
 
-+ (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult;
-+ (NSMutableArray *)parsePlaylistItems:(NSDictionary *)jsonResult;
++ (NSMutableArray *)parseItems:(NSDictionary *)jsonResult jsonArrayParamName:(NSString*)paramName itemCreator:(id (^)(NSDictionary*dct))createItem itemName:(NSString*)itemName;
+
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver;
 + (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse;
 @end 
@@ -34,12 +34,19 @@ NSString *GET_CURRENT_TIMESLOTS_REQUEST;
 NSString *GET_PLAYLIST_FOR_TIMESLOT_REQUEST;
 NSString *GET_VIDEO_FROM_TIMESLOT_REQUEST;
 NSString *GET_VIDEO_REQUEST;
+NSString *GET_ALBUMS_REQUEST;
+NSString *GET_ALBUM_DETAILS_REQUEST;
 
 static NSString* const JSON_PARAM_TIMESLOTS = @"Timeslots";
 static NSString* const JSON_PARAM_VIDEOS = @"Videos";
 static NSString* const JSON_PARAM_ERROR = @"Error";
 static NSString* const JSON_PARAM_ERRORCODE = @"ErrorCode";
 static NSString* const JSON_PARAM_VIDEO_URL = @"VideoURL";
+static NSString* const JSON_PARAM_ALBUMS = @"Albums";
+static NSString* const JSON_PARAM_EPISODES = @"Episodes";
+static NSString* const JSON_PARAM_ALBUM = @"Album";
+static NSString* const JSON_PARAM_TRAILER = @"Trailer";
+
 
 
 - (id)init
@@ -53,6 +60,9 @@ static NSString* const JSON_PARAM_VIDEO_URL = @"VideoURL";
         GET_PLAYLIST_FOR_TIMESLOT_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get playlist"] retain];        
         GET_VIDEO_FROM_TIMESLOT_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get video from timeslot"] retain];        
         GET_VIDEO_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get video"] retain];        
+        GET_ALBUMS_REQUEST =  [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get albums request"] retain];
+        GET_ALBUM_DETAILS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get album details"] retain]; 
+        
         DefaultDataRequestFactory* factory = [[[DefaultDataRequestFactory alloc] init] autorelease];
         [self setDataRequestFactory:factory];
     }    
@@ -123,7 +133,12 @@ static NSString* const JSON_PARAM_VIDEO_URL = @"VideoURL";
         } 
         else
         {
-            NSArray* timeslots = [PiptureModel parseTimeslotList: jsonResult];                        
+            //NSArray* timeslots = [PiptureModel parseTimeslotList: jsonResult];                        
+            NSArray* timeslots = [PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_TIMESLOTS itemCreator:^(NSDictionary*jsonIT)
+                                  {
+                                      return  [[Timeslot alloc] initWithJSON:jsonIT];
+
+                                  } itemName:@"Timeslot"];
             [receiver performSelectorOnMainThread:@selector(timeslotsReceived:) withObject:timeslots waitUntilDone:YES];
             if (timeslots)
             {
@@ -153,7 +168,13 @@ static NSString* const JSON_PARAM_VIDEO_URL = @"VideoURL";
             switch ([PiptureModel parseErrorCode:jsonResult]) {
                 case 0:
                 {
-                    NSArray *playlistItems = [PiptureModel parsePlaylistItems:jsonResult];
+                    //NSArray *playlistItems = [PiptureModel parsePlaylistItems:jsonResult];
+                    
+                    NSArray* playlistItems = [PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_VIDEOS itemCreator:^(NSDictionary*jsonIT)
+                                          {
+                                              return [PlaylistItemFactory createItem:jsonIT];
+                                              
+                                          } itemName:@"Playlist item"]; 
                     [receiver performSelectorOnMainThread:@selector(playlistReceived:) withObject:playlistItems waitUntilDone:YES];
                     if (playlistItems)
                     {
@@ -249,11 +270,36 @@ static NSString* const JSON_PARAM_VIDEO_URL = @"VideoURL";
       
 }
 
--(void)getAlbumsForReciever:(NSObject<VideoURLReceiver>*)receiver {
+-(void)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver {
     
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_ALBUMS_REQUEST]];
+
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
+        
+        if (error) 
+        {
+            [PiptureModel processError:error receiver:receiver];
+        } 
+        else
+        {
+            NSArray* albums = [PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_ALBUMS itemCreator:^(NSDictionary*jsonIT)
+                               {
+                                   return [[Album alloc] initWithJSON:jsonIT];
+                               } itemName:@"Album"];              
+            
+            [receiver performSelectorOnMainThread:@selector(albumsReceived:) withObject:albums waitUntilDone:YES];
+            if (albums)
+            {
+                [albums release];
+            }
+        }
+        
+    }];
+    
+    [request startExecute];    
 }
 
--(void)getDetailsForAlbum:(Album*)album receiver:(NSObject<VideoURLReceiver>*)receiver {
+-(void)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumsReceiver>*)receiver {
     
 }
 
@@ -279,53 +325,31 @@ static NSString* const JSON_PARAM_VIDEO_URL = @"VideoURL";
     return 0;   
 }            
                                
-+ (NSMutableArray *)parseTimeslotList:(NSDictionary *)jsonResult {
-    NSMutableArray *timeslots= nil;
 
-    NSArray* jsonTimeslots = [jsonResult objectForKey:JSON_PARAM_TIMESLOTS];            
-    if (jsonTimeslots)
-    {
-        timeslots = [[NSMutableArray alloc] initWithCapacity:[jsonTimeslots count]];
-        for (NSDictionary*jsonTS in jsonTimeslots) {
-            Timeslot*t = [[Timeslot alloc] initWithJSON:jsonTS];
-            if (t)
-            {
-                [timeslots addObject:t];
-                [t release];
-            }
-            else
-            {
-                NSLog(@"Error while parsing timesheet");                
-            }            
-        }
-
-    }
-    return timeslots;
-}
-
-+ (NSMutableArray *)parsePlaylistItems:(NSDictionary *)jsonResult
++ (NSMutableArray *)parseItems:(NSDictionary *)jsonResult jsonArrayParamName:(NSString*)paramName itemCreator:(id (^)(NSDictionary*dct))createItem itemName:(NSString*)itemName
 {
-    NSMutableArray *playlistItems= nil;
+    NSMutableArray *items= nil;
     
-    NSArray* jsonItems = [jsonResult objectForKey:JSON_PARAM_VIDEOS];            
+    NSArray* jsonItems = [jsonResult objectForKey:paramName];            
     if (jsonItems)
     {
-        playlistItems = [[NSMutableArray alloc] initWithCapacity:[jsonItems count]];
+        items = [[NSMutableArray alloc] initWithCapacity:[jsonItems count]];
         for (NSDictionary*jsonIT in jsonItems) {            
-            PlaylistItem*it = [PlaylistItemFactory createItem:jsonIT];
+            id it = createItem(jsonIT);
             if (it)
             {
-                [playlistItems addObject:it];
+                [items addObject:it];
                 [it release];
             }
             else
             {
-                NSLog(@"Error while parsing playlist items");                
+                NSLog(@"Error while %@", paramName);                
             }            
         }
         
     }
-    return playlistItems;    
+    return items;    
+    
 }
 
 -(NSURL*)buildURLWithRequest:(NSString*)request

@@ -15,8 +15,6 @@
 		382D9C26148E030100005F16 /* MailComposer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 382D9C25148E030100005F16 /* MailComposer.xib */; };
 		382D9C2B148E034600005F16 /* MailComposerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 382D9C2A148E034600005F16 /* MailComposerController.m */; };
 		382D9C2D148E178300005F16 /* snippet.html in Resources */ = {isa = PBXBuildFile; fileRef = 382D9C2C148E178300005F16 /* snippet.html */; };
-		384A1F991491C21C007D5E0B /* DataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 384A1F891491C21C007D5E0B /* DataRequest.m */; };
-		384A1F9A1491C21C007D5E0B /* DataRequestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 384A1F8B1491C21C007D5E0B /* DataRequestError.m */; };
 		384A1F9B1491C21C007D5E0B /* Episode.m in Sources */ = {isa = PBXBuildFile; fileRef = 384A1F8E1491C21C007D5E0B /* Episode.m */; };
 		384A1F9C1491C21C007D5E0B /* PlaylistItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 384A1F901491C21C007D5E0B /* PlaylistItem.m */; };
 		384A1F9D1491C21C007D5E0B /* PlaylistItemFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 384A1F921491C21C007D5E0B /* PlaylistItemFactory.m */; };
@@ -105,6 +103,8 @@
 		8875179B148CAD3B00AFFFAC /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875178E148CAD3B00AFFFAC /* SBJsonUTF8Stream.m */; };
 		8875179C148CAD3B00AFFFAC /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751790148CAD3B00AFFFAC /* SBJsonWriter.m */; };
 		887517A7148CAE3400AFFFAC /* PiptureAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */; };
+		88982B8814923FBD0012BEC2 /* DataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8514923FBD0012BEC2 /* DataRequest.m */; };
+		88982B8914923FBD0012BEC2 /* DataRequestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8714923FBD0012BEC2 /* DataRequestError.m */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
 		88FC5C0814922C2800C40DA1 /* NSDictionary+ValueHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0714922C2800C40DA1 /* NSDictionary+ValueHelper.m */; };
@@ -135,10 +135,6 @@
 		382D9C29148E034600005F16 /* MailComposerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailComposerController.h; sourceTree = "<group>"; };
 		382D9C2A148E034600005F16 /* MailComposerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MailComposerController.m; sourceTree = "<group>"; };
 		382D9C2C148E178300005F16 /* snippet.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = snippet.html; sourceTree = "<group>"; };
-		384A1F881491C21C007D5E0B /* DataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequest.h; sourceTree = "<group>"; };
-		384A1F891491C21C007D5E0B /* DataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequest.m; sourceTree = "<group>"; };
-		384A1F8A1491C21C007D5E0B /* DataRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequestError.h; sourceTree = "<group>"; };
-		384A1F8B1491C21C007D5E0B /* DataRequestError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequestError.m; sourceTree = "<group>"; };
 		384A1F8D1491C21C007D5E0B /* Episode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Episode.h; sourceTree = "<group>"; };
 		384A1F8E1491C21C007D5E0B /* Episode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Episode.m; sourceTree = "<group>"; };
 		384A1F8F1491C21C007D5E0B /* PlaylistItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistItem.h; sourceTree = "<group>"; };
@@ -261,6 +257,10 @@
 		88751790148CAD3B00AFFFAC /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureAppDelegate.h; sourceTree = "<group>"; };
 		887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureAppDelegate.m; sourceTree = "<group>"; };
+		88982B8414923FBD0012BEC2 /* DataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequest.h; sourceTree = "<group>"; };
+		88982B8514923FBD0012BEC2 /* DataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequest.m; sourceTree = "<group>"; };
+		88982B8614923FBD0012BEC2 /* DataRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequestError.h; sourceTree = "<group>"; };
+		88982B8714923FBD0012BEC2 /* DataRequestError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequestError.m; sourceTree = "<group>"; };
 		88BE44B11483A341002D30ED /* PiptureModelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureModelTest.h; sourceTree = "<group>"; };
 		88BE44B21483A341002D30ED /* PiptureModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModelTest.m; sourceTree = "<group>"; };
 		88D84207147B626C00E47EF8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
@@ -329,10 +329,6 @@
 			isa = PBXGroup;
 			children = (
 				384A1F8C1491C21C007D5E0B /* Entities */,
-				384A1F881491C21C007D5E0B /* DataRequest.h */,
-				384A1F891491C21C007D5E0B /* DataRequest.m */,
-				384A1F8A1491C21C007D5E0B /* DataRequestError.h */,
-				384A1F8B1491C21C007D5E0B /* DataRequestError.m */,
 				384A1F971491C21C007D5E0B /* PiptureModel.h */,
 				384A1F981491C21C007D5E0B /* PiptureModel.m */,
 			);
@@ -363,6 +359,10 @@
 		384A1FA11491C240007D5E0B /* ThumbtackFW */ = {
 			isa = PBXGroup;
 			children = (
+				88982B8414923FBD0012BEC2 /* DataRequest.h */,
+				88982B8514923FBD0012BEC2 /* DataRequest.m */,
+				88982B8614923FBD0012BEC2 /* DataRequestError.h */,
+				88982B8714923FBD0012BEC2 /* DataRequestError.m */,
 				88FC5C0614922C2800C40DA1 /* NSDictionary+ValueHelper.h */,
 				88FC5C0714922C2800C40DA1 /* NSDictionary+ValueHelper.m */,
 				384A1FA51491CF64007D5E0B /* VideoViewController.m */,
@@ -773,8 +773,6 @@
 				382D9C2B148E034600005F16 /* MailComposerController.m in Sources */,
 				38A0B98E148F87F70060420F /* HomeScreenTitleViewController.m in Sources */,
 				38A0B991148F8DA50060420F /* VideoTitleViewController.m in Sources */,
-				384A1F991491C21C007D5E0B /* DataRequest.m in Sources */,
-				384A1F9A1491C21C007D5E0B /* DataRequestError.m in Sources */,
 				384A1F9B1491C21C007D5E0B /* Episode.m in Sources */,
 				384A1F9C1491C21C007D5E0B /* PlaylistItem.m in Sources */,
 				384A1F9D1491C21C007D5E0B /* PlaylistItemFactory.m in Sources */,
@@ -787,6 +785,8 @@
 				88FC5C0814922C2800C40DA1 /* NSDictionary+ValueHelper.m in Sources */,
 				88FC5C0D14922C3600C40DA1 /* Album.m in Sources */,
 				88FC5C0E14922C3600C40DA1 /* Series.m in Sources */,
+				88982B8814923FBD0012BEC2 /* DataRequest.m in Sources */,
+				88982B8914923FBD0012BEC2 /* DataRequestError.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,7 +10,7 @@
 #import "NSDictionary+ValueHelper.h"
 
 @interface Album(Private)
--(id)parseJSON:(NSDictionary*)jsonData;
+-(void)parseJSON:(NSDictionary*)jsonData;
 @end
 
 @implementation Album
@@ -31,6 +31,7 @@
 @synthesize series;
 @synthesize episodes;
 @synthesize trailer;
+@synthesize detailsLoaded;
 
 
 static NSString* const JSON_PARAM_ALBUM_ID = @"AlbumId";
@@ -116,52 +117,24 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     
 }
 
+-(void)updateWithJSON:(NSDictionary*)jsonData
+{
+    [self parseJSON:jsonData];
+}
 
--(id)parseJSON:(NSDictionary*)jsonData
+
+-(void)parseJSON:(NSDictionary*)jsonData
 {
 
     self.albumId = [jsonData intValueForKey:JSON_PARAM_ALBUM_ID defaultIfEmpty:self.albumId];
-//    self.title = [jsonData strValueForKey:JSON_PARAM_ALBUM_ID defaultIfEmpty:self.albumId];
-    NSString*str;
-    str = [jsonData objectForKey:JSON_PARAM_TITLE];
-    if (str)
-    {
-        self.title = str;
-    }
-    str = [jsonData objectForKey:JSON_PARAM_SERIES_TITLE];
-    if (str)
-    {
-        self.series.title = str;
-    }
-    str = [jsonData objectForKey:JSON_PARAM_SERIES_TITLE];
-//    num = (NSNumber*)[jsonData objectForKey:JSON_PARAM_STATUS];
-//    if (num)
-//    {
-//        self.status = [num intValue];
-//    }
-    str = [jsonData objectForKey:JSON_PARAM_ALBUM_DESCRIPTION];
-    if (str)
-    {
-        self.albumDescription = str;
-    };
-    str =  [jsonData objectForKey:JSON_PARAM_SEASON];
-    if (str)
-    {
-        self.season = str;
-    }
-    self.rating = [jsonData objectForKey:JSON_PARAM_RATING] || self.rating;
-    str =  [jsonData objectForKey:JSON_PARAM_RATING];
-    if (str)
-    {
-        self.rating = str;    
-    }
+    self.title = [jsonData strValueForKey:JSON_PARAM_TITLE defaultIfEmpty:self.title];
+    self.series.title = [jsonData strValueForKey:JSON_PARAM_SERIES_TITLE defaultIfEmpty:self.series.title];
+    self.status = [jsonData intValueForKey:JSON_PARAM_STATUS defaultIfEmpty:self.status];
+    self.albumDescription = [jsonData strValueForKey:JSON_PARAM_ALBUM_DESCRIPTION defaultIfEmpty:self.albumDescription];
+    self.season = [jsonData strValueForKey:JSON_PARAM_SEASON defaultIfEmpty:self.season];
+    self.rating = [jsonData strValueForKey:JSON_PARAM_RATING defaultIfEmpty:self.rating];
+    self.cover = [jsonData strValueForKey:JSON_PARAM_COVER defaultIfEmpty:self.cover];
 
-    str = [jsonData objectForKey:JSON_PARAM_RATING];
-    if (str)
-    {
-        self.cover = str;
-    }
-    
     NSString* releaseDateStr = [jsonData objectForKey:JSON_PARAM_RELEASE_DATE];
     if (releaseDateStr)
     {
@@ -170,16 +143,9 @@ static NSString* const CREDITS_ITEM_TAB = @",";
         self.releaseDate = [df dateFromString:releaseDateStr];
         [df release];
     }
-    
-    str = [jsonData objectForKey:JSON_PARAM_THUMBNAIL];
-    if (str)
-    {
-        self.thumbnail = str;
-    }
-    str = [jsonData objectForKey:JSON_PARAM_CLOSEUP];
-    {
-        self.closeupBackground = str;
-    }
+
+    self.thumbnail = [jsonData strValueForKey:JSON_PARAM_THUMBNAIL defaultIfEmpty:self.thumbnail];
+    self.closeupBackground = [jsonData strValueForKey:JSON_PARAM_CLOSEUP defaultIfEmpty:self.closeupBackground];    
     
     NSString* creditsStr = [jsonData objectForKey:JSON_PARAM_CREDITS];
     if (creditsStr)
