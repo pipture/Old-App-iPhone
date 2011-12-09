@@ -7,11 +7,10 @@
 //
 
 #import "Album.h"
+#import "NSDictionary+ValueHelper.h"
 
 @interface Album(Private)
 -(id)parseJSON:(NSDictionary*)jsonData;
--(NSString*)setIfNotEmpty:(NSString*)value either:(NSString*)otherValue;
-
 @end
 
 @implementation Album
@@ -115,27 +114,12 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     
 }
 
--(id)updateWithJSON:(NSDictionary*)jsonData
-{
-    [self parseJSON:jsonData];    
-}
-
--(NSString*)setIfNotEmpty:(NSString*)value either:(NSString*)otherValue;
-{
-//    NSString*str = [jsonData objectForKey:fieldName];
-//    if (str)
-//    {
-//        *field = str;
-//    }
-}
 
 -(id)parseJSON:(NSDictionary*)jsonData
 {
-    NSNumber* num = (NSNumber*)[jsonData objectForKey:JSON_PARAM_ALBUM_ID];
-    if (num)
-    {
-        self.albumId = [num integerValue];
-    }
+
+    self.albumId = [jsonData intValueForKey:JSON_PARAM_ALBUM_ID defaultIfEmpty:self.albumId];
+//    self.title = [jsonData strValueForKey:JSON_PARAM_ALBUM_ID defaultIfEmpty:self.albumId];
     NSString*str;
     str = [jsonData objectForKey:JSON_PARAM_TITLE];
     if (str)
@@ -148,11 +132,11 @@ static NSString* const CREDITS_ITEM_TAB = @",";
         self.series.title = str;
     }
     str = [jsonData objectForKey:JSON_PARAM_SERIES_TITLE];
-    num = (NSNumber*)[jsonData objectForKey:JSON_PARAM_STATUS];
-    if (num)
-    {
-        self.status = [num intValue];
-    }
+//    num = (NSNumber*)[jsonData objectForKey:JSON_PARAM_STATUS];
+//    if (num)
+//    {
+//        self.status = [num intValue];
+//    }
     str = [jsonData objectForKey:JSON_PARAM_ALBUM_DESCRIPTION];
     if (str)
     {
@@ -163,6 +147,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     {
         self.season = str;
     }
+    self.rating = [jsonData objectForKey:JSON_PARAM_RATING] || self.rating;
     str =  [jsonData objectForKey:JSON_PARAM_RATING];
     if (str)
     {

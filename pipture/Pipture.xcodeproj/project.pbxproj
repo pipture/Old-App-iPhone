@@ -109,6 +109,7 @@
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
 		88FC5BF11491BDCD00C40DA1 /* Series.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5BF01491BDCD00C40DA1 /* Series.m */; };
 		88FC5BF51491D24100C40DA1 /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5BF41491D24100C40DA1 /* Album.m */; };
+		88FC5BFC1492280000C40DA1 /* NSDictionary+ValueHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5BFB1492280000C40DA1 /* NSDictionary+ValueHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -268,6 +269,8 @@
 		88FC5BF01491BDCD00C40DA1 /* Series.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Series.m; path = Classes/Series.m; sourceTree = "<group>"; };
 		88FC5BF31491D24100C40DA1 /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Album.h; path = Classes/Album.h; sourceTree = "<group>"; };
 		88FC5BF41491D24100C40DA1 /* Album.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Album.m; path = Classes/Album.m; sourceTree = "<group>"; };
+		88FC5BFA1492280000C40DA1 /* NSDictionary+ValueHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "NSDictionary+ValueHelper.h"; sourceTree = "<group>"; };
+		88FC5BFB1492280000C40DA1 /* NSDictionary+ValueHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+ValueHelper.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -311,6 +314,8 @@
 				385FC397147CD7A6001CDF43 /* VideoViewController.m */,
 				382D9C29148E034600005F16 /* MailComposerController.h */,
 				382D9C2A148E034600005F16 /* MailComposerController.m */,
+				88FC5BFA1492280000C40DA1 /* NSDictionary+ValueHelper.h */,
+				88FC5BFB1492280000C40DA1 /* NSDictionary+ValueHelper.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -775,6 +780,7 @@
 				38A0B991148F8DA50060420F /* VideoTitleViewController.m in Sources */,
 				88FC5BF11491BDCD00C40DA1 /* Series.m in Sources */,
 				88FC5BF51491D24100C40DA1 /* Album.m in Sources */,
+				88FC5BFC1492280000C40DA1 /* NSDictionary+ValueHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
