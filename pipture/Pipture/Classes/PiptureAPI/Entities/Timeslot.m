@@ -20,7 +20,7 @@
 @synthesize image;
 
 
-static const NSString*JSON_PARAM_TIMESLOT_ID = @"TimeslotId";
+static const NSString*JSON_PARAM_TIMESLOT_ID = @"TimeSlotId";
 static const NSString*JSON_PARAM_START_TIME = @"StartTime";
 static const NSString*JSON_PARAM_END_TIME = @"EndTime";
 static const NSString*JSON_PARAM_TIMESLOT_TITLE = @"Title";

@@ -16,6 +16,7 @@
 {
     NSTimer *progressUpdateTimer;
     
+    BOOL suspended;
     BOOL waitForNext;
     BOOL precacheBegin;
     

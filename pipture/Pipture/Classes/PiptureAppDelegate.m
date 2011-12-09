@@ -101,12 +101,13 @@ static PiptureAppDelegate *instance;
     if (vc == nil) {
         vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
     }
-    vc.timeslotId = timeslotId;
-    vc.playlist = playlist;
-    vc.wantsFullScreenLayout = YES;
-    vc.simpleMode = noNavi;
-    [navigationController pushViewController:vc animated:YES];
-
+    if (navigationController.visibleViewController != vc) {
+        vc.timeslotId = timeslotId;
+        vc.playlist = playlist;
+        vc.wantsFullScreenLayout = YES;
+        vc.simpleMode = noNavi;
+        [navigationController pushViewController:vc animated:YES];
+    }
     [vc initVideo];
 }
 
