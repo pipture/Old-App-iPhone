@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "DataRequest.h"
 #import "Timeslot.h"
+#import "Album.h"
 #import "PlaylistItem.h"
 #import "SBJson.h"
 
@@ -52,10 +53,8 @@
 @protocol AlbumsReceiver <PiptureModelDelegate>
 @required
 -(void)albumsReceived:(NSArray*)albums;
--(void)albumsReceived:(NSArray*)albums;
-
--(void)videoNotPurchased:(PlaylistItem*)playlistItem;
--(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem;
+-(void)albumDetailsReceived:(Album*)album;
+-(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album;
 @end
 
 @interface PiptureModel : NSObject
@@ -74,6 +73,9 @@
 
 -(void)getVideoURL:(PlaylistItem*)playListItem forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
 
+-(void)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver;
+
+-(void)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumsReceiver>*)receiver;
 
 @end
 

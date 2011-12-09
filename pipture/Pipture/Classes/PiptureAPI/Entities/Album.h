@@ -33,11 +33,14 @@ enum AlbumStatus{
 @property(retain, nonatomic) NSString* thumbnail;
 @property(retain, nonatomic) NSString* closeupBackground;
 @property(retain, nonatomic) NSString* emailScreenshot;
+@property(retain, nonatomic) NSArray* episodes;
+@property(retain, nonatomic) Trailer* trailer;
 
 // Key - Credit title, Value - NSArray of credit items
 // Each credit item is NSArray of NSString values
 @property(readonly, nonatomic) NSDictionary* credits;
 @property(readonly, nonatomic) Series* series;
+
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
 -(id)updateWithJSON:(NSDictionary*)jsonData;

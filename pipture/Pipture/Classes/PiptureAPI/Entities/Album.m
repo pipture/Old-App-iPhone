@@ -29,6 +29,8 @@
 @synthesize emailScreenshot;
 @synthesize credits = credits_;
 @synthesize series;
+@synthesize episodes;
+@synthesize trailer;
 
 
 static NSString* const JSON_PARAM_ALBUM_ID = @"AlbumId";

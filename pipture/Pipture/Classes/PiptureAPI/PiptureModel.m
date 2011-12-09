@@ -249,6 +249,15 @@ static NSString* const JSON_PARAM_VIDEO_URL = @"VideoURL";
       
 }
 
+-(void)getAlbumsForReciever:(NSObject<VideoURLReceiver>*)receiver {
+    
+}
+
+-(void)getDetailsForAlbum:(Album*)album receiver:(NSObject<VideoURLReceiver>*)receiver {
+    
+}
+
+
                    
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver {
 
