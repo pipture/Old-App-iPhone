@@ -107,9 +107,9 @@
 		887517A7148CAE3400AFFFAC /* PiptureAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
-		88FC5BF11491BDCD00C40DA1 /* Series.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5BF01491BDCD00C40DA1 /* Series.m */; };
-		88FC5BF51491D24100C40DA1 /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5BF41491D24100C40DA1 /* Album.m */; };
-		88FC5BFC1492280000C40DA1 /* NSDictionary+ValueHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5BFB1492280000C40DA1 /* NSDictionary+ValueHelper.m */; };
+		88FC5C0814922C2800C40DA1 /* NSDictionary+ValueHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0714922C2800C40DA1 /* NSDictionary+ValueHelper.m */; };
+		88FC5C0D14922C3600C40DA1 /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0A14922C3600C40DA1 /* Album.m */; };
+		88FC5C0E14922C3600C40DA1 /* Series.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0C14922C3600C40DA1 /* Series.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -265,12 +265,12 @@
 		88BE44B21483A341002D30ED /* PiptureModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModelTest.m; sourceTree = "<group>"; };
 		88D84207147B626C00E47EF8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		88D84208147B626C00E47EF8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
-		88FC5BEF1491BDCD00C40DA1 /* Series.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Series.h; path = Classes/Series.h; sourceTree = "<group>"; };
-		88FC5BF01491BDCD00C40DA1 /* Series.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Series.m; path = Classes/Series.m; sourceTree = "<group>"; };
-		88FC5BF31491D24100C40DA1 /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Album.h; path = Classes/Album.h; sourceTree = "<group>"; };
-		88FC5BF41491D24100C40DA1 /* Album.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Album.m; path = Classes/Album.m; sourceTree = "<group>"; };
-		88FC5BFA1492280000C40DA1 /* NSDictionary+ValueHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "NSDictionary+ValueHelper.h"; sourceTree = "<group>"; };
-		88FC5BFB1492280000C40DA1 /* NSDictionary+ValueHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+ValueHelper.m"; sourceTree = "<group>"; };
+		88FC5C0614922C2800C40DA1 /* NSDictionary+ValueHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+ValueHelper.h"; sourceTree = "<group>"; };
+		88FC5C0714922C2800C40DA1 /* NSDictionary+ValueHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+ValueHelper.m"; sourceTree = "<group>"; };
+		88FC5C0914922C3600C40DA1 /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Album.h; sourceTree = "<group>"; };
+		88FC5C0A14922C3600C40DA1 /* Album.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Album.m; sourceTree = "<group>"; };
+		88FC5C0B14922C3600C40DA1 /* Series.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Series.h; sourceTree = "<group>"; };
+		88FC5C0C14922C3600C40DA1 /* Series.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Series.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -308,8 +308,6 @@
 				38A0B990148F8DA50060420F /* VideoTitleViewController.m */,
 				382D9C29148E034600005F16 /* MailComposerController.h */,
 				382D9C2A148E034600005F16 /* MailComposerController.m */,
-				88FC5BFA1492280000C40DA1 /* NSDictionary+ValueHelper.h */,
-				88FC5BFB1492280000C40DA1 /* NSDictionary+ValueHelper.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -344,6 +342,10 @@
 		384A1F8C1491C21C007D5E0B /* Entities */ = {
 			isa = PBXGroup;
 			children = (
+				88FC5C0914922C3600C40DA1 /* Album.h */,
+				88FC5C0A14922C3600C40DA1 /* Album.m */,
+				88FC5C0B14922C3600C40DA1 /* Series.h */,
+				88FC5C0C14922C3600C40DA1 /* Series.m */,
 				384A1F8D1491C21C007D5E0B /* Episode.h */,
 				384A1F8E1491C21C007D5E0B /* Episode.m */,
 				384A1F8F1491C21C007D5E0B /* PlaylistItem.h */,
@@ -361,6 +363,8 @@
 		384A1FA11491C240007D5E0B /* ThumbtackFW */ = {
 			isa = PBXGroup;
 			children = (
+				88FC5C0614922C2800C40DA1 /* NSDictionary+ValueHelper.h */,
+				88FC5C0714922C2800C40DA1 /* NSDictionary+ValueHelper.m */,
 				384A1FA51491CF64007D5E0B /* VideoViewController.m */,
 				384A1FA61491CF64007D5E0B /* VideoViewController.h */,
 				384A1FA71491CF64007D5E0B /* PlayerView.m */,
@@ -587,44 +591,6 @@
 			path = SBJSON;
 			sourceTree = "<group>";
 		};
-
-		88BE449F148387DB002D30ED /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				887517A0148CAE3400AFFFAC /* DataRequest.h */,
-				887517A1148CAE3400AFFFAC /* DataRequest.m */,
-				887517A4148CAE3400AFFFAC /* PiptureModel.h */,
-				887517A5148CAE3400AFFFAC /* PiptureModel.m */,
-				887517B8148DD2E300AFFFAC /* DataRequestError.h */,
-				887517B9148DD2E400AFFFAC /* DataRequestError.m */,
-			);
-			name = Model;
-			path = ..;
-			sourceTree = "<group>";
-		};
-		88BE44A314838A00002D30ED /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-				887517A9148CAE4B00AFFFAC /* Timeslot.h */,
-				887517AA148CAE4B00AFFFAC /* Timeslot.m */,
-				887517C5148DF73000AFFFAC /* Episode.h */,
-				887517C6148DF73000AFFFAC /* Episode.m */,
-				887517C8148DF74200AFFFAC /* Trailer.h */,
-				887517C9148DF74200AFFFAC /* Trailer.m */,
-				887517CB148E0C2F00AFFFAC /* PlaylistItem.h */,
-				887517CC148E0C2F00AFFFAC /* PlaylistItem.m */,
-				886496B6148F391900DE1966 /* PlaylistItemFactory.h */,
-				886496B7148F391900DE1966 /* PlaylistItemFactory.m */,
-				88FC5BEF1491BDCD00C40DA1 /* Series.h */,
-				88FC5BF01491BDCD00C40DA1 /* Series.m */,
-				88FC5BF31491D24100C40DA1 /* Album.h */,
-				88FC5BF41491D24100C40DA1 /* Album.m */,
-			);
-			name = Entities;
-			path = ..;
-			sourceTree = "<group>";
-		};
-
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -807,9 +773,6 @@
 				382D9C2B148E034600005F16 /* MailComposerController.m in Sources */,
 				38A0B98E148F87F70060420F /* HomeScreenTitleViewController.m in Sources */,
 				38A0B991148F8DA50060420F /* VideoTitleViewController.m in Sources */,
-				88FC5BF11491BDCD00C40DA1 /* Series.m in Sources */,
-				88FC5BF51491D24100C40DA1 /* Album.m in Sources */,
-				88FC5BFC1492280000C40DA1 /* NSDictionary+ValueHelper.m in Sources */,
 				384A1F991491C21C007D5E0B /* DataRequest.m in Sources */,
 				384A1F9A1491C21C007D5E0B /* DataRequestError.m in Sources */,
 				384A1F9B1491C21C007D5E0B /* Episode.m in Sources */,
@@ -821,6 +784,9 @@
 				384A1FA41491C240007D5E0B /* AsyncImageView.m in Sources */,
 				384A1FA91491CF64007D5E0B /* VideoViewController.m in Sources */,
 				384A1FAA1491CF64007D5E0B /* PlayerView.m in Sources */,
+				88FC5C0814922C2800C40DA1 /* NSDictionary+ValueHelper.m in Sources */,
+				88FC5C0D14922C3600C40DA1 /* Album.m in Sources */,
+				88FC5C0E14922C3600C40DA1 /* Series.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
