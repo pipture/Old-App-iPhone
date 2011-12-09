@@ -7,7 +7,39 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Series.h"
+#import "Trailer.h"
+
+enum AlbumStatus{
+    Normal = 1,
+    Premiere = 2,
+    CommingSoon = 3,    
+};
 
 @interface Album : NSObject
+{
+    @private
+    NSMutableDictionary* credits_;
+}
+
+@property(assign, nonatomic) NSInteger albumId;
+@property(assign, nonatomic) enum AlbumStatus status;
+@property(retain, nonatomic) NSString* title;
+@property(retain, nonatomic) NSString* albumDescription;
+@property(retain, nonatomic) NSString* season;
+@property(retain, nonatomic) NSString* rating;
+@property(retain, nonatomic) NSString* cover;
+@property(retain, nonatomic) NSDate* releaseDate;
+@property(retain, nonatomic) NSString* thumbnail;
+@property(retain, nonatomic) NSString* closeupBackground;
+@property(retain, nonatomic) NSString* emailScreenshot;
+
+// Key - Credit title, Value - NSArray of credit items
+// Each credit item is NSArray of NSString values
+@property(readonly, nonatomic) NSDictionary* credits;
+
+@property(readonly, nonatomic) Series* series;
+
+-(id)initWithJSON:(NSDictionary*)jsonData;
 
 @end

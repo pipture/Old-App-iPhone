@@ -10,4 +10,19 @@
 
 @implementation Series
 
+@synthesize seriesId;
+@synthesize title;
+@synthesize closeupBackground;
+
+- (void)dealloc {
+    if (title)
+    {
+        [title release];
+    }
+    if (closeupBackground)
+    {
+        [closeupBackground release];
+    }
+    [super dealloc];
+}
 @end

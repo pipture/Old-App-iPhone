@@ -10,4 +10,8 @@
 
 @interface Series : NSObject
 
+@property(assign, nonatomic) NSInteger seriesId;
+@property(retain, nonatomic) NSString* title;
+@property(retain, nonatomic) NSString* closeupBackground;
+
 @end
