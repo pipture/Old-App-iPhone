@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSDictionary (DictionaryValueHelper)
+@interface NSDictionary (ValueHelper)
+-(NSString*)strValueForKey:(NSString*)key defaultIfEmpty:(NSString*)defaultValue;
+-(NSInteger)intValueForKey:(NSString*)key defaultIfEmpty:(NSInteger)defaultValue;
 
 @end
