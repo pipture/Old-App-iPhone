@@ -20,12 +20,12 @@
 @synthesize image;
 
 
-static const NSString*JSON_PARAM_TIMESLOT_ID = @"TimeslotId";
-static const NSString*JSON_PARAM_START_TIME = @"StartTime";
-static const NSString*JSON_PARAM_END_TIME = @"EndTime";
-static const NSString*JSON_PARAM_TIMESLOT_TITLE = @"Title";
-static const NSString*JSON_PARAM_CLOSEUP_BACKGROUND = @"CloseupBackground";
-static const NSString*JSON_PARAM_CURRENT = @"Current";
+static NSString* const JSON_PARAM_TIMESLOT_ID = @"TimeslotId";
+static NSString* const JSON_PARAM_START_TIME = @"StartTime";
+static NSString* const JSON_PARAM_END_TIME = @"EndTime";
+static NSString* const JSON_PARAM_TIMESLOT_TITLE = @"Title";
+static NSString* const JSON_PARAM_CLOSEUP_BACKGROUND = @"CloseupBackground";
+static NSString* const JSON_PARAM_CURRENT = @"Current";
 
 
 -(id)initWithJSON:(NSDictionary*)jsonData

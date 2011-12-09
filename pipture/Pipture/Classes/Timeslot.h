@@ -18,11 +18,9 @@
 @property(retain, nonatomic) NSString* title;
 @property(retain, nonatomic) NSString* closupBackground;
 @property(assign, nonatomic) BOOL current;
-@property(readonly, nonatomic) NSString* timeDescription;
+@property(readonly, nonatomic) NSString* timeDescription; //TODO to be moved to controller layer because it is presentation
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
-
-
 
 @property(retain, nonatomic) UIImage* image;
 

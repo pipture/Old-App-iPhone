@@ -17,13 +17,13 @@
 @synthesize line3;
 @synthesize thumbnail;
 
-static const NSString*JSON_PARAM_TRAILER_ID = @"TrailerId";
-static const NSString*JSON_PARAM_TRAILER_TITLE = @"Title";
-static const NSString*JSON_PARAM_LINE_1 = @"Line1";
-static const NSString*JSON_PARAM_LINE_2 = @"Line2";
-static const NSString*JSON_PARAM_LINE_3 = @"Line3";
-static const NSString*JSON_PARAM_THUMBNAIL = @"Thumbnail";
-static const NSString*VIDEO_KEY_NAME = @"TrailerId";
+static NSString* const JSON_PARAM_TRAILER_ID = @"TrailerId";
+static NSString* const JSON_PARAM_TRAILER_TITLE = @"Title";
+static NSString* const JSON_PARAM_LINE_1 = @"Line1";
+static NSString* const JSON_PARAM_LINE_2 = @"Line2";
+static NSString* const JSON_PARAM_LINE_3 = @"Line3";
+static NSString* const JSON_PARAM_THUMBNAIL = @"Thumbnail";
+static NSString* const VIDEO_KEY_NAME = @"TrailerId";
 
 
 - (void)dealloc {

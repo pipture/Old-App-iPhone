@@ -12,9 +12,9 @@
 
 @implementation PlaylistItemFactory
 
-static const NSString*PLAYLIST_ITEM_TYPE_EPISODE = @"Episode";
-static const NSString*PLAYLIST_ITEM_TYPE_TRAILER = @"Trailer";
-static const NSString*JSON_PARAM_PLAYLIST_ITEM_TYPE = @"Type";
+static NSString* const PLAYLIST_ITEM_TYPE_EPISODE = @"Episode";
+static NSString* const PLAYLIST_ITEM_TYPE_TRAILER = @"Trailer";
+static NSString* const JSON_PARAM_PLAYLIST_ITEM_TYPE = @"Type";
 
 +(PlaylistItem*)createItem:(NSDictionary*)jsonItem
 {

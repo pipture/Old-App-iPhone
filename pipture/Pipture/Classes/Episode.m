@@ -19,15 +19,15 @@
 @synthesize subject;
 @synthesize senderToReceiver;
 
-static const NSString*JSON_PARAM_EPISODE_ID = @"EpisodeId";
-static const NSString*JSON_PARAM_EPISODE_TITLE = @"Title";
-static const NSString*JSON_PARAM_CLOSEUP = @"Closeup";
-static const NSString*JSON_PARAM_CLOSEUP_THUMBNAIL = @"CloseupThumbnail";
-static const NSString*JSON_PARAM_SCRIPT = @"Script";
-static const NSString*JSON_PARAM_DATE_RELEASED = @"DateReleased";
-static const NSString*JSON_PARAM_SUBJECT = @"Subject";
-static const NSString*JSON_PARAM_SENDER_TO_RECEIVER = @"SenderToReceiver";
-static const NSString*VIDEO_KEY_NAME = @"EpisodeId";
+static NSString* const JSON_PARAM_EPISODE_ID = @"EpisodeId";
+static NSString* const JSON_PARAM_EPISODE_TITLE = @"Title";
+static NSString* const JSON_PARAM_CLOSEUP = @"Closeup";
+static NSString* const JSON_PARAM_CLOSEUP_THUMBNAIL = @"CloseupThumbnail";
+static NSString* const JSON_PARAM_SCRIPT = @"Script";
+static NSString* const JSON_PARAM_DATE_RELEASED = @"DateReleased";
+static NSString* const JSON_PARAM_SUBJECT = @"Subject";
+static NSString* const JSON_PARAM_SENDER_TO_RECEIVER = @"SenderToReceiver";
+static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
 
 
 - (void)dealloc {

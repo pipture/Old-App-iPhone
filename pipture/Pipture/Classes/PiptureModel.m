@@ -35,11 +35,11 @@ NSString *GET_PLAYLIST_FOR_TIMESLOT_REQUEST;
 NSString *GET_VIDEO_FROM_TIMESLOT_REQUEST;
 NSString *GET_VIDEO_REQUEST;
 
-static const NSString*JSON_PARAM_TIMESLOTS = @"Timeslots";
-static const NSString*JSON_PARAM_VIDEOS = @"Videos";
-static const NSString*JSON_PARAM_ERROR = @"Error";
-static const NSString*JSON_PARAM_ERRORCODE = @"ErrorCode";
-static const NSString*JSON_PARAM_VIDEO_URL = @"VideoURL";
+static NSString* const JSON_PARAM_TIMESLOTS = @"Timeslots";
+static NSString* const JSON_PARAM_VIDEOS = @"Videos";
+static NSString* const JSON_PARAM_ERROR = @"Error";
+static NSString* const JSON_PARAM_ERRORCODE = @"ErrorCode";
+static NSString* const JSON_PARAM_VIDEO_URL = @"VideoURL";
 
 
 - (id)init
