@@ -172,7 +172,13 @@ static NSString* const JSON_PARAM_VIDEO_URL = @"VideoURL";
                     {
                         [receiver performSelectorOnMainThread:@selector(playlistCantBeReceivedForUnknownTimeslot:) withObject:timeslotId waitUntilDone:YES];
                     }
-                    break;                        
+                    break;
+                case 3:
+                    if ([receiver respondsToSelector:@selector(playlistCantBeReceivedForFutureTimeslot:)])
+                    {
+                        [receiver performSelectorOnMainThread:@selector(playlistCantBeReceivedForFutureTimeslot:) withObject:timeslotId waitUntilDone:YES];
+                    }
+                    break;
                 default:
                     NSLog(@"Unknown error code");
                     break;

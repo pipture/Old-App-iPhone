@@ -25,6 +25,7 @@
 #pragma mark - View lifecycle
 
 - (void)refreshTimeSlots {
+    NSLog(@"refresh");
     [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
 }
 
@@ -80,12 +81,21 @@
     [self updateControls];
 }
 
-- (void)scheduleTimeslotChange:(NSDate *)serverDate {
+- (void)scheduleTimeslotChange:(Timeslot *)slot {
     if (changeTimer != nil) {
         [changeTimer invalidate];
         changeTimer = nil;
     }
-    changeTimer = [[NSTimer alloc] initWithFireDate:serverDate interval:TIMESLOT_CHANGE_POLL_INTERVAL target:self selector:@selector(changeSlotFire:) userInfo:nil repeats:YES];
+
+    NSDate * date = [NSDate dateWithTimeIntervalSinceNow:0];
+    NSDate * scheduleTime = [date laterDate:slot.startTime]?slot.endTime:slot.startTime;
+    
+    NSLog(@"Scheduled to: %@", scheduleTime);
+    
+    //changeTimer = [NSTimer scheduledTimerWithTimeInterval:TIMESLOT_CHANGE_POLL_INTERVAL target:<#(id)#> selector:<#(SEL)#> userInfo:<#(id)#> repeats:<#(BOOL)#>]
+    
+    changeTimer = [[NSTimer alloc] initWithFireDate:scheduleTime interval:TIMESLOT_CHANGE_POLL_INTERVAL target:self selector:@selector(updateAction:) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:changeTimer forMode:NSDefaultRunLoopMode];
 }
 
 - (void)viewDidUnload
@@ -102,7 +112,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
     
-    //[self refreshTimeSlots];
+    [self refreshTimeSlots];
     [self startTimer:TIMESLOT_REGULAR_POLL_INTERVAL];
 }
 
@@ -113,6 +123,21 @@
     }
     [self stopTimer];
     [super viewDidDisappear:animated];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    lastStatusStyle = [UIApplication sharedApplication].statusBarStyle;
+    lastNaviStyle = self.navigationController.navigationBar.barStyle;
+    
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [UIApplication sharedApplication].statusBarStyle = lastStatusStyle;
+    self.navigationController.navigationBar.barStyle = lastNaviStyle;
 }
 
 - (int)getPageNumber
@@ -188,6 +213,9 @@
         
         homescreenTitle.line1.text = slot.title;
         homescreenTitle.line2.text = slot.timeDescription;
+    } else {
+        homescreenTitle.line1.text = @"Nothing to show";
+        homescreenTitle.line2.text = @"";
     }
 }
 
@@ -218,7 +246,7 @@
             prevButton.enabled = YES;
         }
         
-        if (page == [timelineArray count] - 1) {
+        if (page == [timelineArray count] - 1 || timelineArray.count == 0) {
             nextButton.alpha = 0.3;
             nextButton.enabled = NO;
         } else {
@@ -264,7 +292,7 @@
     if (scrollView.contentOffset.y == top) {
         [self updateControls];
     } else {
-        [scrollView scrollRectToVisible:CGRectMake(0, top, 10, scrollView.frame.size.height) animated:YES];
+        [scrollView scrollRectToVisible:CGRectMake(0, top, 10, scrollView.frame.size.height) animated:NO];
     }
 }
 
@@ -283,11 +311,12 @@
     if (scheduleMode && page != 0) {
         [self scheduleAction:nil];
     } else {
-        //Timeslot * slot = [timelineArray objectAtIndex:page];
-        //reqTimeslotId = slot.timeslotId;
-        //TODO:
-        reqTimeslotId = 1;
-        [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];
+        if (timelineArray.count > 0) {
+            Timeslot * slot = [timelineArray objectAtIndex:page];
+            reqTimeslotId = slot.timeslotId;
+            actionButton.enabled = NO;//prevent multiple pushes
+            [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];
+        }
     }
 }
 
@@ -298,6 +327,7 @@
 }
 
 - (void)scheduleAction:(id)sender {
+    NSLog(@"schedule action!");
     scheduleMode = !scheduleMode;
     
     if (!scheduleMode) {
@@ -327,7 +357,8 @@
             NSLog(@"Other request error!");
             break;
         case DRErrorTimeout:
-            NSLog(@"Timeout!");
+            title = @"Request timed out";
+            message = @"Check your Internet connection!";
             break;
     }
 
@@ -336,38 +367,56 @@
         [alert show];
         [alert release]; 
     }
+    
+    actionButton.enabled = YES;
 }
 
 #pragma mark TimeslotsReceiver methods
 
 -(void)timeslotsReceived:(NSArray *)timeslots {
     @synchronized(self) {
+        NSLog(@"Timeslots: %@", timeslots);
         NSLog(@"was size = %d", scrollView.subviews.count);
         NSLog(@"new size = %d", timeslots.count);
         int lastTimeSlotId = -1;
         if (timelineArray.count > 0)
             lastTimeSlotId = ((Timeslot*)[timelineArray objectAtIndex:0]).timeslotId;
         
-        if (timeslots.count > 0) {
-            Timeslot * slot = [timeslots objectAtIndex:0];
-            if (lastTimeSlotId != slot.timeslotId) {
-                [timelineArray removeAllObjects];
-                [timelineArray addObjectsFromArray:timeslots];
-                scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height * [timeslots count]);
-                //remove deprecated data
-                while (timelineArray.count < scrollView.subviews.count) {
-                    [[scrollView.subviews lastObject] removeFromSuperview];
-                }
-                
-                int page = [self getPageNumber];
-                NSLog(@"page is: %d", page);
-                [self prepareImageFor: page - 1];
-                [self prepareImageFor: page];
-                [self prepareImageFor: page + 1];
-                [self updateControls];
-                
-                [self scheduleTimeslotChange:slot.endTime];
+        //if TV is switched off
+        if (timeslots.count == 0) {
+            [timelineArray removeAllObjects];
+            scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, 0);
+            while (scrollView.subviews.count > 0) {
+                [[scrollView.subviews lastObject] removeFromSuperview];
             }
+            [self updateControls];
+            
+            if (changeTimer != nil) {
+                [changeTimer invalidate];
+                changeTimer = nil;
+            }
+            
+            return;
+        }
+        
+        Timeslot * slot = [timeslots objectAtIndex:0];
+        if (lastTimeSlotId != slot.timeslotId || timeslots.count != timelineArray.count) {
+            [timelineArray removeAllObjects];
+            [timelineArray addObjectsFromArray:timeslots];
+            scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height * [timeslots count]);
+            //remove deprecated data
+            while (timelineArray.count < scrollView.subviews.count) {
+                [[scrollView.subviews lastObject] removeFromSuperview];
+            }
+            
+            int page = [self getPageNumber];
+            NSLog(@"page is: %d", page);
+            [self prepareImageFor: page - 1];
+            [self prepareImageFor: page];
+            [self prepareImageFor: page + 1];
+            [self updateControls];
+            
+            [self scheduleTimeslotChange:slot];
         }
     }
 }
@@ -375,21 +424,34 @@
 #pragma mark PlaylistReceiver methods
 
 -(void)playlistReceived:(NSArray*)playlistItems {
+    NSLog(@"Playlist: %@", playlistItems);
     if (playlistItems) {
         [self scrollToCurPage];
         [[PiptureAppDelegate instance] showVideo:playlistItems navigationController:self.navigationController noNavi:NO timeslotId:[NSNumber numberWithInt:reqTimeslotId]];
     }
     reqTimeslotId = -1;
+    actionButton.enabled = YES;
 }
 
 -(void)playlistCantBeReceivedForUnknownTimeslot:(NSNumber*)timeslotId {
+    NSLog(@"Unknown timeslot: %@", timeslotId);
     reqTimeslotId = -1;
     [self refreshTimeSlots];
+    actionButton.enabled = YES;
 }
                                                                        
 -(void)playlistCantBeReceivedForExpiredTimeslot:(NSNumber*)timeslotId {
+    NSLog(@"Expired timeslot: %@", timeslotId);
     reqTimeslotId = -1;
     [self refreshTimeSlots];
+    actionButton.enabled = YES;
+}
+
+-(void)playlistCantBeReceivedForFutureTimeslot:(NSNumber*)timeslotId {
+    NSLog(@"Future timeslot: %@", timeslotId);
+    reqTimeslotId = -1;
+    [self refreshTimeSlots];
+    actionButton.enabled = YES;
 }
 
 

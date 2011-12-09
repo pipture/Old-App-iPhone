@@ -189,7 +189,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    int row = indexPath.row;
+    //int row = indexPath.row;
     //TODO: get playlist item from album videos
     //[[PiptureAppDelegate instance] showVideo:row navigationController:self.navigationController noNavi:YES];    
 }
@@ -208,6 +208,7 @@
             [subViewContainer addSubview:detailPage];
             break;
         case DetailAlbumViewType_Videos:
+            videosTable.frame = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height);
             [subViewContainer addSubview:videosTable];
             [videosTable reloadData];
             break;

@@ -25,6 +25,20 @@
 @synthesize videoTitleView;
 @synthesize timeslotId;
 
+- (void)destroyNextItem {
+    if ((nextPlayerItem != nil) && ((player && player.currentItem != nextPlayerItem) || !player)) {
+        NSLog(@"Destroyed next item");
+        [nextPlayerItem release];
+        nextPlayerItem = nil;
+    }
+}
+
+- (void)enableControls:(BOOL)enabled {
+    prevButton.enabled = enabled;
+    nextButton.enabled = enabled;
+    pauseButton.enabled = enabled;
+}
+
 - (void)customNavBarTitle
 {
     if (playlist && pos >= 0 && pos < playlist.count) {
@@ -126,12 +140,16 @@
 - (void)prevVideo {
     [self stopTimer];
     
+    [self destroyNextItem];
+    
     //next player ready for playback
     self.busyContainer.hidden = NO;
-    if (pos > 0) pos--;
-    waitForNext = YES;
-    PlaylistItem * item = [playlist objectAtIndex:pos];
-    [[[PiptureAppDelegate instance] model] getVideoURL:item forTimeslotId:[NSNumber numberWithInt:0] receiver:self];
+    if (!waitForNext) {
+        if (pos > 0) pos--;
+        waitForNext = YES;
+        PlaylistItem * item = [playlist objectAtIndex:pos];
+        [[[PiptureAppDelegate instance] model] getVideoURL:item forTimeslotId:[NSNumber numberWithInt:0] receiver:self];
+    }
 }
 
 - (void)nextVideo {
@@ -141,9 +159,12 @@
     if (![self playNextItem]) {
         self.busyContainer.hidden = NO;
         if (playlist && (pos == -1 || pos < [playlist count] - 1)) {
-            PlaylistItem * item = [playlist objectAtIndex:++pos];
-            waitForNext = YES;
-            [[[PiptureAppDelegate instance] model] getVideoURL:item forTimeslotId:timeslotId receiver:self];
+            if (!waitForNext) {
+                PlaylistItem * item = [playlist objectAtIndex:pos + 1];
+                waitForNext = YES;
+                [self enableControls:NO];
+                [[[PiptureAppDelegate instance] model] getVideoURL:item forTimeslotId:timeslotId receiver:self];
+            }
         } else {
             self.busyContainer.hidden = YES;
             //reached end of playlist
@@ -180,19 +201,24 @@
     }
     switch (player.status) {
         case AVPlayerStatusUnknown:
-            //
+            NSLog(@"unknown status current: %d, suspended: %d", item == player.currentItem, suspended);
             break;
         case AVPlayerStatusFailed:
+            NSLog(@"failsed to play current: %d, suspended: %d", item == player.currentItem, suspended);
             if (item == player.currentItem) {
                 self.busyContainer.hidden = YES;
             }
             //TODO:
             break;
         case AVPlayerStatusReadyToPlay:
+            NSLog(@"ready to play current: %d, suspended: %d", item == player.currentItem, suspended);
             if (item == player.currentItem) {
                 self.busyContainer.hidden = YES;
-                [self startTimer];
-                [player play];
+                if (!suspended) {
+                    [self enableControls:YES];
+                    [self startTimer];
+                    [player play];
+                }
             }
             break;
     }
@@ -200,9 +226,20 @@
 
 - (void)initVideo {
     
+    suspended = YES;
     precacheBegin = NO;
     pausedStatus = NO;
+    [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
     nextPlayerItem = nil;
+    
+    [self destroyNextItem];
+    
+    if (player != nil) {
+        [videoContainer setPlayer:nil];
+        [player release];
+        player = nil;
+    }
+    
     pos = -1;
     
     if (!simpleMode) {
@@ -245,6 +282,12 @@
     [super viewDidUnload];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    suspended = NO;
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
@@ -263,6 +306,7 @@
     [UIApplication sharedApplication].statusBarStyle = lastStatusStyle;
     self.navigationController.navigationBar.barStyle = lastNaviStyle;
     
+    suspended = YES;
     [self setPause];
     
     [super viewWillDisappear:animated];
@@ -301,10 +345,8 @@
 }
 
 - (IBAction)prevAction:(id)sender {
-    if (nextPlayerItem != nil) {
-        [nextPlayerItem release];
-        nextPlayerItem = nil;
-    }
+    [self enableControls:NO];
+    
     if (player != nil) {
         [self prevVideo];
     }
@@ -321,10 +363,8 @@
 }
 
 - (IBAction)nextAction:(id)sender {
-    if (nextPlayerItem != nil) {
-        [nextPlayerItem release];
-        nextPlayerItem = nil;
-    }
+    [self enableControls:NO];
+
     if (player != nil) {
         [self nextVideo];
     }
@@ -341,10 +381,7 @@
 - (void)dealloc {
     NSLog(@"video released");
     
-    if (nextPlayerItem != nil) {
-        [nextPlayerItem release];
-        nextPlayerItem = nil;
-    }
+    [self destroyNextItem];
     if (player != nil) {
         [self stopTimer];
         [videoContainer setPlayer:nil];
@@ -369,6 +406,10 @@
 #pragma mark VideoURLReceiver protocol
 
 -(void)videoURLReceived:(PlaylistItem*)playlistItem {
+    NSLog(@"URL received: %@, suspended: %d", playlistItem, suspended);
+    
+    [self destroyNextItem];
+    
     nextPlayerItem = [self createItem:playlistItem];
     if (waitForNext) {
         [self stopTimer];
@@ -376,21 +417,24 @@
             player = [[AVPlayer alloc] initWithPlayerItem:nextPlayerItem];
             videoContainer.player = player;
             nextPlayerItem = nil;
+            pos++;
             [self customNavBarTitle];
         } else {
             [self playNextItem];
         }
         waitForNext = NO;
-    }    
+    }
 }
 
 -(void)videoNotPurchased:(PlaylistItem*)playlistItem {
+    NSLog(@"Video not purchased: %@", playlistItem);
     //TODO:
     self.busyContainer.hidden = YES;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 -(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem {
+    NSLog(@"Timeslot expired for: %@", playlistItem);
     //TODO:
     self.busyContainer.hidden = YES;
     [self.navigationController popViewControllerAnimated:YES];

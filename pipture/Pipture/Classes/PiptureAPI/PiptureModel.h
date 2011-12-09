@@ -38,6 +38,7 @@
 @optional
 -(void)playlistCantBeReceivedForUnknownTimeslot:(NSNumber*)timeslotId;
 -(void)playlistCantBeReceivedForExpiredTimeslot:(NSNumber*)timeslotId;
+-(void)playlistCantBeReceivedForFutureTimeslot:(NSNumber*)timeslotId;
 
 @end
 

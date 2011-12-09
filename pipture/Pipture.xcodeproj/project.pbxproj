@@ -107,9 +107,6 @@
 		887517CD148E0C3000AFFFAC /* PlaylistItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517CC148E0C2F00AFFFAC /* PlaylistItem.m */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
-		88FC5BF11491BDCD00C40DA1 /* Series.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5BF01491BDCD00C40DA1 /* Series.m */; };
-		88FC5BF51491D24100C40DA1 /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5BF41491D24100C40DA1 /* Album.m */; };
-		88FC5BFC1492280000C40DA1 /* NSDictionary+ValueHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5BFB1492280000C40DA1 /* NSDictionary+ValueHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -265,12 +262,6 @@
 		88BE44B21483A341002D30ED /* PiptureModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModelTest.m; sourceTree = "<group>"; };
 		88D84207147B626C00E47EF8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		88D84208147B626C00E47EF8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
-		88FC5BEF1491BDCD00C40DA1 /* Series.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Series.h; path = Classes/Series.h; sourceTree = "<group>"; };
-		88FC5BF01491BDCD00C40DA1 /* Series.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Series.m; path = Classes/Series.m; sourceTree = "<group>"; };
-		88FC5BF31491D24100C40DA1 /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Album.h; path = Classes/Album.h; sourceTree = "<group>"; };
-		88FC5BF41491D24100C40DA1 /* Album.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Album.m; path = Classes/Album.m; sourceTree = "<group>"; };
-		88FC5BFA1492280000C40DA1 /* NSDictionary+ValueHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "NSDictionary+ValueHelper.h"; sourceTree = "<group>"; };
-		88FC5BFB1492280000C40DA1 /* NSDictionary+ValueHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+ValueHelper.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -314,8 +305,6 @@
 				385FC397147CD7A6001CDF43 /* VideoViewController.m */,
 				382D9C29148E034600005F16 /* MailComposerController.h */,
 				382D9C2A148E034600005F16 /* MailComposerController.m */,
-				88FC5BFA1492280000C40DA1 /* NSDictionary+ValueHelper.h */,
-				88FC5BFB1492280000C40DA1 /* NSDictionary+ValueHelper.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -576,10 +565,6 @@
 				887517CC148E0C2F00AFFFAC /* PlaylistItem.m */,
 				886496B6148F391900DE1966 /* PlaylistItemFactory.h */,
 				886496B7148F391900DE1966 /* PlaylistItemFactory.m */,
-				88FC5BEF1491BDCD00C40DA1 /* Series.h */,
-				88FC5BF01491BDCD00C40DA1 /* Series.m */,
-				88FC5BF31491D24100C40DA1 /* Album.h */,
-				88FC5BF41491D24100C40DA1 /* Album.m */,
 			);
 			name = Entities;
 			path = ..;
@@ -778,9 +763,6 @@
 				382D9C2B148E034600005F16 /* MailComposerController.m in Sources */,
 				38A0B98E148F87F70060420F /* HomeScreenTitleViewController.m in Sources */,
 				38A0B991148F8DA50060420F /* VideoTitleViewController.m in Sources */,
-				88FC5BF11491BDCD00C40DA1 /* Series.m in Sources */,
-				88FC5BF51491D24100C40DA1 /* Album.m in Sources */,
-				88FC5BFC1492280000C40DA1 /* NSDictionary+ValueHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
