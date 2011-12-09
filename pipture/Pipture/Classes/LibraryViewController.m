@@ -37,10 +37,9 @@
 {
     [super viewDidLoad];
     
-    [albumsView readAlbums];
-    
     albumsView.frame = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height);
     albumsView.albumsDelegate = self;
+    [albumsView readAlbums: ((LibraryNavigationController*)self.navigationController).albums];
     [albumsView prepareLayout];
     [subViewContainer addSubview:albumsView];
 }
@@ -53,10 +52,11 @@
     [super viewDidUnload];
 }
 
-- (void)showAlbumDetail:(int)albumId {
-    AlbumDetailInfoController* vc = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
-    [self.navigationController pushViewController:vc animated:YES];
-    [vc release];
+- (void)showAlbumDetail:(Album*)album {
+    AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
+    adic.album = album;
+    [self.navigationController pushViewController:adic animated:YES];
+    [adic release];
 }
 
 @end

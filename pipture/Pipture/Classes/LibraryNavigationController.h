@@ -18,6 +18,8 @@
 - (IBAction)closeLibrary:(id)sender;
 - (IBAction)purchaseCredits:(id)sender;
 
+@property (retain, nonatomic) NSArray * albums;
+
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *closeLibraryButton;
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 

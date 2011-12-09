@@ -11,18 +11,18 @@
 @implementation AlbumItemViewController
 @synthesize titleLabel;
 @synthesize tagLabel;
-@synthesize detailButton;
+@synthesize thumbnailButton;
 
 
 - (void)dealloc {
     [titleLabel release];
     [tagLabel release];
-    [detailButton release];
+    [thumbnailButton release];
     [super dealloc];
 }
 
 - (void)viewDidUnload {
-    [self setDetailButton:nil];
+    [self setThumbnailButton:nil];
     [super viewDidUnload];
 }
 @end

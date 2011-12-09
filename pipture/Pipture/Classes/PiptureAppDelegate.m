@@ -130,7 +130,7 @@ static PiptureAppDelegate *instance;
     [self onHome];
 }
 
-- (void) onLibrary {
+- (void) onLibrary:(NSArray*)albums {
     // set up an animation for the transition between the views
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.5];
@@ -140,6 +140,7 @@ static PiptureAppDelegate *instance;
     
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
     
+    libraryNavigationController.albums = albums;
     [self.window setRootViewController:libraryNavigationController];
 }
 

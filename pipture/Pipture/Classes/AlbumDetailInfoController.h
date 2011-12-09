@@ -7,6 +7,7 @@
 //
 
 #import "AlbumDetailPage.h"
+#import "Album.h"
 #import "LibraryDelegateProtocol.h"
 
 enum DetailAlbumViewType {
@@ -21,6 +22,7 @@ enum DetailAlbumViewType {
 }
 - (IBAction)tabChanged:(id)sender;
 
+@property (retain, nonatomic) Album * album;
 
 @property (retain, nonatomic) IBOutlet UISegmentedControl *tabController;
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;

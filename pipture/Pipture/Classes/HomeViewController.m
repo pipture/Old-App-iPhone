@@ -200,7 +200,7 @@
         imageView = [[[AsyncImageView alloc] initWithFrame:frame] autorelease];
         [scrollView addSubview:imageView];
     }
-    [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO];
+    [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO asButton:NO target:nil selector:nil];
     
     NSLog(@"ScrollView subs: %d", [[scrollView subviews]count]);
 }
@@ -322,8 +322,7 @@
 
 //The event handling method
 - (void)libraryBarResponder:(UITapGestureRecognizer *)recognizer {
-    [self scrollToCurPage];
-    [[PiptureAppDelegate instance] onLibrary];
+    [[[PiptureAppDelegate instance] model] getAlbumsForReciever:self];
 }
 
 - (void)scheduleAction:(id)sender {
@@ -454,5 +453,19 @@
     actionButton.enabled = YES;
 }
 
+#pragma mark AlbumsDelegate methods
+
+-(void)albumsReceived:(NSArray*)albums {
+    NSLog(@"Albums received: %@", albums);
+    [self scrollToCurPage];
+    [[PiptureAppDelegate instance] onLibrary:albums];    
+}
+
+
+-(void)albumDetailsReceived:(Album*)album {
+}
+
+-(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album {
+}
 
 @end

@@ -7,24 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PiptureModel.h"
 #import "LibraryDelegateProtocol.h"
 
 
 @protocol AlbumListViewDelegate <NSObject>
 
-- (void)showAlbumDetail:(int)albumId;
+- (void)showAlbumDetail:(Album*)album;
 
 @end
 
-@interface AlbumsListView : UIScrollView
+@interface AlbumsListView : UIScrollView <AlbumsReceiver>
 {
-    NSMutableArray * albumsArray;
     NSMutableArray * albumsItemsArray;
 }
 
-- (void)readAlbums;
+- (void)readAlbums:(NSArray*)albums;
 - (void)prepareLayout;
 
+@property (retain, nonatomic) NSArray * albumsArray;
 @property (assign, nonatomic) IBOutlet id<AlbumListViewDelegate> albumsDelegate;
 
 @end

@@ -17,6 +17,7 @@
 @synthesize videosTable;
 @synthesize libraryDelegate;
 @synthesize videoTableCell;
+@synthesize album;
 
 #pragma mark - View lifecycle
 
@@ -140,11 +141,10 @@
     [self setVideosTable:nil];
     [self setVideoTableCell:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (void)dealloc {
+    [album release];
     [videosArray release];
     [tabController release];
     [subViewContainer release];
