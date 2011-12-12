@@ -13,10 +13,8 @@
 
 
 //TODO: maybe not hardcode?
-#define ITEM_HEIGHT 180
+#define ITEM_HEIGHT 190
 #define ITEM_WIDTH 106
-
-//#define ITEM_COUNT 40
 
 @implementation AlbumsListView
 @synthesize albumsDelegate;
@@ -36,7 +34,7 @@
     
     //create albums
     if (albumsItemsArray) {
-        [albumsArray release];
+        [albumsItemsArray release];
     }
     albumsItemsArray = [[NSMutableArray alloc] initWithCapacity:20];
     
@@ -47,13 +45,19 @@
         Album * album = [albumsArray objectAtIndex:i];
         
         CGRect rect = item.thumbnailButton.frame;
-        AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:rect] autorelease];
+        
+        AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectOffset(rect, -rect.origin.x, -rect.origin.y)] autorelease];
         [item.thumbnailButton addSubview:imageView];
         
         [imageView loadImageFromURL:[NSURL URLWithString:album.thumbnail] withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO asButton:YES target:self selector:@selector(detailAlbumShow:)];
         
-        item.titleLabel.text = album.title;
-        item.tagLabel.text = album.description;
+        item.titleLabel.text = album.series.title;
+        item.tagLabel.text = @"";
+        switch (album.status) {
+            case Normal:        item.tagLabel.text = @""; break;
+            case CommingSoon:   item.tagLabel.text = @"COMING SOON"; break;
+            case Premiere:      item.tagLabel.text = @"PREMIERE"; break;
+        }
         item.thumbnailButton.tag = i;
         
         [albumsItemsArray addObject:item];
@@ -89,8 +93,9 @@
 
 - (void)detailAlbumShow:(id)sender {
     if (sender && [sender superview]) {
-        int tag = [[sender superview] tag];
+        int tag = [[[sender superview] superview] tag];
         Album * album = [albumsArray objectAtIndex:tag];
+        [[[PiptureAppDelegate instance] model] getDetailsForAlbum:album receiver:self];
     }
 }
 
@@ -101,11 +106,13 @@
 
 -(void)albumDetailsReceived:(Album*)album {
     //TODO open details 
+    NSLog(@"Details for album: %@", album);
     [albumsDelegate showAlbumDetail:album];
 }
 
 -(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album {
     //TODO nothing to do?
+    NSLog(@"Details for unknown album: %@", album);
 }
 
 

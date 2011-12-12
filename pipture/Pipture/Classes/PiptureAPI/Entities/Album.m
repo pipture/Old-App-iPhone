@@ -109,9 +109,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     if (self) {        
         
         series = [[Series alloc] init];
-        [series release];
         credits_ = [[NSMutableDictionary alloc] init];
-        [credits_ release];
         detailsLoaded = NO;
         [self parseJSON:jsonData];
     }

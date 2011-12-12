@@ -424,7 +424,7 @@
 
 -(void)playlistReceived:(NSArray*)playlistItems {
     NSLog(@"Playlist: %@", playlistItems);
-    if (playlistItems) {
+    if (playlistItems && playlistItems.count > 0) {
         [self scrollToCurPage];
         [[PiptureAppDelegate instance] showVideo:playlistItems navigationController:self.navigationController noNavi:NO timeslotId:[NSNumber numberWithInt:reqTimeslotId]];
     }

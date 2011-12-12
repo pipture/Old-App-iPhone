@@ -36,14 +36,23 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    albumsView.frame = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height);
-    albumsView.albumsDelegate = self;
-    [albumsView readAlbums: ((LibraryNavigationController*)self.navigationController).albums];
-    [albumsView prepareLayout];
-    [subViewContainer addSubview:albumsView];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self refreshAlbums];
+}
+
+- (void)refreshAlbums {
+    albumsView.frame = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height);
+    albumsView.albumsDelegate = self;
+    
+    [albumsView readAlbums: ((LibraryNavigationController*)self.navigationController).albums];
+    [albumsView prepareLayout];
+    
+    [subViewContainer addSubview:albumsView];
+}
 
 - (void)viewDidUnload
 {

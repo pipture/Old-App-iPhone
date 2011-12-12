@@ -8,7 +8,7 @@
 
 #import "AlbumDetailInfoController.h"
 #import "PiptureAppDelegate.h"
-#import "Timeslot.h"
+#import "Episode.h"
 
 @implementation AlbumDetailInfoController
 @synthesize tabController;
@@ -33,101 +33,6 @@
 {
     [super viewDidLoad];
     
-    //[videosView readAlbumVideos];
-    videosArray = [[NSMutableArray alloc] initWithCapacity:20];
-    
-    //TODO: temporary put images, not timeslots (get timeline from server in future)
-    UIImage * image = [UIImage imageNamed:@"vid1"];
-    Timeslot * slot = [[Timeslot alloc] initWith:@"1. The Best Out Of There" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    //TODO: if we will get different images (different adresses in memory) - release is neccessary
-    //[image release];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    
-    image = [UIImage imageNamed:@"vid2"];
-    slot = [[Timeslot alloc] initWith:@"2. My Name Is Mat" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"vid3"];
-    slot = [[Timeslot alloc] initWith:@"3. Woal La Al" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"vid4"];
-    slot = [[Timeslot alloc] initWith:@"4. Come To Bo" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"vid1"];
-    slot = [[Timeslot alloc] initWith:@"1. The Best Out Of There" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    //TODO: if we will get different images (different adresses in memory) - release is neccessary
-    //[image release];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    
-    image = [UIImage imageNamed:@"vid2"];
-    slot = [[Timeslot alloc] initWith:@"2. My Name Is Mat" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"vid3"];
-    slot = [[Timeslot alloc] initWith:@"3. Woal La Al" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"vid4"];
-    slot = [[Timeslot alloc] initWith:@"4. Come To Bo" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"vid1"];
-    slot = [[Timeslot alloc] initWith:@"1. The Best Out Of There" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    //TODO: if we will get different images (different adresses in memory) - release is neccessary
-    //[image release];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    
-    image = [UIImage imageNamed:@"vid2"];
-    slot = [[Timeslot alloc] initWith:@"2. My Name Is Mat" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"vid3"];
-    slot = [[Timeslot alloc] initWith:@"3. Woal La Al" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"vid4"];
-    slot = [[Timeslot alloc] initWith:@"4. Come To Bo" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"vid1"];
-    slot = [[Timeslot alloc] initWith:@"1. The Best Out Of There" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    //TODO: if we will get different images (different adresses in memory) - release is neccessary
-    //[image release];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    
-    image = [UIImage imageNamed:@"vid2"];
-    slot = [[Timeslot alloc] initWith:@"2. My Name Is Mat" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"vid3"];
-    slot = [[Timeslot alloc] initWith:@"3. Woal La Al" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [videosArray addObject:slot];
-    [slot release];
-    
-    image = [UIImage imageNamed:@"vid4"];
-    slot = [[Timeslot alloc] initWith:@"4. Come To Bo" desc:@"nman/woman to woman\n\"Happy birthday! I'm not shure how I know it's your birthday. I just like taking a chance, you know. Do you bla bla bla bla bla" image:image];
-    [videosArray addObject:slot];
-    [slot release];
         
     [tabController setSelectedSegmentIndex:DetailAlbumViewType_Videos];
     [self tabChanged:tabController];
@@ -155,25 +60,26 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [videosArray count];
+    return album.episodes.count;
 }
 
 - (void)fillCell:(int)row cell:(UITableViewCell *)cell{
-    Timeslot * slot = [videosArray objectAtIndex:row];
+    Episode * slot = [album.episodes objectAtIndex:row];
     
     if (slot != nil) {
-        UIImageView * image = (UIImageView*)[cell viewWithTag:1];
+        //UIImageView * image = (UIImageView*)[cell viewWithTag:1];
         UILabel * series = (UILabel*)[cell viewWithTag:2];
         UILabel * title = (UILabel*)[cell viewWithTag:3];
+        UILabel * fromto = (UILabel*)[cell viewWithTag:4];
         
-        image.image = slot.image;
+        //image.image = slot.image;
         series.text = slot.title;
-        title.text = slot.description;
+        title.text = slot.script;
+        fromto.text = slot.senderToReceiver;
     }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    //TODO: 
     static NSString * const kCellID = @"CellID";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
