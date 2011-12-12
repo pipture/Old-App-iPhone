@@ -42,19 +42,32 @@
         image = [rounded retain];
     }
     
-    UIImageView* imageView = [[[UIImageView alloc] initWithImage:image] autorelease];
-    imageView.tag = 12321;
+    if (asButton) {
+        UIButton* imageBtn = [[[UIButton alloc] initWithFrame:self.bounds] autorelease];
+        imageBtn.tag = 12321;
+        
+        imageBtn.contentMode = UIViewContentModeScaleAspectFit;
+        imageBtn.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
+        [imageBtn addTarget:actionTarget action:actionSelector forControlEvents:UIControlEventTouchUpInside];
+        [imageBtn setImage:image forState:UIControlStateNormal];
+        
+        [self addSubview:imageBtn];
+        [imageBtn setNeedsLayout];
+    } else {
+        UIImageView* imageView = [[[UIImageView alloc] initWithImage:image] autorelease];
+        imageView.tag = 12321;
     
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
-    imageView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
+        imageView.contentMode = UIViewContentModeScaleAspectFit;
+        imageView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
     
-    [self addSubview:imageView];
-    imageView.frame = self.bounds;
-    [imageView setNeedsLayout];
+        [self addSubview:imageView];
+        imageView.frame = self.bounds;
+        [imageView setNeedsLayout];
+    }
     [self setNeedsLayout];
 }
 
-- (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image localStore:(BOOL)store{
+- (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image localStore:(BOOL)store asButton:(BOOL)button target:(id)target selector:(SEL)action{
     if (url == nil) 
         return;
     
@@ -64,6 +77,9 @@
     
     defImage = [image retain];
     useStorage = store;
+    asButton = button;
+    actionTarget = target;
+    actionSelector = action;
     data = nil;
     if (useStorage) {
         imageFile = [[self storageFile:[NSString stringWithFormat:@"%d",[url.description hash]]] copy];

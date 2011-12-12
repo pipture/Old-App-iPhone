@@ -14,6 +14,8 @@
 {
 }
 
+- (void)refreshAlbums;
+
 @property (retain, nonatomic) IBOutlet AlbumsListView *albumsView;
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;
 

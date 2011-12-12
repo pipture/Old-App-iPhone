@@ -12,7 +12,7 @@
 #define TIMESLOT_CHANGE_POLL_INTERVAL 60
 #define TIMESLOT_REGULAR_POLL_INTERVAL 900
 
-@interface HomeViewController : UIViewController <UIScrollViewDelegate,TimeslotsReceiver, PlaylistReceiver>
+@interface HomeViewController : UIViewController <UIScrollViewDelegate,TimeslotsReceiver, PlaylistReceiver, AlbumsReceiver>
 {
     NSTimer *changeTimer;
     NSTimer *updateTimer;

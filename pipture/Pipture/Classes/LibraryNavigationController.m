@@ -13,6 +13,7 @@
 @implementation LibraryNavigationController
 @synthesize closeLibraryButton;
 @synthesize buyButton;
+@synthesize albums;
 
 #pragma mark - View lifecycle
 
@@ -20,6 +21,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -35,6 +37,7 @@
 }
 
 - (void)dealloc {
+    [albums release];
     [closeLibraryButton release];
     [buyButton release];
     [super dealloc];
