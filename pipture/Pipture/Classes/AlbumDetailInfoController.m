@@ -96,7 +96,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSArray * playlist = [NSArray arrayWithObject:[album.episodes objectAtIndex:indexPath.row]];
+    Episode * episode = [album.episodes objectAtIndex:indexPath.row];
+    NSArray * playlist = [NSArray arrayWithObject:episode];
+    [album release];
     [[PiptureAppDelegate instance] showVideo:playlist navigationController:self.navigationController noNavi:YES timeslotId:nil];
 }
 

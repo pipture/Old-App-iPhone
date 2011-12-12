@@ -95,7 +95,7 @@
         [[posterPlaceholder.subviews objectAtIndex:0] removeFromSuperview];
     }
     
-    album = album_;
+    self.album = album_;
     
     AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:posterPlaceholder.frame] autorelease];
     [posterPlaceholder addSubview:imageView];
@@ -149,6 +149,7 @@
 - (void)trailerShow:(id)sender {
     NSLog(@"Trailer Show");
     NSArray * playlist = [NSArray arrayWithObject:album.trailer];
+    [album.trailer release];
     UINavigationController * navi = [PiptureAppDelegate instance].libraryNavigationController;
     [[PiptureAppDelegate instance] showVideo:playlist navigationController:navi noNavi:YES timeslotId:nil];    
 }
