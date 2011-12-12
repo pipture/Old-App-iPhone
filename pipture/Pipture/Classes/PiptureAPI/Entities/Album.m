@@ -127,7 +127,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     [trailer_ release];
     trailer_ = trailer;
     
-    if (jsonData == nil)
+    if (jsonData != nil)
     {
         [self parseJSON:jsonData];
     }
@@ -162,7 +162,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     self.closeupBackground = [jsonData strValueForKey:JSON_PARAM_CLOSEUP defaultIfEmpty:self.closeupBackground];    
     
     NSString* creditsStr = [jsonData objectForKey:JSON_PARAM_CREDITS];
-    if (creditsStr)
+    if (creditsStr && creditsStr.length > 0)
     {
         
         //Martin's text: First time I do that, is it okay? ":" means title "," means tab ";" means next line "." means next line new title

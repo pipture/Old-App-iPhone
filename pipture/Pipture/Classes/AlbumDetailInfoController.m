@@ -110,7 +110,7 @@
     switch (viewType) {
         case DetailAlbumViewType_Credits:
             detailPage.frame = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height);
-            [detailPage prepareLayout];
+            [detailPage prepareLayout:album];
             [subViewContainer addSubview:detailPage];
             break;
         case DetailAlbumViewType_Videos:

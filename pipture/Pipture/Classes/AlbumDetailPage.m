@@ -30,7 +30,52 @@
     return expectedLabelSize.height;    
 }
 
-- (void) prepareLayout {
+- (int)addSection:(int)topPos sectionName:(NSString*)name sectionData:(NSArray*)data {
+    int width = self.frame.size.width - 40;
+    
+    int top = topPos;
+    int height = 15;
+    UILabel * text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
+    text.font = [UIFont systemFontOfSize:15];
+    text.text = name;
+    text.backgroundColor = [UIColor clearColor];
+    text.textColor = [UIColor whiteColor];
+    [credits addObject:text];
+    [text release];
+    top += height + 10;
+    
+    if (data.count > 0) {
+        height = 12;
+        text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
+        text.font = [UIFont systemFontOfSize:12];
+        text.text = [data objectAtIndex:0];
+        text.backgroundColor = [UIColor clearColor];
+        text.textColor = [UIColor whiteColor];
+        [credits addObject:text];
+        [text release];
+    }
+    
+    if (data.count == 1)
+        top += height + 10;
+    else 
+    {
+        for (int i = 1; i < data.count; i++) {
+            height = 12;
+            text = [[UILabel alloc] initWithFrame:CGRectMake(120, top, width, height)];
+            text.font = [UIFont systemFontOfSize:12];
+            text.text = @"Danny \t Dru Johnson";
+            text.backgroundColor = [UIColor clearColor];
+            text.textColor = [UIColor whiteColor];
+            [credits addObject:text];
+            [text release];
+            top += height + 10;
+        }
+    }
+    
+    return top;
+}
+
+- (void)prepareLayout:(Album*)album {
     if (credits != nil) {
         for (int i = 0; i < [credits count]; i++) {
             [[credits objectAtIndex:i]removeFromSuperview];
@@ -50,19 +95,19 @@
     UILabel * text;
     text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, 20)];
     text.font = [UIFont boldSystemFontOfSize:20];
-    text.text = @"The Aimless Looser";
+    text.text = album.series.title;
     text.backgroundColor = [UIColor clearColor];
     text.textColor = [UIColor whiteColor];
     [credits addObject:text];
     [text release];
     top += height + 10;
     
-    NSString * credit =  @"\nRating: TV-MA, Released: 2011\n\nOur 30-year-old aimless looser. Danny has the mind of a child - a twisted weird-as-shit child - and delivers his lines with a touch of innocence.\n";
+    NSString * albumDescription = album.albumDescription;
     
-    height = [self heightFor:credit withWidth:width withFont:[UIFont systemFontOfSize:11]];
+    height = [self heightFor:albumDescription withWidth:width withFont:[UIFont systemFontOfSize:11]];
     text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
     text.font = [UIFont systemFontOfSize:11];
-    text.text = credit;
+    text.text = albumDescription;
     text.backgroundColor = [UIColor clearColor];
     text.textColor = [UIColor whiteColor];
     text.lineBreakMode = UILineBreakModeWordWrap;
@@ -71,45 +116,10 @@
     [text release];
     top += height + 10;
     
-    height = 15;
-    text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
-    text.font = [UIFont systemFontOfSize:15];
-    text.text = @"Cast";
-    text.backgroundColor = [UIColor clearColor];
-    text.textColor = [UIColor whiteColor];
-    [credits addObject:text];
-    [text release];
-    top += height + 10;
-    
-    height = 12;
-    text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
-    text.font = [UIFont systemFontOfSize:12];
-    text.text = @"Danny \t Dru Johnson";
-    text.backgroundColor = [UIColor clearColor];
-    text.textColor = [UIColor whiteColor];
-    [credits addObject:text];
-    [text release];
-    top += height + 10;
-    
-    height = 15;
-    text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
-    text.font = [UIFont systemFontOfSize:15];
-    text.text = @"Produser";
-    text.backgroundColor = [UIColor clearColor];
-    text.textColor = [UIColor whiteColor];
-    [credits addObject:text];
-    [text release];
-    top += height + 10;
-    
-    height = 12;
-    text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
-    text.font = [UIFont systemFontOfSize:12];
-    text.text = @"Vladimir Kubyshev";
-    text.backgroundColor = [UIColor clearColor];
-    text.textColor = [UIColor whiteColor];
-    [credits addObject:text];
-    [text release];
-    top += height + 10;
+    for (id key in [album.credits allKeys]) {
+        NSArray * data = [album.credits objectForKey:key];
+        top = [self addSection:top sectionName:key sectionData:data];
+    }
     
     self.contentSize = CGSizeMake(self.frame.size.width, top);
     
