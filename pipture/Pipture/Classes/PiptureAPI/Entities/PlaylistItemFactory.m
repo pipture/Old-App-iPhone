@@ -12,18 +12,20 @@
 
 @implementation PlaylistItemFactory
 
-static NSString* const PLAYLIST_ITEM_TYPE_EPISODE = @"Episode";
-static NSString* const PLAYLIST_ITEM_TYPE_TRAILER = @"Trailer";
-static NSString* const JSON_PARAM_PLAYLIST_ITEM_TYPE = @"Type";
 
 +(PlaylistItem*)createItem:(NSDictionary*)jsonItem
 {
     NSString* type = (NSString*)[jsonItem objectForKey:JSON_PARAM_PLAYLIST_ITEM_TYPE];
-    if ([PLAYLIST_ITEM_TYPE_EPISODE isEqualToString:type])
+    return [PlaylistItemFactory createItem:jsonItem ofType:type];
+}
+
++(PlaylistItem*)createItem:(NSDictionary*)jsonItem ofType:(NSString*)itemType
+{
+    if ([PLAYLIST_ITEM_TYPE_EPISODE isEqualToString:itemType])
     {
         return [[Episode alloc]initWithJSON:jsonItem];
     }
-    if ([PLAYLIST_ITEM_TYPE_TRAILER isEqualToString:type])
+    if ([PLAYLIST_ITEM_TYPE_TRAILER isEqualToString:itemType])
     {
         return [[Trailer alloc]initWithJSON:jsonItem];
     }

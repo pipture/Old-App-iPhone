@@ -301,6 +301,42 @@ static NSString* const JSON_PARAM_TRAILER = @"Trailer";
 
 -(void)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumsReceiver>*)receiver {
     
+    if (album.detailsLoaded)
+    {
+        [receiver albumDetailsReceived:album];
+        return;
+    }
+    
+    //Include episodes always 1 in this version    
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_ALBUM_DETAILS_REQUEST, [NSNumber numberWithInt:album.albumId], @"1"]];
+    
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
+        
+        if (error) 
+        {
+            [PiptureModel processError:error receiver:receiver];
+        } 
+        else
+        {
+            
+            NSArray* episodes = [PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_EPISODES itemCreator:^(NSDictionary*jsonIT)
+                               {               
+                                   return [PlaylistItemFactory createItem:jsonIT ofType:PLAYLIST_ITEM_TYPE_EPISODE]; 
+                               } itemName:@"Episode"];              
+                        
+            NSDictionary* jsonAlbumDetails = [jsonResult objectForKey:JSON_PARAM_ALBUM];
+
+            Trailer* trailer = [[Trailer alloc] initWithJSON:[jsonResult objectForKey:JSON_PARAM_TRAILER]];
+            
+            [album updateWithDetails:jsonAlbumDetails episodes:episodes trailer:trailer];
+                        
+            [receiver performSelectorOnMainThread:@selector(albumDetailsReceived:) withObject:album waitUntilDone:YES];
+        }
+        
+    }];
+    
+    [request startExecute];    
+    
 }
 
 
