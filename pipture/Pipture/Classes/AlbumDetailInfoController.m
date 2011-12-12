@@ -9,6 +9,7 @@
 #import "AlbumDetailInfoController.h"
 #import "PiptureAppDelegate.h"
 #import "Episode.h"
+#import "AsyncImageView.h"
 
 @implementation AlbumDetailInfoController
 @synthesize tabController;
@@ -21,19 +22,11 @@
 
 #pragma mark - View lifecycle
 
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView
-{
-}
-*/
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-        
+
     [tabController setSelectedSegmentIndex:DetailAlbumViewType_Videos];
     [self tabChanged:tabController];
 }
@@ -67,14 +60,22 @@
     Episode * slot = [album.episodes objectAtIndex:row];
     
     if (slot != nil) {
-        //UIImageView * image = (UIImageView*)[cell viewWithTag:1];
+        UIView * placeholder = (UILabel*) [cell viewWithTag:1];
         UILabel * series = (UILabel*)[cell viewWithTag:2];
         UILabel * title = (UILabel*)[cell viewWithTag:3];
         UILabel * fromto = (UILabel*)[cell viewWithTag:4];
         
-        //image.image = slot.image;
+        if (placeholder.subviews.count > 0) {
+            [[placeholder.subviews objectAtIndex:0] removeFromSuperview];
+        }
+        
+        AsyncImageView* imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, placeholder.frame.size.width, placeholder.frame.size.height)] autorelease];
+        [placeholder addSubview:imageView];
+        
+        [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO asButton:NO target:nil selector:nil];
+        
         series.text = slot.title;
-        title.text = slot.script;
+        title.text  = slot.script;
         fromto.text = slot.senderToReceiver;
     }
 }
@@ -95,9 +96,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    //int row = indexPath.row;
-    //TODO: get playlist item from album videos
-    //[[PiptureAppDelegate instance] showVideo:row navigationController:self.navigationController noNavi:YES];    
+    NSArray * playlist = [NSArray arrayWithObject:[album.episodes objectAtIndex:indexPath.row]];
+    [[PiptureAppDelegate instance] showVideo:playlist navigationController:self.navigationController noNavi:YES timeslotId:nil];
 }
 
 - (IBAction)tabChanged:(id)sender {

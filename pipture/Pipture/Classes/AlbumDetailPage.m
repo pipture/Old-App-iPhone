@@ -7,17 +7,22 @@
 //
 
 #import "AlbumDetailPage.h"
+#import "AsyncImageView.h"
+#import "PiptureAppDelegate.h"
 
 @implementation AlbumDetailPage
-@synthesize posterImage;
+
+@synthesize posterPlaceholder;
+@synthesize album;
 
 #pragma mark - View lifecycle
 
 
 - (void)dealloc {
+    [album release];
     [credits release];
     credits = nil;
-    [posterImage release];
+    [posterPlaceholder release];
     [super dealloc];
 }
 
@@ -77,7 +82,7 @@
     return top;
 }
 
-- (void)prepareLayout:(Album*)album {
+- (void)prepareLayout:(Album*)album_ {
     if (credits != nil) {
         for (int i = 0; i < [credits count]; i++) {
             [[credits objectAtIndex:i]removeFromSuperview];
@@ -86,11 +91,22 @@
         [credits release];
     }
     
+    if (posterPlaceholder.subviews.count > 0) {
+        [[posterPlaceholder.subviews objectAtIndex:0] removeFromSuperview];
+    }
+    
+    album = album_;
+    
+    AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:posterPlaceholder.frame] autorelease];
+    [posterPlaceholder addSubview:imageView];
+    
+    [imageView loadImageFromURL:[NSURL URLWithString:album.cover] withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO asButton:YES target:self selector:@selector(trailerShow:)];
+    
     credits = [[NSMutableArray alloc] initWithCapacity:20];
     
     //TODO: load poster and credits
     
-    int top = posterImage.frame.size.height + 15;
+    int top = posterPlaceholder.frame.size.height + 15;
     int width = self.frame.size.width - 40;
     
     int height = 20;
@@ -128,6 +144,13 @@
     for (int i = 0; i < [credits count]; i++) {
         [self addSubview:[credits objectAtIndex:i]];
     }
+}
+
+- (void)trailerShow:(id)sender {
+    NSLog(@"Trailer Show");
+    NSArray * playlist = [NSArray arrayWithObject:album.trailer];
+    UINavigationController * navi = [PiptureAppDelegate instance].libraryNavigationController;
+    [[PiptureAppDelegate instance] showVideo:playlist navigationController:navi noNavi:YES timeslotId:nil];    
 }
 
 @end
