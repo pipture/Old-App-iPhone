@@ -18,29 +18,42 @@
 
 @synthesize url = url_;
 @synthesize progress;
+@synthesize postHeaders = postHeaders_;
 
 NSMutableData* receivedData;
 NSURLConnection* connection;
 
-- (id)initWithURL:(NSURL*)url callback:(DataRequestCallback)callback
+- (id)initWithURL:(NSURL*)url postHeaders:(NSDictionary*)headers callback:(DataRequestCallback)callback
 {
     self = [super init];
     if (self)
     {
         callback_ = [callback copy];
         url_ = [url retain];
+        postHeaders_ = [headers retain];        
     }
-    return self;
+    return self;    
+}
+
+- (id)initWithURL:(NSURL*)url callback:(DataRequestCallback)callback
+{
+    return [self initWithURL:url postHeaders:nil callback:callback];
 }
 
 - (void)startExecute 
 {
+        
     
-    
-	NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url_
+	NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url_
                                                 cachePolicy:NSURLRequestUseProtocolCachePolicy
                                             timeoutInterval:5];
-    
+
+    if (postHeaders_)
+    {
+        [urlRequest setValuesForKeysWithDictionary:postHeaders_];
+        [urlRequest setHTTPMethod:@"POST"];
+    }
+
 	// Make asynchronous request
     connection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self startImmediately:YES];
     if (!connection)
@@ -55,8 +68,7 @@ NSURLConnection* connection;
             [progress showRequestProgress];
         }
     }
-    
-    
+        
 }
 
 
@@ -70,6 +82,11 @@ NSURLConnection* connection;
         [url_ release];
     }
 
+    if (postHeaders_)
+    {
+        [postHeaders_ release];
+    }
+    
     [callback_ release];
     
     [super dealloc];

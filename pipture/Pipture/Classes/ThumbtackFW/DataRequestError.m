@@ -30,6 +30,9 @@
                 case NSURLErrorNotConnectedToInternet:
                     errorCode_ = DRErrorNoInternet;
                     break;
+                case NSURLErrorCannotConnectToHost:
+                    errorCode_ = DRErrorCouldNotConnectToServer;
+                    break;
                 case NSURLErrorTimedOut:
                     errorCode_ = DRErrorTimeout;
                     break;            

@@ -30,6 +30,10 @@
 	<string>MainWindow</string>
 	<key>Rest API version</key>
 	<integer>1</integer>
+	<key>Rest Login</key>
+	<string>login</string>
+	<key>Rest Register</key>
+	<string>register</string>
 	<key>Rest Get current timeslots</key>
 	<string>getTimeslots?max=%@</string>
 	<key>Rest Get playlist</key>

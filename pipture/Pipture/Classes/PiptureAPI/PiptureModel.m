@@ -13,6 +13,7 @@
 @interface PiptureModel(Private)
 
 -(NSURL*)buildURLWithRequest:(NSString*)request;
+-(NSURL*)buildURLWithRequest:(NSString*)request sendKey:(BOOL)sendKey;
 -(void)getTimeslotsWithURL:(NSURL*)url receiver:(NSObject<TimeslotsReceiver>*)receiver;
 
 + (NSMutableArray *)parseItems:(NSDictionary *)jsonResult jsonArrayParamName:(NSString*)paramName itemCreator:(id (^)(NSDictionary*dct))createItem itemName:(NSString*)itemName;
@@ -26,9 +27,12 @@
 
 @synthesize dataRequestFactory = dataRequestFactory_; 
 
+NSString* sessionKey = nil;
 
 NSString *END_POINT_URL;
 NSNumber *API_VERSION;
+NSString *LOGIN_REQUEST;
+NSString *REGISTER_REQUEST;
 NSString *GET_TIMESLOTS_REQUEST;
 NSString *GET_CURRENT_TIMESLOTS_REQUEST;
 NSString *GET_PLAYLIST_FOR_TIMESLOT_REQUEST;
@@ -36,6 +40,13 @@ NSString *GET_VIDEO_FROM_TIMESLOT_REQUEST;
 NSString *GET_VIDEO_REQUEST;
 NSString *GET_ALBUMS_REQUEST;
 NSString *GET_ALBUM_DETAILS_REQUEST;
+
+static NSString* const REST_PARAM_API = @"API";
+static NSString* const REST_PARAM_SESSION_KEY = @"Key";
+static NSString* const REST_PARAM_EMAIL_ADDRESS = @"EmailAddress";
+static NSString* const REST_PARAM_PASSWORD = @"Password";
+static NSString* const REST_PARAM_FIRST_NAME = @"FirstName";
+static NSString* const REST_PARAM_LAST_NAME = @"LastName";
 
 static NSString* const JSON_PARAM_TIMESLOTS = @"Timeslots";
 static NSString* const JSON_PARAM_VIDEOS = @"Videos";
@@ -46,6 +57,7 @@ static NSString* const JSON_PARAM_ALBUMS = @"Albums";
 static NSString* const JSON_PARAM_EPISODES = @"Episodes";
 static NSString* const JSON_PARAM_ALBUM = @"Album";
 static NSString* const JSON_PARAM_TRAILER = @"Trailer";
+static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
 
 
 
@@ -55,6 +67,8 @@ static NSString* const JSON_PARAM_TRAILER = @"Trailer";
     if (self) {
         END_POINT_URL = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest end point"] retain];
         API_VERSION = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest API version"] retain];
+        LOGIN_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Login"] retain];
+        REGISTER_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Register"] retain];    
         GET_CURRENT_TIMESLOTS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get current timeslots"] retain];
         GET_TIMESLOTS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get timeslots"] retain];        
         GET_PLAYLIST_FOR_TIMESLOT_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get playlist"] retain];        
@@ -82,6 +96,14 @@ static NSString* const JSON_PARAM_TRAILER = @"Trailer";
     {
         [API_VERSION release];
     }
+    if (LOGIN_REQUEST)
+    {
+        [LOGIN_REQUEST release];
+    }    
+    if (REGISTER_REQUEST)
+    {
+        [REGISTER_REQUEST release];
+    }    
     if (GET_TIMESLOTS_REQUEST)
     {
         [GET_TIMESLOTS_REQUEST release];
@@ -103,8 +125,87 @@ static NSString* const JSON_PARAM_TRAILER = @"Trailer";
         [GET_VIDEO_REQUEST release];  
     }    
 
+    if (sessionKey)
+    {
+        [sessionKey release];
+    }
     
     [super dealloc];
+}
+
+
+-(void)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationReceiver>*)receiver
+{
+    NSURL* url = [self buildURLWithRequest:LOGIN_REQUEST sendKey:NO];
+
+    NSMutableDictionary* params = [[NSMutableDictionary alloc] initWithCapacity:3];
+    [params setValue:emailAddress forKey:REST_PARAM_EMAIL_ADDRESS];
+    [params setValue:password forKey:REST_PARAM_PASSWORD];
+    
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postHeaders:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
+        
+        if (error) 
+        {
+            [PiptureModel processError:error receiver:receiver];
+        } 
+        else
+        {
+            switch ([PiptureModel parseErrorCode:jsonResult]) {            
+                case 0:
+                    sessionKey = [jsonResult objectForKey:JSON_PARAM_SESSION_KEY];                    
+                    [receiver performSelectorOnMainThread:@selector(loggedIn) withObject:nil waitUntilDone:YES];                    
+                    break;
+                case 1:
+                    [receiver performSelectorOnMainThread:@selector(loginFailed) withObject:nil waitUntilDone:YES];
+                    break;                                        
+                default:
+                    NSLog(@"Unknown error code");
+                    break;
+            }                        
+        }
+        
+    }];
+    
+    [request startExecute];
+
+}
+
+-(void)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationReceiver>*)receiver
+{
+    NSURL* url = [self buildURLWithRequest:REGISTER_REQUEST sendKey:NO];
+    
+    NSMutableDictionary* params = [[NSMutableDictionary alloc] initWithCapacity:3];
+    [params setValue:emailAddress forKey:REST_PARAM_EMAIL_ADDRESS];
+    [params setValue:password forKey:REST_PARAM_PASSWORD];
+    [params setValue:firstName forKey:REST_PARAM_FIRST_NAME];
+    [params setValue:lastName forKey:REST_PARAM_LAST_NAME];    
+    
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postHeaders:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
+        
+        if (error) 
+        {
+            [PiptureModel processError:error receiver:receiver];
+        } 
+        else
+        {
+            switch ([PiptureModel parseErrorCode:jsonResult]) {            
+                case 0:
+                    sessionKey = [jsonResult objectForKey:JSON_PARAM_SESSION_KEY];                    
+                    [receiver performSelectorOnMainThread:@selector(registred) withObject:nil waitUntilDone:YES];                    
+                    break;
+                case 1:
+                    [receiver performSelectorOnMainThread:@selector(alreadyRegistredWithOtherDevice) withObject:nil waitUntilDone:YES];
+                    break;                                        
+                default:
+                    NSLog(@"Unknown error code");
+                    break;
+            }                        
+        }
+        
+    }];
+    
+    [request startExecute];    
+    
 }
 
 -(void)getTimeslotsFromId:(NSInteger)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver
@@ -392,11 +493,21 @@ static NSString* const JSON_PARAM_TRAILER = @"Trailer";
     
 }
 
+-(NSURL*)buildURLWithRequest:(NSString*)request sendKey:(BOOL)sendKey
+{
+    NSString * finalURL = [request stringByAppendingString:[NSString stringWithFormat:@"&%@=%@", REST_PARAM_API, API_VERSION]];
+    if (sendKey && [sessionKey length]>0)
+    {
+        finalURL = [finalURL stringByAppendingFormat:[NSString stringWithFormat:@"&%@=%@",REST_PARAM_SESSION_KEY, sessionKey]];
+    }
+    NSURL * url = [NSURL URLWithString:[END_POINT_URL stringByAppendingString:finalURL]];
+    return url;
+    
+}
+
 -(NSURL*)buildURLWithRequest:(NSString*)request
 {   
-    NSString * api = [request stringByAppendingString:[NSString stringWithFormat:@"&API=%@",API_VERSION]];
-    NSURL * url = [NSURL URLWithString:[END_POINT_URL stringByAppendingString:api]];
-    return url;
+    return [self buildURLWithRequest:request sendKey:YES];
 }
 @end
 
@@ -404,9 +515,14 @@ static NSString* const JSON_PARAM_TRAILER = @"Trailer";
 
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback
 {
-    DataRequest* req = [[[DataRequest alloc]initWithURL:url callback:callback]autorelease];
+    return [self createDataRequestWithURL:url postHeaders:nil callback:callback];
+}
+
+- (DataRequest*)createDataRequestWithURL:(NSURL*)url postHeaders:(NSDictionary*)headers callback:(DataRequestCallback)callback
+{
+    DataRequest* req = [[[DataRequest alloc]initWithURL:url postHeaders:headers callback:callback]autorelease];
     req.progress = [PiptureAppDelegate instance];
-    return req;
+    return req;    
 }
 
 

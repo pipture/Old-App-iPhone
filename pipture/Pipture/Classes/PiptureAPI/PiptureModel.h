@@ -16,6 +16,7 @@
 @interface DefaultDataRequestFactory : NSObject
 
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
+- (DataRequest*)createDataRequestWithURL:(NSURL*)url postHeaders:(NSDictionary*)headers callback:(DataRequestCallback)callback;
 
 @end
 
@@ -57,10 +58,24 @@
 -(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album;
 @end
 
+@protocol AuthenticationReceiver <PiptureModelDelegate>
+@required
+-(void)loggedIn;
+-(void)loginFailed;
+-(void)registred;
+-(void)alreadyRegistredWithOtherDevice;
+@end
+
+
+
 @interface PiptureModel : NSObject
 
 //Using standard factory by default
 @property (retain,nonatomic) DefaultDataRequestFactory* dataRequestFactory; 
+
+-(void)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationReceiver>*)receiver;
+
+-(void)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationReceiver>*)receiver;
 
 
 -(void)getTimeslotsFromId:(NSInteger)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver;

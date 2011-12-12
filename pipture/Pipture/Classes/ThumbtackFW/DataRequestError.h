@@ -9,9 +9,10 @@
 #import <Foundation/Foundation.h>
 
 #define DRErrorNoInternet -1
-#define DRErrorTimeout -2
-#define DRErrorOther -3
-#define DRErrorInvalidResponse -4
+#define DRErrorCouldNotConnectToServer -2
+#define DRErrorTimeout -3
+#define DRErrorOther -4
+#define DRErrorInvalidResponse -5
 #define DRErrorUnknown -100;
 
 

@@ -26,9 +26,13 @@ typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
 }
 
 @property(readonly, nonatomic) NSURL* url;
+@property(readonly, nonatomic) NSDictionary* postHeaders;
+
 @property(assign, nonatomic) id<DataRequestProgress> progress;
 
+
 - (id)initWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
+- (id)initWithURL:(NSURL*)url postHeaders:(NSDictionary*)headers callback:(DataRequestCallback)callback;
 - (void)startExecute;
 
 @end
