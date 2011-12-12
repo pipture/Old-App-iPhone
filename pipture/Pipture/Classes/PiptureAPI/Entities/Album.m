@@ -1,3 +1,4 @@
+
 //
 //  Album.m
 //  Pipture
@@ -29,8 +30,8 @@
 @synthesize emailScreenshot;
 @synthesize credits = credits_;
 @synthesize series;
-@synthesize episodes;
-@synthesize trailer;
+@synthesize episodes = episodes_;
+@synthesize trailer = trailer_;
 @synthesize detailsLoaded;
 
 
@@ -111,20 +112,35 @@ static NSString* const CREDITS_ITEM_TAB = @",";
         [series release];
         credits_ = [[NSMutableDictionary alloc] init];
         [credits_ release];
+        detailsLoaded = NO;
         [self parseJSON:jsonData];
     }
     return self;
     
 }
 
--(void)updateWithJSON:(NSDictionary*)jsonData
+-(void)updateWithDetails:(NSDictionary*)jsonData episodes:(NSArray*)episodes trailer:(Trailer*)trailer
 {
-    [self parseJSON:jsonData];
+    [episodes retain];
+    [episodes_ release];
+    episodes_ = episodes;
+    
+    [trailer retain];
+    [trailer_ release];
+    trailer_ = trailer;
+    
+    if (jsonData == nil)
+    {
+        [self parseJSON:jsonData];
+    }
+
+    detailsLoaded = YES;
 }
 
 
 -(void)parseJSON:(NSDictionary*)jsonData
 {
+
 
     self.albumId = [jsonData intValueForKey:JSON_PARAM_ALBUM_ID defaultIfEmpty:self.albumId];
     self.title = [jsonData strValueForKey:JSON_PARAM_TITLE defaultIfEmpty:self.title];
