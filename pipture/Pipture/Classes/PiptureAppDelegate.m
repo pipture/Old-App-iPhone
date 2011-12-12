@@ -7,6 +7,10 @@
 //
 
 #import "PiptureAppDelegate.h"
+#import "GANTracker.h"
+
+// Dispatch period in seconds
+static const NSInteger kGANDispatchPeriodSec = 10;
 
 @implementation PiptureAppDelegate
 
@@ -20,6 +24,8 @@ static PiptureAppDelegate *instance;
 
 - (void)dealloc
 {
+    [[GANTracker sharedTracker] stopTracker];
+    
     if (vc != nil) {
         [vc release];
         vc = nil;
@@ -47,6 +53,24 @@ static PiptureAppDelegate *instance;
 {
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
 //    [UIApplication sharedApplication].statusBarHidden = YES;
+ 
+    [[GANTracker sharedTracker] startTrackerWithAccountID:@"UA-27666191-1"
+                                           dispatchPeriod:kGANDispatchPeriodSec
+                                                 delegate:nil];
+    
+    NSError *error;
+    if (![[GANTracker sharedTracker] trackEvent:@"Application iOS"
+                                         action:@"Launch iOS"
+                                          label:@"Example iOS"
+                                          value:99
+                                      withError:&error]) {
+        NSLog(@"error in trackEvent");
+    }
+    
+    if (![[GANTracker sharedTracker] trackPageview:@"/app_entry_point"
+                                         withError:&error]) {
+        NSLog(@"error in trackPageview");
+    }
     
     [self.window addSubview:_loginViewController.view];
     [self.window makeKeyAndVisible];
@@ -108,6 +132,7 @@ static PiptureAppDelegate *instance;
         vc.simpleMode = noNavi;
         [navigationController pushViewController:vc animated:YES];
     }
+    
     [vc initVideo];
 }
 
@@ -142,6 +167,15 @@ static PiptureAppDelegate *instance;
     
     libraryNavigationController.albums = albums;
     [self.window setRootViewController:libraryNavigationController];
+    
+    NSError *error;
+    if (![[GANTracker sharedTracker] trackEvent:@"library"
+                                         action:@"open"
+                                          label:@"label!"
+                                          value:1
+                                      withError:&error]) {
+        NSLog(@"Library tracking error: %@", error);
+    }
 }
 
 NSInteger networkActivityIndecatorCount;
