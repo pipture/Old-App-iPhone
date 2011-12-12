@@ -44,31 +44,33 @@
     [text release];
     top += height + 10;
     
-    if (data.count > 0) {
-        height = 12;
-        text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
-        text.font = [UIFont systemFontOfSize:12];
-        text.text = [data objectAtIndex:0];
-        text.backgroundColor = [UIColor clearColor];
-        text.textColor = [UIColor whiteColor];
-        [credits addObject:text];
-        [text release];
-    }
-    
-    if (data.count == 1)
-        top += height + 10;
-    else 
-    {
-        for (int i = 1; i < data.count; i++) {
-            height = 12;
-            text = [[UILabel alloc] initWithFrame:CGRectMake(120, top, width, height)];
+    for (NSArray* credit in data) {
+        if (credit.count > 0) {
+            height = 15;
+            text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
             text.font = [UIFont systemFontOfSize:12];
-            text.text = @"Danny \t Dru Johnson";
+            text.text = [credit objectAtIndex:0];
             text.backgroundColor = [UIColor clearColor];
             text.textColor = [UIColor whiteColor];
             [credits addObject:text];
             [text release];
+        }
+        
+        if (credit.count == 1)
             top += height + 10;
+        else 
+        {
+            for (int i = 1; i < credit.count; i++) {
+                height = 15;
+                text = [[UILabel alloc] initWithFrame:CGRectMake(120, top, width, height)];
+                text.font = [UIFont systemFontOfSize:12];
+                text.text = [credit objectAtIndex:i];
+                text.backgroundColor = [UIColor clearColor];
+                text.textColor = [UIColor whiteColor];
+                [credits addObject:text];
+                [text release];
+                top += height + 10;
+            }
         }
     }
     
