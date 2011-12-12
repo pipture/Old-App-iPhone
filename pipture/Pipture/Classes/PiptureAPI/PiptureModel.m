@@ -330,6 +330,10 @@ static NSString* const JSON_PARAM_TRAILER = @"Trailer";
             
             [album updateWithDetails:jsonAlbumDetails episodes:episodes trailer:trailer];
                         
+            [episodes release];
+            
+            [trailer release];
+            
             [receiver performSelectorOnMainThread:@selector(albumDetailsReceived:) withObject:album waitUntilDone:YES];
         }
         
