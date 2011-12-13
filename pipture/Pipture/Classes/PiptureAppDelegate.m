@@ -13,7 +13,6 @@
 static const NSInteger kGANDispatchPeriodSec = 10;
 
 @implementation PiptureAppDelegate
-
 @synthesize window = _window;
 @synthesize homeNavigationController;
 @synthesize libraryNavigationController;
@@ -41,6 +40,7 @@ static PiptureAppDelegate *instance;
 - (id) init {
     vc = nil;
     instance = nil;
+    balance = 0;
     self = [super init];
     if (self) {
         instance = self;
@@ -168,7 +168,7 @@ static PiptureAppDelegate *instance;
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
-    
+    [libraryNavigationController updateBalance:balance];
     libraryNavigationController.albums = albums;
     [self.window setRootViewController:libraryNavigationController];
     
@@ -250,6 +250,18 @@ NSInteger networkActivityIndecatorCount;
         [requestIssuesAlert show];
         [requestIssuesAlert release]; 
     }
+}
+
+- (void)setBalance:(float)newBalance {
+    balance = newBalance;
+    
+    if (self.window.rootViewController == libraryNavigationController) {
+        [libraryNavigationController updateBalance:balance];
+    }
+}
+
+- (float)getBalance {
+    return balance;
 }
 
 @end

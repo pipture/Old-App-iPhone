@@ -441,5 +441,16 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+-(void)authenticationFailed {
+    //TODO
+}
+
+-(void)balanceReceived:(NSNumber*)balance {
+    SET_CREDITS([balance floatValue]);
+}
+
+-(void)notEnoughMoneyForWatch:(PlaylistItem*)playlistItem {
+    //TODO:
+}
 
 @end

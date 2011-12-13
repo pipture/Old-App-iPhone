@@ -112,7 +112,6 @@
 - (void)completeTransaction:(SKPaymentTransaction *)transaction
 {
     [self recordTransaction:transaction];
-    [self provideContent:transaction.payment.productIdentifier];
     [self finishTransaction:transaction wasSuccessful:YES];
 } 
 
@@ -122,7 +121,6 @@
 - (void)restoreTransaction:(SKPaymentTransaction *)transaction
 {
     [self recordTransaction:transaction.originalTransaction];
-    [self provideContent:transaction.originalTransaction.payment.productIdentifier];
     [self finishTransaction:transaction wasSuccessful:YES];
 } 
 

@@ -545,9 +545,9 @@
 		38989D1D147A6696004DE1E0 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				888780CC149749A000C9AD36 /* Gekitz */,
 				887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */,
 				887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */,
+				888780CC149749A000C9AD36 /* Gekitz */,
 				384A1FA11491C240007D5E0B /* ThumbtackFW */,
 				384A1F871491C21C007D5E0B /* PiptureAPI */,
 				382D9C28148E032300005F16 /* Utility */,
