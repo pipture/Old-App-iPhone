@@ -48,6 +48,8 @@
 	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
+	<key>CreditesProductId</key>
+	<string>com.pipture.Pipture.buycredits</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

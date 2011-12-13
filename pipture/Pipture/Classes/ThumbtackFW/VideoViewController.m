@@ -216,8 +216,7 @@
                 self.busyContainer.hidden = YES;
                 if (!suspended) {
                     [self enableControls:YES];
-                    [self startTimer];
-                    [player play];
+                    [self setPlay];
                 }
             }
             break;
@@ -412,6 +411,8 @@
     
     nextPlayerItem = [self createItem:playlistItem];
     if (waitForNext) {
+        TRACK_EVENT(@"Start Video", playlistItem.videoName);
+        
         [self stopTimer];
         if (player == nil) {
             player = [[AVPlayer alloc] initWithPlayerItem:nextPlayerItem];

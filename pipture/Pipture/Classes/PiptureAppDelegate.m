@@ -54,18 +54,18 @@ static PiptureAppDelegate *instance;
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
 //    [UIApplication sharedApplication].statusBarHidden = YES;
  
-    [[GANTracker sharedTracker] startTrackerWithAccountID:@"UA-27666191-1"
+    [[GANTracker sharedTracker] startTrackerWithAccountID:@"UA-27681421-1"
                                            dispatchPeriod:kGANDispatchPeriodSec
                                                  delegate:nil];
+    /*
+     ◦ User starts the application (home screen)
+     ◦ User views video.
+     ◦ User clicks on link in video.
+     ◦ User attempts a purchase and what they purchased.
+     */
     
     NSError *error;
-    if (![[GANTracker sharedTracker] trackEvent:@"Application iOS"
-                                         action:@"Launch iOS"
-                                          label:@"Example iOS"
-                                          value:99
-                                      withError:&error]) {
-        NSLog(@"error in trackEvent");
-    }
+    TRACK_EVENT(@"Start Application", @"");
     
     if (![[GANTracker sharedTracker] trackPageview:@"/app_entry_point"
                                          withError:&error]) {
@@ -134,6 +134,8 @@ static PiptureAppDelegate *instance;
     }
     
     [vc initVideo];
+    
+    TRACK_EVENT(@"Open Activity", @"Video player");
 }
 
 - (void) onHome {
@@ -147,6 +149,8 @@ static PiptureAppDelegate *instance;
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
     
     [self.window setRootViewController:homeNavigationController];
+    
+    TRACK_EVENT(@"Open Activity", @"Home");
 }
 
 - (void) onLogin {
@@ -168,14 +172,7 @@ static PiptureAppDelegate *instance;
     libraryNavigationController.albums = albums;
     [self.window setRootViewController:libraryNavigationController];
     
-    NSError *error;
-    if (![[GANTracker sharedTracker] trackEvent:@"library"
-                                         action:@"open"
-                                          label:@"label!"
-                                          value:1
-                                      withError:&error]) {
-        NSLog(@"Library tracking error: %@", error);
-    }
+    TRACK_EVENT(@"Open Activity", @"Library");
 }
 
 NSInteger networkActivityIndecatorCount;
@@ -200,6 +197,20 @@ NSInteger networkActivityIndecatorCount;
         if(networkActivityIndecatorCount < 0)
             networkActivityIndecatorCount = 0;
     }
+}
+
+- (BOOL)trackEvent:(NSString*)event :(NSString*)action {
+    NSError *error;
+    if (![[GANTracker sharedTracker] trackEvent:event
+                                         action:action
+                                          label:@"Pipture"
+                                          value:-1
+                                      withError:&error]) {
+        NSLog(@"Library tracking error: %@", error);
+        return NO;
+    }
+    
+    return YES;
 }
 
 @end
