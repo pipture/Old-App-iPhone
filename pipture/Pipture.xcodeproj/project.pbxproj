@@ -80,6 +80,8 @@
 		38A0B9961490A19F0060420F /* loginbackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 38A0B9941490A19F0060420F /* loginbackground.png */; };
 		38A0B9971490A19F0060420F /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 38A0B9951490A19F0060420F /* background.png */; };
 		38A0B9991490A4830060420F /* done.png in Resources */ = {isa = PBXBuildFile; fileRef = 38A0B9981490A4830060420F /* done.png */; };
+		38A0F09414977563003C5678 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38A0F09314977563003C5678 /* icon@2x.png */; };
+		38A0F09614977568003C5678 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 38A0F09514977567003C5678 /* icon.png */; };
 		38A7EC8E148DE4A2002120F3 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 38A7EC8D148DE4A2002120F3 /* placeholder.png */; };
 		38D50FFC14963EEC009BF5E9 /* libGoogleAnalytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D50FFB14963EEC009BF5E9 /* libGoogleAnalytics.a */; };
 		38D50FFF14963F0B009BF5E9 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D50FFE14963F0B009BF5E9 /* CFNetwork.framework */; };
@@ -223,6 +225,8 @@
 		38A0B9941490A19F0060420F /* loginbackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loginbackground.png; sourceTree = "<group>"; };
 		38A0B9951490A19F0060420F /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
 		38A0B9981490A4830060420F /* done.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = done.png; sourceTree = "<group>"; };
+		38A0F09314977563003C5678 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
+		38A0F09514977567003C5678 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		38A7EC8D148DE4A2002120F3 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
 		38D50FFA14963EEC009BF5E9 /* GANTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GANTracker.h; sourceTree = "<group>"; };
 		38D50FFB14963EEC009BF5E9 /* libGoogleAnalytics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalytics.a; sourceTree = "<group>"; };
@@ -440,6 +444,8 @@
 		38989CD3147A631E004DE1E0 = {
 			isa = PBXGroup;
 			children = (
+				38A0F09514977567003C5678 /* icon.png */,
+				38A0F09314977563003C5678 /* icon@2x.png */,
 				38989CE8147A631F004DE1E0 /* Pipture */,
 				38989D00147A6320004DE1E0 /* PiptureTests */,
 				38989CE1147A631E004DE1E0 /* Frameworks */,
@@ -765,6 +771,8 @@
 				38A0B9961490A19F0060420F /* loginbackground.png in Resources */,
 				38A0B9971490A19F0060420F /* background.png in Resources */,
 				38A0B9991490A4830060420F /* done.png in Resources */,
+				38A0F09414977563003C5678 /* icon@2x.png in Resources */,
+				38A0F09614977568003C5678 /* icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
