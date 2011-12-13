@@ -18,10 +18,13 @@
 #define kHEIGHT_FOR_KEYBOARD 216.0
 
 #define TRACK_EVENT(event, action) [[PiptureAppDelegate instance] trackEvent:event:action]
+#define GET_CREDITS [[PiptureAppDelegate instance] getBalance];
+#define SET_CREDITS(balance) [[PiptureAppDelegate instance] setBalance:balance];
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress>
 {
     VideoViewController* vc;
+    float balance;
 }
 //@property (strong, nonatomic) IBOutlet UIImageView * backgroundImage;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
@@ -30,7 +33,11 @@
 @property (retain, nonatomic) IBOutlet LoginViewController * loginViewController;
 @property (readonly, nonatomic) PiptureModel * model;
 
+
 +(PiptureAppDelegate*) instance;
+
+- (void)setBalance:(float)newBalance;
+- (float)getBalance;
 
 - (BOOL)trackEvent:(NSString*)event :(NSString*)action;
 - (void) onLogin;

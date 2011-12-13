@@ -56,5 +56,11 @@
     [alert release];
 }
 
-
+- (void)updateBalance:(float)balance {
+    if (balance == 0) {
+        buyButton.title = @"Buy";
+    } else {
+        buyButton.title = [NSString stringWithFormat:@"%0.2f$", balance];
+    }
+}
 @end

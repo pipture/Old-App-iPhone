@@ -51,7 +51,7 @@
 	<key>Rest Get balance</key>
 	<string>getBalance?</string>
 	<key>Rest Buy</key>
-	<string>buy</string>
+	<string>buy?ApplePurchaseReply=%@</string>
 	<key>Rest end point</key>
 	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
 	<key>Rest end point test</key>
