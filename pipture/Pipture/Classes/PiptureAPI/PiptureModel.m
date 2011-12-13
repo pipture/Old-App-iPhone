@@ -16,8 +16,11 @@
 -(NSURL*)buildURLWithRequest:(NSString*)request sendAPIVersion:(BOOL)sendAPIVersion sendKey:(BOOL)sendKey;
 -(void)getTimeslotsWithURL:(NSURL*)url receiver:(NSObject<TimeslotsReceiver>*)receiver;
 
+-(void)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
+
 + (NSMutableArray *)parseItems:(NSDictionary *)jsonResult jsonArrayParamName:(NSString*)paramName itemCreator:(id (^)(NSDictionary*dct))createItem itemName:(NSString*)itemName;
 
++ (NSInteger)preprocessRequestResult:(NSDictionary*) jsonResult error:(DataRequestError*) error receiver:(NSObject<PiptureModelDelegate>*)receiver;
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver;
 + (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse;
 @end 
@@ -40,6 +43,9 @@ NSString *GET_VIDEO_FROM_TIMESLOT_REQUEST;
 NSString *GET_VIDEO_REQUEST;
 NSString *GET_ALBUMS_REQUEST;
 NSString *GET_ALBUM_DETAILS_REQUEST;
+NSString *GET_BALANCE_REQUEST;
+NSString *GET_BUY_REQUEST;
+
 
 static NSString* const REST_PARAM_API = @"API";
 static NSString* const REST_PARAM_SESSION_KEY = @"Key";
@@ -58,7 +64,7 @@ static NSString* const JSON_PARAM_EPISODES = @"Episodes";
 static NSString* const JSON_PARAM_ALBUM = @"Album";
 static NSString* const JSON_PARAM_TRAILER = @"Trailer";
 static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
-
+static NSString* const JSON_PARAM_BALANCE = @"Balance";
 
 
 - (id)init
@@ -76,7 +82,8 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
         GET_VIDEO_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get video"] retain];        
         GET_ALBUMS_REQUEST =  [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get albums request"] retain];
         GET_ALBUM_DETAILS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get album details"] retain]; 
-        
+        GET_BALANCE_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get balance"] retain];
+        GET_BUY_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Buy"] retain];                
         DefaultDataRequestFactory* factory = [[[DefaultDataRequestFactory alloc] init] autorelease];
         [self setDataRequestFactory:factory];
     }    
@@ -120,11 +127,29 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
     {
         [GET_VIDEO_FROM_TIMESLOT_REQUEST release];  
     }
+    if (GET_ALBUMS_REQUEST)
+    {
+        [GET_ALBUMS_REQUEST release];  
+    }
+    if (GET_ALBUM_DETAILS_REQUEST)
+    {
+        [GET_ALBUM_DETAILS_REQUEST release];  
+    }        
     if (GET_VIDEO_REQUEST)
     {
         [GET_VIDEO_REQUEST release];  
     }    
 
+    if (GET_BALANCE_REQUEST)
+    {
+        [GET_BALANCE_REQUEST release];
+    }
+    if (GET_BUY_REQUEST)
+    {
+        [GET_BUY_REQUEST release];
+    }
+    
+    
     if (sessionKey)
     {
         [sessionKey release];
@@ -308,12 +333,17 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
 }
 
 
--(void)getVideoURL:(PlaylistItem*)playListItem receiver:(NSObject<VideoURLReceiver>*)receiver
+-(void)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy receiver:(NSObject<VideoURLReceiver>*)receiver;
 {
-    [self getVideoURL:playListItem forTimeslotId:nil receiver:receiver];                
+    [self getVideoURL:playListItem forceBuy:forceBuy forTimeslotId:nil receiver:receiver];          
 }
 
 -(void)getVideoURL:(PlaylistItem*)playListItem forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver
+{
+    [self getVideoURL:playListItem forceBuy:NO forTimeslotId:timeslotId receiver:receiver];  
+}
+
+-(void)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver
 {
     if ([playListItem isVideoUrlLoaded])
     {
@@ -323,7 +353,7 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
     {
         NSURL* url = timeslotId ? 
             [self buildURLWithRequest:[NSString stringWithFormat:GET_VIDEO_FROM_TIMESLOT_REQUEST,[playListItem videoKeyName],[NSNumber numberWithInt:[playListItem videoKeyValue]],timeslotId]]:
-            [self buildURLWithRequest:[NSString stringWithFormat:GET_VIDEO_REQUEST, [playListItem videoKeyName],[NSNumber numberWithInt:[playListItem videoKeyValue]]]];
+            [self buildURLWithRequest:[NSString stringWithFormat:GET_VIDEO_REQUEST, [playListItem videoKeyName],[NSNumber numberWithInt:[playListItem videoKeyValue]],[NSNumber numberWithBool:forceBuy]]];
         DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
             
             if (error) 
@@ -339,11 +369,16 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
                         if ([videoUrl length] > 0)
                         {
                             playListItem.videoUrl = videoUrl;
-                            [receiver performSelectorOnMainThread:@selector(videoURLReceived:) withObject:playListItem waitUntilDone:YES];
+                            [receiver performSelectorOnMainThread:@selector(videoURLReceived:) withObject:playListItem waitUntilDone:NO];
                         }
                         else
                         {
                             NSLog(@"URL was not sent from server");
+                        }
+                        id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
+                        if (bal)
+                        {
+                            [receiver performSelectorOnMainThread:@selector(balanceReceived:) withObject:(NSNumber*)bal waitUntilDone:YES];                                                        
                         }
                         break;
                     }
@@ -353,6 +388,9 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
                     case 2:
                         [receiver performSelectorOnMainThread:@selector(videoNotPurchased:) withObject:playListItem waitUntilDone:YES];
                         break;                        
+                    case 3:
+                        [receiver performSelectorOnMainThread:@selector(notEnoughMoneyForWatch:) withObject:playListItem waitUntilDone:YES];
+                        break;                                                
                     default:
                         NSLog(@"Unknown error code");
                         break;
@@ -440,7 +478,66 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
 }
 
 
-                   
+-(void)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseReceiver>*)receiver
+{
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_BALANCE_REQUEST]];    
+
+}
+
+-(void)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver
+{
+    
+}
+
++ (NSInteger)preprocessRequestResult:(NSDictionary*) jsonResult error:(DataRequestError*)error receiver:(NSObject<PiptureModelDelegate>*)receiver
+{
+    if (error) 
+    {
+        [PiptureModel processError:error receiver:receiver];
+        return -1;
+    } 
+    else
+    {
+        return ([PiptureModel parseErrorCode:jsonResult]);
+    }
+//        {
+//            case 0:   
+//            {
+//                NSString *videoUrl = [jsonResult objectForKey:JSON_PARAM_VIDEO_URL];
+//                if ([videoUrl length] > 0)
+//                {
+//                    playListItem.videoUrl = videoUrl;
+//                    [receiver performSelectorOnMainThread:@selector(videoURLReceived:) withObject:playListItem waitUntilDone:NO];
+//                }
+//                else
+//                {
+//                    NSLog(@"URL was not sent from server");
+//                }
+//                id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
+//                if (bal)
+//                {
+//                    [receiver performSelectorOnMainThread:@selector(balanceReceived:) withObject:(NSNumber*)bal waitUntilDone:YES];                                                        
+//                }
+//                break;
+//            }
+//            case 1:
+//                [receiver performSelectorOnMainThread:@selector(timeslotExpiredForVideo:) withObject:playListItem waitUntilDone:YES];                    
+//                break;
+//            case 2:
+//                [receiver performSelectorOnMainThread:@selector(videoNotPurchased:) withObject:playListItem waitUntilDone:YES];
+//                break;                        
+//            case 3:
+//                [receiver performSelectorOnMainThread:@selector(notEnoughMoneyForWatch:) withObject:playListItem waitUntilDone:YES];
+//                break;                                                
+//            default:
+//                NSLog(@"Unknown error code");
+//                break;
+//        }                
+//    }
+    
+}
+
+
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver {
 
     if ([receiver respondsToSelector:@selector(dataRequestFailed:)])
