@@ -24,6 +24,7 @@
 
 @optional
 -(void)dataRequestFailed:(DataRequestError*)error;
+-(void)authenticationFailed;
 
 @end
 
@@ -44,10 +45,17 @@
 
 @end
 
-@protocol VideoURLReceiver <PiptureModelDelegate>
+@protocol BalanceReceiver <PiptureModelDelegate>
+@required
+-(void)balanceReceived:(NSNumber*)balance;
+-(void)authenticationFailed;
+@end
+
+@protocol VideoURLReceiver <BalanceReceiver>
 @required
 -(void)videoURLReceived:(PlaylistItem*)playlistItem;
 -(void)videoNotPurchased:(PlaylistItem*)playlistItem;
+-(void)notEnoughMoneyForWatch:(PlaylistItem*)playlistItem;
 -(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem;
 @end
 
@@ -64,6 +72,14 @@
 -(void)loginFailed;
 -(void)registred;
 -(void)alreadyRegistredWithOtherDevice;
+@end
+
+@protocol PurchaseReceiver <PiptureModelDelegate>
+@required
+-(void)purchased:(NSNumber*)newBalance;
+-(void)authenticationFailed;
+-(void)purchaseNotConfirmed;
+-(void)unknownProductPurchased;
 @end
 
 
@@ -84,13 +100,17 @@
 
 -(void)getPlaylistForTimeslot:(NSNumber*)timeslotId receiver:(NSObject<PlaylistReceiver>*)receiver;
 
--(void)getVideoURL:(PlaylistItem*)playListItem receiver:(NSObject<VideoURLReceiver>*)receiver;
+-(void)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy receiver:(NSObject<VideoURLReceiver>*)receiver;
 
 -(void)getVideoURL:(PlaylistItem*)playListItem forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
 
 -(void)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver;
 
 -(void)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumsReceiver>*)receiver;
+
+-(void)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseReceiver>*)receiver;
+
+-(void)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver;
 
 @end
 

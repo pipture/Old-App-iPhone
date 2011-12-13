@@ -41,16 +41,20 @@
 	<key>Rest Get timeslots</key>
 	<string>getTimeslots?fromId=%@&amp;max=%@</string>
 	<key>Rest Get video</key>
-	<string>getVideo?%@=%@</string>
+	<string>getVideo?%@=%@&amp;ForceBuy=%@</string>
 	<key>Rest Get video from timeslot</key>
 	<string>getVideo?%@=%@&amp;TimeslotId=%@</string>
 	<key>Rest Get albums request</key>
 	<string>getAlbums?</string>
 	<key>Rest Get album details</key>
 	<string>getAlbumDetail?AlbumId=%@&amp;IncludeEpisodes=%@</string>
-	<key>Rest end pointStage</key>
-	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
+	<key>Rest Get balance</key>
+	<string>getBalance?</string>
+	<key>Rest Buy</key>
+	<string>buy?ApplePurchaseReply=%@</string>
 	<key>Rest end point</key>
+	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
+	<key>Rest end pointTest</key>
 	<string>http://192.168.9.131:8000/</string>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
