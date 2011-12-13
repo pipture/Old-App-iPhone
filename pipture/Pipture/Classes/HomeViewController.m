@@ -349,6 +349,10 @@
             title = @"No Internet Connection";
             message = @"Check your Internet connection!";
             break;
+        case DRErrorCouldNotConnectToServer:            
+            title = @"Could not connect to server";
+            message = @"Check your Internet connection!";            
+            break;            
         case DRErrorInvalidResponse:
             NSLog(@"Invalid response!");
             break;
@@ -360,7 +364,7 @@
             message = @"Check your Internet connection!";
             break;
     }
-
+    NSLog(@"%@", error.internalError);
     if (title != nil && message != nil) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];

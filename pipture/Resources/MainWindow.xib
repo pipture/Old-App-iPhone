@@ -13,6 +13,7 @@
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>IBUIBarButtonItem</string>
 			<string>IBUIButton</string>
+			<string>IBUIActivityIndicatorView</string>
 			<string>IBUILabel</string>
 			<string>IBUINavigationBar</string>
 			<string>IBProxyObject</string>
@@ -110,7 +111,7 @@
 							<string key="NSFrameSize">{320, 480}</string>
 							<reference key="NSSuperview" ref="463861355"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="924698525"/>
+							<reference key="NSNextKeyView" ref="234220863"/>
 							<string key="NSReuseIdentifierKey">_NS:567</string>
 							<bool key="IBUIUserInteractionEnabled">NO</bool>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -176,7 +177,7 @@
 									<string key="NSFrame">{{5, 29}, {275, 88}}</string>
 									<reference key="NSSuperview" ref="834907775"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
+									<reference key="NSNextKeyView" ref="924698525"/>
 									<string key="NSReuseIdentifierKey">_NS:311</string>
 									<bool key="IBUIOpaque">NO</bool>
 									<bool key="IBUIClipsSubviews">YES</bool>
@@ -220,9 +221,23 @@
 							</object>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						</object>
+						<object class="IBUIActivityIndicatorView" id="411856360">
+							<reference key="NSNextResponder" ref="463861355"/>
+							<int key="NSvFlags">292</int>
+							<string key="NSFrame">{{142, 299}, {37, 37}}</string>
+							<reference key="NSSuperview" ref="463861355"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
+							<string key="NSReuseIdentifierKey">_NS:1030</string>
+							<bool key="IBUIOpaque">NO</bool>
+							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+							<bool key="IBUIHidesWhenStopped">NO</bool>
+							<bool key="IBUIAnimating">YES</bool>
+							<int key="IBUIStyle">0</int>
+						</object>
 						<object class="IBUIView" id="924698525">
 							<reference key="NSNextResponder" ref="463861355"/>
-							<int key="NSvFlags">274</int>
+							<int key="NSvFlags">-2147483374</int>
 							<array class="NSMutableArray" key="NSSubviews">
 								<object class="IBUITextField" id="80502500">
 									<reference key="NSNextResponder" ref="924698525"/>
@@ -320,7 +335,7 @@
 									<string key="NSFrame">{{106, 147}, {60, 30}}</string>
 									<reference key="NSSuperview" ref="924698525"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="234220863"/>
+									<reference key="NSNextKeyView" ref="411856360"/>
 									<string key="NSReuseIdentifierKey">_NS:222</string>
 									<bool key="IBUIOpaque">NO</bool>
 									<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -413,6 +428,7 @@
 				<array class="NSMutableArray" key="IBUIViewControllers">
 					<object class="IBUIViewController" id="60799542">
 						<object class="IBUINavigationItem" key="IBUINavigationItem" id="627620118">
+							<reference key="IBUINavigationBar"/>
 							<string key="IBUITitle">Library</string>
 							<object class="IBUIBarButtonItem" key="IBUILeftBarButtonItem" id="908127347">
 								<string key="IBUITitle">Done</string>
@@ -473,6 +489,22 @@
 						<reference key="destination" ref="80502500"/>
 					</object>
 					<int key="connectionID">35</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">registerFields</string>
+						<reference key="source" ref="317884963"/>
+						<reference key="destination" ref="924698525"/>
+					</object>
+					<int key="connectionID">71</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">activityIndicator</string>
+						<reference key="source" ref="317884963"/>
+						<reference key="destination" ref="411856360"/>
+					</object>
+					<int key="connectionID">72</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
@@ -648,6 +680,7 @@
 							<reference ref="924698525"/>
 							<reference ref="234220863"/>
 							<reference ref="834907775"/>
+							<reference ref="411856360"/>
 						</array>
 						<reference key="parent" ref="317884963"/>
 					</object>
@@ -759,6 +792,12 @@
 						<reference key="parent" ref="924698525"/>
 						<string key="objectName">FirstNameLabel</string>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">70</int>
+						<reference key="object" ref="411856360"/>
+						<reference key="parent" ref="463861355"/>
+						<string key="objectName">Activity Indicator</string>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -795,6 +834,7 @@
 				<string key="66.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="68.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="69.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="70.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="9.CustomClassName">LoginViewController</string>
 				<string key="9.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
@@ -802,7 +842,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">69</int>
+			<int key="maxID">72</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -981,11 +1021,17 @@
 						</object>
 					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="activityIndicator">UIActivityIndicatorView</string>
 						<string key="emailLabel">UITextField</string>
 						<string key="firstNameLabel">UITextField</string>
 						<string key="lastNameLabel">UITextField</string>
+						<string key="registerFields">UIView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="activityIndicator">
+							<string key="name">activityIndicator</string>
+							<string key="candidateClassName">UIActivityIndicatorView</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="emailLabel">
 							<string key="name">emailLabel</string>
 							<string key="candidateClassName">UITextField</string>
@@ -998,6 +1044,10 @@
 							<string key="name">lastNameLabel</string>
 							<string key="candidateClassName">UITextField</string>
 						</object>
+						<object class="IBToOneOutletInfo" key="registerFields">
+							<string key="name">registerFields</string>
+							<string key="candidateClassName">UIView</string>
+						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
@@ -1009,7 +1059,7 @@
 					<string key="superclassName">UIResponder</string>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="homeNavigationController">UINavigationController</string>
-						<string key="libraryNavigationController">UINavigationController</string>
+						<string key="libraryNavigationController">LibraryNavigationController</string>
 						<string key="loginViewController">LoginViewController</string>
 						<string key="window">UIWindow</string>
 					</dictionary>
@@ -1020,7 +1070,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="libraryNavigationController">
 							<string key="name">libraryNavigationController</string>
-							<string key="candidateClassName">UINavigationController</string>
+							<string key="candidateClassName">LibraryNavigationController</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="loginViewController">
 							<string key="name">loginViewController</string>

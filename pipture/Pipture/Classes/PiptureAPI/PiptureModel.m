@@ -13,7 +13,7 @@
 @interface PiptureModel(Private)
 
 -(NSURL*)buildURLWithRequest:(NSString*)request;
--(NSURL*)buildURLWithRequest:(NSString*)request sendKey:(BOOL)sendKey;
+-(NSURL*)buildURLWithRequest:(NSString*)request sendAPIVersion:(BOOL)sendAPIVersion sendKey:(BOOL)sendKey;
 -(void)getTimeslotsWithURL:(NSURL*)url receiver:(NSObject<TimeslotsReceiver>*)receiver;
 
 + (NSMutableArray *)parseItems:(NSDictionary *)jsonResult jsonArrayParamName:(NSString*)paramName itemCreator:(id (^)(NSDictionary*dct))createItem itemName:(NSString*)itemName;
@@ -136,13 +136,11 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
 
 -(void)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationReceiver>*)receiver
 {
-    NSURL* url = [self buildURLWithRequest:LOGIN_REQUEST sendKey:NO];
-
-    NSMutableDictionary* params = [[NSMutableDictionary alloc] initWithCapacity:3];
-    [params setValue:emailAddress forKey:REST_PARAM_EMAIL_ADDRESS];
-    [params setValue:password forKey:REST_PARAM_PASSWORD];
+    NSURL* url = [self buildURLWithRequest:LOGIN_REQUEST sendAPIVersion:NO sendKey:NO];
     
-    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postHeaders:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
+    NSString*params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@",REST_PARAM_API,API_VERSION,REST_PARAM_EMAIL_ADDRESS,emailAddress,REST_PARAM_PASSWORD,password];
+    
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postParams:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
         
         if (error) 
         {
@@ -152,7 +150,7 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
         {
             switch ([PiptureModel parseErrorCode:jsonResult]) {            
                 case 0:
-                    sessionKey = [jsonResult objectForKey:JSON_PARAM_SESSION_KEY];                    
+                    sessionKey = [(NSString*)[jsonResult objectForKey:JSON_PARAM_SESSION_KEY] retain];
                     [receiver performSelectorOnMainThread:@selector(loggedIn) withObject:nil waitUntilDone:YES];                    
                     break;
                 case 1:
@@ -165,22 +163,19 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
         }
         
     }];
-    
+    request.progress = nil;
     [request startExecute];
 
 }
 
 -(void)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationReceiver>*)receiver
 {
-    NSURL* url = [self buildURLWithRequest:REGISTER_REQUEST sendKey:NO];
+    NSURL* url = [self buildURLWithRequest:REGISTER_REQUEST sendAPIVersion:NO sendKey:NO];
     
-    NSMutableDictionary* params = [[NSMutableDictionary alloc] initWithCapacity:3];
-    [params setValue:emailAddress forKey:REST_PARAM_EMAIL_ADDRESS];
-    [params setValue:password forKey:REST_PARAM_PASSWORD];
-    [params setValue:firstName forKey:REST_PARAM_FIRST_NAME];
-    [params setValue:lastName forKey:REST_PARAM_LAST_NAME];    
+    NSString*params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",REST_PARAM_API,API_VERSION,REST_PARAM_EMAIL_ADDRESS,emailAddress,REST_PARAM_PASSWORD,password,REST_PARAM_FIRST_NAME,firstName,REST_PARAM_LAST_NAME,lastName];
     
-    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postHeaders:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
+    
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postParams:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
         
         if (error) 
         {
@@ -190,7 +185,7 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
         {
             switch ([PiptureModel parseErrorCode:jsonResult]) {            
                 case 0:
-                    sessionKey = [jsonResult objectForKey:JSON_PARAM_SESSION_KEY];                    
+                    sessionKey = [(NSString*)[jsonResult objectForKey:JSON_PARAM_SESSION_KEY] retain];                    
                     [receiver performSelectorOnMainThread:@selector(registred) withObject:nil waitUntilDone:YES];                    
                     break;
                 case 1:
@@ -203,7 +198,7 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
         }
         
     }];
-    
+    request.progress = nil;
     [request startExecute];    
     
 }
@@ -493,9 +488,14 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
     
 }
 
--(NSURL*)buildURLWithRequest:(NSString*)request sendKey:(BOOL)sendKey
+-(NSURL*)buildURLWithRequest:(NSString*)request sendAPIVersion:(BOOL)sendAPIVersion sendKey:(BOOL)sendKey
 {
-    NSString * finalURL = [request stringByAppendingString:[NSString stringWithFormat:@"&%@=%@", REST_PARAM_API, API_VERSION]];
+    NSString * finalURL = request;
+    if (sendAPIVersion)
+    {
+        finalURL = [finalURL stringByAppendingString:[NSString stringWithFormat:@"&%@=%@", REST_PARAM_API, API_VERSION]];        
+    }
+
     if (sendKey && [sessionKey length]>0)
     {
         finalURL = [finalURL stringByAppendingFormat:[NSString stringWithFormat:@"&%@=%@",REST_PARAM_SESSION_KEY, sessionKey]];
@@ -507,7 +507,7 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
 
 -(NSURL*)buildURLWithRequest:(NSString*)request
 {   
-    return [self buildURLWithRequest:request sendKey:YES];
+    return [self buildURLWithRequest:request sendAPIVersion:YES sendKey:YES];
 }
 @end
 
@@ -515,12 +515,12 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
 
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback
 {
-    return [self createDataRequestWithURL:url postHeaders:nil callback:callback];
+    return [self createDataRequestWithURL:url postParams:nil callback:callback];
 }
 
-- (DataRequest*)createDataRequestWithURL:(NSURL*)url postHeaders:(NSDictionary*)headers callback:(DataRequestCallback)callback
+- (DataRequest*)createDataRequestWithURL:(NSURL*)url postParams:(NSString*)params callback:(DataRequestCallback)callback
 {
-    DataRequest* req = [[[DataRequest alloc]initWithURL:url postHeaders:headers callback:callback]autorelease];
+    DataRequest* req = [[[DataRequest alloc]initWithURL:url postParams:params callback:callback]autorelease];
     req.progress = [PiptureAppDelegate instance];
     return req;    
 }

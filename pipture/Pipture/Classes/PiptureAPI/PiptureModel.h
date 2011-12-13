@@ -16,7 +16,7 @@
 @interface DefaultDataRequestFactory : NSObject
 
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
-- (DataRequest*)createDataRequestWithURL:(NSURL*)url postHeaders:(NSDictionary*)headers callback:(DataRequestCallback)callback;
+- (DataRequest*)createDataRequestWithURL:(NSURL*)url postParams:(NSString*)params callback:(DataRequestCallback)callback;
 
 @end
 
