@@ -47,7 +47,7 @@
 
 @protocol BalanceReceiver <PiptureModelDelegate>
 @required
--(void)balanceReceived:(NSNumber*)balance;
+-(void)balanceReceived:(NSDecimalNumber*)balance;
 -(void)authenticationFailed;
 @end
 
@@ -76,7 +76,7 @@
 
 @protocol PurchaseReceiver <PiptureModelDelegate>
 @required
--(void)purchased:(NSNumber*)newBalance;
+-(void)purchased:(NSDecimalNumber*)newBalance;
 -(void)authenticationFailed;
 -(void)purchaseNotConfirmed;
 -(void)unknownProductPurchased;

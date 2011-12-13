@@ -20,7 +20,6 @@
 
 + (NSMutableArray *)parseItems:(NSDictionary *)jsonResult jsonArrayParamName:(NSString*)paramName itemCreator:(id (^)(NSDictionary*dct))createItem itemName:(NSString*)itemName;
 
-+ (NSInteger)preprocessRequestResult:(NSDictionary*) jsonResult error:(DataRequestError*) error receiver:(NSObject<PiptureModelDelegate>*)receiver;
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver;
 + (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse;
 @end 
@@ -53,6 +52,7 @@ static NSString* const REST_PARAM_EMAIL_ADDRESS = @"EmailAddress";
 static NSString* const REST_PARAM_PASSWORD = @"Password";
 static NSString* const REST_PARAM_FIRST_NAME = @"FirstName";
 static NSString* const REST_PARAM_LAST_NAME = @"LastName";
+static NSString* const REST_PARAM_RECEIPT_DATA = @"AppleReceiptData";
 
 static NSString* const JSON_PARAM_TIMESLOTS = @"Timeslots";
 static NSString* const JSON_PARAM_VIDEOS = @"Videos";
@@ -65,7 +65,6 @@ static NSString* const JSON_PARAM_ALBUM = @"Album";
 static NSString* const JSON_PARAM_TRAILER = @"Trailer";
 static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
 static NSString* const JSON_PARAM_BALANCE = @"Balance";
-
 
 - (id)init
 {
@@ -166,6 +165,7 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
     NSString*params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@",REST_PARAM_API,API_VERSION,REST_PARAM_EMAIL_ADDRESS,emailAddress,REST_PARAM_PASSWORD,password];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postParams:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
+        
         
         if (error) 
         {
@@ -378,7 +378,7 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
                         id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
                         if (bal)
                         {
-                            [receiver performSelectorOnMainThread:@selector(balanceReceived:) withObject:(NSNumber*)bal waitUntilDone:YES];                                                        
+                            [receiver performSelectorOnMainThread:@selector(balanceReceived:) withObject:(NSDecimalNumber*)bal waitUntilDone:YES];                                                        
                         }
                         break;
                     }
@@ -391,6 +391,9 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
                     case 3:
                         [receiver performSelectorOnMainThread:@selector(notEnoughMoneyForWatch:) withObject:playListItem waitUntilDone:YES];
                         break;                                                
+                    case 100:                        
+                        [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];
+                        break;                                                                        
                     default:
                         NSLog(@"Unknown error code");
                         break;
@@ -479,64 +482,95 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
 
 
 -(void)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseReceiver>*)receiver
-{
-    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_BALANCE_REQUEST]];    
+{    
+    NSURL* url = [self buildURLWithRequest:GET_BALANCE_REQUEST sendAPIVersion:NO sendKey:NO];    
+    
+    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, REST_PARAM_RECEIPT_DATA, receiptData];
+    
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postParams:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
+        
+        if (error) 
+        {
+            [PiptureModel processError:error receiver:receiver];
+        } 
+        else
+        {
+            switch ([PiptureModel parseErrorCode:jsonResult]) {
+                case 0:   
+                {
+                    id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
+                    if (bal)
+                    {
+                        [receiver performSelectorOnMainThread:@selector(purchased:) withObject:(NSDecimalNumber*)bal waitUntilDone:YES];                                                        
+                    }
+                    else
+                    {
+                        NSLog(@"Balance was not sent from"); 
+                    }
+                    break;
+                }
+                case 1:
+                    [receiver performSelectorOnMainThread:@selector(purchaseNotConfirmed) withObject:nil waitUntilDone:YES];                    
+                    break;
+                case 2:
+                    [receiver performSelectorOnMainThread:@selector(unknownProductPurchased) withObject:nil waitUntilDone:YES];
+                    break;                        
+                case 100:                        
+                    [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];                    break;                                                
+                default:
+                    NSLog(@"Unknown error code");
+                    break;
+            }                
+        }
+        
+    }];
+    
+    [request startExecute];    
 
 }
 
 -(void)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver
 {
+
+    NSURL* url = [self buildURLWithRequest:GET_BALANCE_REQUEST];
+
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
+        
+        if (error) 
+        {
+            [PiptureModel processError:error receiver:receiver];
+        } 
+        else
+        {
+            switch ([PiptureModel parseErrorCode:jsonResult]) {
+                case 0:   
+                {
+                    id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
+                    if (bal)
+                    {
+                        [receiver performSelectorOnMainThread:@selector(balanceReceived:) withObject:(NSDecimalNumber*)bal waitUntilDone:YES];                                                        
+                    }
+                    else
+                    {
+                        NSLog(@"Balance was not sent from"); 
+                    }                    
+                    break;
+                }                                               
+                case 100:                        
+                    [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];
+                    break;                                                                        
+                default:
+                    NSLog(@"Unknown error code");
+                    break;
+            }                
+        }
+        
+    }];
+    
+    [request startExecute];
+   
     
 }
-
-+ (NSInteger)preprocessRequestResult:(NSDictionary*) jsonResult error:(DataRequestError*)error receiver:(NSObject<PiptureModelDelegate>*)receiver
-{
-    if (error) 
-    {
-        [PiptureModel processError:error receiver:receiver];
-        return -1;
-    } 
-    else
-    {
-        return ([PiptureModel parseErrorCode:jsonResult]);
-    }
-//        {
-//            case 0:   
-//            {
-//                NSString *videoUrl = [jsonResult objectForKey:JSON_PARAM_VIDEO_URL];
-//                if ([videoUrl length] > 0)
-//                {
-//                    playListItem.videoUrl = videoUrl;
-//                    [receiver performSelectorOnMainThread:@selector(videoURLReceived:) withObject:playListItem waitUntilDone:NO];
-//                }
-//                else
-//                {
-//                    NSLog(@"URL was not sent from server");
-//                }
-//                id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
-//                if (bal)
-//                {
-//                    [receiver performSelectorOnMainThread:@selector(balanceReceived:) withObject:(NSNumber*)bal waitUntilDone:YES];                                                        
-//                }
-//                break;
-//            }
-//            case 1:
-//                [receiver performSelectorOnMainThread:@selector(timeslotExpiredForVideo:) withObject:playListItem waitUntilDone:YES];                    
-//                break;
-//            case 2:
-//                [receiver performSelectorOnMainThread:@selector(videoNotPurchased:) withObject:playListItem waitUntilDone:YES];
-//                break;                        
-//            case 3:
-//                [receiver performSelectorOnMainThread:@selector(notEnoughMoneyForWatch:) withObject:playListItem waitUntilDone:YES];
-//                break;                                                
-//            default:
-//                NSLog(@"Unknown error code");
-//                break;
-//        }                
-//    }
-    
-}
-
 
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver {
 
