@@ -68,7 +68,6 @@
 	<string>getVideo?%@=%@&amp;ForceBuy=%@</string>
 	<key>Rest Get video from timeslot</key>
 	<string>getVideo?%@=%@&amp;TimeslotId=%@</string>
-<<<<<<< HEAD
 	<key>Rest Get albums request</key>
 	<string>getAlbums?</string>
 	<key>Rest Get album details</key>
@@ -77,12 +76,10 @@
 	<string>getBalance?</string>
 	<key>Rest Buy</key>
 	<string>buy</string>
-=======
 	<key>Rest Login</key>
 	<string>login</string>
 	<key>Rest Register</key>
 	<string>register</string>
->>>>>>> 0b3ca5812c2e0c3138767211d85aa91fb11e9fa3
 	<key>Rest end point</key>
 	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
 	<key>Rest end point test</key>
