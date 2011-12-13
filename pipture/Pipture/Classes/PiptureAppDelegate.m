@@ -213,4 +213,43 @@ NSInteger networkActivityIndecatorCount;
     return YES;
 }
 
+- (void)processDataRequestError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate cancelTitle:(NSString*)btnTitle alertId:(int)alertId{
+    //[self stopProgress];
+    NSString * title = nil;
+    NSString * message = nil;
+    switch (error.errorCode)
+    {
+        case DRErrorNoInternet:
+            title = @"No Internet Connection";
+            message = @"Check your Internet connection!";
+            break;
+        case DRErrorCouldNotConnectToServer:            
+            title = @"Could not connect to server";
+            message = @"Check your Internet connection!";            
+            break;            
+        case DRErrorInvalidResponse:
+            title = @"Server communication problem";
+            message = @"Invalid response from server!";            
+            NSLog(@"Invalid response!");
+            break;
+        case DRErrorOther:
+            title = @"Server communication problem";
+            message = @"Unknown error!";                        
+            NSLog(@"Other request error!");
+            break;
+        case DRErrorTimeout:
+            title = @"Request timed out";
+            message = @"Check your Internet connection!";
+            break;
+    }
+    NSLog(@"%@", error.internalError);
+    
+    if (title != nil && message != nil) {
+        UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:delegate cancelButtonTitle:btnTitle otherButtonTitles:nil];
+        requestIssuesAlert.tag = alertId;
+        [requestIssuesAlert show];
+        [requestIssuesAlert release]; 
+    }
+}
+
 @end

@@ -340,33 +340,7 @@
 
 -(void)dataRequestFailed:(DataRequestError*)error
 {
-    //TODO:
-    NSString * title = nil;
-    NSString * message = nil;
-    switch (error.errorCode)
-    {
-        case DRErrorNoInternet:
-            title = @"No Internet Connection";
-            message = @"Check your Internet connection!";
-            break;
-        case DRErrorInvalidResponse:
-            NSLog(@"Invalid response!");
-            break;
-        case DRErrorOther:
-            NSLog(@"Other request error!");
-            break;
-        case DRErrorTimeout:
-            title = @"Request timed out";
-            message = @"Check your Internet connection!";
-            break;
-    }
-
-    if (title != nil && message != nil) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-        [alert release]; 
-    }
-    
+    [[PiptureAppDelegate instance] processDataRequestError:error delegate:self cancelTitle:@"OK" alertId:0];
     actionButton.enabled = YES;
 }
 

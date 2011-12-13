@@ -8,22 +8,28 @@
 
 #import "LoginViewController.h"
 #import "PiptureAppDelegate.h"
+#import "UIDevice+IdentifierAddition.h" // https://github.com/gekitz/UIDevice-with-UniqueIdentifier-for-iOS-5
+
+#define DATA_REQ_EID 1
+#define REGISTRY_EID 2
 
 @implementation LoginViewController
 
 #pragma mark - View lifecycle
 
+static NSString* const EMAIL_ADDRESS_KEY = @"EmailAddress";
+
+BOOL registrationRequired = NO;
+
 - (void)dealloc {
     [firstNameLabel release];
     [lastNameLabel release];
     [emailLabel release];    
+    [registerFields release];
+    [activityIndicator release];
     [super dealloc];
 }
 
-- (IBAction)donePressed:(id)sender {
-    //TODO Validation, login processing
-    [[PiptureAppDelegate instance] onLogin];
-}
 
 //method to move the view up/down whenever the keyboard is shown/dismissed
 -(void)moveView:(int)fieldNum
@@ -63,10 +69,23 @@
 }
 
 
+
 - (void)viewWillAppear:(BOOL)animated
 {
     // register for keyboard notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window];        
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    if (registrationRequired)
+    {
+        [self switchToRegistration];
+    }
+    else
+    {
+        [self processAuthentication];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -88,6 +107,143 @@
         [textField resignFirstResponder];
     }
     return NO; // We do not want UITextField to insert line-breaks.
+}
+
+- (IBAction)donePressed:(id)sender {
+    //TODO Validation
+    if ([firstNameLabel.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length == 0) {
+        [firstNameLabel becomeFirstResponder];
+        return;
+    }
+    
+    if ([lastNameLabel.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length == 0) {
+        [lastNameLabel becomeFirstResponder];
+        return;
+    }
+    
+    //validate e-mail
+    NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
+
+    if ([emailTest evaluateWithObject:emailLabel.text] == 0) {
+        [emailLabel becomeFirstResponder];
+        return;
+    }
+    
+    [emailLabel resignFirstResponder];
+    [self saveEmailAddress:emailLabel.text];
+    [self processAuthentication];
+}
+
+- (NSString*)loadEmailAddress
+{    
+    return [[NSUserDefaults standardUserDefaults] stringForKey:EMAIL_ADDRESS_KEY];
+}
+
+- (NSString*)deviceId
+{    
+    return [[UIDevice currentDevice] uniqueDeviceIdentifier];
+}
+
+- (void)saveEmailAddress:(NSString*)emailAddress
+{
+    [[NSUserDefaults standardUserDefaults] setObject:emailAddress forKey:EMAIL_ADDRESS_KEY];   
+}
+
+-(void) processAuthentication
+{
+    [self showProgress];
+    if (registrationRequired)
+    {
+        [[[PiptureAppDelegate instance] model] registerWithEmail:emailLabel.text password:[self deviceId] firstName:firstNameLabel.text lastName:lastNameLabel.text receiver:self];
+    } 
+    else
+    {
+        NSString* emailAddress = [self loadEmailAddress];
+        emailLabel.text = emailAddress;//To display previously saved email for user's convinience
+        
+        if ([emailAddress length] == 0)
+        {
+            [self switchToRegistration];
+        }
+        else
+        {
+            [[[PiptureAppDelegate instance] model] loginWithEmail:emailAddress password:[self deviceId] receiver:self];
+        }
+    }
+}
+
+
+
+-(void) switchToRegistration
+{
+    registrationRequired = YES;
+    [self stopProgress];
+    registerFields.hidden = NO;
+}
+
+-(void) showProgress
+{
+    activityIndicator.hidden = NO;
+    registerFields.hidden = YES;    
+}
+
+-(void) stopProgress
+{
+    activityIndicator.hidden = YES;
+}
+
+
+-(void)dataRequestFailed:(DataRequestError*)error
+{
+    [self stopProgress];
+    [[PiptureAppDelegate instance] processDataRequestError:error delegate:self cancelTitle:@"Retry" alertId:DATA_REQ_EID];
+}
+
+
+-(void)loggedIn
+{
+    [[PiptureAppDelegate instance] onLogin];
+}
+
+-(void)loginFailed
+{
+    [self switchToRegistration];
+}
+
+-(void)registred
+{    
+    [[PiptureAppDelegate instance] onLogin];
+}
+
+-(void)alreadyRegistredWithOtherDevice
+{
+    [self stopProgress];  
+    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Registration failed" message:@"Typed email address already registred in Pipture!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    registrationIssuesAlert.tag = REGISTRY_EID;
+    [registrationIssuesAlert show];
+    [registrationIssuesAlert release];
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    switch (alertView.tag) {
+        case DATA_REQ_EID:
+            if (registrationRequired)
+            {            
+                [self switchToRegistration];   
+            }
+            else
+            {
+                [self processAuthentication];
+            }
+            break;
+        case REGISTRY_EID:
+            [self switchToRegistration];
+            break;
+        default:
+            break;
+    }
 }
 
 @end

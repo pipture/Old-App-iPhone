@@ -7,14 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PiptureModel.h"
 
 
-@interface LoginViewController : UIViewController <UITextFieldDelegate> {
-    
+@interface LoginViewController : UIViewController <UITextFieldDelegate, AuthenticationReceiver, UIAlertViewDelegate> {
+
+    IBOutlet UIView *registerFields;    
     IBOutlet UITextField *firstNameLabel;
     IBOutlet UITextField *lastNameLabel;
     IBOutlet UITextField *emailLabel;    
+    IBOutlet UIActivityIndicatorView *activityIndicator;
+    
 }
 - (IBAction)donePressed:(id)sender;
+- (NSString*)loadEmailAddress;
+- (NSString*)deviceId;
+- (void)saveEmailAddress:(NSString*)emailAddress;
+-(void) switchToRegistration;
+-(void) showProgress;
+-(void) stopProgress;
+-(void) processAuthentication;
 
 @end
