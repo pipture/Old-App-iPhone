@@ -8,8 +8,26 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
 	<key>CFBundleIconFiles</key>
-	<array/>
+	<array>
+		<string>icon@2x.png</string>
+		<string>icon.png</string>
+	</array>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>icon@2x.png</string>
+				<string>icon.png</string>
+			</array>
+			<key>UIPrerenderedIcon</key>
+			<false/>
+		</dict>
+	</dict>
 	<key>CFBundleIdentifier</key>
 	<string>com.pipture.${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -24,16 +42,22 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>5</string>
+	<key>CreditesProductId</key>
+	<string>com.pipture.Pipture.buycredits</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
 	<key>Rest API version</key>
 	<integer>1</integer>
-	<key>Rest Login</key>
-	<string>login</string>
-	<key>Rest Register</key>
-	<string>register</string>
+	<key>Rest Buy</key>
+	<string>buy?ApplePurchaseReply=%@</string>
+	<key>Rest Get album details</key>
+	<string>getAlbumDetail?AlbumId=%@&amp;IncludeEpisodes=%@</string>
+	<key>Rest Get albums request</key>
+	<string>getAlbums?</string>
+	<key>Rest Get balance</key>
+	<string>getBalance?</string>
 	<key>Rest Get current timeslots</key>
 	<string>getTimeslots?max=%@</string>
 	<key>Rest Get playlist</key>
@@ -44,6 +68,7 @@
 	<string>getVideo?%@=%@&amp;ForceBuy=%@</string>
 	<key>Rest Get video from timeslot</key>
 	<string>getVideo?%@=%@&amp;TimeslotId=%@</string>
+<<<<<<< HEAD
 	<key>Rest Get albums request</key>
 	<string>getAlbums?</string>
 	<key>Rest Get album details</key>
@@ -51,15 +76,17 @@
 	<key>Rest Get balance</key>
 	<string>getBalance?</string>
 	<key>Rest Buy</key>
-	<string>buy?ApplePurchaseReply=%@</string>
+	<string>buy</string>
+=======
+	<key>Rest Login</key>
+	<string>login</string>
+	<key>Rest Register</key>
+	<string>register</string>
+>>>>>>> 0b3ca5812c2e0c3138767211d85aa91fb11e9fa3
 	<key>Rest end point</key>
 	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
 	<key>Rest end point test</key>
 	<string>http://192.168.9.131:8000/</string>
-	<key>CFBundleGetInfoString</key>
-	<string></string>
-	<key>CreditesProductId</key>
-	<string>com.pipture.Pipture.buycredits</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
