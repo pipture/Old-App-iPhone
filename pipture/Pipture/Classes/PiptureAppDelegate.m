@@ -7,6 +7,10 @@
 //
 
 #import "PiptureAppDelegate.h"
+#import "GANTracker.h"
+
+// Dispatch period in seconds
+static const NSInteger kGANDispatchPeriodSec = 10;
 
 @implementation PiptureAppDelegate
 
@@ -20,6 +24,8 @@ static PiptureAppDelegate *instance;
 
 - (void)dealloc
 {
+    [[GANTracker sharedTracker] stopTracker];
+    
     if (vc != nil) {
         [vc release];
         vc = nil;
@@ -47,6 +53,24 @@ static PiptureAppDelegate *instance;
 {
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
 //    [UIApplication sharedApplication].statusBarHidden = YES;
+ 
+    [[GANTracker sharedTracker] startTrackerWithAccountID:@"UA-27681421-1"
+                                           dispatchPeriod:kGANDispatchPeriodSec
+                                                 delegate:nil];
+    /*
+     ◦ User starts the application (home screen)
+     ◦ User views video.
+     ◦ User clicks on link in video.
+     ◦ User attempts a purchase and what they purchased.
+     */
+    
+    NSError *error;
+    TRACK_EVENT(@"Start Application", @"");
+    
+    if (![[GANTracker sharedTracker] trackPageview:@"/app_entry_point"
+                                         withError:&error]) {
+        NSLog(@"error in trackPageview");
+    }
     
     [self.window addSubview:_loginViewController.view];
     [self.window makeKeyAndVisible];
@@ -108,7 +132,10 @@ static PiptureAppDelegate *instance;
         vc.simpleMode = noNavi;
         [navigationController pushViewController:vc animated:YES];
     }
+    
     [vc initVideo];
+    
+    TRACK_EVENT(@"Open Activity", @"Video player");
 }
 
 - (void) onHome {
@@ -122,6 +149,8 @@ static PiptureAppDelegate *instance;
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
     
     [self.window setRootViewController:homeNavigationController];
+    
+    TRACK_EVENT(@"Open Activity", @"Home");
 }
 
 - (void) onLogin {
@@ -142,6 +171,8 @@ static PiptureAppDelegate *instance;
     
     libraryNavigationController.albums = albums;
     [self.window setRootViewController:libraryNavigationController];
+    
+    TRACK_EVENT(@"Open Activity", @"Library");
 }
 
 NSInteger networkActivityIndecatorCount;
@@ -165,6 +196,59 @@ NSInteger networkActivityIndecatorCount;
         
         if(networkActivityIndecatorCount < 0)
             networkActivityIndecatorCount = 0;
+    }
+}
+
+- (BOOL)trackEvent:(NSString*)event :(NSString*)action {
+    NSError *error;
+    if (![[GANTracker sharedTracker] trackEvent:event
+                                         action:action
+                                          label:@"Pipture"
+                                          value:-1
+                                      withError:&error]) {
+        NSLog(@"Library tracking error: %@", error);
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (void)processDataRequestError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate cancelTitle:(NSString*)btnTitle alertId:(int)alertId{
+    //[self stopProgress];
+    NSString * title = nil;
+    NSString * message = nil;
+    switch (error.errorCode)
+    {
+        case DRErrorNoInternet:
+            title = @"No Internet Connection";
+            message = @"Check your Internet connection!";
+            break;
+        case DRErrorCouldNotConnectToServer:            
+            title = @"Could not connect to server";
+            message = @"Check your Internet connection!";            
+            break;            
+        case DRErrorInvalidResponse:
+            title = @"Server communication problem";
+            message = @"Invalid response from server!";            
+            NSLog(@"Invalid response!");
+            break;
+        case DRErrorOther:
+            title = @"Server communication problem";
+            message = @"Unknown error!";                        
+            NSLog(@"Other request error!");
+            break;
+        case DRErrorTimeout:
+            title = @"Request timed out";
+            message = @"Check your Internet connection!";
+            break;
+    }
+    NSLog(@"%@", error.internalError);
+    
+    if (title != nil && message != nil) {
+        UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:delegate cancelButtonTitle:btnTitle otherButtonTitles:nil];
+        requestIssuesAlert.tag = alertId;
+        [requestIssuesAlert show];
+        [requestIssuesAlert release]; 
     }
 }
 

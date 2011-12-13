@@ -15,6 +15,7 @@
 
 - (void)prepareLayout:(Album*)album;
 
-@property (retain, nonatomic) IBOutlet UIImageView *posterImage;
+@property (retain, nonatomic) Album * album;
+@property (retain, nonatomic) IBOutlet UIView *posterPlaceholder;
 
 @end

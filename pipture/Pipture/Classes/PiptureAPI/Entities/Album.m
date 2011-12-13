@@ -49,7 +49,7 @@ static NSString* const JSON_PARAM_CLOSEUP = @"Closeup";
 static NSString* const JSON_PARAM_CREDITS = @"Credits";
 
 static NSString* const CREDITS_SEPARATOR = @".";
-static NSString* const CREDITS_TITLE_SEPARATOR = @".";
+static NSString* const CREDITS_TITLE_SEPARATOR = @":";
 static NSString* const CREDITS_ITEM_SEPARATOR = @";";
 static NSString* const CREDITS_ITEM_TAB = @",";
 
@@ -171,9 +171,9 @@ static NSString* const CREDITS_ITEM_TAB = @",";
             NSArray*partTitleAndBody = [part componentsSeparatedByString:CREDITS_TITLE_SEPARATOR];
             if ([partTitleAndBody count])
             {
-                NSString* partTitle = [partTitleAndBody objectAtIndex:0];
-                NSString* partBody = [partTitleAndBody count] > 0 ? [partTitleAndBody objectAtIndex:1] : nil;
-                if (partTitle)
+                NSString* partTitle = [[partTitleAndBody objectAtIndex:0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                NSString* partBody = [partTitleAndBody count] > 1 ? [[partTitleAndBody objectAtIndex:1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]: nil;
+                if (partTitle && partTitle.length > 0)
                 {
                     NSMutableArray *partItems = [[NSMutableArray alloc] init];                        
                     [credits_ setObject:partItems forKey:partTitle];
@@ -183,7 +183,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
                     {
                         NSArray* partBodyItems = [partBody componentsSeparatedByString:CREDITS_ITEM_SEPARATOR];
                         for (NSString* partBodyItem in partBodyItems) {
-                            NSArray* partBodyItemComponents = [partBodyItem componentsSeparatedByString:CREDITS_ITEM_TAB];
+                            NSArray* partBodyItemComponents = [[partBodyItem stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] componentsSeparatedByString:CREDITS_ITEM_TAB];
                             [partItems addObject:partBodyItemComponents];
                         }
                     }

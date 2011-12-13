@@ -81,6 +81,11 @@
 		38A0B9971490A19F0060420F /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 38A0B9951490A19F0060420F /* background.png */; };
 		38A0B9991490A4830060420F /* done.png in Resources */ = {isa = PBXBuildFile; fileRef = 38A0B9981490A4830060420F /* done.png */; };
 		38A7EC8E148DE4A2002120F3 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 38A7EC8D148DE4A2002120F3 /* placeholder.png */; };
+		38D50FFC14963EEC009BF5E9 /* libGoogleAnalytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D50FFB14963EEC009BF5E9 /* libGoogleAnalytics.a */; };
+		38D50FFF14963F0B009BF5E9 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D50FFE14963F0B009BF5E9 /* CFNetwork.framework */; };
+		38D5100114964123009BF5E9 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D5100014964123009BF5E9 /* libsqlite3.0.dylib */; };
+		38D510041497417E009BF5E9 /* InAppPurchaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D510031497417E009BF5E9 /* InAppPurchaseManager.m */; };
+		38D51006149741C6009BF5E9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D51005149741C6009BF5E9 /* StoreKit.framework */; };
 		38D7454E147E640100062441 /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D7454D147E640100062441 /* LibraryViewController.m */; };
 		38D74550147E660B00062441 /* LibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D7454F147E660B00062441 /* LibraryView.xib */; };
 		38D74553147E6AA600062441 /* AlbumDetailInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D74552147E6AA600062441 /* AlbumDetailInfoController.m */; };
@@ -219,6 +224,13 @@
 		38A0B9951490A19F0060420F /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
 		38A0B9981490A4830060420F /* done.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = done.png; sourceTree = "<group>"; };
 		38A7EC8D148DE4A2002120F3 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
+		38D50FFA14963EEC009BF5E9 /* GANTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GANTracker.h; sourceTree = "<group>"; };
+		38D50FFB14963EEC009BF5E9 /* libGoogleAnalytics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalytics.a; sourceTree = "<group>"; };
+		38D50FFE14963F0B009BF5E9 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		38D5100014964123009BF5E9 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
+		38D510021497417E009BF5E9 /* InAppPurchaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InAppPurchaseManager.h; sourceTree = "<group>"; };
+		38D510031497417E009BF5E9 /* InAppPurchaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InAppPurchaseManager.m; sourceTree = "<group>"; };
+		38D51005149741C6009BF5E9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		38D7454A147E604B00062441 /* LibraryDelegateProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryDelegateProtocol.h; sourceTree = "<group>"; };
 		38D7454C147E640100062441 /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
 		38D7454D147E640100062441 /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
@@ -284,6 +296,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38D51006149741C6009BF5E9 /* StoreKit.framework in Frameworks */,
+				38D5100114964123009BF5E9 /* libsqlite3.0.dylib in Frameworks */,
+				38D50FFF14963F0B009BF5E9 /* CFNetwork.framework in Frameworks */,
 				389830CA148CCDAF00D8BF93 /* CoreMedia.framework in Frameworks */,
 				389830C5148CA82F00D8BF93 /* AVFoundation.framework in Frameworks */,
 				38D74558147E6DBE00062441 /* CoreGraphics.framework in Frameworks */,
@@ -291,6 +306,7 @@
 				381935C1147D04540049B30E /* MessageUI.framework in Frameworks */,
 				38989CE3147A631E004DE1E0 /* UIKit.framework in Frameworks */,
 				38989CE5147A631E004DE1E0 /* Foundation.framework in Frameworks */,
+				38D50FFC14963EEC009BF5E9 /* libGoogleAnalytics.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,6 +330,8 @@
 				38A0B990148F8DA50060420F /* VideoTitleViewController.m */,
 				382D9C29148E034600005F16 /* MailComposerController.h */,
 				382D9C2A148E034600005F16 /* MailComposerController.m */,
+				38D510021497417E009BF5E9 /* InAppPurchaseManager.h */,
+				38D510031497417E009BF5E9 /* InAppPurchaseManager.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -441,6 +459,11 @@
 		38989CE1147A631E004DE1E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				38D50FF914963EEC009BF5E9 /* GA */,
+				88751776148CAD3B00AFFFAC /* SBJSON */,
+				38D5100014964123009BF5E9 /* libsqlite3.0.dylib */,
+				38D51005149741C6009BF5E9 /* StoreKit.framework */,
+				38D50FFE14963F0B009BF5E9 /* CFNetwork.framework */,
 				389830C9148CCDAF00D8BF93 /* CoreMedia.framework */,
 				389830C4148CA82F00D8BF93 /* AVFoundation.framework */,
 				38D74556147E6DAB00062441 /* QuartzCore.framework */,
@@ -522,7 +545,6 @@
 				384A1FA11491C240007D5E0B /* ThumbtackFW */,
 				384A1F871491C21C007D5E0B /* PiptureAPI */,
 				382D9C28148E032300005F16 /* Utility */,
-				88751776148CAD3B00AFFFAC /* SBJSON */,
 				38441FD9147FA5AD009B9D4E /* HomeScreen */,
 				38D74559147F701200062441 /* Library */,
 			);
@@ -543,6 +565,16 @@
 				38E9FA88148CEE1E0075463E /* playBtn.png */,
 			);
 			name = png;
+			sourceTree = "<group>";
+		};
+		38D50FF914963EEC009BF5E9 /* GA */ = {
+			isa = PBXGroup;
+			children = (
+				38D50FFA14963EEC009BF5E9 /* GANTracker.h */,
+				38D50FFB14963EEC009BF5E9 /* libGoogleAnalytics.a */,
+			);
+			name = GA;
+			path = Pipture/Classes/GA;
 			sourceTree = "<group>";
 		};
 		38D74559147F701200062441 /* Library */ = {
@@ -595,7 +627,8 @@
 				8875178F148CAD3B00AFFFAC /* SBJsonWriter.h */,
 				88751790148CAD3B00AFFFAC /* SBJsonWriter.m */,
 			);
-			path = SBJSON;
+			name = SBJSON;
+			path = Pipture/Classes/SBJSON;
 			sourceTree = "<group>";
 		};
 		888780CC149749A000C9AD36 /* Gekitz */ = {
@@ -805,6 +838,7 @@
 				88FC5C0E14922C3600C40DA1 /* Series.m in Sources */,
 				88982B8814923FBD0012BEC2 /* DataRequest.m in Sources */,
 				88982B8914923FBD0012BEC2 /* DataRequestError.m in Sources */,
+				38D510041497417E009BF5E9 /* InAppPurchaseManager.m in Sources */,
 				888780D1149749A100C9AD36 /* NSString+MD5Addition.m in Sources */,
 				888780D2149749A100C9AD36 /* UIDevice+IdentifierAddition.m in Sources */,
 			);
@@ -899,6 +933,10 @@
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
 				INFOPLIST_FILE = "Pipture/Pipture-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Pipture/Classes/GA\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -914,6 +952,10 @@
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
 				INFOPLIST_FILE = "Pipture/Pipture-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Pipture/Classes/GA\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -982,6 +1024,10 @@
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
 				INFOPLIST_FILE = "Pipture/Pipture-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Pipture/Classes/GA\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = 1;

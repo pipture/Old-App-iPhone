@@ -7,17 +7,22 @@
 //
 
 #import "AlbumDetailPage.h"
+#import "AsyncImageView.h"
+#import "PiptureAppDelegate.h"
 
 @implementation AlbumDetailPage
-@synthesize posterImage;
+
+@synthesize posterPlaceholder;
+@synthesize album;
 
 #pragma mark - View lifecycle
 
 
 - (void)dealloc {
+    [album release];
     [credits release];
     credits = nil;
-    [posterImage release];
+    [posterPlaceholder release];
     [super dealloc];
 }
 
@@ -44,38 +49,40 @@
     [text release];
     top += height + 10;
     
-    if (data.count > 0) {
-        height = 12;
-        text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
-        text.font = [UIFont systemFontOfSize:12];
-        text.text = [data objectAtIndex:0];
-        text.backgroundColor = [UIColor clearColor];
-        text.textColor = [UIColor whiteColor];
-        [credits addObject:text];
-        [text release];
-    }
-    
-    if (data.count == 1)
-        top += height + 10;
-    else 
-    {
-        for (int i = 1; i < data.count; i++) {
-            height = 12;
-            text = [[UILabel alloc] initWithFrame:CGRectMake(120, top, width, height)];
+    for (NSArray* credit in data) {
+        if (credit.count > 0) {
+            height = 15;
+            text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
             text.font = [UIFont systemFontOfSize:12];
-            text.text = @"Danny \t Dru Johnson";
+            text.text = [credit objectAtIndex:0];
             text.backgroundColor = [UIColor clearColor];
             text.textColor = [UIColor whiteColor];
             [credits addObject:text];
             [text release];
+        }
+        
+        if (credit.count == 1)
             top += height + 10;
+        else 
+        {
+            for (int i = 1; i < credit.count; i++) {
+                height = 15;
+                text = [[UILabel alloc] initWithFrame:CGRectMake(120, top, width, height)];
+                text.font = [UIFont systemFontOfSize:12];
+                text.text = [credit objectAtIndex:i];
+                text.backgroundColor = [UIColor clearColor];
+                text.textColor = [UIColor whiteColor];
+                [credits addObject:text];
+                [text release];
+                top += height + 10;
+            }
         }
     }
     
     return top;
 }
 
-- (void)prepareLayout:(Album*)album {
+- (void)prepareLayout:(Album*)album_ {
     if (credits != nil) {
         for (int i = 0; i < [credits count]; i++) {
             [[credits objectAtIndex:i]removeFromSuperview];
@@ -84,11 +91,22 @@
         [credits release];
     }
     
+    if (posterPlaceholder.subviews.count > 0) {
+        [[posterPlaceholder.subviews objectAtIndex:0] removeFromSuperview];
+    }
+    
+    self.album = album_;
+    
+    AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:posterPlaceholder.frame] autorelease];
+    [posterPlaceholder addSubview:imageView];
+    
+    [imageView loadImageFromURL:[NSURL URLWithString:album.cover] withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO asButton:YES target:self selector:@selector(trailerShow:)];
+    
     credits = [[NSMutableArray alloc] initWithCapacity:20];
     
     //TODO: load poster and credits
     
-    int top = posterImage.frame.size.height + 15;
+    int top = posterPlaceholder.frame.size.height + 15;
     int width = self.frame.size.width - 40;
     
     int height = 20;
@@ -126,6 +144,14 @@
     for (int i = 0; i < [credits count]; i++) {
         [self addSubview:[credits objectAtIndex:i]];
     }
+}
+
+- (void)trailerShow:(id)sender {
+    NSLog(@"Trailer Show");
+    NSArray * playlist = [NSArray arrayWithObject:album.trailer];
+    [album.trailer release];
+    UINavigationController * navi = [PiptureAppDelegate instance].libraryNavigationController;
+    [[PiptureAppDelegate instance] showVideo:playlist navigationController:navi noNavi:YES timeslotId:nil];    
 }
 
 @end

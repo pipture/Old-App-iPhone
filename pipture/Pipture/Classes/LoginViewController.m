@@ -10,14 +10,14 @@
 #import "PiptureAppDelegate.h"
 #import "UIDevice+IdentifierAddition.h" // https://github.com/gekitz/UIDevice-with-UniqueIdentifier-for-iOS-5
 
+#define DATA_REQ_EID 1
+#define REGISTRY_EID 2
+
 @implementation LoginViewController
 
 #pragma mark - View lifecycle
 
 static NSString* const EMAIL_ADDRESS_KEY = @"EmailAddress";
-
-UIAlertView*requestIssuesAlert;
-UIAlertView*registrationIssuesAlert;
 
 BOOL registrationRequired = NO;
 
@@ -111,6 +111,26 @@ BOOL registrationRequired = NO;
 
 - (IBAction)donePressed:(id)sender {
     //TODO Validation
+    if ([firstNameLabel.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length == 0) {
+        [firstNameLabel becomeFirstResponder];
+        return;
+    }
+    
+    if ([lastNameLabel.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length == 0) {
+        [lastNameLabel becomeFirstResponder];
+        return;
+    }
+    
+    //validate e-mail
+    NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
+
+    if ([emailTest evaluateWithObject:emailLabel.text] == 0) {
+        [emailLabel becomeFirstResponder];
+        return;
+    }
+    
+    [emailLabel resignFirstResponder];
     [self saveEmailAddress:emailLabel.text];
     [self processAuthentication];
 }
@@ -177,41 +197,7 @@ BOOL registrationRequired = NO;
 -(void)dataRequestFailed:(DataRequestError*)error
 {
     [self stopProgress];
-    NSString * title = nil;
-    NSString * message = nil;
-    switch (error.errorCode)
-    {
-        case DRErrorNoInternet:
-            title = @"No Internet Connection";
-            message = @"Check your Internet connection!";
-            break;
-        case DRErrorCouldNotConnectToServer:            
-            title = @"Could not connect to server";
-            message = @"Check your Internet connection!";            
-            break;            
-        case DRErrorInvalidResponse:
-            title = @"Server communication problem";
-            message = @"Invalid response from server!";            
-            NSLog(@"Invalid response!");
-            break;
-        case DRErrorOther:
-            title = @"Server communication problem";
-            message = @"Unknown error!";                        
-            NSLog(@"Other request error!");
-            break;
-        case DRErrorTimeout:
-            title = @"Request timed out";
-            message = @"Check your Internet connection!";
-            break;
-    }
-    NSLog(@"%@", error.internalError);
-    
-    if (title != nil && message != nil) {
-        requestIssuesAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"Retry" otherButtonTitles:nil];
-        [requestIssuesAlert show];
-        [requestIssuesAlert release]; 
-    }
-    
+    [[PiptureAppDelegate instance] processDataRequestError:error delegate:self cancelTitle:@"Retry" alertId:DATA_REQ_EID];
 }
 
 
@@ -232,28 +218,31 @@ BOOL registrationRequired = NO;
 
 -(void)alreadyRegistredWithOtherDevice
 {
-    [self stopProgress];   
-    registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Registration failed" message:@"Typed email address already registred in Pipture!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [self stopProgress];  
+    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Registration failed" message:@"Typed email address already registred in Pipture!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    registrationIssuesAlert.tag = REGISTRY_EID;
     [registrationIssuesAlert show];
     [registrationIssuesAlert release];
 }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    if (requestIssuesAlert == alertView)
-    {
-        if (registrationRequired)
-        {            
-            [self switchToRegistration];   
-        }
-        else
-        {
-            [self processAuthentication];
-        }
-    }
-    else if (registrationIssuesAlert == alertView)
-    {
-        [self switchToRegistration];        
+    switch (alertView.tag) {
+        case DATA_REQ_EID:
+            if (registrationRequired)
+            {            
+                [self switchToRegistration];   
+            }
+            else
+            {
+                [self processAuthentication];
+            }
+            break;
+        case REGISTRY_EID:
+            [self switchToRegistration];
+            break;
+        default:
+            break;
     }
 }
 

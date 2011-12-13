@@ -21,8 +21,8 @@
 
 static NSString* const JSON_PARAM_EPISODE_ID = @"EpisodeId";
 static NSString* const JSON_PARAM_EPISODE_TITLE = @"Title";
-static NSString* const JSON_PARAM_CLOSEUP = @"Closeup";
-static NSString* const JSON_PARAM_CLOSEUP_THUMBNAIL = @"CloseupThumbnail";
+static NSString* const JSON_PARAM_CLOSEUP = @"CloseUp";
+static NSString* const JSON_PARAM_CLOSEUP_THUMBNAIL = @"CloseUpThumbnail";
 static NSString* const JSON_PARAM_SCRIPT = @"Script";
 static NSString* const JSON_PARAM_DATE_RELEASED = @"DateReleased";
 static NSString* const JSON_PARAM_SUBJECT = @"Subject";

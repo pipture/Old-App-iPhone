@@ -17,6 +17,8 @@
 #define kOFFSET_FOR_KEYBOARD 60.0
 #define kHEIGHT_FOR_KEYBOARD 216.0
 
+#define TRACK_EVENT(event, action) [[PiptureAppDelegate instance] trackEvent:event:action]
+
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress>
 {
     VideoViewController* vc;
@@ -30,8 +32,11 @@
 
 +(PiptureAppDelegate*) instance;
 
+- (BOOL)trackEvent:(NSString*)event :(NSString*)action;
 - (void) onLogin;
 - (void) onHome;
 - (void) onLibrary:(NSArray*)albums;
 - (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId;//TODO: add video mode, playlist, e .t.c
+
+- (void)processDataRequestError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate cancelTitle:(NSString*)title alertId:(int)alertId;
 @end
