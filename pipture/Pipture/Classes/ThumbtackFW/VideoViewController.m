@@ -346,6 +346,7 @@
 
         MailComposerController* mcc = [[MailComposerController alloc] initWithNibName:@"MailComposer" bundle:nil];
         mcc.playlistItem = [playlist objectAtIndex:pos];
+        mcc.timeslotId = timeslotId;
         
         [self.navigationController pushViewController:mcc animated:YES];
         [mcc release];    
