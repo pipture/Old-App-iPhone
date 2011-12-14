@@ -610,8 +610,8 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
                     }
                     break;
                 }
-                case 1:
-                    [receiver performSelectorOnMainThread:@selector(notEnoughMoneyForWatch:) withObject:playlistItem waitUntilDone:YES];
+                case 3:
+                    [receiver performSelectorOnMainThread:@selector(notEnoughMoneyForSend:) withObject:playlistItem waitUntilDone:YES];
                     break;                              
                 case 100:                        
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];                    

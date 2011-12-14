@@ -97,7 +97,8 @@
     
     self.album = album_;
     
-    AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:posterPlaceholder.frame] autorelease];
+    CGRect rect = posterPlaceholder.frame;
+    AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
     [posterPlaceholder addSubview:imageView];
     
     [imageView loadImageFromURL:[NSURL URLWithString:album.cover] withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO asButton:YES target:self selector:@selector(trailerShow:)];
