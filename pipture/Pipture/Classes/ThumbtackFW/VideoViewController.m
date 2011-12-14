@@ -344,8 +344,11 @@
 //The event handling method
 - (IBAction)sendAction:(id)sender{
     
-    if ([MFMailComposeViewController canSendMail]) {
+    if ([MFMailComposeViewController canSendMail] && pos >= 0 && pos < playlist.count) {
+
         MailComposerController* mcc = [[MailComposerController alloc] initWithNibName:@"MailComposer" bundle:nil];
+        mcc.playlistItem = [playlist objectAtIndex:pos];
+        
         [self.navigationController pushViewController:mcc animated:YES];
         [mcc release];    
     } else {
@@ -461,14 +464,17 @@
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)balance {
-    SET_CREDITS(balance);
+    SET_BALANCE(balance);
 }
 
 -(void)notEnoughMoneyForWatch:(PlaylistItem*)playlistItem {
     
-    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Playing failed" message:@"Not enought credits!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [registrationIssuesAlert show];
-    [registrationIssuesAlert release];
+    UIAlertView*alert = [[UIAlertView alloc] initWithTitle:@"Playing failed" message:@"Insufficient funds!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
+    [alert release];
+    
+    self.busyContainer.hidden = YES;
+    needToBack = YES;
     
     NSLog(@"No enought money");
 }
