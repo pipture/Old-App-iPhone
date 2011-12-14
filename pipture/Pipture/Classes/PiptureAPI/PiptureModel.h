@@ -66,7 +66,7 @@
 -(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album;
 @end
 
-@protocol AuthenticationReceiver <PiptureModelDelegate>
+@protocol AuthenticationDelegate <PiptureModelDelegate>
 @required
 -(void)loggedIn;
 -(void)loginFailed;
@@ -74,7 +74,7 @@
 -(void)alreadyRegistredWithOtherDevice;
 @end
 
-@protocol PurchaseReceiver <PiptureModelDelegate>
+@protocol PurchaseDelegate <PiptureModelDelegate>
 @required
 -(void)purchased:(NSDecimalNumber*)newBalance;
 -(void)authenticationFailed;
@@ -83,16 +83,20 @@
 -(void)duplicateTransactionId;
 @end
 
-
+@protocol SendMessageDelegate <BalanceReceiver>
+@required
+-(void)messageSiteURLreceived:(NSString*)url;
+-(void)notEnoughMoneyForSend:(PlaylistItem*)playlistItem;
+@end
 
 @interface PiptureModel : NSObject
 
 //Using standard factory by default
 @property (retain,nonatomic) DefaultDataRequestFactory* dataRequestFactory; 
 
--(void)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationReceiver>*)receiver;
+-(void)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationDelegate>*)receiver;
 
--(void)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationReceiver>*)receiver;
+-(void)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationDelegate>*)receiver;
 
 
 -(void)getTimeslotsFromId:(NSInteger)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver;
@@ -107,9 +111,11 @@
 
 -(void)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumsReceiver>*)receiver;
 
--(void)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseReceiver>*)receiver;
+-(void)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver;
 
 -(void)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver;
+
+-(void)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem receiver:(NSObject<SendMessageDelegate>*)receiver;
 
 @end
 

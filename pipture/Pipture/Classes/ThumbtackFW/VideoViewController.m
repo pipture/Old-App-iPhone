@@ -334,8 +334,11 @@
 //The event handling method
 - (IBAction)sendAction:(id)sender{
     
-    if ([MFMailComposeViewController canSendMail]) {
+    if ([MFMailComposeViewController canSendMail] && pos >= 0 && pos < playlist.count) {
+
         MailComposerController* mcc = [[MailComposerController alloc] initWithNibName:@"MailComposer" bundle:nil];
+        mcc.playlistItem = [playlist objectAtIndex:pos];
+        
         [self.navigationController pushViewController:mcc animated:YES];
         [mcc release];    
     } else {

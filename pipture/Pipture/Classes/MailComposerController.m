@@ -12,6 +12,10 @@
 @implementation MailComposerController
 @synthesize messageEdit;
 @synthesize nextButton;
+@synthesize playlistItem;
+
+static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
+static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 
 #pragma mark - View lifecycle
 
@@ -33,21 +37,10 @@
 }
 
 - (void)nextButton:(id)sender {
-    NSString *snippet = [[NSBundle mainBundle] pathForResource:@"snippet" ofType:@"html"];  
-    NSMutableString * htmlData = [[NSMutableString alloc] initWithContentsOfFile:snippet encoding:NSUTF8StringEncoding error:nil];
-    
-    [htmlData replaceOccurrencesOfString:@"<!--img-->" withString:@"<b>Image</b> Here!!!" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
-    
-    MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
-    controller.mailComposeDelegate = self;
-    [controller setSubject:@"Look at this video!"];
-    //TODO: snippet
-    [controller setMessageBody:htmlData isHTML:YES]; 
-    if (controller) {
-        [self presentModalViewController:controller animated:YES];
+    if (playlistItem)
+    {
+        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem receiver:self];
     }
-    [htmlData release];
-    [controller release];
 }
 
 - (void)viewDidUnload
@@ -116,5 +109,48 @@
     
     [self.navigationController popViewControllerAnimated:YES];
 }
+
+-(void)messageSiteURLreceived:(NSString*)url
+{
+    NSString *snippet = [[NSBundle mainBundle] pathForResource:@"snippet" ofType:@"html"];  
+    NSMutableString * htmlData = [[NSMutableString alloc] initWithContentsOfFile:snippet encoding:NSUTF8StringEncoding error:nil];
+    
+    [htmlData replaceOccurrencesOfString:HTML_MACROS_MESSAGE_URL withString:url options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
+//    [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
+    
+    MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
+    controller.mailComposeDelegate = self;
+    [controller setSubject:@"Look at this video!"];
+    //TODO: snippet
+    [controller setMessageBody:htmlData isHTML:YES]; 
+    if (controller) {
+        [self presentModalViewController:controller animated:YES];
+    }
+    [htmlData release];
+    [controller release];    
+}
+
+-(void)notEnoughMoneyForSend:(PlaylistItem*)playlistItem
+{
+    
+}
+
+-(void)balanceReceived:(NSDecimalNumber*)balance
+{
+    SET_CREDITS([balance floatValue]);
+}
+
+-(void)authenticationFailed
+{
+    
+}
+
+
+-(void)dataRequestFailed:(DataRequestError*)error
+{
+    [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
+}
+
+
 
 @end

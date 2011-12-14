@@ -43,6 +43,7 @@ NSString *GET_ALBUMS_REQUEST;
 NSString *GET_ALBUM_DETAILS_REQUEST;
 NSString *GET_BALANCE_REQUEST;
 NSString *GET_BUY_REQUEST;
+NSString *SEND_MESSAGE_REQUEST;
 
 
 static NSString* const REST_PARAM_API = @"API";
@@ -52,6 +53,8 @@ static NSString* const REST_PARAM_PASSWORD = @"Password";
 static NSString* const REST_PARAM_FIRST_NAME = @"FirstName";
 static NSString* const REST_PARAM_LAST_NAME = @"LastName";
 static NSString* const REST_PARAM_RECEIPT_DATA = @"AppleReceiptData";
+static NSString* const REST_PARAM_MESSAGE = @"Message";
+
 
 static NSString* const JSON_PARAM_TIMESLOTS = @"Timeslots";
 static NSString* const JSON_PARAM_VIDEOS = @"Videos";
@@ -64,6 +67,7 @@ static NSString* const JSON_PARAM_ALBUM = @"Album";
 static NSString* const JSON_PARAM_TRAILER = @"Trailer";
 static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
 static NSString* const JSON_PARAM_BALANCE = @"Balance";
+static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
 
 - (id)init
 {
@@ -81,7 +85,8 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
         GET_ALBUMS_REQUEST =  [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get albums request"] retain];
         GET_ALBUM_DETAILS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get album details"] retain]; 
         GET_BALANCE_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get balance"] retain];
-        GET_BUY_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Buy"] retain];                
+        GET_BUY_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Buy"] retain];
+        SEND_MESSAGE_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Send message"] retain];
         DefaultDataRequestFactory* factory = [[[DefaultDataRequestFactory alloc] init] autorelease];
         [self setDataRequestFactory:factory];
     }    
@@ -147,6 +152,10 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
         [GET_BUY_REQUEST release];
     }
     
+    if (SEND_MESSAGE_REQUEST)
+    {
+        [SEND_MESSAGE_REQUEST release]; 
+    }
     
     if (sessionKey)
     {
@@ -157,7 +166,7 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
 }
 
 
--(void)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationReceiver>*)receiver
+-(void)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationDelegate>*)receiver
 {
     NSURL* url = [self buildURLWithRequest:LOGIN_REQUEST sendAPIVersion:NO sendKey:NO];
     
@@ -192,7 +201,7 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
 
 }
 
--(void)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationReceiver>*)receiver
+-(void)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationDelegate>*)receiver
 {
     NSURL* url = [self buildURLWithRequest:REGISTER_REQUEST sendAPIVersion:NO sendKey:NO];
     
@@ -474,7 +483,7 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
 }
 
 
--(void)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseReceiver>*)receiver
+-(void)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver
 {    
     NSURL* url = [self buildURLWithRequest:GET_BALANCE_REQUEST sendAPIVersion:NO sendKey:NO];    
     
@@ -510,7 +519,7 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
                     break;  
                 case 3:
                     [receiver performSelectorOnMainThread:@selector(duplicateTransactionId) withObject:nil waitUntilDone:YES];                    
-                    break;
+                    break;  
                 case 100:                        
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];                    break;                                                
                 default:
@@ -566,6 +575,55 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
     [request startExecute];
    
     
+}
+
+-(void)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem receiver:(NSObject<SendMessageDelegate>*)receiver
+{
+    NSURL* url = [self buildURLWithRequest:SEND_MESSAGE_REQUEST sendAPIVersion:NO sendKey:NO];    
+    
+    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, playlistItem.videoKeyName, playlistItem.videoKeyValue, REST_PARAM_MESSAGE, message];
+    
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postParams:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
+        
+        if (error) 
+        {
+            [PiptureModel processError:error receiver:receiver];
+        } 
+        else
+        {
+            switch ([PiptureModel parseErrorCode:jsonResult]) {
+                case 0:   
+                {
+                    NSString *messageURL = [jsonResult objectForKey:JSON_PARAM_MESSAGE_URL];
+                    if ([messageURL length] > 0)
+                    {                        
+                        [receiver performSelectorOnMainThread:@selector(messageSiteURLreceived:) withObject:messageURL waitUntilDone:NO];
+                    }
+                    else
+                    {
+                        NSLog(@"URL was not sent from server");
+                    }
+                    id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
+                    if (bal)
+                    {
+                        [receiver performSelectorOnMainThread:@selector(balanceReceived:) withObject:(NSDecimalNumber*)bal waitUntilDone:YES];                                                        
+                    }
+                    break;
+                }
+                case 1:
+                    [receiver performSelectorOnMainThread:@selector(notEnoughMoneyForWatch:) withObject:playlistItem waitUntilDone:YES];
+                    break;                              
+                case 100:                        
+                    [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];                    
+                    break;                                                
+                default:
+                    NSLog(@"Unknown error code");
+                break;
+            }
+        }
+        
+    }];    
+    [request startExecute];        
 }
 
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver {

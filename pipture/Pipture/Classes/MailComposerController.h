@@ -8,11 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MFMailComposeViewController.h>
+#import "PiptureModel.h"
 
-@interface MailComposerController : UIViewController <UITextViewDelegate, MFMailComposeViewControllerDelegate> {
+@interface MailComposerController : UIViewController <UITextViewDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate> {
     UIStatusBarStyle lastStatusStyle;
     UIBarStyle lastNaviStyle;
 }
 @property (retain, nonatomic) IBOutlet UITextView *messageEdit;
 @property (retain, nonatomic) UIBarButtonItem * nextButton;
+@property (assign, nonatomic) PlaylistItem * playlistItem;
 @end

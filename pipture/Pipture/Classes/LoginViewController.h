@@ -10,7 +10,7 @@
 #import "PiptureModel.h"
 
 
-@interface LoginViewController : UIViewController <UITextFieldDelegate, AuthenticationReceiver, UIAlertViewDelegate> {
+@interface LoginViewController : UIViewController <UITextFieldDelegate, AuthenticationDelegate, UIAlertViewDelegate> {
 
     IBOutlet UIView *registerFields;    
     IBOutlet UITextField *firstNameLabel;
