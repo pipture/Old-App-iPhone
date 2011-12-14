@@ -138,16 +138,20 @@
 }
 
 - (void)prevVideo {
-    [self stopTimer];
-    
-    [self destroyNextItem];
-    
     //next player ready for playback
-    self.busyContainer.hidden = NO;
-    if (!waitForNext) {
-        if (pos > 0) pos--;
+    if (!waitForNext && pos > 0) {
+        [self stopTimer];
+            
+        [self destroyNextItem];
+        [self enableControls:NO];
+
+        self.busyContainer.hidden = NO;
+            
+        pos--;
         waitForNext = YES;
         PlaylistItem * item = [playlist objectAtIndex:pos];
+        //because in nextvideo it will be incremented
+        pos--;
         [[[PiptureAppDelegate instance] model] getVideoURL:item forceBuy:YES forTimeslotId:[NSNumber numberWithInt:0] receiver:self];
     }
 }
@@ -225,6 +229,7 @@
 
 - (void)initVideo {
     
+    needToBack = NO;
     suspended = YES;
     precacheBegin = NO;
     pausedStatus = NO;
@@ -285,6 +290,11 @@
     [super viewDidAppear:animated];
     
     suspended = NO;
+    
+    //needed to close view
+    if (needToBack) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -347,8 +357,6 @@
 }
 
 - (IBAction)prevAction:(id)sender {
-    [self enableControls:NO];
-    
     if (player != nil) {
         [self prevVideo];
     }
@@ -365,8 +373,6 @@
 }
 
 - (IBAction)nextAction:(id)sender {
-    [self enableControls:NO];
-
     if (player != nil) {
         [self nextVideo];
     }
@@ -432,28 +438,42 @@
 
 -(void)videoNotPurchased:(PlaylistItem*)playlistItem {
     NSLog(@"Video not purchased: %@", playlistItem);
-    //TODO:
+    
+    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Playing failed" message:@"Video not purchased!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [registrationIssuesAlert show];
+    [registrationIssuesAlert release];
+    
     self.busyContainer.hidden = YES;
-    [self.navigationController popViewControllerAnimated:YES];
+    needToBack = YES;
 }
 
 -(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem {
     NSLog(@"Timeslot expired for: %@", playlistItem);
-    //TODO:
+    
+    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Playing failed" message:@"Video timeslot expired!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [registrationIssuesAlert show];
+    [registrationIssuesAlert release];
+    
     self.busyContainer.hidden = YES;
-    [self.navigationController popViewControllerAnimated:YES];
+    needToBack = YES;
 }
 
 -(void)authenticationFailed {
     //TODO
+    NSLog(@"Authentication failed");
 }
 
--(void)balanceReceived:(NSNumber*)balance {
-    SET_CREDITS([balance floatValue]);
+-(void)balanceReceived:(NSDecimalNumber*)balance {
+    SET_CREDITS(balance);
 }
 
 -(void)notEnoughMoneyForWatch:(PlaylistItem*)playlistItem {
-    //TODO:
+    
+    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Playing failed" message:@"Not enought credits!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [registrationIssuesAlert show];
+    [registrationIssuesAlert release];
+    
+    NSLog(@"No enought money");
 }
 
 -(void)dataRequestFailed:(DataRequestError*)error

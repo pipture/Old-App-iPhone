@@ -485,7 +485,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
 
 -(void)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver
 {    
-    NSURL* url = [self buildURLWithRequest:GET_BALANCE_REQUEST sendAPIVersion:NO sendKey:NO];    
+    NSURL* url = [self buildURLWithRequest:GET_BUY_REQUEST sendAPIVersion:NO sendKey:NO];    
     
     NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, REST_PARAM_RECEIPT_DATA, receiptData];
     

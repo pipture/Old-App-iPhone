@@ -11,9 +11,13 @@
 
 @implementation InAppPurchaseManager
 
+- (void)dealloc {
+    [super dealloc];
+}
+
 - (void)requestCreditsProductData
 {
-    NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProducId"];
+    NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
     NSSet *productIdentifiers = [NSSet setWithObject:productId];
     productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
     productsRequest.delegate = self;
@@ -50,7 +54,9 @@
 //
 - (void)purchaseCredits
 {
-    NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProducId"];
+    [[PiptureAppDelegate instance] showModalBusy];
+    
+    NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
     SKPayment *payment = [SKPayment paymentWithProductIdentifier:productId];
     [[SKPaymentQueue defaultQueue] addPayment:payment];
 } 
@@ -127,20 +133,21 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 {
     // remove the transaction from the payment queue.
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-    
-    //NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:transaction, @"transaction" , nil];
-    if (wasSuccessful)
+    BOOL test = YES;//just for BE test
+    if (wasSuccessful || test)
     {
         // send out a notification that we’ve finished the transaction
         //[[NSNotificationCenter defaultCenter] postNotificationName:kInAppPurchaseManagerTransactionSucceededNotification object:self userInfo:userInfo];
         NSString * base64 = [self base64Encoding:transaction.transactionReceipt];
         [[[PiptureAppDelegate instance] model] buyCredits:base64 receiver:self];
-        
+        NSLog(@"InApp transaction OK!");
     }
     else
     {
+        [[PiptureAppDelegate instance] dismissModalBusy];
         // send out a notification for the failed transaction
         //[[NSNotificationCenter defaultCenter] postNotificationName:kInAppPurchaseManagerTransactionFailedNotification object:self userInfo:userInfo];
+        NSLog(@"InApp transaction failed!");
     }
 } 
 
@@ -174,6 +181,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }
     else
     {
+        [[PiptureAppDelegate instance] dismissModalBusy];
         // this is fine, the user just cancelled, so don’t notify
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
     }
@@ -233,20 +241,46 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 
 #pragma mark PurchaseReceiver methods
 
+-(void)dataRequestFailed:(DataRequestError*)error {
+    [[PiptureAppDelegate instance] dismissModalBusy];
+    [[PiptureAppDelegate instance] processDataRequestError:error delegate:self cancelTitle:@"OK" alertId:0];
+}
+
 -(void)purchased:(NSDecimalNumber*)newBalance {
-    //TODO
+    SET_CREDITS(newBalance);
+    [[PiptureAppDelegate instance] dismissModalBusy];
+    NSLog(@"purchased: %@", newBalance);
 }
 
 -(void)authenticationFailed {
     //TODO
+    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase failed" message:@"Authentification failed!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [registrationIssuesAlert show];
+    [registrationIssuesAlert release];
+
+    [[PiptureAppDelegate instance] dismissModalBusy];
+    NSLog(@"authenticationFailed");
 }
 
 -(void)purchaseNotConfirmed {
     //TODO
+    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase failed" message:@"Purchase verification failed!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [registrationIssuesAlert show];
+    [registrationIssuesAlert release];
+
+    [[PiptureAppDelegate instance] dismissModalBusy];
+    NSLog(@"purchaseNotConfirmed");
 }
 
 -(void)unknownProductPurchased {
     //TODO
+    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase failed" message:@"Unknown product purchased!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [registrationIssuesAlert show];
+    [registrationIssuesAlert release];
+    
+    [[PiptureAppDelegate instance] dismissModalBusy];
+    NSLog(@"unknownProductPurchased");
+   
 }
 
 

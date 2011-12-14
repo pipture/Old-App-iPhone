@@ -43,7 +43,7 @@
 	<key>CFBundleVersion</key>
 	<string>5</string>
 	<key>CreditesProductId</key>
-	<string>com.pipture.Pipture.buycredits</string>
+	<string>com.pipture.Pipture.credits</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
@@ -76,7 +76,7 @@
 	<string>register</string>
 	<key>Rest end point</key>
 	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
-	<key>Rest end point test</key>
+	<key>Rest end point 2</key>
 	<string>http://192.168.9.131:8000/</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
