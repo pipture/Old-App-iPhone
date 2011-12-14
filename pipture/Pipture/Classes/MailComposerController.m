@@ -47,9 +47,13 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 }
 
 - (void)nextButton:(id)sender {
-    if (playlistItem)
+    if (playlistItem &&
+        [messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER] == NO && 
+        [messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0)
     {
         [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem receiver:self];
+    } else {
+        [messageEdit becomeFirstResponder];
     }
 }
 
@@ -84,6 +88,15 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
             messageEdit.textColor = [UIColor darkTextColor];
         }
         [self shrinkView:YES];
+    }
+}
+
+- (void)textViewDidChange:(UITextView *)textView {
+    if ([textView isEqual:messageEdit])
+    {
+        if (messageEdit.text.length > 200) {
+            messageEdit.text = [messageEdit.text substringToIndex:198];
+        }
     }
 }
 
