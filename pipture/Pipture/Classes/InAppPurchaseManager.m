@@ -249,7 +249,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 -(void)purchased:(NSDecimalNumber*)newBalance {
     SET_CREDITS(newBalance);
     [[PiptureAppDelegate instance] dismissModalBusy];
-    NSLog(@"purchased: %@", newBalance);
 }
 
 -(void)authenticationFailed {
@@ -283,5 +282,13 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
    
 }
 
+-(void)duplicateTransactionId {
+    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase failed" message:@"Transaction already performed!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [registrationIssuesAlert show];
+    [registrationIssuesAlert release];
+    
+    [[PiptureAppDelegate instance] dismissModalBusy];
+    NSLog(@"duplicateTransactionId");
+}
 
 @end

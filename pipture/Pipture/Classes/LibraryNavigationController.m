@@ -50,18 +50,15 @@
 }
 
 - (IBAction)purchaseCredits:(id)sender {
-    //TODO: In App Purchase
     [[PiptureAppDelegate instance] buyCredits];
-    
-    
-   /* UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Confirm your in-App Purchase" message:@"Do you want to cumulate watching or sending up to 100 videos for $0.99?" delegate:self cancelButtonTitle:@"Close" otherButtonTitles:@"Buy",nil];
-    
-    [alert show];
-    [alert release];*/
 }
 
 - (void)updateBalance:(float)balance {
     if (balance == 0) {
+        
+        /*if ([[self presentedViewController] class] != [VideoViewController class]) {
+            [[PiptureAppDelegate instance] buyCredits];
+        }*/
         buyButton.title = @"Buy";
     } else {
         buyButton.title = [NSString stringWithFormat:@"%0.2f$", balance];

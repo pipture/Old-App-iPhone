@@ -466,9 +466,12 @@
 
 -(void)notEnoughMoneyForWatch:(PlaylistItem*)playlistItem {
     
-    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Playing failed" message:@"Not enought credits!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Playing failed" message:@"Insufficient funds!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [registrationIssuesAlert show];
     [registrationIssuesAlert release];
+    
+    self.busyContainer.hidden = YES;
+    needToBack = YES;
     
     NSLog(@"No enought money");
 }
