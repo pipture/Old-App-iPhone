@@ -15,6 +15,7 @@
 @synthesize messageEdit;
 @synthesize nextButton;
 @synthesize playlistItem;
+@synthesize timeslotId;
 
 static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
 
@@ -44,7 +45,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
         [messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER] == NO && 
         [messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0)
     {
-        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem receiver:self];
+        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId receiver:self];
     } else {
         [messageEdit becomeFirstResponder];
     }
