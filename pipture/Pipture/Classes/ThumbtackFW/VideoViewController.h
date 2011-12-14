@@ -36,7 +36,7 @@
 - (void)setPause;
 - (void)setPlay;
 - (void)initVideo;
-
+//- (void)setVolume:(float)volume;
 - (void)updateControlsAnimated:(BOOL)animated;
 - (IBAction)sendAction:(id)sender;
 - (IBAction)prevAction:(id)sender;

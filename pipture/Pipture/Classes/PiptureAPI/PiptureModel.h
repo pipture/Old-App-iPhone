@@ -95,6 +95,8 @@
 //Using standard factory by default
 @property (retain,nonatomic) DefaultDataRequestFactory* dataRequestFactory; 
 
+- (NSString*)getEndPoint;
+
 -(void)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationDelegate>*)receiver;
 
 -(void)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationDelegate>*)receiver;

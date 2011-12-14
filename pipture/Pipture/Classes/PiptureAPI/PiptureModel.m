@@ -600,7 +600,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
     
     if (timeslotId)
     {
-        params = [params stringByAppendingFormat:@"%@=%@", REST_PARAM_TIMESLOT_ID, timeslotId];
+        params = [params stringByAppendingFormat:@"&%@=%@", REST_PARAM_TIMESLOT_ID, timeslotId];
     }
         
         
@@ -654,6 +654,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
     if ([receiver respondsToSelector:@selector(unexpectedAPIError:)])
     {
         [receiver unexpectedAPIError:code description:description];
+        NSLog(@"Unexpected API error: %@, code: %d", description, code);
     }    
 }
 
@@ -730,6 +731,11 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
 {   
     return [self buildURLWithRequest:request sendAPIVersion:YES sendKey:YES];
 }
+
+- (NSString*)getEndPoint {
+    return END_POINT_URL;
+}
+
 @end
 
 @implementation DefaultDataRequestFactory : NSObject
@@ -745,6 +751,5 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
     req.progress = [PiptureAppDelegate instance];
     return req;    
 }
-
 
 @end

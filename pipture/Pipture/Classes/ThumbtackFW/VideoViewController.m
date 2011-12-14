@@ -266,6 +266,8 @@
     videoTitleView.view.frame = CGRectMake(0, 0, 130,44);
     self.navigationItem.titleView = videoTitleView.view;
     
+    [slider setMaximumValue:100];
+    
     NSLog(@"video player loaded");
 }
 
@@ -379,10 +381,13 @@
 
 - (IBAction)sliderChanged:(id)sender {
     float position = slider.value;
+    position /= 100;
     
-    if (player != nil) {
+    //[self setVolume:position];
+    
+    /*if (player != nil) {
         [player seekToTime:CMTimeMake(position, 60)];
-    }
+    }*/
 }
 
 - (void)dealloc {
@@ -409,6 +414,24 @@
     [videoTitleView release];
     [super dealloc];
 }
+
+/*- (void)setVolume:(float)volume {
+    AVAsset *asset = player.currentItem.asset;
+    NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
+    
+    // Mute all the audio tracks
+    NSMutableArray *allAudioParams = [NSMutableArray array];
+    for (AVAssetTrack *track in audioTracks) {
+        AVMutableAudioMixInputParameters *audioInputParams =[AVMutableAudioMixInputParameters audioMixInputParameters];
+        [audioInputParams setVolume:volume atTime:kCMTimeZero];
+        [audioInputParams setTrackID:[track trackID]];
+        [allAudioParams addObject:audioInputParams];
+    }
+    AVMutableAudioMix *audioZeroMix = [AVMutableAudioMix audioMix];
+    [audioZeroMix setInputParameters:allAudioParams];
+    
+    [player.currentItem setAudioMix:audioZeroMix]; // Mute the player item
+}*/
 
 #pragma mark VideoURLReceiver protocol
 

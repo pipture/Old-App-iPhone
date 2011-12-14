@@ -9,6 +9,8 @@
 #import "MailComposerController.h"
 #import "PiptureAppDelegate.h"
 #import "AsyncImageView.h"
+#import "PiptureModel.h"
+
 
 @implementation MailComposerController
 @synthesize picturePlaceholder;
@@ -141,7 +143,10 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     NSString *snippet = [[NSBundle mainBundle] pathForResource:@"snippet" ofType:@"html"];  
     NSMutableString * htmlData = [[NSMutableString alloc] initWithContentsOfFile:snippet encoding:NSUTF8StringEncoding error:nil];
     
-    [htmlData replaceOccurrencesOfString:HTML_MACROS_MESSAGE_URL withString:url options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
+    NSString * endPoint = [[[PiptureAppDelegate instance] model] getEndPoint];
+    NSString * newUrl = [[endPoint substringToIndex:endPoint.length - 1] stringByAppendingString:url];
+    
+    [htmlData replaceOccurrencesOfString:HTML_MACROS_MESSAGE_URL withString:newUrl options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
     [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
     
     MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
