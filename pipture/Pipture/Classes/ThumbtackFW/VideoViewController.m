@@ -138,16 +138,20 @@
 }
 
 - (void)prevVideo {
-    [self stopTimer];
-    
-    [self destroyNextItem];
-    
     //next player ready for playback
-    self.busyContainer.hidden = NO;
-    if (!waitForNext) {
-        if (pos > 0) pos--;
+    if (!waitForNext && pos > 0) {
+        [self stopTimer];
+            
+        [self destroyNextItem];
+        [self enableControls:NO];
+
+        self.busyContainer.hidden = NO;
+            
+        pos--;
         waitForNext = YES;
         PlaylistItem * item = [playlist objectAtIndex:pos];
+        //because in nextvideo it will be incremented
+        pos--;
         [[[PiptureAppDelegate instance] model] getVideoURL:item forceBuy:YES forTimeslotId:[NSNumber numberWithInt:0] receiver:self];
     }
 }
@@ -350,8 +354,6 @@
 }
 
 - (IBAction)prevAction:(id)sender {
-    [self enableControls:NO];
-    
     if (player != nil) {
         [self prevVideo];
     }
@@ -368,8 +370,6 @@
 }
 
 - (IBAction)nextAction:(id)sender {
-    [self enableControls:NO];
-
     if (player != nil) {
         [self nextVideo];
     }
