@@ -12,6 +12,8 @@
 @interface PlaylistItem  : NSObject 
 
 @property(readonly,nonatomic) NSString *videoName;
+@property(readonly,nonatomic) NSString *videoContainerName;
+@property(readonly,nonatomic) NSString *videoPath;
 @property(retain,nonatomic) NSString *videoUrl;
 
 -(BOOL)isVideoUrlLoaded;

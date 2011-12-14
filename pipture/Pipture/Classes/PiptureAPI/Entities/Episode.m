@@ -18,6 +18,9 @@
 @synthesize dateReleased;
 @synthesize subject;
 @synthesize senderToReceiver;
+@synthesize episodeNo;
+@synthesize emailScreenshot;
+@synthesize album;
 
 static NSString* const JSON_PARAM_EPISODE_ID = @"EpisodeId";
 static NSString* const JSON_PARAM_EPISODE_TITLE = @"Title";
@@ -27,37 +30,57 @@ static NSString* const JSON_PARAM_SCRIPT = @"Script";
 static NSString* const JSON_PARAM_DATE_RELEASED = @"DateReleased";
 static NSString* const JSON_PARAM_SUBJECT = @"Subject";
 static NSString* const JSON_PARAM_SENDER_TO_RECEIVER = @"SenderToReceiver";
+static NSString* const JSON_PARAM_EPISODE_NO = @"EpisodeNo";
+static NSString* const JSON_PARAM_EMAIL_SCREENSHOT = @"SquareThumbnail";
+static NSString* const JSON_PARAM_SERIES_TITLE = @"SeriesTitle";
+static NSString* const JSON_PARAM_ALBUM_TITLE = @"AlbumTitle";
+static NSString* const JSON_PARAM_ALBUM_SEASON = @"AlbumSeason";
+static NSString* const JSON_PARAM_ALBUM_EMAIL_SCREENSHOT = @"AlbumSquareThumbnail";
+
+
 static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
 
 
 - (void)dealloc {
-    if (self.title) {
-        [self.title release]; 
+    if (title) {
+        [title release]; 
     }
-    if (self.closeUp)
+    if (closeUp)
     {
-        [self.closeUp release];
+        [closeUp release];
     }
-    if (self.closeUpThumbnail)
+    if (closeUpThumbnail)
     {
-        [self.closeUpThumbnail release];        
+        [closeUpThumbnail release];        
     }
-    if (self.script)
+    if (script)
     {
-        [self.script release];
+        [script release];
     }
-    if (self.dateReleased)
+    if (dateReleased)
     {
-        [self.dateReleased release];
+        [dateReleased release];
     }
-    if (self.subject)
+    if (subject)
     {
-        [self.subject release];
+        [subject release];
     }
-    if (self.senderToReceiver)
+    if (senderToReceiver)
     {
-        [self.senderToReceiver release];
+        [senderToReceiver release];
     }
+    if (episodeNo)
+    {
+        [episodeNo release];
+    }    
+    if (emailScreenshot)
+    {
+        [emailScreenshot release];
+    }    
+    if (album)
+    {
+        [album release];
+    }        
     [super dealloc];
 }
 
@@ -65,7 +88,7 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
 {
     self = [super init];
     if (self)
-    {
+    {        
         self.episodeId = [(NSNumber*)[jsonData objectForKey:JSON_PARAM_EPISODE_ID] integerValue];
         self.title = [jsonData objectForKey:JSON_PARAM_EPISODE_TITLE];
         self.closeUp = [jsonData objectForKey:JSON_PARAM_CLOSEUP];
@@ -73,14 +96,59 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
         self.script = [jsonData objectForKey:JSON_PARAM_SCRIPT];
         self.dateReleased = [jsonData objectForKey:JSON_PARAM_DATE_RELEASED];
         self.subject = [jsonData objectForKey:JSON_PARAM_SUBJECT];
-        self.senderToReceiver = [jsonData objectForKey:JSON_PARAM_SENDER_TO_RECEIVER];        
+        self.senderToReceiver = [jsonData objectForKey:JSON_PARAM_SENDER_TO_RECEIVER];
+        
+        self.episodeNo =  [jsonData objectForKey:JSON_PARAM_EPISODE_NO];
+        self.emailScreenshot = [jsonData objectForKey:JSON_PARAM_EMAIL_SCREENSHOT];
+        
+        NSString* seriesTitle = [jsonData objectForKey:JSON_PARAM_SERIES_TITLE];
+        NSString* albumTitle = [jsonData objectForKey:JSON_PARAM_ALBUM_TITLE];
+        NSString* albumSeason = [jsonData objectForKey:JSON_PARAM_ALBUM_SEASON];
+        NSString* albumEmailScreenshot = [jsonData objectForKey:JSON_PARAM_ALBUM_EMAIL_SCREENSHOT];
+        
+        if (seriesTitle || albumTitle || albumSeason || albumEmailScreenshot)
+        {
+            Album *tmp = [[Album alloc] init];
+            self.album = tmp;//retain
+            album.series.title = seriesTitle;
+            album.title = albumTitle;
+            album.season = albumSeason;
+            album.emailScreenshot = albumEmailScreenshot;
+            [tmp release];
+        }                        
     }
     return self;
 }
 
+
+
 -(NSString*) videoName 
 {
     return title;
+}
+
+-(NSString*) videoContainerName 
+{
+    if (album && album.series)
+    {
+        return album.series.title;
+    } 
+    else
+    {
+        return @"";
+    }    
+}
+
+-(NSString*) videoPath 
+{
+    if (album)
+    {
+        return [NSString stringWithFormat:@"Season %@, Album %@, Video %@", album.season, album.title, episodeNo];
+    }
+    else
+    {
+        return @"";
+    }
 }
 
 -(const NSString*)videoKeyName

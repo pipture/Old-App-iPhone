@@ -80,6 +80,7 @@
 -(void)authenticationFailed;
 -(void)purchaseNotConfirmed;
 -(void)unknownProductPurchased;
+-(void)duplicateTransactionId;
 @end
 
 
@@ -100,9 +101,7 @@
 
 -(void)getPlaylistForTimeslot:(NSNumber*)timeslotId receiver:(NSObject<PlaylistReceiver>*)receiver;
 
--(void)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy receiver:(NSObject<VideoURLReceiver>*)receiver;
-
--(void)getVideoURL:(PlaylistItem*)playListItem forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
+-(void)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
 
 -(void)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver;
 

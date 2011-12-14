@@ -17,6 +17,7 @@
 @property(retain, nonatomic) NSString* line2;
 @property(retain, nonatomic) NSString* line3;
 @property(retain, nonatomic) NSString* thumbnail;
+@property(retain, nonatomic) NSString* emailScreenshot;
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
 

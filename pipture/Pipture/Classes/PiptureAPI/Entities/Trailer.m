@@ -16,6 +16,7 @@
 @synthesize line2;
 @synthesize line3;
 @synthesize thumbnail;
+@synthesize emailScreenshot;
 
 static NSString* const JSON_PARAM_TRAILER_ID = @"TrailerId";
 static NSString* const JSON_PARAM_TRAILER_TITLE = @"Title";
@@ -23,30 +24,35 @@ static NSString* const JSON_PARAM_LINE_1 = @"Line1";
 static NSString* const JSON_PARAM_LINE_2 = @"Line2";
 static NSString* const JSON_PARAM_LINE_3 = @"Line3";
 static NSString* const JSON_PARAM_THUMBNAIL = @"Thumbnail";
+static NSString* const JSON_PARAM_EMAIL_SCREENSHOT = @"SquareThumbnail";
 static NSString* const VIDEO_KEY_NAME = @"TrailerId";
 
 
 - (void)dealloc {
-    if (self.title)
+    if (title)
     {
-        [self.title release];
+        [title release];
     }
-    if (self.line1)
+    if (line1)
     {
-        [self.line1 release];
+        [line1 release];
     }
-    if (self.line2)
+    if (line2)
     {
-        [self.line2 release];
+        [line2 release];
     }
-    if (self.line3)
+    if (line3)
     {
-        [self.line3 release];
+        [line3 release];
     }
-    if (self.thumbnail)
+    if (thumbnail)
     {
-        [self.thumbnail release];
+        [thumbnail release];
     }    
+    if (emailScreenshot)
+    {
+        [emailScreenshot release];
+    }            
     [super dealloc];
 }
 
@@ -61,13 +67,24 @@ static NSString* const VIDEO_KEY_NAME = @"TrailerId";
         self.line2 = [jsonData objectForKey:JSON_PARAM_LINE_2];
         self.line3 = [jsonData objectForKey:JSON_PARAM_LINE_3];
         self.thumbnail = [jsonData objectForKey:JSON_PARAM_THUMBNAIL];                    
+        self.emailScreenshot = [jsonData objectForKey:JSON_PARAM_EMAIL_SCREENSHOT];                    
     }
     return self;
 }
 
 -(NSString*) videoName 
 {
+    return line2;
+}
+
+-(NSString*) videoContainerName 
+{
     return title;
+}
+
+-(NSString*) videoPath 
+{
+    return line1;
 }
 
 -(const NSString*)videoKeyName

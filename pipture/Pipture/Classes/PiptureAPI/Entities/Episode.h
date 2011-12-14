@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "PlaylistItem.h"
+#import "Album.h"
 
 @interface Episode : PlaylistItem
 
@@ -19,6 +20,10 @@
 @property(retain, nonatomic) NSString *dateReleased;
 @property(retain, nonatomic) NSString *subject;
 @property(retain, nonatomic) NSString *senderToReceiver;
+@property(retain, nonatomic) NSString *episodeNo;
+@property(retain, nonatomic) NSString *emailScreenshot;
+
+@property(retain, nonatomic) Album* album;
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
 
