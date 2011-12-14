@@ -13,6 +13,7 @@
 @synthesize messageEdit;
 @synthesize nextButton;
 @synthesize playlistItem;
+@synthesize timeslotId;
 
 static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
@@ -39,7 +40,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 - (void)nextButton:(id)sender {
     if (playlistItem)
     {
-        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem receiver:self];
+        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId receiver:self];
     }
 }
 

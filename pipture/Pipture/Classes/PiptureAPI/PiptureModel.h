@@ -24,6 +24,7 @@
 
 @optional
 -(void)dataRequestFailed:(DataRequestError*)error;
+-(void)unexpectedAPIError:(NSInteger)code description:(NSString*)description;
 -(void)authenticationFailed;
 
 @end
@@ -115,7 +116,7 @@
 
 -(void)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver;
 
--(void)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem receiver:(NSObject<SendMessageDelegate>*)receiver;
+-(void)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId receiver:(NSObject<SendMessageDelegate>*)receiver;
 
 @end
 

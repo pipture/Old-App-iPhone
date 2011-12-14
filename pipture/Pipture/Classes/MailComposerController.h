@@ -17,4 +17,6 @@
 @property (retain, nonatomic) IBOutlet UITextView *messageEdit;
 @property (retain, nonatomic) UIBarButtonItem * nextButton;
 @property (assign, nonatomic) PlaylistItem * playlistItem;
+@property (assign, nonatomic) NSNumber * timeslotId;
+
 @end
