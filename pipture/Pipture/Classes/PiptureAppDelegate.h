@@ -21,6 +21,7 @@
 #define TRACK_EVENT(event, action) [[PiptureAppDelegate instance] trackEvent:event:action]
 #define GET_CREDITS [[PiptureAppDelegate instance] getBalance];
 #define SET_CREDITS(balance) [[PiptureAppDelegate instance] setBalance:balance];
+#define SHOW_ERROR(title, msg) [[PiptureAppDelegate instance] showError:title message:msg];
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, BalanceReceiver>
 {
@@ -53,4 +54,5 @@
 - (void)dismissModalBusy;
 
 - (void)processDataRequestError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate cancelTitle:(NSString*)title alertId:(int)alertId;
+- (void)showError:(NSString*)title message:(NSString*)message;
 @end

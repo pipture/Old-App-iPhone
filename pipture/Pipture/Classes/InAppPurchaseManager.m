@@ -22,8 +22,6 @@
     productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
     productsRequest.delegate = self;
     [productsRequest start];
-    
-    // we will release the request object in the delegate callback
 } 
 
 
@@ -66,34 +64,6 @@
 #pragma mark -
 #pragma mark Purchase helpers 
 
-//
-// saves a record of the transaction by storing the receipt to disk
-//
-- (void)recordTransaction:(SKPaymentTransaction *)transaction
-{
-    //TODO: store on BE
-    /*if ([transaction.payment.productIdentifier isEqualToString:kInAppPurchaseCreditsProductId])
-    {
-        // save the transaction receipt to disk
-        [[NSUserDefaults standardUserDefaults] setValue:transaction.transactionReceipt forKey:@"proUpgradeTransactionReceipt" ];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }*/
-} 
-
-//
-// enable pro features
-//
-- (void)provideCredits
-{
-    //TODO: get credits from BE
-    /*if ([productId isEqualToString:kInAppPurchaseProUpgradeProductId])
-    {
-        // enable the pro features
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"isProUpgradePurchased" ];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }*/
-} 
-
 static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 - (NSString *)base64Encoding:(NSData*) sourceString;
@@ -135,11 +105,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 {
     // remove the transaction from the payment queue.
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-    BOOL test = YES;//just for BE test
-    if (wasSuccessful || test)
+    if (wasSuccessful)
     {
-        // send out a notification that we’ve finished the transaction
-        //[[NSNotificationCenter defaultCenter] postNotificationName:kInAppPurchaseManagerTransactionSucceededNotification object:self userInfo:userInfo];
         NSString * base64 = [self base64Encoding:transaction.transactionReceipt];
         [[[PiptureAppDelegate instance] model] buyCredits:base64 receiver:self];
         NSLog(@"InApp transaction OK!");
@@ -147,8 +114,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     else
     {
         [[PiptureAppDelegate instance] dismissModalBusy];
-        // send out a notification for the failed transaction
-        //[[NSNotificationCenter defaultCenter] postNotificationName:kInAppPurchaseManagerTransactionFailedNotification object:self userInfo:userInfo];
         NSLog(@"InApp transaction failed!");
     }
 } 
@@ -158,7 +123,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 //
 - (void)completeTransaction:(SKPaymentTransaction *)transaction
 {
-    [self recordTransaction:transaction];
     [self finishTransaction:transaction wasSuccessful:YES];
 } 
 
@@ -167,7 +131,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 //
 - (void)restoreTransaction:(SKPaymentTransaction *)transaction
 {
-    [self recordTransaction:transaction.originalTransaction];
     [self finishTransaction:transaction wasSuccessful:YES];
 } 
 
@@ -239,11 +202,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     {
         NSLog(@"Invalid product id: %@" , invalidProductId);
     }
-    
-    // finally release the reqest we alloc/init’ed in requestProUpgradeProductData
+
     [productsRequest release];
-    
-    //[[NSNotificationCenter defaultCenter] postNotificationName:kInAppPurchaseManagerProductsFetchedNotification object:self userInfo:nil];
 }
 
 #pragma mark PurchaseReceiver methods
@@ -260,20 +220,12 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 }
 
 -(void)authenticationFailed {
-    //TODO
-    /*UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase failed" message:@"Authentification failed!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [registrationIssuesAlert show];
-    [registrationIssuesAlert release];*/
-
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"authenticationFailed");
 }
 
 -(void)purchaseNotConfirmed {
-    //TODO
-    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase failed" message:@"Purchase verification failed!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [registrationIssuesAlert show];
-    [registrationIssuesAlert release];
+    SHOW_ERROR(@"Purchase failed", @"Purchase verification failed!");
 
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"purchaseNotConfirmed");
@@ -282,11 +234,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 }
 
 -(void)unknownProductPurchased {
-    //TODO
-    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase failed" message:@"Unknown product purchased!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [registrationIssuesAlert show];
-    [registrationIssuesAlert release];
-    
+    SHOW_ERROR(@"Purchase failed", @"Unknown product purchased!");
+   
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"unknownProductPurchased");
    
@@ -294,9 +243,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 }
 
 -(void)duplicateTransactionId {
-    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase failed" message:@"Transaction already performed!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [registrationIssuesAlert show];
-    [registrationIssuesAlert release];
+    SHOW_ERROR(@"Purchase failed", @"Transaction already performed!");
     
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"duplicateTransactionId");

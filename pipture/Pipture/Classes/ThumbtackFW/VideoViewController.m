@@ -182,8 +182,6 @@
     NSDictionary * error = [aNotification.userInfo objectForKey:@"error"];
     
     if (error != nil) { //error happened
-        //[self stopVideo:player];
-        
         //error happened
         //TODO: show error
         self.busyContainer.hidden = YES;
@@ -436,9 +434,7 @@
 -(void)videoNotPurchased:(PlaylistItem*)playlistItem {
     NSLog(@"Video not purchased: %@", playlistItem);
     
-    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Playing failed" message:@"Video not purchased!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [registrationIssuesAlert show];
-    [registrationIssuesAlert release];
+    SHOW_ERROR(@"Playing failed", @"Video not purchased!");
     
     self.busyContainer.hidden = YES;
     needToBack = YES;
@@ -447,16 +443,13 @@
 -(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem {
     NSLog(@"Timeslot expired for: %@", playlistItem);
     
-    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Playing failed" message:@"Video timeslot expired!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [registrationIssuesAlert show];
-    [registrationIssuesAlert release];
-    
+    SHOW_ERROR(@"Playing failed", @"Video timeslot expired!");
+
     self.busyContainer.hidden = YES;
     needToBack = YES;
 }
 
 -(void)authenticationFailed {
-    //TODO
     NSLog(@"Authentication failed");
 }
 
@@ -465,10 +458,8 @@
 }
 
 -(void)notEnoughMoneyForWatch:(PlaylistItem*)playlistItem {
-    
-    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Playing failed" message:@"Insufficient funds!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [registrationIssuesAlert show];
-    [registrationIssuesAlert release];
+
+    SHOW_ERROR(@"Playing failed", @"Insufficient funds!");
     
     self.busyContainer.hidden = YES;
     needToBack = YES;

@@ -257,6 +257,12 @@ NSInteger networkActivityIndecatorCount;
     }
 }
 
+- (void)showError:(NSString *)title message:(NSString *)message {
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
+    [alert release]; 
+}
+
 - (void)setBalance:(NSDecimalNumber*)newBalance {
     NSLog(@"New balance: %@", newBalance);
     balance = [newBalance floatValue];
