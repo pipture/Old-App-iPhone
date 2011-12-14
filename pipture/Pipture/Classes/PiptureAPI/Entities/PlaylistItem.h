@@ -14,7 +14,10 @@
 @property(readonly,nonatomic) NSString *videoName;
 @property(readonly,nonatomic) NSString *videoContainerName;
 @property(readonly,nonatomic) NSString *videoPath;
+@property(readonly,nonatomic) NSString *emailScreenshot;
+
 @property(retain,nonatomic) NSString *videoUrl;
+
 
 -(BOOL)isVideoUrlLoaded;
 -(const NSString*)videoKeyName;

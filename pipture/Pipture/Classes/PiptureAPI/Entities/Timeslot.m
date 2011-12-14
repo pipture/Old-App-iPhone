@@ -76,6 +76,7 @@ static NSString* const JSON_PARAM_CURRENT = @"Current";
     return self;
 }
 
+
 - (void)dealloc {
     [startTime release];
     [endTime release];

@@ -247,7 +247,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 }
 
 -(void)purchased:(NSDecimalNumber*)newBalance {
-    SET_CREDITS(newBalance);
+    SET_BALANCE(newBalance);
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"purchased: %@", newBalance);
 }

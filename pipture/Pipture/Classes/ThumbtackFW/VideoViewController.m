@@ -464,14 +464,14 @@
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)balance {
-    SET_CREDITS(balance);
+    SET_BALANCE(balance);
 }
 
 -(void)notEnoughMoneyForWatch:(PlaylistItem*)playlistItem {
     
-    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Playing failed" message:@"Not enought credits!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [registrationIssuesAlert show];
-    [registrationIssuesAlert release];
+    UIAlertView*alert = [[UIAlertView alloc] initWithTitle:@"Playing failed" message:@"Not enought credits!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
+    [alert release];
     
     NSLog(@"No enought money");
 }

@@ -581,7 +581,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
 {
     NSURL* url = [self buildURLWithRequest:SEND_MESSAGE_REQUEST sendAPIVersion:NO sendKey:NO];    
     
-    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, playlistItem.videoKeyName, playlistItem.videoKeyValue, REST_PARAM_MESSAGE, message];
+    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%d&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, playlistItem.videoKeyName, playlistItem.videoKeyValue, REST_PARAM_MESSAGE, message];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postParams:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
         

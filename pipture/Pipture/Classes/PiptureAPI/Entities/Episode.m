@@ -19,7 +19,7 @@
 @synthesize subject;
 @synthesize senderToReceiver;
 @synthesize episodeNo;
-@synthesize emailScreenshot;
+@synthesize episodeEmailScreenshot;
 @synthesize album;
 
 static NSString* const JSON_PARAM_EPISODE_ID = @"EpisodeId";
@@ -73,9 +73,9 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
     {
         [episodeNo release];
     }    
-    if (emailScreenshot)
+    if (episodeEmailScreenshot)
     {
-        [emailScreenshot release];
+        [episodeEmailScreenshot release];
     }    
     if (album)
     {
@@ -99,7 +99,7 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
         self.senderToReceiver = [jsonData objectForKey:JSON_PARAM_SENDER_TO_RECEIVER];
         
         self.episodeNo =  [jsonData objectForKey:JSON_PARAM_EPISODE_NO];
-        self.emailScreenshot = [jsonData objectForKey:JSON_PARAM_EMAIL_SCREENSHOT];
+        self.episodeEmailScreenshot = [jsonData objectForKey:JSON_PARAM_EMAIL_SCREENSHOT];
         
         NSString* seriesTitle = [jsonData objectForKey:JSON_PARAM_SERIES_TITLE];
         NSString* albumTitle = [jsonData objectForKey:JSON_PARAM_ALBUM_TITLE];
@@ -159,6 +159,23 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
 -(NSInteger)videoKeyValue
 {
     return episodeId;
+}
+
+
+-(NSString*) emailScreenshot
+{
+    if ([episodeEmailScreenshot length]>0)
+    {
+        return episodeEmailScreenshot;
+    }
+    else if (album && [album emailScreenshot].length >0)
+    {
+        return [album emailScreenshot];
+    }
+    else
+    {
+        return @"";
+    }
 }
 
 @end

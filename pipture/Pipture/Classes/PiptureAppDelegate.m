@@ -301,7 +301,7 @@ NSInteger networkActivityIndecatorCount;
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)newBalance {
-    SET_CREDITS(newBalance);
+    SET_BALANCE(newBalance);
 }
 
 -(void)authenticationFailed {

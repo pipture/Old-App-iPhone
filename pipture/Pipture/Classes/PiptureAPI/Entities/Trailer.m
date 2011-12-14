@@ -16,7 +16,7 @@
 @synthesize line2;
 @synthesize line3;
 @synthesize thumbnail;
-@synthesize emailScreenshot;
+@synthesize trailerEmailScreenshot;
 
 static NSString* const JSON_PARAM_TRAILER_ID = @"TrailerId";
 static NSString* const JSON_PARAM_TRAILER_TITLE = @"Title";
@@ -49,9 +49,9 @@ static NSString* const VIDEO_KEY_NAME = @"TrailerId";
     {
         [thumbnail release];
     }    
-    if (emailScreenshot)
+    if (trailerEmailScreenshot)
     {
-        [emailScreenshot release];
+        [trailerEmailScreenshot release];
     }            
     [super dealloc];
 }
@@ -67,7 +67,7 @@ static NSString* const VIDEO_KEY_NAME = @"TrailerId";
         self.line2 = [jsonData objectForKey:JSON_PARAM_LINE_2];
         self.line3 = [jsonData objectForKey:JSON_PARAM_LINE_3];
         self.thumbnail = [jsonData objectForKey:JSON_PARAM_THUMBNAIL];                    
-        self.emailScreenshot = [jsonData objectForKey:JSON_PARAM_EMAIL_SCREENSHOT];                    
+        self.trailerEmailScreenshot = [jsonData objectForKey:JSON_PARAM_EMAIL_SCREENSHOT];                    
     }
     return self;
 }
@@ -97,5 +97,16 @@ static NSString* const VIDEO_KEY_NAME = @"TrailerId";
     return trailerId;
 }
 
+-(NSString*) emailScreenshot
+{
+    if ([trailerEmailScreenshot length]>0)
+    {
+        return trailerEmailScreenshot;
+    }
+    else
+    {
+        return @"";
+    }
+}
 
 @end

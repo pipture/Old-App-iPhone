@@ -20,7 +20,7 @@
 
 #define TRACK_EVENT(event, action) [[PiptureAppDelegate instance] trackEvent:event:action]
 #define GET_CREDITS [[PiptureAppDelegate instance] getBalance];
-#define SET_CREDITS(balance) [[PiptureAppDelegate instance] setBalance:balance];
+#define SET_BALANCE(balance) [[PiptureAppDelegate instance] setBalance:balance];
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, BalanceReceiver>
 {

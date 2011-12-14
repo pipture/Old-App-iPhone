@@ -116,7 +116,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     NSMutableString * htmlData = [[NSMutableString alloc] initWithContentsOfFile:snippet encoding:NSUTF8StringEncoding error:nil];
     
     [htmlData replaceOccurrencesOfString:HTML_MACROS_MESSAGE_URL withString:url options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
-//    [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
+    [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
     
     MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
     controller.mailComposeDelegate = self;
@@ -130,19 +130,24 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     [controller release];    
 }
 
--(void)notEnoughMoneyForSend:(PlaylistItem*)playlistItem
-{
-    
-}
 
 -(void)balanceReceived:(NSDecimalNumber*)balance
 {
-    SET_CREDITS([balance floatValue]);
+    SET_BALANCE(balance);
 }
 
 -(void)authenticationFailed
 {
     
+}
+
+-(void)notEnoughMoneyForSend:(PlaylistItem*)playlistItem {
+    
+    UIAlertView*alert = [[UIAlertView alloc] initWithTitle:@"Sending failed" message:@"Not enought credits!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
+    [alert release];
+    
+    NSLog(@"No enought money");
 }
 
 
