@@ -174,7 +174,6 @@ static PiptureAppDelegate *instance;
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
-    [libraryNavigationController updateBalance:balance];
     libraryNavigationController.albums = albums;
     [self.window setRootViewController:libraryNavigationController];
     
@@ -259,6 +258,7 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (void)setBalance:(NSDecimalNumber*)newBalance {
+    NSLog(@"New balance: %@", newBalance);
     balance = [newBalance floatValue];
     
     if (self.window.rootViewController == libraryNavigationController) {

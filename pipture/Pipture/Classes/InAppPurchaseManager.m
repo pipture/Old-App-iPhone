@@ -54,6 +54,8 @@
 //
 - (void)purchaseCredits
 {
+    TRACK_EVENT(@"Purchase", @"Start credits purchasing");
+    
     [[PiptureAppDelegate instance] showModalBusy];
     
     NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
@@ -178,12 +180,17 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     {
         // error!
         [self finishTransaction:transaction wasSuccessful:NO];
+
+        NSString * err = [NSString stringWithFormat:@"Purchasing error: ", transaction.error.description];
+        TRACK_EVENT(@"Purchase", err);
     }
     else
     {
         [[PiptureAppDelegate instance] dismissModalBusy];
         // this is fine, the user just cancelled, so don’t notify
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+        
+        TRACK_EVENT(@"Purchase", @"Credits purchasing cancelled by user");
     }
 } 
 
@@ -249,14 +256,14 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 -(void)purchased:(NSDecimalNumber*)newBalance {
     SET_BALANCE(newBalance);
     [[PiptureAppDelegate instance] dismissModalBusy];
-    NSLog(@"purchased: %@", newBalance);
+    TRACK_EVENT(@"Purchase", @"Credits purchased");
 }
 
 -(void)authenticationFailed {
     //TODO
-    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase failed" message:@"Authentification failed!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    /*UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase failed" message:@"Authentification failed!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [registrationIssuesAlert show];
-    [registrationIssuesAlert release];
+    [registrationIssuesAlert release];*/
 
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"authenticationFailed");
@@ -270,6 +277,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"purchaseNotConfirmed");
+    
+    TRACK_EVENT(@"Purchase", @"Not confirmed");
 }
 
 -(void)unknownProductPurchased {
@@ -281,7 +290,18 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"unknownProductPurchased");
    
+    TRACK_EVENT(@"Purchase", @"Unknown product");
 }
 
+-(void)duplicateTransactionId {
+    UIAlertView*registrationIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase failed" message:@"Transaction already performed!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [registrationIssuesAlert show];
+    [registrationIssuesAlert release];
+    
+    [[PiptureAppDelegate instance] dismissModalBusy];
+    NSLog(@"duplicateTransactionId");
+    
+    TRACK_EVENT(@"Purchase", @"Duplicate transaction");
+}
 
 @end
