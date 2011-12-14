@@ -31,7 +31,7 @@
     float balance;
     InAppPurchaseManager * purchases;
 }
-//@property (strong, nonatomic) IBOutlet UIImageView * backgroundImage;
+
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
 @property (retain, nonatomic) IBOutlet LibraryNavigationController * libraryNavigationController;

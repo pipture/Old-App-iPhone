@@ -59,7 +59,6 @@ static PiptureAppDelegate *instance;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
-//    [UIApplication sharedApplication].statusBarHidden = YES;
  
     [[GANTracker sharedTracker] startTrackerWithAccountID:@"UA-27681421-1"
                                            dispatchPeriod:kGANDispatchPeriodSec
@@ -88,45 +87,6 @@ static PiptureAppDelegate *instance;
     return instance;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-    /*
-     Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-     Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-     */
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-    /*
-     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-     If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-     */
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-    /*
-     Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-     */
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    /*
-     Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-     */
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-    /*
-     Called when the application is about to terminate.
-     Save data if appropriate.
-     See also applicationDidEnterBackground:.
-     */
-}
-
 - (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId{
     if (vc == nil) {
         vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
@@ -145,7 +105,6 @@ static PiptureAppDelegate *instance;
 }
 
 - (void) onHome {
-    // set up an animation for the transition between the views
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.5];
     [animation setType:kCATransitionPush];
@@ -153,7 +112,6 @@ static PiptureAppDelegate *instance;
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
-    
     [self.window setRootViewController:homeNavigationController];
     
     TRACK_EVENT(@"Open Activity", @"Home");
@@ -166,7 +124,7 @@ static PiptureAppDelegate *instance;
 }
 
 - (void) onLibrary:(NSArray*)albums {
-    // set up an animation for the transition between the views
+
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.5];
     [animation setType:kCATransitionPush];
@@ -219,7 +177,7 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (void)processDataRequestError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate cancelTitle:(NSString*)btnTitle alertId:(int)alertId{
-    //[self stopProgress];
+
     NSString * title = nil;
     NSString * message = nil;
     switch (error.errorCode)
@@ -284,8 +242,7 @@ NSInteger networkActivityIndecatorCount;
     if ([purchases canMakePurchases]) {
         [purchases purchaseCredits];
     } else {
-        //TODO: error
-        NSLog(@"Can't make purchases!");
+        SHOW_ERROR(@"Purchase failed", @"Can't make purchases!");
     }
 }
 
@@ -303,7 +260,6 @@ NSInteger networkActivityIndecatorCount;
 
 -(void)dataRequestFailed:(DataRequestError*)error {
     NSLog(@"Req failed: %@", error);
-    //self processDataRequestError:error delegate:self cancelTitle:<#(NSString *)#> alertId:<#(int)#>
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)newBalance {
