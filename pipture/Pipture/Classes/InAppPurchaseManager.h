@@ -14,7 +14,7 @@
 //#define kInAppPurchaseManagerTransactionSucceededNotification @"kInAppPurchaseManagerTransactionSucceededNotification"
 //#define kInAppPurchaseManagerTransactionFailedNotification @"kInAppPurchaseManagerTransactionFailedNotification"
 
-@interface InAppPurchaseManager : NSObject <SKProductsRequestDelegate, SKPaymentTransactionObserver, PurchaseDelegate, UIAlertViewDelegate>
+@interface InAppPurchaseManager : NSObject <SKProductsRequestDelegate, SKPaymentTransactionObserver, PurchaseReceiver, UIAlertViewDelegate>
 {
     SKProduct *creditsProduct;
     SKProductsRequest *productsRequest;
