@@ -68,6 +68,8 @@
 	<string>getVideo?%@=%@&amp;ForceBuy=%@</string>
 	<key>Rest Get video from timeslot</key>
 	<string>getVideo?%@=%@&amp;TimeslotId=%@</string>
+	<key>Rest Send message</key>
+	<string>sendMessage</string>
 	<key>Rest Login</key>
 	<string>login</string>
 	<key>Rest Register</key>
