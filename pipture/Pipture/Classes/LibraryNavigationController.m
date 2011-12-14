@@ -27,6 +27,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationBar setBarStyle:UIBarStyleBlackOpaque];
+    
+    [[PiptureAppDelegate instance] updateBalance];
 }
 
 - (void)viewDidUnload
@@ -49,11 +51,13 @@
 
 - (IBAction)purchaseCredits:(id)sender {
     //TODO: In App Purchase
+    [[PiptureAppDelegate instance] buyCredits];
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Confirm your in-App Purchase" message:@"Do you want to cumulate watching or sending up to 100 videos for $0.99?" delegate:self cancelButtonTitle:@"Close" otherButtonTitles:@"Buy",nil];
+    
+   /* UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Confirm your in-App Purchase" message:@"Do you want to cumulate watching or sending up to 100 videos for $0.99?" delegate:self cancelButtonTitle:@"Close" otherButtonTitles:@"Buy",nil];
     
     [alert show];
-    [alert release];
+    [alert release];*/
 }
 
 - (void)updateBalance:(float)balance {

@@ -43,7 +43,7 @@
 	<key>CFBundleVersion</key>
 	<string>5</string>
 	<key>CreditesProductId</key>
-	<string>com.pipture.Pipture.buycredits</string>
+	<string>com.pipture.Pipture.credits</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
@@ -51,7 +51,7 @@
 	<key>Rest API version</key>
 	<integer>1</integer>
 	<key>Rest Buy</key>
-	<string>buy?ApplePurchaseReply=%@</string>
+	<string>buy</string>
 	<key>Rest Get album details</key>
 	<string>getAlbumDetail?AlbumId=%@&amp;IncludeEpisodes=%@</string>
 	<key>Rest Get albums request</key>
@@ -68,21 +68,13 @@
 	<string>getVideo?%@=%@&amp;ForceBuy=%@</string>
 	<key>Rest Get video from timeslot</key>
 	<string>getVideo?%@=%@&amp;TimeslotId=%@</string>
-	<key>Rest Get albums request</key>
-	<string>getAlbums?</string>
-	<key>Rest Get album details</key>
-	<string>getAlbumDetail?AlbumId=%@&amp;IncludeEpisodes=%@</string>
-	<key>Rest Get balance</key>
-	<string>getBalance?</string>
-	<key>Rest Buy</key>
-	<string>buy</string>
 	<key>Rest Login</key>
 	<string>login</string>
 	<key>Rest Register</key>
 	<string>register</string>
 	<key>Rest end point</key>
 	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
-	<key>Rest end point test</key>
+	<key>Rest end point 2</key>
 	<string>http://192.168.9.131:8000/</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>

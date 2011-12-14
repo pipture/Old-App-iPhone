@@ -8,11 +8,13 @@
 
 #import "PiptureAppDelegate.h"
 #import "GANTracker.h"
+#import "InAppPurchaseManager.h"
 
 // Dispatch period in seconds
 static const NSInteger kGANDispatchPeriodSec = 10;
 
 @implementation PiptureAppDelegate
+@synthesize busyView;
 @synthesize window = _window;
 @synthesize homeNavigationController;
 @synthesize libraryNavigationController;
@@ -23,12 +25,14 @@ static PiptureAppDelegate *instance;
 
 - (void)dealloc
 {
+    [busyView release];
     [[GANTracker sharedTracker] stopTracker];
     
     if (vc != nil) {
         [vc release];
         vc = nil;
     }
+    [purchases release];
     [_loginViewController release];
     [libraryNavigationController release];
     [homeNavigationController release];
@@ -45,6 +49,9 @@ static PiptureAppDelegate *instance;
     if (self) {
         instance = self;
         model_ = [[PiptureModel alloc] init];
+        busyView = [[BusyViewController alloc] initWithNibName:@"PurchaseBusyView" bundle:nil];
+        purchases = [[InAppPurchaseManager alloc] init];
+        [purchases loadStore];
     }
     return self;
 }
@@ -121,7 +128,6 @@ static PiptureAppDelegate *instance;
 }
 
 - (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId{
-   
     if (vc == nil) {
         vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
     }
@@ -252,8 +258,8 @@ NSInteger networkActivityIndecatorCount;
     }
 }
 
-- (void)setBalance:(float)newBalance {
-    balance = newBalance;
+- (void)setBalance:(NSDecimalNumber*)newBalance {
+    balance = [newBalance floatValue];
     
     if (self.window.rootViewController == libraryNavigationController) {
         [libraryNavigationController updateBalance:balance];
@@ -262,6 +268,44 @@ NSInteger networkActivityIndecatorCount;
 
 - (float)getBalance {
     return balance;
+}
+
+- (void)updateBalance {
+    [self.model getBalanceWithReceiver:self];
+}
+
+- (void)buyCredits {
+    if ([purchases canMakePurchases]) {
+        [purchases purchaseCredits];
+    } else {
+        //TODO: error
+        NSLog(@"Can't make purchases!");
+    }
+}
+
+- (void)showModalBusy {
+    [[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [[[self window] rootViewController] presentModalViewController:busyView animated:YES];
+}
+
+- (void)dismissModalBusy {
+    [[[self window] rootViewController] dismissModalViewControllerAnimated:YES];
+}
+
+#pragma mark -
+#pragma mark BalanceReceiver methods
+
+-(void)dataRequestFailed:(DataRequestError*)error {
+    NSLog(@"Req failed: %@", error);
+    //self processDataRequestError:error delegate:self cancelTitle:<#(NSString *)#> alertId:<#(int)#>
+}
+
+-(void)balanceReceived:(NSDecimalNumber*)newBalance {
+    SET_CREDITS(newBalance);
+}
+
+-(void)authenticationFailed {
+    NSLog(@"auth failed!");
 }
 
 @end
