@@ -37,11 +37,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.0.2</string>
+	<string>0.0.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>5</string>
+	<string>6</string>
 	<key>CreditesProductId</key>
 	<string>com.pipture.Pipture.credits</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -68,12 +68,12 @@
 	<string>getVideo?%@=%@&amp;ForceBuy=%@</string>
 	<key>Rest Get video from timeslot</key>
 	<string>getVideo?%@=%@&amp;TimeslotId=%@</string>
-	<key>Rest Send message</key>
-	<string>sendMessage</string>
 	<key>Rest Login</key>
 	<string>login</string>
 	<key>Rest Register</key>
 	<string>register</string>
+	<key>Rest Send message</key>
+	<string>sendMessage</string>
 	<key>Rest end point</key>
 	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
 	<key>Rest end point 2</key>
