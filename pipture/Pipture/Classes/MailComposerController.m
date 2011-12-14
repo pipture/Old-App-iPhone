@@ -8,12 +8,16 @@
 
 #import "MailComposerController.h"
 #import "PiptureAppDelegate.h"
+#import "AsyncImageView.h"
 
 @implementation MailComposerController
+@synthesize picturePlaceholder;
 @synthesize messageEdit;
 @synthesize nextButton;
 @synthesize playlistItem;
 @synthesize timeslotId;
+
+static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
 
 static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
@@ -35,6 +39,12 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     nextButton = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStylePlain target:self action:@selector(nextButton:)];
     self.navigationItem.rightBarButtonItem = nextButton;
     [nextButton release];
+    
+    CGRect rect = picturePlaceholder.frame;
+    AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
+    [picturePlaceholder addSubview:imageView];
+    
+    [imageView loadImageFromURL:[NSURL URLWithString:playlistItem.emailScreenshot] withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO asButton:NO target:nil selector:nil];
 }
 
 - (void)nextButton:(id)sender {
@@ -47,6 +57,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 - (void)viewDidUnload
 {
     [self setMessageEdit:nil];
+    [self setPicturePlaceholder:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -69,12 +80,21 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 {
     if ([sender isEqual:messageEdit])
     {
+        if ([messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER]) {
+            messageEdit.text = @"";
+            messageEdit.textColor = [UIColor darkTextColor];
+        }
         [self shrinkView:YES];
     }
 }
 
 - (void)keyboardWillHide:(NSNotification *)notif
 {
+    if ([messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
+        messageEdit.text = MESSAGE_PLACEHOLDER;
+        messageEdit.textColor = [UIColor grayColor];
+    }
+    
     [self shrinkView:NO];
 }
 
@@ -100,6 +120,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 
 - (void)dealloc {
     [messageEdit release];
+    [picturePlaceholder release];
     [super dealloc];
 }
 
@@ -139,15 +160,12 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 
 -(void)authenticationFailed
 {
-    
+    NSLog(@"authentification failed!");
 }
 
 -(void)notEnoughMoneyForSend:(PlaylistItem*)playlistItem {
     
-    UIAlertView*alert = [[UIAlertView alloc] initWithTitle:@"Sending failed" message:@"Not enought credits!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alert show];
-    [alert release];
-    
+    SHOW_ERROR(@"Sending failed", @"Insufficient funds!");    
     NSLog(@"No enought money");
 }
 

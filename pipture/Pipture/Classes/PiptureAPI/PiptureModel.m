@@ -11,7 +11,6 @@
 #import "PlaylistItemFactory.h"
 #import "Episode.h"
 
-
 @interface PiptureModel(Private)
 
 -(NSURL*)buildURLWithRequest:(NSString*)request;
@@ -21,9 +20,9 @@
 + (NSMutableArray *)parseItems:(NSDictionary *)jsonResult jsonArrayParamName:(NSString*)paramName itemCreator:(id (^)(NSDictionary*dct))createItem itemName:(NSString*)itemName;
 
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver;
-+ (void)processAPIError:(NSInteger)code description:(NSString*)description receiver:(NSObject<PiptureModelDelegate>*)receiver;
-+ (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse description:(NSString**)description;
++ (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse;
 @end 
+
 
 @implementation PiptureModel
 
@@ -55,14 +54,12 @@ static NSString* const REST_PARAM_FIRST_NAME = @"FirstName";
 static NSString* const REST_PARAM_LAST_NAME = @"LastName";
 static NSString* const REST_PARAM_RECEIPT_DATA = @"AppleReceiptData";
 static NSString* const REST_PARAM_MESSAGE = @"Message";
-static NSString* const REST_PARAM_TIMESLOT_ID = @"TimeslotId";
 
 
 static NSString* const JSON_PARAM_TIMESLOTS = @"Timeslots";
 static NSString* const JSON_PARAM_VIDEOS = @"Videos";
 static NSString* const JSON_PARAM_ERROR = @"Error";
 static NSString* const JSON_PARAM_ERRORCODE = @"ErrorCode";
-static NSString* const JSON_PARAM_ERROR_DESCRIPTION = @"ErrorDescription";
 static NSString* const JSON_PARAM_VIDEO_URL = @"VideoURL";
 static NSString* const JSON_PARAM_ALBUMS = @"Albums";
 static NSString* const JSON_PARAM_EPISODES = @"Episodes";
@@ -184,9 +181,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         } 
         else
         {
-            NSString**errDesc;
-            NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
-            switch (errCode) {            
+            switch ([PiptureModel parseErrorCode:jsonResult]) {            
                 case 0:
                     sessionKey = [(NSString*)[jsonResult objectForKey:JSON_PARAM_SESSION_KEY] retain];
                     [receiver performSelectorOnMainThread:@selector(loggedIn) withObject:nil waitUntilDone:YES];                    
@@ -195,7 +190,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
                     [receiver performSelectorOnMainThread:@selector(loginFailed) withObject:nil waitUntilDone:YES];
                     break;                                        
                 default:
-                    [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
+                    NSLog(@"Unknown error code");
                     break;
             }                        
         }
@@ -221,9 +216,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         } 
         else
         {
-            NSString**errDesc;
-            NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
-            switch (errCode) {           
+            switch ([PiptureModel parseErrorCode:jsonResult]) {            
                 case 0:
                     sessionKey = [(NSString*)[jsonResult objectForKey:JSON_PARAM_SESSION_KEY] retain];                    
                     [receiver performSelectorOnMainThread:@selector(registred) withObject:nil waitUntilDone:YES];                    
@@ -232,7 +225,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
                     [receiver performSelectorOnMainThread:@selector(alreadyRegistredWithOtherDevice) withObject:nil waitUntilDone:YES];
                     break;                                        
                 default:
-                    [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
+                    NSLog(@"Unknown error code");
                     break;
             }                        
         }
@@ -301,9 +294,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         else
         {
 
-            NSString**errDesc;
-            NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
-            switch (errCode) { 
+            switch ([PiptureModel parseErrorCode:jsonResult]) {
                 case 0:
                 {
                     //NSArray *playlistItems = [PiptureModel parsePlaylistItems:jsonResult];
@@ -339,7 +330,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
                     }
                     break;
                 default:
-                    [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
+                    NSLog(@"Unknown error code");
                     break;
             }
         }
@@ -369,9 +360,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
             } 
             else
             {
-                NSString**errDesc;
-                NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
-                switch (errCode) { 
+                switch ([PiptureModel parseErrorCode:jsonResult]) {
                     case 0:   
                     {
                         NSString *videoUrl = [jsonResult objectForKey:JSON_PARAM_VIDEO_URL];
@@ -404,7 +393,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
                         [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];
                         break;                                                                        
                     default:
-                        [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
+                        NSLog(@"Unknown error code");
                         break;
                 }                
             }
@@ -508,9 +497,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         } 
         else
         {
-            NSString**errDesc;
-            NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
-            switch (errCode) { 
+            switch ([PiptureModel parseErrorCode:jsonResult]) {
                 case 0:   
                 {
                     id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
@@ -536,7 +523,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
                 case 100:                        
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];                    break;                                                
                 default:
-                    [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
+                    NSLog(@"Unknown error code");
                     break;
             }                
         }
@@ -560,9 +547,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         } 
         else
         {
-            NSString**errDesc;
-            NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
-            switch (errCode) { 
+            switch ([PiptureModel parseErrorCode:jsonResult]) {
                 case 0:   
                 {
                     id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
@@ -580,7 +565,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];
                     break;                                                                        
                 default:
-                    [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
+                    NSLog(@"Unknown error code");
                     break;
             }                
         }
@@ -592,18 +577,12 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
     
 }
 
--(void)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId receiver:(NSObject<SendMessageDelegate>*)receiver
+-(void)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem receiver:(NSObject<SendMessageDelegate>*)receiver
 {
     NSURL* url = [self buildURLWithRequest:SEND_MESSAGE_REQUEST sendAPIVersion:NO sendKey:NO];    
     
     NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%d&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, playlistItem.videoKeyName, playlistItem.videoKeyValue, REST_PARAM_MESSAGE, message];
     
-    if (timeslotId)
-    {
-        params = [params stringByAppendingFormat:@"%@=%@", REST_PARAM_TIMESLOT_ID, timeslotId];
-    }
-        
-        
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postParams:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
         
         if (error) 
@@ -612,9 +591,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         } 
         else
         {
-            NSString**errDesc;
-            NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
-            switch (errCode) { 
+            switch ([PiptureModel parseErrorCode:jsonResult]) {
                 case 0:   
                 {
                     NSString *messageURL = [jsonResult objectForKey:JSON_PARAM_MESSAGE_URL];
@@ -633,28 +610,20 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
                     }
                     break;
                 }
-                case 3:
+                case 1:
                     [receiver performSelectorOnMainThread:@selector(notEnoughMoneyForWatch:) withObject:playlistItem waitUntilDone:YES];
                     break;                              
                 case 100:                        
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];                    
                     break;                                                
                 default:
-                    [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
+                    NSLog(@"Unknown error code");
                 break;
             }
         }
         
     }];    
     [request startExecute];        
-}
-
-+ (void)processAPIError:(NSInteger)code description:(NSString*)description receiver:(NSObject<PiptureModelDelegate>*)receiver
-{
-    if ([receiver respondsToSelector:@selector(unexpectedAPIError:)])
-    {
-        [receiver unexpectedAPIError:code description:description];
-    }    
 }
 
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver {
@@ -666,18 +635,13 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
     
 }
 
-+ (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse description:(NSString**)description {
-    
++ (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse {
+   
     NSDictionary* dct = [jsonResponse objectForKey:JSON_PARAM_ERROR];
-    
     NSNumber* code = [dct objectForKey:JSON_PARAM_ERRORCODE];
-    NSString* desc = [dct objectForKey:JSON_PARAM_ERROR_DESCRIPTION];    
-    
     if (code)
     {
-        description = &desc;
         return [code intValue];
-
     }
     return 0;   
 }            

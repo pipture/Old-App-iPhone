@@ -14,6 +14,7 @@
     UIStatusBarStyle lastStatusStyle;
     UIBarStyle lastNaviStyle;
 }
+@property (retain, nonatomic) IBOutlet UIView *picturePlaceholder;
 @property (retain, nonatomic) IBOutlet UITextView *messageEdit;
 @property (retain, nonatomic) UIBarButtonItem * nextButton;
 @property (assign, nonatomic) PlaylistItem * playlistItem;
