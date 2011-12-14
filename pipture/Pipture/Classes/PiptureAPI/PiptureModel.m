@@ -9,14 +9,13 @@
 #import "PiptureModel.h"
 #import "PiptureAppDelegate.h"
 #import "PlaylistItemFactory.h"
+#import "Episode.h"
 
 @interface PiptureModel(Private)
 
 -(NSURL*)buildURLWithRequest:(NSString*)request;
 -(NSURL*)buildURLWithRequest:(NSString*)request sendAPIVersion:(BOOL)sendAPIVersion sendKey:(BOOL)sendKey;
 -(void)getTimeslotsWithURL:(NSURL*)url receiver:(NSObject<TimeslotsReceiver>*)receiver;
-
--(void)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
 
 + (NSMutableArray *)parseItems:(NSDictionary *)jsonResult jsonArrayParamName:(NSString*)paramName itemCreator:(id (^)(NSDictionary*dct))createItem itemName:(NSString*)itemName;
 
@@ -333,16 +332,6 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
 }
 
 
--(void)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy receiver:(NSObject<VideoURLReceiver>*)receiver;
-{
-    [self getVideoURL:playListItem forceBuy:forceBuy forTimeslotId:nil receiver:receiver];          
-}
-
--(void)getVideoURL:(PlaylistItem*)playListItem forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver
-{
-    [self getVideoURL:playListItem forceBuy:NO forTimeslotId:timeslotId receiver:receiver];  
-}
-
 -(void)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver
 {
     if ([playListItem isVideoUrlLoaded])
@@ -466,7 +455,11 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
             Trailer* trailer = [[Trailer alloc] initWithJSON:[jsonResult objectForKey:JSON_PARAM_TRAILER]];
             
             [album updateWithDetails:jsonAlbumDetails episodes:episodes trailer:trailer];
-                        
+                      
+            for (Episode* ep in episodes) {
+                ep.album = album;
+            }
+            
             [episodes release];
             
             [trailer release];
@@ -514,7 +507,10 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
                     break;
                 case 2:
                     [receiver performSelectorOnMainThread:@selector(unknownProductPurchased) withObject:nil waitUntilDone:YES];
-                    break;                        
+                    break;  
+                case 3:
+                    [receiver performSelectorOnMainThread:@selector(duplicateTransactionId) withObject:nil waitUntilDone:YES];                    
+                    break;
                 case 100:                        
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];                    break;                                                
                 default:

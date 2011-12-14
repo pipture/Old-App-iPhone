@@ -51,7 +51,7 @@
 	<key>Rest API version</key>
 	<integer>1</integer>
 	<key>Rest Buy</key>
-	<string>buy?ApplePurchaseReply=%@</string>
+	<string>buy</string>
 	<key>Rest Get album details</key>
 	<string>getAlbumDetail?AlbumId=%@&amp;IncludeEpisodes=%@</string>
 	<key>Rest Get albums request</key>
@@ -68,14 +68,8 @@
 	<string>getVideo?%@=%@&amp;ForceBuy=%@</string>
 	<key>Rest Get video from timeslot</key>
 	<string>getVideo?%@=%@&amp;TimeslotId=%@</string>
-	<key>Rest Get albums request</key>
-	<string>getAlbums?</string>
-	<key>Rest Get album details</key>
-	<string>getAlbumDetail?AlbumId=%@&amp;IncludeEpisodes=%@</string>
-	<key>Rest Get balance</key>
-	<string>getBalance?</string>
-	<key>Rest Buy</key>
-	<string>buy</string>
+	<key>Rest Send message</key>
+	<string>sendMessage</string>
 	<key>Rest Login</key>
 	<string>login</string>
 	<key>Rest Register</key>

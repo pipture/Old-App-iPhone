@@ -115,5 +115,9 @@
     NSLog(@"Details for unknown album: %@", album);
 }
 
+-(void)dataRequestFailed:(DataRequestError*)error
+{
+    [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
+}
 
 @end

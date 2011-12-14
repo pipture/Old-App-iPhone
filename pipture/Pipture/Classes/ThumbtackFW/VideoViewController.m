@@ -44,9 +44,9 @@
     if (playlist && pos >= 0 && pos < playlist.count) {
         PlaylistItem * item = [playlist objectAtIndex:pos];
         
-        videoTitleView.line1.text = @"Series name";
+        videoTitleView.line1.text = item.videoContainerName;
         videoTitleView.line2.text = item.videoName;
-        videoTitleView.line3.text = @"Album 1, Series 1, Episode 1";
+        videoTitleView.line3.text = item.videoPath;
     }
 }
 
@@ -71,7 +71,7 @@
             NSLog(@"Precaching");
             
             PlaylistItem * item = [playlist objectAtIndex:pos + 1];
-            [[[PiptureAppDelegate instance] model] getVideoURL:item forTimeslotId:timeslotId receiver:self];
+            [[[PiptureAppDelegate instance] model] getVideoURL:item forceBuy:YES forTimeslotId:timeslotId receiver:self];
             precacheBegin = YES;
         }
         
@@ -148,7 +148,7 @@
         if (pos > 0) pos--;
         waitForNext = YES;
         PlaylistItem * item = [playlist objectAtIndex:pos];
-        [[[PiptureAppDelegate instance] model] getVideoURL:item forTimeslotId:[NSNumber numberWithInt:0] receiver:self];
+        [[[PiptureAppDelegate instance] model] getVideoURL:item forceBuy:YES forTimeslotId:[NSNumber numberWithInt:0] receiver:self];
     }
 }
 
@@ -163,7 +163,7 @@
                 PlaylistItem * item = [playlist objectAtIndex:pos + 1];
                 waitForNext = YES;
                 [self enableControls:NO];
-                [[[PiptureAppDelegate instance] model] getVideoURL:item forTimeslotId:timeslotId receiver:self];
+                [[[PiptureAppDelegate instance] model] getVideoURL:item forceBuy:YES forTimeslotId:timeslotId receiver:self];
             }
         } else {
             self.busyContainer.hidden = YES;
@@ -452,5 +452,11 @@
 -(void)notEnoughMoneyForWatch:(PlaylistItem*)playlistItem {
     //TODO:
 }
+
+-(void)dataRequestFailed:(DataRequestError*)error
+{
+    [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
+}
+
 
 @end

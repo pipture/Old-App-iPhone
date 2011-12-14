@@ -103,7 +103,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
 }
 
 
--(id)initWithJSON:(NSDictionary*)jsonData
+-(id)init
 {
     self = [super init];
     if (self) {        
@@ -111,6 +111,15 @@ static NSString* const CREDITS_ITEM_TAB = @",";
         series = [[Series alloc] init];
         credits_ = [[NSMutableDictionary alloc] init];
         detailsLoaded = NO;
+    }
+    return self;
+    
+}
+
+-(id)initWithJSON:(NSDictionary*)jsonData
+{
+    self = [self init];
+    if (self) {                
         [self parseJSON:jsonData];
     }
     return self;
@@ -165,6 +174,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     if (creditsStr && creditsStr.length > 0)
     {
         
+        [credits_ removeAllObjects]; //Remove old credits if needed.
         //Martin's text: First time I do that, is it okay? ":" means title "," means tab ";" means next line "." means next line new title
         NSArray*creditsParts = [creditsStr componentsSeparatedByString:CREDITS_SEPARATOR];
         for (NSString*part in creditsParts) {
