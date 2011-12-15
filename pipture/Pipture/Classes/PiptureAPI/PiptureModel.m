@@ -16,7 +16,7 @@
 
 -(NSURL*)buildURLWithRequest:(NSString*)request;
 -(NSURL*)buildURLWithRequest:(NSString*)request sendAPIVersion:(BOOL)sendAPIVersion sendKey:(BOOL)sendKey;
--(void)getTimeslotsWithURL:(NSURL*)url receiver:(NSObject<TimeslotsReceiver>*)receiver;
+-(BOOL)getTimeslotsWithURL:(NSURL*)url receiver:(NSObject<TimeslotsReceiver>*)receiver;
 
 + (NSMutableArray *)parseItems:(NSDictionary *)jsonResult jsonArrayParamName:(NSString*)paramName itemCreator:(id (^)(NSDictionary*dct))createItem itemName:(NSString*)itemName;
 
@@ -92,6 +92,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         SEND_MESSAGE_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Send message"] retain];
         DefaultDataRequestFactory* factory = [[[DefaultDataRequestFactory alloc] init] autorelease];
         [self setDataRequestFactory:factory];
+        
     }    
     return self;
 }
@@ -169,7 +170,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
 }
 
 
--(void)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationDelegate>*)receiver
+-(BOOL)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationDelegate>*)receiver
 {
     NSURL* url = [self buildURLWithRequest:LOGIN_REQUEST sendAPIVersion:NO sendKey:NO];
     
@@ -202,11 +203,11 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         
     }];
     request.progress = nil;
-    [request startExecute];
+    return [request startExecute];
 
 }
 
--(void)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationDelegate>*)receiver
+-(BOOL)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationDelegate>*)receiver
 {
     NSURL* url = [self buildURLWithRequest:REGISTER_REQUEST sendAPIVersion:NO sendKey:NO];
     
@@ -239,27 +240,27 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         
     }];
     request.progress = nil;
-    [request startExecute];    
+    return [request startExecute];    
     
 }
 
--(void)getTimeslotsFromId:(NSInteger)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver
+-(BOOL)getTimeslotsFromId:(NSInteger)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver
 {
     NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_TIMESLOTS_REQUEST, [NSNumber numberWithInt:timeslotId], [NSNumber numberWithInt:maxCount]]];
     
-    [self getTimeslotsWithURL:url receiver:receiver];
+    return [self getTimeslotsWithURL:url receiver:receiver];
 }
 
 
 
--(void)getTimeslotsFromCurrentWithMaxCount:(NSInteger)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver
+-(BOOL)getTimeslotsFromCurrentWithMaxCount:(NSInteger)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver
 {
     NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_CURRENT_TIMESLOTS_REQUEST, [NSNumber numberWithInt:maxCount]]];
 
-    [self getTimeslotsWithURL:url receiver:receiver];
+    return [self getTimeslotsWithURL:url receiver:receiver];
 }
 
--(void)getTimeslotsWithURL:(NSURL*)url receiver:(NSObject<TimeslotsReceiver>*)receiver
+-(BOOL)getTimeslotsWithURL:(NSURL*)url receiver:(NSObject<TimeslotsReceiver>*)receiver
 {
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
         
@@ -284,10 +285,10 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         
     }];
     
-    [request startExecute];
+    return [request startExecute];
 }
 
--(void)getPlaylistForTimeslot:(NSNumber*)timeslotId receiver:(NSObject<PlaylistReceiver>*)receiver
+-(BOOL)getPlaylistForTimeslot:(NSNumber*)timeslotId receiver:(NSObject<PlaylistReceiver>*)receiver
 {
 
     NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_PLAYLIST_FOR_TIMESLOT_REQUEST,timeslotId]];
@@ -346,15 +347,16 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
                         
     }];
     
-    [request startExecute];
+    return [request startExecute];
 }
 
 
--(void)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver
+-(BOOL)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver
 {
     if ([playListItem isVideoUrlLoaded])
     {
         [receiver videoURLReceived:playListItem];
+        return YES;
     }
     else
     {
@@ -411,12 +413,12 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
             
         }];
         
-        [request startExecute];
+        return [request startExecute];
     }    
       
 }
 
--(void)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver {
+-(BOOL)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver {
     
     NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_ALBUMS_REQUEST]];
 
@@ -442,15 +444,15 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         
     }];
     
-    [request startExecute];    
+    return [request startExecute];    
 }
 
--(void)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumsReceiver>*)receiver {
+-(BOOL)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumsReceiver>*)receiver {
     
     if (album.detailsLoaded)
     {
         [receiver albumDetailsReceived:album];
-        return;
+        return YES;
     }
     
     //Include episodes always 1 in this version    
@@ -489,12 +491,12 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         
     }];
     
-    [request startExecute];    
+    return [request startExecute];    
     
 }
 
 
--(void)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver
+-(BOOL)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver
 {    
     NSURL* url = [self buildURLWithRequest:GET_BUY_REQUEST sendAPIVersion:NO sendKey:NO];    
     
@@ -543,11 +545,11 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         
     }];
     
-    [request startExecute];    
+    return [request startExecute];    
 
 }
 
--(void)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver
+-(BOOL)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver
 {
 
     NSURL* url = [self buildURLWithRequest:GET_BALANCE_REQUEST];
@@ -587,12 +589,12 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         
     }];
     
-    [request startExecute];
+    return [request startExecute];
    
     
 }
 
--(void)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId receiver:(NSObject<SendMessageDelegate>*)receiver
+-(BOOL)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId receiver:(NSObject<SendMessageDelegate>*)receiver
 {
     NSURL* url = [self buildURLWithRequest:SEND_MESSAGE_REQUEST sendAPIVersion:NO sendKey:NO];    
     
@@ -646,7 +648,7 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         }
         
     }];    
-    [request startExecute];        
+    return [request startExecute];        
 }
 
 + (void)processAPIError:(NSInteger)code description:(NSString*)description receiver:(NSObject<PiptureModelDelegate>*)receiver
@@ -738,18 +740,51 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
 
 @end
 
-@implementation DefaultDataRequestFactory : NSObject
+@implementation DefaultDataRequestFactory 
 
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback
 {
-    return [self createDataRequestWithURL:url postParams:nil callback:callback];
+    return [self createDataRequestWithURL:url postParams:nil  callback:callback];
 }
 
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url postParams:(NSString*)params callback:(DataRequestCallback)callback
 {
-    DataRequest* req = [[[DataRequest alloc]initWithURL:url postParams:params callback:callback]autorelease];
+    DataRequest* req = [[[DataRequest alloc]initWithURL:url postParams:params requestManager:self callback:callback]autorelease];
     req.progress = [PiptureAppDelegate instance];
     return req;    
+}
+
+DataRequest*current = nil;
+
+-(BOOL)addRequest:(DataRequest*)request
+{
+    @synchronized(self)
+    {
+        if (current)
+        {
+            return NO;
+        }
+        else
+        {
+            current = request;
+            return YES;
+        }
+    }
+}
+
+-(void)completeRequest:(DataRequest*)request
+{
+    @synchronized(self)
+    {
+        if (current != request)
+        {
+            //WTF!!!!
+            NSLog(@"Request manager unexpected state. Two request were runned in same time");                    
+        } else
+        {
+            current = nil;
+        }
+    }    
 }
 
 @end
