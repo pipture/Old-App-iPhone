@@ -7,7 +7,5 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "DataRequest.h"
 
-@protocol DataRequestManager <NSObject>
-
-@end
