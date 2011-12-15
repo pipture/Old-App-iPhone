@@ -53,10 +53,13 @@
 }
 
 - (void)showAlbumDetail:(Album*)album {
-    AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
-    adic.album = album;
-    [self.navigationController pushViewController:adic animated:YES];
-    [adic release];
+    NSLog(@"%@", self.navigationController.visibleViewController.class);
+    if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
+        AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
+        adic.album = album;
+        [self.navigationController pushViewController:adic animated:YES];
+        [adic release];
+    }
 }
 
 @end

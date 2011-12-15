@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "DataRequestError.h"
-#import "DataRequestManager.h"
 
 typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
 

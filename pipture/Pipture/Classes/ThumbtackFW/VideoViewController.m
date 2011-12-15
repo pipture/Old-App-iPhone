@@ -466,7 +466,9 @@
 
 -(void)dataRequestFailed:(DataRequestError*)error
 {
-    [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
+    if (error.errorCode != DRErrorNoInternet) {
+        [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
+    }
     [self goBack];
 }
 

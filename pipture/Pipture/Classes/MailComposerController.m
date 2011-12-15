@@ -47,6 +47,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
         [messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER] == NO && 
         [messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0)
     {
+        self.navigationItem.hidesBackButton = YES;
         [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId receiver:self];
     } else {
         [messageEdit becomeFirstResponder];
@@ -134,7 +135,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 {
     //TODO: process result
     [self dismissModalViewControllerAnimated:YES];
-    
+    self.navigationItem.hidesBackButton = NO;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -164,6 +165,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 
 -(void)balanceReceived:(NSDecimalNumber*)balance
 {
+    self.navigationItem.hidesBackButton = NO;
     SET_BALANCE(balance);
 }
 
@@ -173,7 +175,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 }
 
 -(void)notEnoughMoneyForSend:(PlaylistItem*)playlistItem {
-    
+    self.navigationItem.hidesBackButton = NO;
     SHOW_ERROR(@"Sending failed", @"Insufficient funds!");    
     NSLog(@"No enought money");
 }
@@ -181,6 +183,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 
 -(void)dataRequestFailed:(DataRequestError*)error
 {
+    self.navigationItem.hidesBackButton = NO;
     [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
 }
 

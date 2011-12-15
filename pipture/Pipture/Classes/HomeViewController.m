@@ -122,6 +122,7 @@
         changeTimer = nil;
     }
     [self stopTimer];
+    actionButton.enabled = YES;
     [super viewDidDisappear:animated];
 }
 

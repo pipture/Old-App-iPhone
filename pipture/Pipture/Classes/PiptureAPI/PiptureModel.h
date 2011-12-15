@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "DataRequest.h"
-#import "DataRequestManager.h"
 #import "Timeslot.h"
 #import "Album.h"
 #import "PlaylistItem.h"
