@@ -54,11 +54,11 @@
 {
     TRACK_EVENT(@"Purchase", @"Start credits purchasing");
     
-    [[PiptureAppDelegate instance] showModalBusy];
-    
-    NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
-    SKPayment *payment = [SKPayment paymentWithProductIdentifier:productId];
-    [[SKPaymentQueue defaultQueue] addPayment:payment];
+    [[PiptureAppDelegate instance] showModalBusy:^{
+        NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
+        SKPayment *payment = [SKPayment paymentWithProductIdentifier:productId];
+        [[SKPaymentQueue defaultQueue] addPayment:payment];
+    }];
 } 
 
 #pragma mark -

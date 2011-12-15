@@ -133,6 +133,8 @@
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -200,7 +202,7 @@
         imageView = [[[AsyncImageView alloc] initWithFrame:frame] autorelease];
         [scrollView addSubview:imageView];
     }
-    [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO asButton:NO target:nil selector:nil];
+    [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:nil] localStore:NO asButton:NO target:nil selector:nil];
     
     NSLog(@"ScrollView subs: %d", [[scrollView subviews]count]);
 }

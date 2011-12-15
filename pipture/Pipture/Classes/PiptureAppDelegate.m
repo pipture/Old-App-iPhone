@@ -246,13 +246,13 @@ NSInteger networkActivityIndecatorCount;
     }
 }
 
-- (void)showModalBusy {
+- (void)showModalBusy:(void (^)(void))completion {
     [[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [[[self window] rootViewController] presentModalViewController:busyView animated:YES];
+    [[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
 }
 
 - (void)dismissModalBusy {
-    [[[self window] rootViewController] dismissModalViewControllerAnimated:YES];
+    [[[self window] rootViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark -

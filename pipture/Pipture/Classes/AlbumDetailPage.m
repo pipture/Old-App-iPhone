@@ -101,7 +101,7 @@
     AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
     [posterPlaceholder addSubview:imageView];
     
-    [imageView loadImageFromURL:[NSURL URLWithString:album.cover] withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO asButton:YES target:self selector:@selector(trailerShow:)];
+    [imageView loadImageFromURL:[NSURL URLWithString:album.cover] withDefImage:[UIImage imageNamed:@"logo-pipture-blue.png"] localStore:NO asButton:YES target:self selector:@selector(trailerShow:)];
     
     credits = [[NSMutableArray alloc] initWithCapacity:20];
     
@@ -150,7 +150,6 @@
 - (void)trailerShow:(id)sender {
     NSLog(@"Trailer Show");
     NSArray * playlist = [NSArray arrayWithObject:album.trailer];
-    [album.trailer release];
     UINavigationController * navi = [PiptureAppDelegate instance].libraryNavigationController;
     [[PiptureAppDelegate instance] showVideo:playlist navigationController:navi noNavi:YES timeslotId:nil];    
 }

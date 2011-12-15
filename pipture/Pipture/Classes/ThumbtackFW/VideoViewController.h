@@ -36,13 +36,11 @@
 - (void)setPause;
 - (void)setPlay;
 - (void)initVideo;
-//- (void)setVolume:(float)volume;
 - (void)updateControlsAnimated:(BOOL)animated;
 - (IBAction)sendAction:(id)sender;
 - (IBAction)prevAction:(id)sender;
 - (IBAction)playpauseAction:(id)sender;
 - (IBAction)nextAction:(id)sender;
-- (IBAction)sliderChanged:(id)sender;
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer;
 - (void) movieFinishedCallback:(NSNotification*) aNotification;
 
@@ -57,7 +55,6 @@
 @property (retain, nonatomic) IBOutlet UIButton *nextButton;
 @property (retain, nonatomic) IBOutlet UIButton *pauseButton;
 @property (retain, nonatomic) IBOutlet UIButton *prevButton;
-@property (retain, nonatomic) IBOutlet UISlider *slider;
 
 @property (assign, nonatomic) BOOL simpleMode;
 

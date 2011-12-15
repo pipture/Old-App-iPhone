@@ -123,7 +123,7 @@
 						<object class="IBUIImageView" id="234220863">
 							<reference key="NSNextResponder" ref="463861355"/>
 							<int key="NSvFlags">292</int>
-							<string key="NSFrame">{{71, 52}, {178, 64}}</string>
+							<string key="NSFrame">{{80, 55}, {160, 58}}</string>
 							<reference key="NSSuperview" ref="463861355"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="834907775"/>
@@ -132,7 +132,7 @@
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							<object class="NSCustomResource" key="IBUIImage">
 								<string key="NSClassName">NSImage</string>
-								<string key="NSResourceName">pipturelogo.png</string>
+								<string key="NSResourceName">logo-pipture-blue@2x.png</string>
 							</object>
 						</object>
 						<object class="IBUIView" id="834907775">
@@ -379,7 +379,7 @@
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						</object>
 					</array>
-					<string key="NSFrame">{{0, 20}, {320, 460}}</string>
+					<string key="NSFrameSize">{320, 460}</string>
 					<reference key="NSSuperview"/>
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="112956243"/>
@@ -390,9 +390,6 @@
 						<reference key="NSCustomColorSpace" ref="371437153"/>
 					</object>
 					<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-				</object>
-				<object class="IBUISimulatedStatusBarMetrics" key="IBUISimulatedStatusBarMetrics">
-					<int key="IBUIStatusBarStyle">1</int>
 				</object>
 				<object class="IBUISimulatedOrientationMetrics" key="IBUISimulatedOrientationMetrics">
 					<int key="IBUIInterfaceOrientation">1</int>
@@ -1097,7 +1094,7 @@
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="done.png">{120, 59}</string>
 			<string key="loginbackground.png">{640, 960}</string>
-			<string key="pipturelogo.png">{136, 51}</string>
+			<string key="logo-pipture-blue@2x.png">{319, 117}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">933</string>
 	</data>

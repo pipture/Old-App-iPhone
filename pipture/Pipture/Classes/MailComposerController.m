@@ -39,7 +39,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
     [picturePlaceholder addSubview:imageView];
     
-    [imageView loadImageFromURL:[NSURL URLWithString:playlistItem.emailScreenshot] withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO asButton:NO target:nil selector:nil];
+    [imageView loadImageFromURL:[NSURL URLWithString:playlistItem.emailScreenshot] withDefImage:[UIImage imageNamed:PLACEHOLDER1] localStore:NO asButton:NO target:nil selector:nil];
 }
 
 - (void)nextButton:(id)sender {

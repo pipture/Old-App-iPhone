@@ -13,7 +13,7 @@
 
 
 //TODO: maybe not hardcode?
-#define ITEM_HEIGHT 190
+#define ITEM_HEIGHT 200
 #define ITEM_WIDTH 106
 
 @implementation AlbumsListView
@@ -46,10 +46,10 @@
         
         CGRect rect = item.thumbnailButton.frame;
         
-        AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectOffset(rect, -rect.origin.x, -rect.origin.y)] autorelease];
+        AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
         [item.thumbnailButton addSubview:imageView];
         
-        [imageView loadImageFromURL:[NSURL URLWithString:album.thumbnail] withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO asButton:YES target:self selector:@selector(detailAlbumShow:)];
+        [imageView loadImageFromURL:[NSURL URLWithString:album.thumbnail] withDefImage:nil localStore:NO asButton:YES target:self selector:@selector(detailAlbumShow:)];
         
         item.titleLabel.text = album.series.title;
         item.tagLabel.text = @"";

@@ -130,7 +130,7 @@
 					<object class="IBUIView" id="830043620">
 						<reference key="NSNextResponder" ref="991280464"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrameSize">{320, 188}</string>
+						<string key="NSFrameSize">{320, 165}</string>
 						<reference key="NSSuperview" ref="991280464"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -153,9 +153,12 @@
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
 			<object class="IBUITableView" id="296570427">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">274</int>
 				<string key="NSFrameSize">{320, 460}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
+				<reference key="NSNextKeyView"/>
 				<string key="NSReuseIdentifierKey">_NS:418</string>
 				<reference key="IBUIBackgroundColor" ref="582805439"/>
 				<bool key="IBUIClipsSubviews">YES</bool>
@@ -389,20 +392,17 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">AlbumDetailPage</string>
 					<string key="superclassName">UIScrollView</string>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="posterImage">UIImageView</string>
-						<string key="posterPlaceholder">UIView</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="posterImage">
-							<string key="name">posterImage</string>
-							<string key="candidateClassName">UIImageView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="posterPlaceholder">
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">posterPlaceholder</string>
+						<string key="NS.object.0">UIView</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">posterPlaceholder</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
 							<string key="name">posterPlaceholder</string>
 							<string key="candidateClassName">UIView</string>
 						</object>
-					</dictionary>
+					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/AlbumDetailPage.h</string>
@@ -416,7 +416,7 @@
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="NS.key.0">background.png</string>
-			<string key="NS.object.0">{640, 960}</string>
+			<string key="NS.object.0">{320, 480}</string>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">933</string>
 	</data>

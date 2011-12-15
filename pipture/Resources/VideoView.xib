@@ -13,11 +13,10 @@
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>IBUIView</string>
 			<string>IBUIImageView</string>
-			<string>IBProxyObject</string>
 			<string>IBUILabel</string>
+			<string>IBProxyObject</string>
 			<string>IBUIActivityIndicatorView</string>
 			<string>IBUIViewController</string>
-			<string>IBUISlider</string>
 			<string>IBUIButton</string>
 		</array>
 		<array key="IBDocument.PluginDependencies">
@@ -138,19 +137,6 @@
 									<string key="NSResourceName">playercontrols.png</string>
 								</object>
 							</object>
-							<object class="IBUISlider" id="438191610">
-								<reference key="NSNextResponder" ref="631362972"/>
-								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{18, 45}, {268, 23}}</string>
-								<reference key="NSSuperview" ref="631362972"/>
-								<reference key="NSWindow"/>
-								<string key="NSReuseIdentifierKey">_NS:623</string>
-								<bool key="IBUIOpaque">NO</bool>
-								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<int key="IBUIContentHorizontalAlignment">0</int>
-								<int key="IBUIContentVerticalAlignment">0</int>
-								<float key="IBUIValue">0.5</float>
-							</object>
 							<object class="IBUIButton" id="301893400">
 								<reference key="NSNextResponder" ref="631362972"/>
 								<int key="NSvFlags">292</int>
@@ -242,7 +228,7 @@
 								<string key="NSFrame">{{243, 0}, {50, 37}}</string>
 								<reference key="NSSuperview" ref="631362972"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="438191610"/>
+								<reference key="NSNextKeyView" ref="266934403"/>
 								<string key="NSReuseIdentifierKey">_NS:225</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -260,6 +246,17 @@
 								</object>
 								<reference key="IBUIFontDescription" ref="140503918"/>
 								<reference key="IBUIFont" ref="9744975"/>
+							</object>
+							<object class="IBUIView" id="266934403">
+								<reference key="NSNextResponder" ref="631362972"/>
+								<int key="NSvFlags">292</int>
+								<string key="NSFrame">{{20, 41}, {264, 20}}</string>
+								<reference key="NSSuperview" ref="631362972"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
+								<string key="NSReuseIdentifierKey">_NS:196</string>
+								<reference key="IBUIBackgroundColor" ref="383764776"/>
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							</object>
 						</array>
 						<string key="NSFrame">{{8, 394}, {304, 76}}</string>
@@ -345,14 +342,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">slider</string>
-						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="438191610"/>
-					</object>
-					<int key="connectionID">35</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">busyContainer</string>
 						<reference key="source" ref="372490531"/>
 						<reference key="destination" ref="156695960"/>
@@ -374,15 +363,6 @@
 						<reference key="destination" ref="458212190"/>
 					</object>
 					<int key="connectionID">54</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">sliderChanged:</string>
-						<reference key="source" ref="438191610"/>
-						<reference key="destination" ref="372490531"/>
-						<int key="IBEventType">7</int>
-					</object>
-					<int key="connectionID">51</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -455,11 +435,11 @@
 						<reference key="object" ref="631362972"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="74299195"/>
-							<reference ref="438191610"/>
 							<reference ref="301893400"/>
 							<reference ref="767578550"/>
 							<reference ref="975778564"/>
 							<reference ref="263841048"/>
+							<reference ref="266934403"/>
 						</array>
 						<reference key="parent" ref="191373211"/>
 						<string key="objectName">VideoControl</string>
@@ -467,11 +447,6 @@
 					<object class="IBObjectRecord">
 						<int key="objectID">25</int>
 						<reference key="object" ref="74299195"/>
-						<reference key="parent" ref="631362972"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">26</int>
-						<reference key="object" ref="438191610"/>
 						<reference key="parent" ref="631362972"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -530,6 +505,11 @@
 						<reference key="object" ref="458212190"/>
 						<reference key="parent" ref="0"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">55</int>
+						<reference key="object" ref="266934403"/>
+						<reference key="parent" ref="631362972"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -539,7 +519,6 @@
 				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="1.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="25.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<string key="26.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="27.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="28.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="29.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -552,12 +531,14 @@
 				<string key="5.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="53.CustomClassName">VideoTitleViewController</string>
 				<string key="53.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="55.CustomClassName">MPVolumeView</string>
+				<string key="55.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">54</int>
+			<int key="maxID">55</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -604,7 +585,6 @@
 						<string key="playpauseAction:">id</string>
 						<string key="prevAction:">id</string>
 						<string key="sendAction:">id</string>
-						<string key="sliderChanged:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="nextAction:">
@@ -623,10 +603,6 @@
 							<string key="name">sendAction:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="sliderChanged:">
-							<string key="name">sliderChanged:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="busyContainer">UIView</string>
@@ -635,7 +611,6 @@
 						<string key="pauseButton">UIButton</string>
 						<string key="prevButton">UIButton</string>
 						<string key="sendButton">UIButton</string>
-						<string key="slider">UISlider</string>
 						<string key="videoContainer">PlayerView</string>
 						<string key="videoTitleView">VideoTitleViewController</string>
 					</dictionary>
@@ -663,10 +638,6 @@
 						<object class="IBToOneOutletInfo" key="sendButton">
 							<string key="name">sendButton</string>
 							<string key="candidateClassName">UIButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="slider">
-							<string key="name">slider</string>
-							<string key="candidateClassName">UISlider</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="videoContainer">
 							<string key="name">videoContainer</string>

@@ -22,6 +22,15 @@
 
 #pragma mark - View lifecycle
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
@@ -72,7 +81,7 @@
         AsyncImageView* imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, placeholder.frame.size.width, placeholder.frame.size.height)] autorelease];
         [placeholder addSubview:imageView];
         
-        [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:[UIImage imageNamed:@"placeholder"] localStore:NO asButton:NO target:nil selector:nil];
+        [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:[UIImage imageNamed:PLACEHOLDER1] localStore:NO asButton:NO target:nil selector:nil];
         
         series.text = slot.title;
         title.text  = slot.script;
@@ -98,7 +107,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     Episode * episode = [album.episodes objectAtIndex:indexPath.row];
     NSArray * playlist = [NSArray arrayWithObject:episode];
-    [album release];
     [[PiptureAppDelegate instance] showVideo:playlist navigationController:self.navigationController noNavi:YES timeslotId:nil];
 }
 
