@@ -39,7 +39,7 @@
 					<object class="IBUILabel" id="919332839">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{7, 158}, {92, 26}}</string>
+						<string key="NSFrame">{{7, 155}, {92, 26}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="224340626"/>
@@ -77,7 +77,6 @@
 						<string key="NSFrame">{{7, 181}, {92, 14}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:328</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -118,7 +117,7 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
 							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">Thumbnail-default@2x.png</string>
+							<string key="NSResourceName">Thumbnail-default.png</string>
 						</object>
 					</object>
 					<object class="IBUIView" id="507432732">
@@ -286,8 +285,8 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NS.key.0">Thumbnail-default@2x.png</string>
-			<string key="NS.object.0">{178, 288}</string>
+			<string key="NS.key.0">Thumbnail-default.png</string>
+			<string key="NS.object.0">{90, 145}</string>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">933</string>
 	</data>

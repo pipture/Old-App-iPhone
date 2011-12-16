@@ -12,12 +12,14 @@
 #import "AsyncImageView.h"
 
 @implementation AlbumDetailInfoController
-@synthesize tabController;
 @synthesize subViewContainer;
 @synthesize detailPage;
 @synthesize videosTable;
 @synthesize libraryDelegate;
 @synthesize videoTableCell;
+@synthesize dividerTableCell;
+@synthesize detailsButton;
+@synthesize videosButton;
 @synthesize album;
 
 #pragma mark - View lifecycle
@@ -36,43 +38,54 @@
 {
     [super viewDidLoad];
 
-    [tabController setSelectedSegmentIndex:DetailAlbumViewType_Videos];
-    [self tabChanged:tabController];
+    [self tabChanged:videosButton];
 }
 
 - (void)viewDidUnload
 {
-    [self setTabController:nil];
     [self setSubViewContainer:nil];
     [self setDetailPage:nil];
     [self setVideosTable:nil];
     [self setVideoTableCell:nil];
+    [self setDividerTableCell:nil];
+    [self setDetailsButton:nil];
+    [self setVideosButton:nil];
     [super viewDidUnload];
 }
 
 - (void)dealloc {
     [album release];
     [videosArray release];
-    [tabController release];
     [subViewContainer release];
     [detailPage release];
     [videosTable release];
     [videoTableCell release];
+    [dividerTableCell release];
+    [detailsButton release];
+    [videosButton release];
     [super dealloc];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return (indexPath.row % 2 == 0)?88:2;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return album.episodes.count;
+    if (album.episodes.count > 0)
+        return album.episodes.count+album.episodes.count-1;
+    else
+        return 0;
 }
 
 - (void)fillCell:(int)row cell:(UITableViewCell *)cell{
-    Episode * slot = [album.episodes objectAtIndex:row];
+    Episode * slot = [album.episodes objectAtIndex:row/2];
     
     if (slot != nil) {
         UIView * placeholder = (UILabel*) [cell viewWithTag:1];
         UILabel * series = (UILabel*)[cell viewWithTag:2];
         UILabel * title = (UILabel*)[cell viewWithTag:3];
         UILabel * fromto = (UILabel*)[cell viewWithTag:4];
+        UILabel * counter = (UILabel*)[cell viewWithTag:5];
         
         if (placeholder.subviews.count > 0) {
             [[placeholder.subviews objectAtIndex:0] removeFromSuperview];
@@ -81,8 +94,9 @@
         AsyncImageView* imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, placeholder.frame.size.width, placeholder.frame.size.height)] autorelease];
         [placeholder addSubview:imageView];
         
-        [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:[UIImage imageNamed:PLACEHOLDER1] localStore:NO asButton:NO target:nil selector:nil];
+        [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:nil localStore:NO asButton:NO target:nil selector:nil];
         
+        counter.text = [NSString stringWithFormat:@"%d.", row/2 + 1];
         series.text = slot.title;
         title.text  = slot.script;
         fromto.text = slot.senderToReceiver;
@@ -90,31 +104,45 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString * const kCellID = @"CellID";
+    static NSString * const kNorCellID = @"NorCellID";
+    static NSString * const kDivCellID = @"DivCellID";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
-    if (cell == nil) {
-        [[NSBundle mainBundle] loadNibNamed:@"DetailTableItemView" owner:self options:nil];
-        cell = videoTableCell;
-        videoTableCell = nil;
+    int row = indexPath.row;
+    UITableViewCell * cell = nil;
+    if (row % 2 == 0) {
+        cell = [tableView dequeueReusableCellWithIdentifier:kNorCellID];
+        if (cell == nil) {
+            [[NSBundle mainBundle] loadNibNamed:@"DetailTableItemView" owner:self options:nil];
+            cell = videoTableCell;
+            videoTableCell = nil;
+        }
+        [self fillCell:[indexPath row] cell:cell];
+    } else {
+        cell = [tableView dequeueReusableCellWithIdentifier:kDivCellID];
+        if (cell == nil) {
+            [[NSBundle mainBundle] loadNibNamed:@"TableDividerView" owner:self options:nil];
+            cell = dividerTableCell;
+            dividerTableCell = nil;
+        }
     }
-    
-    [self fillCell:[indexPath row] cell:cell];
     
     return cell;    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Episode * episode = [album.episodes objectAtIndex:indexPath.row];
-    NSArray * playlist = [NSArray arrayWithObject:episode];
-    [[PiptureAppDelegate instance] showVideo:playlist navigationController:self.navigationController noNavi:YES timeslotId:nil];
+    if (indexPath.row %2 == 0) {
+        Episode * episode = [album.episodes objectAtIndex:indexPath.row / 2];
+        NSArray * playlist = [NSArray arrayWithObject:episode];
+        [[PiptureAppDelegate instance] showVideo:playlist navigationController:self.navigationController noNavi:YES timeslotId:nil];
+    }
 }
 
 - (IBAction)tabChanged:(id)sender {
-    viewType = [tabController selectedSegmentIndex];
+    if (!sender) return;
+    viewType = [sender tag];
     
-    if ([[subViewContainer subviews] count] > 1) {//keep image view
-        [[[subViewContainer subviews] objectAtIndex:1] removeFromSuperview];
+    if ([[subViewContainer subviews] count] > 0) {
+        [[[subViewContainer subviews] objectAtIndex:0] removeFromSuperview];
     }
     
     switch (viewType) {
@@ -122,13 +150,28 @@
             detailPage.frame = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height);
             [detailPage prepareLayout:album];
             [subViewContainer addSubview:detailPage];
+            
+            [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-active.png"] forState:UIControlStateNormal];
+            [videosButton setBackgroundImage:[UIImage imageNamed:@"button-videos-inactive.png"] forState:UIControlStateNormal];
+            [videosButton setBackgroundImage:[UIImage imageNamed:@"button-videos-active.png"] forState:UIControlStateSelected];
             break;
         case DetailAlbumViewType_Videos:
             videosTable.frame = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height);
             [subViewContainer addSubview:videosTable];
             [videosTable reloadData];
+            
+            [videosButton setBackgroundImage:[UIImage imageNamed:@"button-videos-active.png"] forState:UIControlStateNormal];
+            [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-inactive.png"] forState:UIControlStateNormal];
+            [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-active.png"] forState:UIControlStateSelected];
             break;
     }
+}
+
+- (IBAction)trailerShow:(id)sender {
+    NSLog(@"Trailer Show");
+    NSArray * playlist = [NSArray arrayWithObject:album.trailer];
+    UINavigationController * navi = [PiptureAppDelegate instance].libraryNavigationController;
+    [[PiptureAppDelegate instance] showVideo:playlist navigationController:navi noNavi:YES timeslotId:nil];    
 }
 
 @end

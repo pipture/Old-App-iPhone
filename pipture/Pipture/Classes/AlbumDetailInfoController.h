@@ -11,8 +11,8 @@
 #import "LibraryDelegateProtocol.h"
 
 enum DetailAlbumViewType {
-    DetailAlbumViewType_Videos,
-    DetailAlbumViewType_Credits,
+    DetailAlbumViewType_Videos = 20,
+    DetailAlbumViewType_Credits = 10,
 };
 
 @interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource>
@@ -21,14 +21,17 @@ enum DetailAlbumViewType {
     NSMutableArray * videosArray;
 }
 - (IBAction)tabChanged:(id)sender;
+- (IBAction)trailerShow:(id)sender;
 
 @property (retain, nonatomic) Album * album;
 
-@property (retain, nonatomic) IBOutlet UISegmentedControl *tabController;
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;
 @property (retain, nonatomic) IBOutlet AlbumDetailPage *detailPage;
 @property (retain, nonatomic) IBOutlet UITableView *videosTable;
 @property (assign, nonatomic) id<LibraryViewDelegate> libraryDelegate;
 @property (retain, nonatomic) IBOutlet UITableViewCell *videoTableCell;
+@property (retain, nonatomic) IBOutlet UITableViewCell *dividerTableCell;
+@property (retain, nonatomic) IBOutlet UIButton *detailsButton;
+@property (retain, nonatomic) IBOutlet UIButton *videosButton;
 
 @end
