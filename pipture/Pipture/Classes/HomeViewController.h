@@ -43,10 +43,5 @@
 
 @property (retain, nonatomic) IBOutlet HomeScreenTitleViewController *homescreenTitle;
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (retain, nonatomic) IBOutlet UIView *libraryBar;
-@property (retain, nonatomic) IBOutlet UIButton *actionButton;
-
-@property (retain, nonatomic) IBOutlet UIButton *prevButton;
-@property (retain, nonatomic) IBOutlet UIButton *nextButton;
 
 @end

@@ -168,10 +168,10 @@
 }
 
 - (IBAction)trailerShow:(id)sender {
-    NSLog(@"Trailer Show");
+/*    NSLog(@"Trailer Show");
     NSArray * playlist = [NSArray arrayWithObject:album.trailer];
     UINavigationController * navi = [PiptureAppDelegate instance].libraryNavigationController;
-    [[PiptureAppDelegate instance] showVideo:playlist navigationController:navi noNavi:YES timeslotId:nil];    
+    [[PiptureAppDelegate instance] showVideo:playlist navigationController:navi noNavi:YES timeslotId:nil];    */
 }
 
 @end

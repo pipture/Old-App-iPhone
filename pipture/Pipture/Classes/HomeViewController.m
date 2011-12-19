@@ -15,10 +15,6 @@
 
 @implementation HomeViewController
 @synthesize scrollView;
-@synthesize libraryBar;
-@synthesize actionButton;
-@synthesize prevButton;
-@synthesize nextButton;
 @synthesize scheduleButton;
 @synthesize homescreenTitle;
 
@@ -65,10 +61,6 @@
     
     [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
     
-    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(libraryBarResponder:)];
-    [libraryBar addGestureRecognizer:singleFingerTap];
-    [singleFingerTap release];
-
     //install out titleview to navigation controller
     self.navigationItem.title = @"Home";
     homescreenTitle.view.frame = CGRectMake(0, 0, 130,44);
@@ -101,10 +93,6 @@
 - (void)viewDidUnload
 {
     [self setScrollView:nil];
-    [self setLibraryBar:nil];
-    [self setActionButton:nil];
-    [self setPrevButton:nil];
-    [self setNextButton:nil];
     [self setHomescreenTitle:nil];
     [super viewDidUnload];
 }
@@ -122,7 +110,6 @@
         changeTimer = nil;
     }
     [self stopTimer];
-    actionButton.enabled = YES;
     [super viewDidDisappear:animated];
 }
 
@@ -154,10 +141,6 @@
     [scheduleButton release];
     [timelineArray release];
     [scrollView release];
-    [libraryBar release];
-    [actionButton release];
-    [prevButton release];
-    [nextButton release];
     [homescreenTitle release];
     [super dealloc];
 }
@@ -228,41 +211,24 @@
     [self customNavBarTitle:page];
     
     //TODO: check for current timeslot
-    if (page == 0) {
+    /*if (page == 0) {
         [actionButton setImage:[UIImage imageNamed:@"powerbutton.png"] forState:UIControlStateNormal];
     } else {
         scheduleMode = YES;
         [actionButton setImage:[UIImage imageNamed:@"rewertbutton.png"] forState:UIControlStateNormal];
-    }
+    }*/
     
-    if (scheduleMode) {
-        prevButton.hidden = NO;
-        nextButton.hidden = NO;
+/*    if (scheduleMode) {
         scheduleButton.style = UIBarButtonItemStyleDone;
         scheduleButton.title = @"Done";
         
-        if (page == 0) {
-            prevButton.alpha = 0.3;
-            prevButton.enabled = NO;
-        } else {
-            prevButton.alpha = 0.7;
-            prevButton.enabled = YES;
-        }
-        
-        if (page == [timelineArray count] - 1 || timelineArray.count == 0) {
-            nextButton.alpha = 0.3;
-            nextButton.enabled = NO;
-        } else {
-            nextButton.alpha = 0.7;
-            nextButton.enabled = YES;
-        }
     } else {
         prevButton.hidden = YES;
         nextButton.hidden = YES;
         scheduleButton.style = UIBarButtonItemStylePlain;
         scheduleButton.title = @"Schedule";
     }
-    
+  */  
 }
 
 - (void)scrollToPage:(int) page {
@@ -317,7 +283,6 @@
         if (timelineArray.count > 0) {
             Timeslot * slot = [timelineArray objectAtIndex:page];
             reqTimeslotId = slot.timeslotId;
-            actionButton.enabled = NO;//prevent multiple pushes
             [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];
         }
     }
@@ -344,7 +309,6 @@
 -(void)dataRequestFailed:(DataRequestError*)error
 {
     [[PiptureAppDelegate instance] processDataRequestError:error delegate:self cancelTitle:@"OK" alertId:0];
-    actionButton.enabled = YES;
 }
 
 #pragma mark TimeslotsReceiver methods
@@ -406,28 +370,24 @@
         [[PiptureAppDelegate instance] showVideo:playlistItems navigationController:self.navigationController noNavi:NO timeslotId:[NSNumber numberWithInt:reqTimeslotId]];
     }
     reqTimeslotId = -1;
-    actionButton.enabled = YES;
 }
 
 -(void)playlistCantBeReceivedForUnknownTimeslot:(NSNumber*)timeslotId {
     NSLog(@"Unknown timeslot: %@", timeslotId);
     reqTimeslotId = -1;
     [self refreshTimeSlots];
-    actionButton.enabled = YES;
 }
                                                                        
 -(void)playlistCantBeReceivedForExpiredTimeslot:(NSNumber*)timeslotId {
     NSLog(@"Expired timeslot: %@", timeslotId);
     reqTimeslotId = -1;
     [self refreshTimeSlots];
-    actionButton.enabled = YES;
 }
 
 -(void)playlistCantBeReceivedForFutureTimeslot:(NSNumber*)timeslotId {
     NSLog(@"Future timeslot: %@", timeslotId);
     reqTimeslotId = -1;
     [self refreshTimeSlots];
-    actionButton.enabled = YES;
 }
 
 #pragma mark AlbumsDelegate methods
