@@ -7,41 +7,43 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "HomeScreenTitleViewController.h"
+#import "CoverView.h"
+#import "ScheduleView.h"
 
-#define TIMESLOT_CHANGE_POLL_INTERVAL 60
-#define TIMESLOT_REGULAR_POLL_INTERVAL 900
+enum HomeScreenMode {
+    HomeScreenMode_Cover,
+    HomeScreenMode_PlayingNow,
+    HomeScreenMode_Schedule,
+    HomeScreenMode_Albums,
+    HomeScreenMode_Unknown = 99,
+};
 
-@interface HomeViewController : UIViewController <UIScrollViewDelegate,TimeslotsReceiver, PlaylistReceiver, AlbumsReceiver, UIAlertViewDelegate>
+@interface HomeViewController : UIViewController <TimeslotsReceiver, PlaylistReceiver, AlbumsReceiver, UIAlertViewDelegate, UITabBarDelegate>
 {
-    NSTimer *changeTimer;
-    NSTimer *updateTimer;
+    enum HomeScreenMode homeScreenMode;
     
     UIStatusBarStyle lastStatusStyle;
     UIBarStyle lastNaviStyle;
     
     //container for timeslots
     NSInteger reqTimeslotId;
-    NSMutableArray * timelineArray;
-    BOOL scheduleMode;
 }
 
 //returns current visible page in scrollview
-- (int)getPageNumber;
-- (void)prepareImageFor:(int)timeslot;
-- (void)updateControls;
 
-- (void)scrollToPage:(int) page;
-- (IBAction)prevAction:(id)sender;
-- (IBAction)nextAction:(id)sender;
+- (void)setHomeScreenMode:(enum HomeScreenMode)mode;
 
 - (IBAction)actionButton:(id)sender;
-- (void)libraryBarResponder:(UITapGestureRecognizer *)recognizer;
-- (void) scheduleAction:(id)sender;
+- (IBAction)scheduleAction:(id)sender;
+- (IBAction)flipAction:(id)sender;
 
-@property (retain, nonatomic) UIBarButtonItem *scheduleButton;
-
-@property (retain, nonatomic) IBOutlet HomeScreenTitleViewController *homescreenTitle;
-@property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (retain, nonatomic) IBOutlet UIView *tabbarContainer;
+@property (retain, nonatomic) IBOutlet UIView *tabbarPanel;
+@property (retain, nonatomic) IBOutlet UITabBar *tabbarControl;
+@property (retain, nonatomic) IBOutlet UIButton *flipButton;
+@property (retain, nonatomic) IBOutlet UIButton *scheduleButton;
+@property (retain, nonatomic) IBOutlet UIButton *powerButton;
+@property (retain, nonatomic) IBOutlet ScheduleView *scheduleView;
+@property (retain, nonatomic) IBOutlet CoverView *coverView;
 
 @end
