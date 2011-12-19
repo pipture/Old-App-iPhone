@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "HomeTabbarController.h"
-#import "LoginViewController.h"
 #import "VideoViewController.h"
 #import "LibraryNavigationController.h"
 #import "PiptureModel.h"
@@ -28,7 +27,7 @@
 #define SHOW_ERROR(title, msg) [[PiptureAppDelegate instance] showError:title message:msg];
 
 
-@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, BalanceReceiver>
+@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver>
 {
     VideoViewController* vc;
     float balance;

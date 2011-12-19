@@ -88,7 +88,6 @@
 		38989CFD147A6320004DE1E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE4147A631E004DE1E0 /* Foundation.framework */; };
 		38989D05147A6320004DE1E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 38989D03147A6320004DE1E0 /* InfoPlist.strings */; };
 		38989D19147A6568004DE1E0 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38989D18147A6568004DE1E0 /* MainWindow.xib */; };
-		38989D20147A66A7004DE1E0 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38989D1F147A66A7004DE1E0 /* LoginViewController.m */; };
 		389C54E414865A6100AF70A9 /* DetailTableItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 389C54E314865A6100AF70A9 /* DetailTableItemView.xib */; };
 		38A0B98B148F86430060420F /* HomeScreenTitleView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38A0B98A148F86430060420F /* HomeScreenTitleView.xib */; };
 		38A0B98E148F87F70060420F /* HomeScreenTitleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38A0B98D148F87F60060420F /* HomeScreenTitleViewController.m */; };
@@ -131,8 +130,6 @@
 		8875179B148CAD3B00AFFFAC /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875178E148CAD3B00AFFFAC /* SBJsonUTF8Stream.m */; };
 		8875179C148CAD3B00AFFFAC /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751790148CAD3B00AFFFAC /* SBJsonWriter.m */; };
 		887517A7148CAE3400AFFFAC /* PiptureAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */; };
-		888780D1149749A100C9AD36 /* NSString+MD5Addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 888780CE149749A100C9AD36 /* NSString+MD5Addition.m */; };
-		888780D2149749A100C9AD36 /* UIDevice+IdentifierAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 888780D0149749A100C9AD36 /* UIDevice+IdentifierAddition.m */; };
 		88982B8814923FBD0012BEC2 /* DataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8514923FBD0012BEC2 /* DataRequest.m */; };
 		88982B8914923FBD0012BEC2 /* DataRequestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8714923FBD0012BEC2 /* DataRequestError.m */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
@@ -252,8 +249,6 @@
 		38989D02147A6320004DE1E0 /* PiptureTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PiptureTests-Info.plist"; sourceTree = "<group>"; };
 		38989D04147A6320004DE1E0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		38989D18147A6568004DE1E0 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
-		38989D1E147A66A7004DE1E0 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
-		38989D1F147A66A7004DE1E0 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		389C54E314865A6100AF70A9 /* DetailTableItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailTableItemView.xib; sourceTree = "<group>"; };
 		38A0B98A148F86430060420F /* HomeScreenTitleView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeScreenTitleView.xib; sourceTree = "<group>"; };
 		38A0B98C148F87F60060420F /* HomeScreenTitleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeScreenTitleViewController.h; sourceTree = "<group>"; };
@@ -319,10 +314,6 @@
 		88751790148CAD3B00AFFFAC /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureAppDelegate.h; sourceTree = "<group>"; };
 		887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureAppDelegate.m; sourceTree = "<group>"; };
-		888780CD149749A100C9AD36 /* NSString+MD5Addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5Addition.h"; sourceTree = "<group>"; };
-		888780CE149749A100C9AD36 /* NSString+MD5Addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5Addition.m"; sourceTree = "<group>"; };
-		888780CF149749A100C9AD36 /* UIDevice+IdentifierAddition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+IdentifierAddition.h"; sourceTree = "<group>"; };
-		888780D0149749A100C9AD36 /* UIDevice+IdentifierAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+IdentifierAddition.m"; sourceTree = "<group>"; };
 		88982B8414923FBD0012BEC2 /* DataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequest.h; sourceTree = "<group>"; };
 		88982B8514923FBD0012BEC2 /* DataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequest.m; sourceTree = "<group>"; };
 		88982B8614923FBD0012BEC2 /* DataRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequestError.h; sourceTree = "<group>"; };
@@ -388,8 +379,6 @@
 		38441FD9147FA5AD009B9D4E /* HomeScreen */ = {
 			isa = PBXGroup;
 			children = (
-				38989D1E147A66A7004DE1E0 /* LoginViewController.h */,
-				38989D1F147A66A7004DE1E0 /* LoginViewController.m */,
 				88D84207147B626C00E47EF8 /* HomeViewController.h */,
 				88D84208147B626C00E47EF8 /* HomeViewController.m */,
 				38A0B98C148F87F60060420F /* HomeScreenTitleViewController.h */,
@@ -574,7 +563,6 @@
 				38BC27C3149870E6002B938F /* BusyViewController.m */,
 				887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */,
 				887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */,
-				888780CC149749A000C9AD36 /* Gekitz */,
 				384A1FA11491C240007D5E0B /* ThumbtackFW */,
 				384A1F871491C21C007D5E0B /* PiptureAPI */,
 				382D9C28148E032300005F16 /* Utility */,
@@ -703,17 +691,6 @@
 			);
 			name = SBJSON;
 			path = Pipture/Classes/SBJSON;
-			sourceTree = "<group>";
-		};
-		888780CC149749A000C9AD36 /* Gekitz */ = {
-			isa = PBXGroup;
-			children = (
-				888780CD149749A100C9AD36 /* NSString+MD5Addition.h */,
-				888780CE149749A100C9AD36 /* NSString+MD5Addition.m */,
-				888780CF149749A100C9AD36 /* UIDevice+IdentifierAddition.h */,
-				888780D0149749A100C9AD36 /* UIDevice+IdentifierAddition.m */,
-			);
-			path = Gekitz;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -894,7 +871,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				38989CEF147A631F004DE1E0 /* main.m in Sources */,
-				38989D20147A66A7004DE1E0 /* LoginViewController.m in Sources */,
 				88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */,
 				381935C6147D067D0049B30E /* LibraryNavigationController.m in Sources */,
 				381935C9147E29920049B30E /* AlbumsListView.m in Sources */,
@@ -933,8 +909,6 @@
 				88982B8814923FBD0012BEC2 /* DataRequest.m in Sources */,
 				88982B8914923FBD0012BEC2 /* DataRequestError.m in Sources */,
 				38D510041497417E009BF5E9 /* InAppPurchaseManager.m in Sources */,
-				888780D1149749A100C9AD36 /* NSString+MD5Addition.m in Sources */,
-				888780D2149749A100C9AD36 /* UIDevice+IdentifierAddition.m in Sources */,
 				38BC27C4149870E6002B938F /* BusyViewController.m in Sources */,
 				3886C2AE149EFFC2007A0317 /* HomeTabbarController.m in Sources */,
 			);

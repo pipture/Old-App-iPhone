@@ -172,7 +172,6 @@ static NSString* const JSON_PARAM_UUID = @"UUID";
 
 -(void)loginWithUUID:(NSString *)uuid receiver:(NSObject<AuthenticationDelegate> *)receiver
 {
-    
     NSURL* url = [self buildURLWithRequest:LOGIN_REQUEST sendAPIVersion:NO sendKey:NO];
     
     NSString*params = [NSString stringWithFormat:@"%@=%@&%@=%@",REST_PARAM_API,API_VERSION,REST_PARAM_UUID,uuid];
@@ -229,7 +228,7 @@ static NSString* const JSON_PARAM_UUID = @"UUID";
                     NSString* uuid = [jsonResult objectForKey:JSON_PARAM_UUID];                
                     if (uuid)
                     {
-                        [receiver performSelectorOnMainThread:@selector(registred:) withObject:uuid waitUntilDone:NO];                    
+                        [receiver performSelectorOnMainThread:@selector(registred:) withObject:uuid waitUntilDone:YES];                    
                     }
                     else
                     {
@@ -664,8 +663,8 @@ static NSString* const JSON_PARAM_UUID = @"UUID";
     if ([receiver respondsToSelector:@selector(unexpectedAPIError:)])
     {
         [receiver unexpectedAPIError:code description:description];
-        NSLog(@"Unexpected API error: %@, code: %d", description, code);
     }    
+    NSLog(@"Unexpected API error: %@, code: %d", description, code);
 }
 
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver {
