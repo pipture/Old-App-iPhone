@@ -8,12 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
+#import "HomeTabbarController.h"
 #import "LoginViewController.h"
 #import "VideoViewController.h"
 #import "LibraryNavigationController.h"
 #import "PiptureModel.h"
 #import "DataRequest.h"
 #import "InAppPurchaseManager.h"
+
+#define PLACEHOLDER1 @"default.png"
 
 #define kOFFSET_FOR_KEYBOARD 60.0
 #define kHEIGHT_FOR_KEYBOARD 216.0
@@ -34,8 +37,6 @@
 
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
-@property (retain, nonatomic) IBOutlet LibraryNavigationController * libraryNavigationController;
-@property (retain, nonatomic) IBOutlet LoginViewController * loginViewController;
 @property (readonly, nonatomic) PiptureModel * model;
 @property (retain, nonatomic) BusyViewController * busyView;
 
@@ -47,12 +48,9 @@
 - (void)buyCredits;
 
 - (BOOL)trackEvent:(NSString*)event :(NSString*)action;
-- (void) onLogin;
-- (void) onHome;
-- (void) onLibrary:(NSArray*)albums;
 - (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId;//TODO: add video mode, playlist, e .t.c
 
-- (void)showModalBusy;
+- (void)showModalBusy:(void (^)(void))completion;
 - (void)dismissModalBusy;
 
 - (void)processDataRequestError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate cancelTitle:(NSString*)title alertId:(int)alertId;

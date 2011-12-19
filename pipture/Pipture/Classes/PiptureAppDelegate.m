@@ -17,8 +17,6 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize busyView;
 @synthesize window = _window;
 @synthesize homeNavigationController;
-@synthesize libraryNavigationController;
-@synthesize loginViewController = _loginViewController;
 @synthesize model = model_;
 
 static PiptureAppDelegate *instance;
@@ -33,8 +31,6 @@ static PiptureAppDelegate *instance;
         vc = nil;
     }
     [purchases release];
-    [_loginViewController release];
-    [libraryNavigationController release];
     [homeNavigationController release];
     [_window release];
     [model_ release];
@@ -78,8 +74,9 @@ static PiptureAppDelegate *instance;
         NSLog(@"error in trackPageview");
     }
     
-    [self.window addSubview:_loginViewController.view];
+    [self.window setRootViewController:homeNavigationController];
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
@@ -102,40 +99,6 @@ static PiptureAppDelegate *instance;
     [vc initVideo];
     
     TRACK_EVENT(@"Open Activity", @"Video player");
-}
-
-- (void) onHome {
-    CATransition *animation = [CATransition animation];
-    [animation setDuration:0.5];
-    [animation setType:kCATransitionPush];
-    [animation setSubtype:kCATransitionFromBottom];
-    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-    
-    [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
-    [self.window setRootViewController:homeNavigationController];
-    
-    TRACK_EVENT(@"Open Activity", @"Home");
-}
-
-- (void) onLogin {
-    [_loginViewController.view removeFromSuperview];
-    
-    [self onHome];
-}
-
-- (void) onLibrary:(NSArray*)albums {
-
-    CATransition *animation = [CATransition animation];
-    [animation setDuration:0.5];
-    [animation setType:kCATransitionPush];
-    [animation setSubtype:kCATransitionFromTop];
-    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-    
-    [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
-    libraryNavigationController.albums = albums;
-    [self.window setRootViewController:libraryNavigationController];
-    
-    TRACK_EVENT(@"Open Activity", @"Library");
 }
 
 NSInteger networkActivityIndecatorCount;
@@ -225,9 +188,9 @@ NSInteger networkActivityIndecatorCount;
     NSLog(@"New balance: %@", newBalance);
     balance = [newBalance floatValue];
     
-    if (self.window.rootViewController == libraryNavigationController) {
+    /*if (self.window.rootViewController == libraryNavigationController) {
         [libraryNavigationController updateBalance:balance];
-    }
+    }*/
 }
 
 - (float)getBalance {
@@ -246,13 +209,13 @@ NSInteger networkActivityIndecatorCount;
     }
 }
 
-- (void)showModalBusy {
+- (void)showModalBusy:(void (^)(void))completion {
     [[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [[[self window] rootViewController] presentModalViewController:busyView animated:YES];
+    [[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
 }
 
 - (void)dismissModalBusy {
-    [[[self window] rootViewController] dismissModalViewControllerAnimated:YES];
+    [[[self window] rootViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark -

@@ -45,13 +45,13 @@
     [super dealloc];
 }
 
-- (IBAction)closeLibrary:(id)sender {
+/*- (IBAction)closeLibrary:(id)sender {
     [[PiptureAppDelegate instance] onHome];
 }
 
 - (IBAction)purchaseCredits:(id)sender {
     [[PiptureAppDelegate instance] buyCredits];
-}
+}*/
 
 - (void)updateBalance:(float)balance {
     if (balance == 0) {

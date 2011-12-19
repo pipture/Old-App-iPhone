@@ -10,6 +10,7 @@
 #import "MailComposerController.h"
 #import "PlaylistItem.h"
 #import "PiptureAppDelegate.h"
+#import "MediaPlayer/MPVolumeView.h"
 
 @implementation VideoViewController
 @synthesize controlsPanel;
@@ -19,7 +20,6 @@
 @synthesize nextButton;
 @synthesize pauseButton;
 @synthesize prevButton;
-@synthesize slider;
 @synthesize simpleMode;
 @synthesize playlist;
 @synthesize videoTitleView;
@@ -74,9 +74,6 @@
             [[[PiptureAppDelegate instance] model] getVideoURL:item forceBuy:YES forTimeslotId:timeslotId receiver:self];
             precacheBegin = YES;
         }
-        
-        [slider setMaximumValue:duration];
-        [slider setValue:position animated:YES];
     }
 }
 
@@ -227,6 +224,7 @@
 
 - (void)initVideo {
     
+    waitForNext = NO;
     needToBack = NO;
     suspended = YES;
     precacheBegin = NO;
@@ -262,11 +260,8 @@
     [singleFingerTap release];
     
     //install out titleview to navigation controller
-    //self.navigationItem.title = @"";
     videoTitleView.view.frame = CGRectMake(0, 0, 130,44);
     self.navigationItem.titleView = videoTitleView.view;
-    
-    [slider setMaximumValue:100];
     
     NSLog(@"video player loaded");
 }
@@ -279,7 +274,6 @@
     [self setNextButton:nil];
     [self setPauseButton:nil];
     [self setPrevButton:nil];
-    [self setSlider:nil];
     [self setVideoContainer:nil];
     [self setBusyContainer:nil];
     [self setVideoTitleView:nil];
@@ -309,6 +303,11 @@
     controlsHidded = YES;
     
     [self updateControlsAnimated:YES];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [self enableControls:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -379,17 +378,6 @@
     }
 }
 
-- (IBAction)sliderChanged:(id)sender {
-    float position = slider.value;
-    position /= 100;
-    
-    //[self setVolume:position];
-    
-    /*if (player != nil) {
-        [player seekToTime:CMTimeMake(position, 60)];
-    }*/
-}
-
 - (void)dealloc {
     NSLog(@"video released");
     
@@ -408,30 +396,11 @@
     [nextButton release];
     [pauseButton release];
     [prevButton release];
-    [slider release];
     [videoContainer release];
     [busyContainer release];
     [videoTitleView release];
     [super dealloc];
 }
-
-/*- (void)setVolume:(float)volume {
-    AVAsset *asset = player.currentItem.asset;
-    NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
-    
-    // Mute all the audio tracks
-    NSMutableArray *allAudioParams = [NSMutableArray array];
-    for (AVAssetTrack *track in audioTracks) {
-        AVMutableAudioMixInputParameters *audioInputParams =[AVMutableAudioMixInputParameters audioMixInputParameters];
-        [audioInputParams setVolume:volume atTime:kCMTimeZero];
-        [audioInputParams setTrackID:[track trackID]];
-        [allAudioParams addObject:audioInputParams];
-    }
-    AVMutableAudioMix *audioZeroMix = [AVMutableAudioMix audioMix];
-    [audioZeroMix setInputParameters:allAudioParams];
-    
-    [player.currentItem setAudioMix:audioZeroMix]; // Mute the player item
-}*/
 
 #pragma mark VideoURLReceiver protocol
 
@@ -458,26 +427,31 @@
     }
 }
 
+-(void)goBack {
+    self.busyContainer.hidden = YES;
+    if (suspended) {
+        needToBack = YES;
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
 -(void)videoNotPurchased:(PlaylistItem*)playlistItem {
     NSLog(@"Video not purchased: %@", playlistItem);
-    
     SHOW_ERROR(@"Playing failed", @"Video not purchased!");
-    
-    self.busyContainer.hidden = YES;
-    needToBack = YES;
+    [self goBack];
 }
 
 -(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem {
     NSLog(@"Timeslot expired for: %@", playlistItem);
-    
     SHOW_ERROR(@"Playing failed", @"Video timeslot expired!");
-
-    self.busyContainer.hidden = YES;
-    needToBack = YES;
+    [self goBack];
 }
 
 -(void)authenticationFailed {
     NSLog(@"Authentication failed");
+    SHOW_ERROR(@"Playing failed", @"Authentication failed");
+    [self goBack];
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)balance {
@@ -485,18 +459,17 @@
 }
 
 -(void)notEnoughMoneyForWatch:(PlaylistItem*)playlistItem {
-
-    SHOW_ERROR(@"Playing failed", @"Insufficient funds!");
-    
-    self.busyContainer.hidden = YES;
-    needToBack = YES;
-    
     NSLog(@"No enought money");
+    SHOW_ERROR(@"Playing failed", @"Insufficient funds!");
+    [self goBack];   
 }
 
 -(void)dataRequestFailed:(DataRequestError*)error
 {
-    [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
+    if (error.errorCode != DRErrorNoInternet) {
+        [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
+    }
+    [self goBack];
 }
 
 

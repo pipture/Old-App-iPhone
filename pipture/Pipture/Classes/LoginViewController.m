@@ -203,7 +203,7 @@ BOOL registrationRequired = NO;
 
 -(void)loggedIn
 {
-    [[PiptureAppDelegate instance] onLogin];
+    //[[PiptureAppDelegate instance] onLogin];
 }
 
 -(void)loginFailed
@@ -213,7 +213,7 @@ BOOL registrationRequired = NO;
 
 -(void)registred
 {    
-    [[PiptureAppDelegate instance] onLogin];
+    //[[PiptureAppDelegate instance] onLogin];
 }
 
 -(void)alreadyRegistredWithOtherDevice

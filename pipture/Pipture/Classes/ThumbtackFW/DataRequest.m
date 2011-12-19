@@ -23,27 +23,37 @@
 NSMutableData* receivedData;
 NSURLConnection* connection;
 
-- (id)initWithURL:(NSURL*)url postParams:(NSString*)params callback:(DataRequestCallback)callback
+
+id<DataRequestManager> requestManager_;
+
+- (id)initWithURL:(NSURL*)url postParams:(NSString*)params requestManager:(id<DataRequestManager>)requestManager callback:(DataRequestCallback)callback
 {
     self = [super init];
     if (self)
     {
         callback_ = [callback copy];
         url_ = [url retain];
+        requestManager_ = [requestManager retain];
         postParams_ = [params retain];        
     }
     return self;    
 }
 
-- (id)initWithURL:(NSURL*)url callback:(DataRequestCallback)callback
+- (id)initWithURL:(NSURL*)url requestManager:(id<DataRequestManager>)requestManager callback:(DataRequestCallback)callback
 {
-    return [self initWithURL:url postParams:nil callback:callback];
+    return [self initWithURL:url postParams:nil requestManager:requestManager callback:callback];
 }
 
-- (void)startExecute 
+- (BOOL)startExecute 
 {
         
-    
+    if (requestManager_)
+    {
+        if (![requestManager_ addRequest:self])
+        {
+            return NO;
+        }
+    }      
 	NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url_
                                                 cachePolicy:NSURLRequestUseProtocolCachePolicy
                                             timeoutInterval:5];
@@ -62,14 +72,18 @@ NSURLConnection* connection;
     {
         callback_(nil, [[[DataRequestError alloc] initWithNSError:nil] autorelease]);//TODO analyze errors   
         NSLog(@"Could not create NSURLconnection");
+        if (requestManager_)
+        {
+            [requestManager_ completeRequest:self];
+        }              
     }
-    else {
-        
+    else {        
         if (progress) 
         {
             [progress showRequestProgress];
         }
     }
+    return YES;
         
 }
 
@@ -87,6 +101,11 @@ NSURLConnection* connection;
     if (postParams_)
     {
         [postParams_ release];
+    }
+    
+    if (requestManager_)
+    {
+        [requestManager_ release];
     }
     
     [callback_ release];
@@ -124,7 +143,7 @@ NSURLConnection* connection;
         [parser release];
     }
     [self finish];
-    callback_(dctData, err);    
+    callback_(dctData, err);               
 }
 
 - (void)connection:(NSURLConnection *)lconnection didFailWithError:(NSError *)error {
@@ -138,6 +157,10 @@ NSURLConnection* connection;
 
 -(void)finish
 {
+    if (requestManager_)
+    {
+        [requestManager_ completeRequest:self];
+    }    
     NSURLConnection * tCo = connection;
     connection = nil; 
     if (tCo) [tCo release];

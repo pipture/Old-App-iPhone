@@ -15,15 +15,6 @@
 @synthesize albumsView;
 @synthesize subViewContainer;
 
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
 - (void)dealloc {
     [subViewContainer release];
     [albumsView release];
@@ -62,10 +53,13 @@
 }
 
 - (void)showAlbumDetail:(Album*)album {
-    AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
-    adic.album = album;
-    [self.navigationController pushViewController:adic animated:YES];
-    [adic release];
+    NSLog(@"%@", self.navigationController.visibleViewController.class);
+    if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
+        AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
+        adic.album = album;
+        [self.navigationController pushViewController:adic animated:YES];
+        [adic release];
+    }
 }
 
 @end

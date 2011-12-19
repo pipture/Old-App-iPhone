@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DataRequestError.h"
 
-
 typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
 
 @protocol DataRequestProgress <NSObject>
@@ -31,9 +30,14 @@ typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
 @property(assign, nonatomic) id<DataRequestProgress> progress;
 
 
-- (id)initWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
-- (id)initWithURL:(NSURL*)url postParams:(NSString*)params callback:(DataRequestCallback)callback;
-- (void)startExecute;
+- (id)initWithURL:(NSURL*)url requestManager:(id)requestManager callback:(DataRequestCallback)callback;
+- (id)initWithURL:(NSURL*)url postParams:(NSString*)params requestManager:(id)requestManager callback:(DataRequestCallback)callback;
+- (BOOL)startExecute;
 
+@end
+
+@protocol DataRequestManager <NSObject>
+-(BOOL)addRequest:(DataRequest*)request;
+-(void)completeRequest:(DataRequest*)request;
 @end
 
