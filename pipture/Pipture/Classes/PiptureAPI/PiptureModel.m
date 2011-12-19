@@ -49,7 +49,7 @@ NSString *SEND_MESSAGE_REQUEST;
 
 static NSString* const REST_PARAM_API = @"API";
 static NSString* const REST_PARAM_SESSION_KEY = @"Key";
-static NSString* const REST_PARAM_EMAIL_ADDRESS = @"EmailAddress";
+static NSString* const REST_PARAM_UUID = @"UUID";
 static NSString* const REST_PARAM_PASSWORD = @"Password";
 static NSString* const REST_PARAM_FIRST_NAME = @"FirstName";
 static NSString* const REST_PARAM_LAST_NAME = @"LastName";
@@ -71,6 +71,7 @@ static NSString* const JSON_PARAM_TRAILER = @"Trailer";
 static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
 static NSString* const JSON_PARAM_BALANCE = @"Balance";
 static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
+static NSString* const JSON_PARAM_UUID = @"UUID";
 
 - (id)init
 {
@@ -168,12 +169,12 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
     [super dealloc];
 }
 
-
--(void)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationDelegate>*)receiver
+-(void)loginWithUUID:(NSString *)uuid receiver:(NSObject<AuthenticationDelegate> *)receiver
 {
+    
     NSURL* url = [self buildURLWithRequest:LOGIN_REQUEST sendAPIVersion:NO sendKey:NO];
     
-    NSString*params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@",REST_PARAM_API,API_VERSION,REST_PARAM_EMAIL_ADDRESS,emailAddress,REST_PARAM_PASSWORD,password];
+    NSString*params = [NSString stringWithFormat:@"%@=%@&%@=%@",REST_PARAM_API,API_VERSION,REST_PARAM_UUID,uuid];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postParams:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
         
@@ -201,18 +202,16 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         }
         
     }];
-    request.progress = nil;
     [request startExecute];
 
 }
 
--(void)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationDelegate>*)receiver
+-(void)registerWithReceiver:(NSObject<AuthenticationDelegate> *)receiver
 {
     NSURL* url = [self buildURLWithRequest:REGISTER_REQUEST sendAPIVersion:NO sendKey:NO];
     
-    NSString*params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",REST_PARAM_API,API_VERSION,REST_PARAM_EMAIL_ADDRESS,emailAddress,REST_PARAM_PASSWORD,password,REST_PARAM_FIRST_NAME,firstName,REST_PARAM_LAST_NAME,lastName];
-    
-    
+    NSString*params = [NSString stringWithFormat:@"%@=%@",REST_PARAM_API,API_VERSION];
+        
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postParams:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
         
         if (error) 
@@ -225,9 +224,20 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
             NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
             switch (errCode) {           
                 case 0:
-                    sessionKey = [(NSString*)[jsonResult objectForKey:JSON_PARAM_SESSION_KEY] retain];                    
-                    [receiver performSelectorOnMainThread:@selector(registred) withObject:nil waitUntilDone:YES];                    
+                {
+                    NSString* uuid = [jsonResult objectForKey:JSON_PARAM_UUID];                
+                    if (uuid)
+                    {
+                        [receiver performSelectorOnMainThread:@selector(registred:) withObject:uuid waitUntilDone:NO];                    
+                    }
+                    else
+                    {
+                        NSLog(@"Server didn't sent uuid with new registration");
+                    }                    
+                    sessionKey = [(NSString*)[jsonResult objectForKey:JSON_PARAM_SESSION_KEY] retain];                
+                    [receiver performSelectorOnMainThread:@selector(loggedIn) withObject:nil waitUntilDone:YES];
                     break;
+                }
                 case 1:
                     [receiver performSelectorOnMainThread:@selector(alreadyRegistredWithOtherDevice) withObject:nil waitUntilDone:YES];
                     break;                                        
@@ -238,7 +248,6 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
         }
         
     }];
-    request.progress = nil;
     [request startExecute];    
     
 }
