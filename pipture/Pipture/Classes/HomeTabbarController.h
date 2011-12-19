@@ -8,6 +8,6 @@
 
 
 
-@interface HomeTabbarController : UITabbarController
+@interface HomeTabbarController : UITabBarController
 
 @end
