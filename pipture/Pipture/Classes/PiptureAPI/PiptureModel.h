@@ -13,7 +13,7 @@
 #import "PlaylistItem.h"
 #import "SBJson.h"
 
-@interface DefaultDataRequestFactory : NSObject
+@interface DefaultDataRequestFactory : NSObject<DataRequestManager>
 
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url postParams:(NSString*)params callback:(DataRequestCallback)callback;
@@ -71,8 +71,7 @@
 @required
 -(void)loggedIn;
 -(void)loginFailed;
--(void)registred;
--(void)alreadyRegistredWithOtherDevice;
+-(void)registred:(NSString*)uuid;
 @end
 
 @protocol PurchaseDelegate <PiptureModelDelegate>
@@ -97,28 +96,28 @@
 
 - (NSString*)getEndPoint;
 
--(void)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationDelegate>*)receiver;
 
--(void)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationDelegate>*)receiver;
+-(void)loginWithUUID:(NSString*)uuid receiver:(NSObject<AuthenticationDelegate>*)receiver;
 
+-(void)registerWithReceiver:(NSObject<AuthenticationDelegate>*)receiver;
 
--(void)getTimeslotsFromId:(NSInteger)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver;
+-(BOOL)getTimeslotsFromId:(NSInteger)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver;
 
--(void)getTimeslotsFromCurrentWithMaxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver;
+-(BOOL)getTimeslotsFromCurrentWithMaxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver;
 
--(void)getPlaylistForTimeslot:(NSNumber*)timeslotId receiver:(NSObject<PlaylistReceiver>*)receiver;
+-(BOOL)getPlaylistForTimeslot:(NSNumber*)timeslotId receiver:(NSObject<PlaylistReceiver>*)receiver;
 
--(void)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
+-(BOOL)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
 
--(void)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver;
+-(BOOL)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver;
 
--(void)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumsReceiver>*)receiver;
+-(BOOL)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumsReceiver>*)receiver;
 
--(void)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver;
+-(BOOL)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver;
 
--(void)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver;
+-(BOOL)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver;
 
--(void)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId receiver:(NSObject<SendMessageDelegate>*)receiver;
+-(BOOL)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId receiver:(NSObject<SendMessageDelegate>*)receiver;
 
 @end
 
