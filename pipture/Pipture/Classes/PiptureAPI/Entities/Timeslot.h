@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+enum TimeslotStatus{
+    Current = 2,
+    Next = 1,
+};
+
 @interface Timeslot : NSObject
 
 - (id)initWith:(NSString*)_title desc:(NSString*)_desc image:(UIImage*)_image;
@@ -17,7 +22,8 @@
 @property(retain, nonatomic) NSDate* endTime;
 @property(retain, nonatomic) NSString* title;
 @property(retain, nonatomic) NSString* closupBackground;
-@property(assign, nonatomic) BOOL current;
+@property(assign, nonatomic) NSString* scheduleDescription;
+@property(assign, nonatomic) enum TimeslotStatus timeslotStatus;
 @property(readonly, nonatomic) NSString* timeDescription; //TODO to be moved to controller layer because it is presentation
 
 -(id)initWithJSON:(NSDictionary*)jsonData;

@@ -48,7 +48,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
         [messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0)
     {
         self.navigationItem.hidesBackButton = YES;
-        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId receiver:self];
+
+        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId screenshotImage:playlistItem.emailScreenshot userName:@"Test User Name"  receiver:self];
     } else {
         [messageEdit becomeFirstResponder];
     }

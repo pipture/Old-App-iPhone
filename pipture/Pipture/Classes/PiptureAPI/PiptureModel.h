@@ -89,6 +89,12 @@
 -(void)notEnoughMoneyForSend:(PlaylistItem*)playlistItem;
 @end
 
+@protocol AlbumScreenshotsReceiver <PiptureModelDelegate>
+@required
+-(void)screenshotsReceived:(NSArray*)urls;
+@end
+
+
 @interface PiptureModel : NSObject
 
 //Using standard factory by default
@@ -117,7 +123,10 @@
 
 -(BOOL)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver;
 
--(BOOL)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId receiver:(NSObject<SendMessageDelegate>*)receiver;
+-(BOOL)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId screenshotImage:(NSString*)screenshotImage userName:(NSString*)userName receiver:(NSObject<SendMessageDelegate>*)receiver;
+
+-(BOOL)getAlbumScreenshots:(NSInteger)episodeId receiver:(NSObject<AlbumScreenshotsReceiver>*)receiver;
+
 
 @end
 
