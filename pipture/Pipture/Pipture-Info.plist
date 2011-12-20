@@ -10,8 +10,6 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
-	<key>UIPrerenderedIcon</key>
-	<true/>
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>icon@2x.png</string>
@@ -58,6 +56,8 @@
 	<string>getAlbumDetail?AlbumId=%@&amp;IncludeEpisodes=%@</string>
 	<key>Rest Get albums request</key>
 	<string>getAlbums?</string>
+	<key>Rest Get album screenshots</key>
+	<string>getAlbumScreenshots?EpisodeId=%@</string>
 	<key>Rest Get balance</key>
 	<string>getBalance?</string>
 	<key>Rest Get current timeslots</key>
