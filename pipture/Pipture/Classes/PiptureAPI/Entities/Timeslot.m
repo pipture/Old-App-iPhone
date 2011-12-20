@@ -15,7 +15,8 @@
 @synthesize endTime;
 @synthesize title;
 @synthesize closupBackground;
-@synthesize current;
+@synthesize scheduleDescription;
+@synthesize timeslotStatus;
 
 @synthesize image;
 
@@ -26,8 +27,8 @@ static NSString* const JSON_PARAM_START_TIME = @"StartTime";
 static NSString* const JSON_PARAM_END_TIME = @"EndTime";
 static NSString* const JSON_PARAM_TIMESLOT_TITLE = @"Title";
 static NSString* const JSON_PARAM_CLOSEUP_BACKGROUND = @"CloseupBackground";
-static NSString* const JSON_PARAM_CURRENT = @"Current";
-
+static NSString* const JSON_PARAM_SCHEDULE_DESCRIPTION = @"ScheduleDescription";
+static NSString* const JSON_PARAM_TIMESLOT_STATUS = @"TimeslotStatus";
 
 -(id)initWithJSON:(NSDictionary*)jsonData
 {
@@ -40,8 +41,8 @@ static NSString* const JSON_PARAM_CURRENT = @"Current";
         self.endTime = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]];
         self.title = [jsonData objectForKey:JSON_PARAM_TIMESLOT_TITLE];
         self.closupBackground = [jsonData objectForKey:JSON_PARAM_CLOSEUP_BACKGROUND];                
-        id curobj = [jsonData objectForKey:JSON_PARAM_CURRENT];
-        self.current = [curobj isEqual:@"1"];
+        self.timeslotStatus = [(NSNumber*)[jsonData objectForKey:JSON_PARAM_TIMESLOT_STATUS] intValue];                
+        self.scheduleDescription = [jsonData objectForKey:JSON_PARAM_SCHEDULE_DESCRIPTION];
     }
     return self;
 }
@@ -63,7 +64,7 @@ static NSString* const JSON_PARAM_CURRENT = @"Current";
 
 -(NSString*)timeDescription {
         
-    return self.current ? @"Playing now" : [NSString stringWithFormat:@"%@ to %@",[self representTime:startTime],[self representTime:endTime]];
+    return self.timeslotStatus == Current ? @"Playing now" : [NSString stringWithFormat:@"%@ to %@",[self representTime:startTime],[self representTime:endTime]];
 }
 
 - (id)initWith:(NSString*)_title desc:(NSString*)_desc image:(UIImage*)_image {
