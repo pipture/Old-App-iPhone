@@ -152,8 +152,6 @@
 		8875179B148CAD3B00AFFFAC /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875178E148CAD3B00AFFFAC /* SBJsonUTF8Stream.m */; };
 		8875179C148CAD3B00AFFFAC /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751790148CAD3B00AFFFAC /* SBJsonWriter.m */; };
 		887517A7148CAE3400AFFFAC /* PiptureAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */; };
-		888780D1149749A100C9AD36 /* NSString+MD5Addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 888780CE149749A100C9AD36 /* NSString+MD5Addition.m */; };
-		888780D2149749A100C9AD36 /* UIDevice+IdentifierAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 888780D0149749A100C9AD36 /* UIDevice+IdentifierAddition.m */; };
 		88982B8814923FBD0012BEC2 /* DataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8514923FBD0012BEC2 /* DataRequest.m */; };
 		88982B8914923FBD0012BEC2 /* DataRequestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8714923FBD0012BEC2 /* DataRequestError.m */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
@@ -360,10 +358,6 @@
 		88751790148CAD3B00AFFFAC /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureAppDelegate.h; sourceTree = "<group>"; };
 		887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureAppDelegate.m; sourceTree = "<group>"; };
-		888780CD149749A100C9AD36 /* NSString+MD5Addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5Addition.h"; sourceTree = "<group>"; };
-		888780CE149749A100C9AD36 /* NSString+MD5Addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5Addition.m"; sourceTree = "<group>"; };
-		888780CF149749A100C9AD36 /* UIDevice+IdentifierAddition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+IdentifierAddition.h"; sourceTree = "<group>"; };
-		888780D0149749A100C9AD36 /* UIDevice+IdentifierAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+IdentifierAddition.m"; sourceTree = "<group>"; };
 		88982B8414923FBD0012BEC2 /* DataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequest.h; sourceTree = "<group>"; };
 		88982B8514923FBD0012BEC2 /* DataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequest.m; sourceTree = "<group>"; };
 		88982B8614923FBD0012BEC2 /* DataRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequestError.h; sourceTree = "<group>"; };
@@ -613,7 +607,6 @@
 				38BC27C3149870E6002B938F /* BusyViewController.m */,
 				887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */,
 				887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */,
-				888780CC149749A000C9AD36 /* Gekitz */,
 				384A1FA11491C240007D5E0B /* ThumbtackFW */,
 				384A1F871491C21C007D5E0B /* PiptureAPI */,
 				382D9C28148E032300005F16 /* Utility */,
@@ -764,17 +757,6 @@
 			);
 			name = SBJSON;
 			path = Pipture/Classes/SBJSON;
-			sourceTree = "<group>";
-		};
-		888780CC149749A000C9AD36 /* Gekitz */ = {
-			isa = PBXGroup;
-			children = (
-				888780CD149749A100C9AD36 /* NSString+MD5Addition.h */,
-				888780CE149749A100C9AD36 /* NSString+MD5Addition.m */,
-				888780CF149749A100C9AD36 /* UIDevice+IdentifierAddition.h */,
-				888780D0149749A100C9AD36 /* UIDevice+IdentifierAddition.m */,
-			);
-			path = Gekitz;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1014,8 +996,6 @@
 				88982B8814923FBD0012BEC2 /* DataRequest.m in Sources */,
 				88982B8914923FBD0012BEC2 /* DataRequestError.m in Sources */,
 				38D510041497417E009BF5E9 /* InAppPurchaseManager.m in Sources */,
-				888780D1149749A100C9AD36 /* NSString+MD5Addition.m in Sources */,
-				888780D2149749A100C9AD36 /* UIDevice+IdentifierAddition.m in Sources */,
 				38BC27C4149870E6002B938F /* BusyViewController.m in Sources */,
 				38549D95149F235F004D2189 /* CoverView.m in Sources */,
 				38549D98149F23B5004D2189 /* ScheduleView.m in Sources */,
@@ -1110,7 +1090,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
 				INFOPLIST_FILE = "Pipture/Pipture-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Pipture/Classes/GA\"",
@@ -1129,7 +1109,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
 				INFOPLIST_FILE = "Pipture/Pipture-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Pipture/Classes/GA\"",
@@ -1201,7 +1181,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
 				INFOPLIST_FILE = "Pipture/Pipture-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Pipture/Classes/GA\"",
