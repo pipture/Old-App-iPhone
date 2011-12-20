@@ -22,7 +22,7 @@
 
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver;
 + (void)processAPIError:(NSInteger)code description:(NSString*)description receiver:(NSObject<PiptureModelDelegate>*)receiver;
-+ (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse description:(NSMutableString*)description;
++ (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse description:(NSString**)description;
 @end 
 
 @implementation PiptureModel
@@ -45,17 +45,18 @@ NSString *GET_ALBUM_DETAILS_REQUEST;
 NSString *GET_BALANCE_REQUEST;
 NSString *GET_BUY_REQUEST;
 NSString *SEND_MESSAGE_REQUEST;
-NSString *GET_ALBUM_SCREENSHOTS;
 
 
 static NSString* const REST_PARAM_API = @"API";
 static NSString* const REST_PARAM_SESSION_KEY = @"Key";
 static NSString* const REST_PARAM_UUID = @"UUID";
+static NSString* const REST_PARAM_PASSWORD = @"Password";
+static NSString* const REST_PARAM_FIRST_NAME = @"FirstName";
+static NSString* const REST_PARAM_LAST_NAME = @"LastName";
 static NSString* const REST_PARAM_RECEIPT_DATA = @"AppleReceiptData";
 static NSString* const REST_PARAM_MESSAGE = @"Message";
 static NSString* const REST_PARAM_TIMESLOT_ID = @"TimeslotId";
-static NSString* const REST_PARAM_SCREENSHOT_IMAGE = @"ScreenshotImage";
-static NSString* const REST_PARAM_USER_NAME = @"UserName";
+
 
 static NSString* const JSON_PARAM_TIMESLOTS = @"Timeslots";
 static NSString* const JSON_PARAM_VIDEOS = @"Videos";
@@ -71,7 +72,6 @@ static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
 static NSString* const JSON_PARAM_BALANCE = @"Balance";
 static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
 static NSString* const JSON_PARAM_UUID = @"UUID";
-static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
 
 - (id)init
 {
@@ -91,7 +91,6 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         GET_BALANCE_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get balance"] retain];
         GET_BUY_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Buy"] retain];
         SEND_MESSAGE_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Send message"] retain];
-        GET_ALBUM_SCREENSHOTS = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get album screenshots"] retain];
         DefaultDataRequestFactory* factory = [[[DefaultDataRequestFactory alloc] init] autorelease];
         [self setDataRequestFactory:factory];
         
@@ -163,11 +162,6 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         [SEND_MESSAGE_REQUEST release]; 
     }
     
-    if (GET_ALBUM_SCREENSHOTS)
-    {
-        [GET_ALBUM_SCREENSHOTS release];
-    }
-    
     if (sessionKey)
     {
         [sessionKey release];
@@ -191,7 +185,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         } 
         else
         {
-            NSMutableString*errDesc = [NSMutableString string];            
+            NSString**errDesc;
             NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
             switch (errCode) {            
                 case 0:
@@ -202,9 +196,9 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                     [receiver performSelectorOnMainThread:@selector(loginFailed) withObject:nil waitUntilDone:YES];
                     break;                                        
                 default:
-                    [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
+                    [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
                     break;
-            }                                   
+            }                        
         }
         
     }];
@@ -226,7 +220,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         } 
         else
         {
-            NSMutableString*errDesc = [NSMutableString string];
+            NSString**errDesc;
             NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
             switch (errCode) {           
                 case 0:
@@ -248,7 +242,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                     [receiver performSelectorOnMainThread:@selector(alreadyRegistredWithOtherDevice) withObject:nil waitUntilDone:YES];
                     break;                                        
                 default:
-                    [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
+                    [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
                     break;
             }                        
         }
@@ -315,7 +309,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         else
         {
 
-            NSMutableString*errDesc = [NSMutableString string];
+            NSString**errDesc;
             NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
             switch (errCode) { 
                 case 0:
@@ -353,7 +347,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                     }
                     break;
                 default:
-                    [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
+                    [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
                     break;
             }
         }
@@ -384,7 +378,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             } 
             else
             {
-                NSMutableString*errDesc = [NSMutableString string];
+                NSString**errDesc;
                 NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
                 switch (errCode) { 
                     case 0:   
@@ -419,7 +413,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                         [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];
                         break;                                                                        
                     default:
-                        [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
+                        [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
                         break;
                 }                
             }
@@ -523,7 +517,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         } 
         else
         {
-            NSMutableString*errDesc = [NSMutableString string];
+            NSString**errDesc;
             NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
             switch (errCode) { 
                 case 0:   
@@ -551,7 +545,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                 case 100:                        
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];                    break;                                                
                 default:
-                    [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
+                    [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
                     break;
             }                
         }
@@ -575,7 +569,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         } 
         else
         {
-            NSMutableString*errDesc = [NSMutableString string];
+            NSString**errDesc;
             NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
             switch (errCode) { 
                 case 0:   
@@ -583,11 +577,11 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                     id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
                     if (bal)
                     {
-                        [receiver performSelectorOnMainThread:@selector(balanceReceived:) withObject:bal waitUntilDone:YES];                                                        
+                        [receiver performSelectorOnMainThread:@selector(balanceReceived:) withObject:(NSDecimalNumber*)bal waitUntilDone:YES];                                                        
                     }
                     else
                     {
-                        NSLog(@"Balance was not sent from server"); 
+                        NSLog(@"Balance was not sent from"); 
                     }                    
                     break;
                 }                                               
@@ -595,7 +589,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];
                     break;                                                                        
                 default:
-                    [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
+                    [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
                     break;
             }                
         }
@@ -607,11 +601,11 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
     
 }
 
--(BOOL)sendMessage:(NSString *)message playlistItem:(PlaylistItem *)playlistItem timeslotId:(NSNumber *)timeslotId screenshotImage:(NSString *)screenshotImage userName:(NSString *)userName receiver:(NSObject<SendMessageDelegate> *)receiver
+-(BOOL)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId receiver:(NSObject<SendMessageDelegate>*)receiver
 {
     NSURL* url = [self buildURLWithRequest:SEND_MESSAGE_REQUEST sendAPIVersion:NO sendKey:NO];    
     
-    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%d&%@=%@&%@=%d&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, playlistItem.videoKeyName, playlistItem.videoKeyValue, REST_PARAM_SCREENSHOT_IMAGE, screenshotImage, REST_PARAM_USER_NAME, userName, REST_PARAM_MESSAGE, message];
+    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%d&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, playlistItem.videoKeyName, playlistItem.videoKeyValue, REST_PARAM_MESSAGE, message];
     
     if (timeslotId)
     {
@@ -627,7 +621,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         } 
         else
         {
-            NSMutableString*errDesc = [NSMutableString string];
+            NSString**errDesc;
             NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
             switch (errCode) { 
                 case 0:   
@@ -641,6 +635,11 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                     {
                         NSLog(@"URL was not sent from server");
                     }
+                    id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
+                    if (bal)
+                    {
+                        [receiver performSelectorOnMainThread:@selector(balanceReceived:) withObject:(NSDecimalNumber*)bal waitUntilDone:YES];                                                        
+                    }
                     break;
                 }
                 case 3:
@@ -650,52 +649,13 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];                    
                     break;                                                
                 default:
-                    [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
+                    [PiptureModel processAPIError:errCode description:*errDesc receiver:receiver];
                 break;
             }
         }
         
     }];    
     return [request startExecute];        
-}
-
--(BOOL)getAlbumScreenshots:(NSInteger)episodeId receiver:(NSObject<AlbumScreenshotsReceiver>*)receiver
-{
-    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_ALBUM_SCREENSHOTS, [NSNumber numberWithInt:episodeId]]];
-    
-    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
-        
-        if (error) 
-        {
-            [PiptureModel processError:error receiver:receiver];
-        } 
-        else
-        {
-            NSMutableString*errDesc = [NSMutableString string];
-            NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
-            switch (errCode) { 
-                case 0:   
-                {
-                    NSArray* urls = [jsonResult objectForKey:JSON_PARAM_SCREENSHOTS];                                                            
-                    if (urls)
-                    {
-                        [receiver performSelectorOnMainThread:@selector(screenshotsReceived:) withObject:urls waitUntilDone:YES];                                                        
-                    }
-                    else
-                    {
-                        NSLog(@"Screenshots were not sent from server"); 
-                    }                    
-                    break;
-                }                                                                                                                   
-                default:
-                    [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
-                    break;
-            }                
-        }
-        
-    }];
-    
-    return [request startExecute];    
 }
 
 + (void)processAPIError:(NSInteger)code description:(NSString*)description receiver:(NSObject<PiptureModelDelegate>*)receiver
@@ -716,16 +676,16 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
     
 }
 
-+ (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse description:(NSMutableString*)description {
++ (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse description:(NSString**)description {
     
     NSDictionary* dct = [jsonResponse objectForKey:JSON_PARAM_ERROR];
     
     NSNumber* code = [dct objectForKey:JSON_PARAM_ERRORCODE];
-    NSString* desc = [[dct objectForKey:JSON_PARAM_ERROR_DESCRIPTION] retain];    
+    NSString* desc = [dct objectForKey:JSON_PARAM_ERROR_DESCRIPTION];    
     
     if (code)
     {
-        [description setString:desc];
+        description = &desc;
         return [code intValue];
 
     }

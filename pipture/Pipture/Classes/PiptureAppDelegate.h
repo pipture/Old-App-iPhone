@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
-#import "HomeTabbarController.h"
 #import "VideoViewController.h"
 #import "LibraryNavigationController.h"
 #import "PiptureModel.h"

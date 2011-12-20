@@ -19,10 +19,6 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize homeNavigationController;
 @synthesize model = model_;
 
-static NSString* const UUID_KEY = @"UserUID";
-BOOL registrationRequired = NO;
-BOOL loggedIn = NO;
-
 static PiptureAppDelegate *instance;
 
 - (void)dealloc
@@ -56,71 +52,10 @@ static PiptureAppDelegate *instance;
     return self;
 }
 
-- (NSString*)loadUserUUID
-{    
-    return [[NSUserDefaults standardUserDefaults] stringForKey:UUID_KEY];
-}
-
-- (void)saveUUID:(NSString*)uuid
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:UUID_KEY];   
-}
-
--(void) processAuthentication
-{
-    if (loggedIn)
-    {
-        return;
-    }
-    if (registrationRequired)
-    {
-        [model_ registerWithReceiver:self];
-    } 
-    else
-    {
-        NSString* uuid = [self loadUserUUID];        
-        if ([uuid length] == 0)
-        {
-            registrationRequired = YES;
-            [self processAuthentication];
-        }
-        else
-        {
-            [model_ loginWithUUID:uuid receiver:self];
-        }
-    }
-}
-
--(void)loggedIn
-{
-    loggedIn = YES;
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
-    
-    [self.window setRootViewController:homeNavigationController];
-    [self.window makeKeyAndVisible];    
-}
-
--(void)loginFailed
-{    
-    registrationRequired = YES;
-    [self processAuthentication];
-}
-
--(void)registred:(NSString *)uuid
-{    
-    [self saveUUID:uuid];
-}
-
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    //Every time app become active we need to check if authentification is passed. If not - login or register.
-    //It is needed for case when connection were missed on first try.
-    [self processAuthentication];    
-}
-
--(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+ 
     [[GANTracker sharedTracker] startTrackerWithAccountID:@"UA-27681421-1"
                                            dispatchPeriod:kGANDispatchPeriodSec
                                                  delegate:nil];
@@ -137,11 +72,13 @@ static PiptureAppDelegate *instance;
     if (![[GANTracker sharedTracker] trackPageview:@"/app_entry_point"
                                          withError:&error]) {
         NSLog(@"error in trackPageview");
-    }        
+    }
+    
+    [self.window setRootViewController:homeNavigationController];
+    [self.window makeKeyAndVisible];
+    
     return YES;
 }
-
-
 
 + (PiptureAppDelegate*) instance {
     return instance;
@@ -285,7 +222,7 @@ NSInteger networkActivityIndecatorCount;
 #pragma mark BalanceReceiver methods
 
 -(void)dataRequestFailed:(DataRequestError*)error {
-    [self processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];    
+    NSLog(@"Req failed: %@", error);
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)newBalance {
