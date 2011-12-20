@@ -10,8 +10,6 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
-	<key>UIPrerenderedIcon</key>
-	<true/>
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>icon@2x.png</string>
@@ -78,9 +76,7 @@
 	<string>register</string>
 	<key>Rest end point st</key>
 	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
-	<key>Rest Send message</key>
-	<string>sendMessage</string>
-	<key>Rest end point 2</key>
+	<key>Rest end point</key>
 	<string>http://192.168.9.131:8000/</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
