@@ -32,12 +32,16 @@
 }
 
 - (void)showDetails:(id)sender {
-    
+    if (sender && [sender superview]) {
+        int tag = [[[sender superview] superview] tag];
+        Album * album = [albumsArray objectAtIndex:tag];
+        [delegate showAlbumDetails:album];
+    }
 }
 
 - (void)updateAlbums:(NSArray *)albums{
     
-    albumsArray = albums;
+    self.albumsArray = albums;
     
     //create albums
     if (albumsItemsArray) {

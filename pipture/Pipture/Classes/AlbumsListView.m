@@ -95,7 +95,7 @@
     if (sender && [sender superview]) {
         int tag = [[[sender superview] superview] tag];
         Album * album = [albumsArray objectAtIndex:tag];
-        [[[PiptureAppDelegate instance] model] getDetailsForAlbum:album receiver:self];
+        
     }
 }
 

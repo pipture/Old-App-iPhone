@@ -28,7 +28,6 @@
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver>
 {
-    VideoViewController* vc;
     float balance;
     InAppPurchaseManager * purchases;
 }
@@ -36,6 +35,7 @@
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
+@property (retain, nonatomic) IBOutlet UINavigationController * videoNavigationController;
 @property (readonly, nonatomic) PiptureModel * model;
 @property (retain, nonatomic) BusyViewController * busyView;
 
@@ -49,8 +49,10 @@
 - (void)updateBalance;
 - (void)buyCredits;
 - (IBAction)buyAction:(id)sender;
+- (IBAction)videoDone:(id)sender;
 
 - (BOOL)trackEvent:(NSString*)event :(NSString*)action;
+- (void)openHome;
 - (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId;//TODO: add video mode, playlist, e .t.c
 
 - (void)showModalBusy:(void (^)(void))completion;

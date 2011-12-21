@@ -250,7 +250,6 @@
 	
     // load images for the near timeslots
     [self prepareImageFor:page - 1];
-    [self prepareImageFor:page];
     [self prepareImageFor:page + 1];
     
     NSLog(@"end decelerating on page: %d", page);

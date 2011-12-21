@@ -10,6 +10,7 @@
 #import "HomeViewController.h"
 #import "VideoViewController.h"
 #import "LibraryViewController.h"
+#import "Album.h"
 #import "Timeslot.h"
 #import "AsyncImageView.h"
 
@@ -323,6 +324,10 @@
     [self flipAction:nil];
 }
 
+- (void)showAlbumDetails:(Album*)album {
+    [[[PiptureAppDelegate instance] model] getDetailsForAlbum:album receiver:self];
+}
+
 #pragma mark PiptureModelDelegate methods
 
 -(void)dataRequestFailed:(DataRequestError*)error
@@ -372,12 +377,17 @@
     NSLog(@"Albums received: %@", albums);
     
     [albumsView updateAlbums:albums];
-    //[self scrollToCurPage];
-   // [[PiptureAppDelegate instance] onLibrary:albums];    
 }
 
-
+#pragma mark AlbumsDetailsDelegate
 -(void)albumDetailsReceived:(Album*)album {
+    NSLog(@"%@", self.navigationController.visibleViewController.class);
+    if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
+        AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
+        adic.album = album;
+        [self.navigationController pushViewController:adic animated:YES];
+        [adic release];
+    }
 }
 
 -(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album {

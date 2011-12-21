@@ -10,6 +10,7 @@
 #define Pipture_HomeScreenDelegate_h
 
 #import "Timeslot.h"
+#import "Album.h"
 
 enum HomeScreenMode {
     HomeScreenMode_Cover,
@@ -27,6 +28,8 @@ enum HomeScreenMode {
 - (void)powerButtonEnable:(BOOL)enable;
 - (void)doFlip;
 - (void)scheduleButtonHidden:(BOOL)hidden;
+- (void)showAlbumDetails:(Album*)album;
+
 @end
 
 #endif

@@ -18,6 +18,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize buyButton;
 @synthesize window = _window;
 @synthesize homeNavigationController;
+@synthesize videoNavigationController;
 @synthesize model = model_;
 
 static NSString* const UUID_KEY = @"UserUID";
@@ -33,20 +34,16 @@ static PiptureAppDelegate *instance;
     [busyView release];
     [[GANTracker sharedTracker] stopTracker];
     
-    if (vc != nil) {
-        [vc release];
-        vc = nil;
-    }
     [purchases release];
     [homeNavigationController release];
     [_window release];
     [model_ release];
     [buyButton release];
+    [videoNavigationController release];
     [super dealloc];
 }
 
 - (id) init {
-    vc = nil;
     instance = nil;
     balance = 0;
     self = [super init];
@@ -163,19 +160,41 @@ static PiptureAppDelegate *instance;
     return instance;
 }
 
+- (void)openHome {
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.5];
+    [animation setType:kCATransitionPush];
+    [animation setSubtype:kCATransitionFromTop];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    
+    [self.window setRootViewController:homeNavigationController];
+    
+    [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+}
+
 - (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId{
-    if (vc == nil) {
-        vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
-    }
-    if (navigationController.visibleViewController != vc) {
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+    videoNavigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.5];
+    [animation setType:kCATransitionPush];
+    [animation setSubtype:kCATransitionFromTop];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    
+    [self.window setRootViewController:videoNavigationController];
+    
+    UIViewController * visible = [videoNavigationController visibleViewController];
+    if (visible.class == [VideoViewController class]) {
+        VideoViewController * vc = (VideoViewController*)visible;
         vc.timeslotId = timeslotId;
         vc.playlist = playlist;
         vc.wantsFullScreenLayout = YES;
         vc.simpleMode = noNavi;
-        [navigationController pushViewController:vc animated:YES];
+        [vc initVideo];
     }
     
-    [vc initVideo];
+    [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
     
     TRACK_EVENT(@"Open Activity", @"Video player");
 }
@@ -289,6 +308,10 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (IBAction)buyAction:(id)sender {
+}
+
+- (IBAction)videoDone:(id)sender {
+    [self openHome];
 }
 
 - (void)showModalBusy:(void (^)(void))completion {
