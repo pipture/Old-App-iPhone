@@ -20,6 +20,8 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize model = model_;
 
 static NSString* const UUID_KEY = @"UserUID";
+static NSString* const HOMESCREENSTATE_KEY = @"HSState";
+
 BOOL registrationRequired = NO;
 BOOL loggedIn = NO;
 
@@ -63,8 +65,20 @@ static PiptureAppDelegate *instance;
 
 - (void)saveUUID:(NSString*)uuid
 {
-    [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:UUID_KEY];   
+    [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:UUID_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
+
+- (void)putHomescreenState:(int)state {
+    [[NSUserDefaults standardUserDefaults] setInteger:state forKey:HOMESCREENSTATE_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (int)getHomescreenState {
+    int state = [[NSUserDefaults standardUserDefaults] integerForKey:HOMESCREENSTATE_KEY];
+    return state;
+}
+
 
 -(void) processAuthentication
 {

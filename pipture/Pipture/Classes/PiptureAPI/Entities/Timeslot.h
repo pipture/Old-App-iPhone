@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 
 enum TimeslotStatus{
-    Current = 2,
-    Next = 1,
+    TimeslotStatus_Current = 2,
+    TimeslotStatus_Next = 1,
+    TimeslotStatus_Unknown = 0,
 };
 
 @interface Timeslot : NSObject

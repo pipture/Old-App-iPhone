@@ -48,6 +48,12 @@
 		384EBA5F149F64C4000973CD /* case-nothingplayingnow.png in Resources */ = {isa = PBXBuildFile; fileRef = 384EBA5D149F64C4000973CD /* case-nothingplayingnow.png */; };
 		384EBA62149F653E000973CD /* button-info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 384EBA60149F653E000973CD /* button-info@2x.png */; };
 		384EBA63149F653E000973CD /* button-info.png in Resources */ = {isa = PBXBuildFile; fileRef = 384EBA61149F653E000973CD /* button-info.png */; };
+		384EBA6C14A08655000973CD /* button-schedule@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 384EBA6A14A08655000973CD /* button-schedule@2x.png */; };
+		384EBA6D14A08655000973CD /* button-schedule.png in Resources */ = {isa = PBXBuildFile; fileRef = 384EBA6B14A08655000973CD /* button-schedule.png */; };
+		384EBA7214A0A686000973CD /* case-schedule-clickable-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 384EBA6E14A0A686000973CD /* case-schedule-clickable-2@2x.png */; };
+		384EBA7314A0A686000973CD /* case-schedule-clickable-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 384EBA6F14A0A686000973CD /* case-schedule-clickable-2.png */; };
+		384EBA7414A0A686000973CD /* case-schedule-clickable.png in Resources */ = {isa = PBXBuildFile; fileRef = 384EBA7014A0A686000973CD /* case-schedule-clickable.png */; };
+		384EBA7514A0A686000973CD /* case-schedule-clickable@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 384EBA7114A0A686000973CD /* case-schedule-clickable@2x.png */; };
 		38549D91149F2278004D2189 /* cover-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 38549D8F149F2278004D2189 /* cover-background.png */; };
 		38549D92149F2278004D2189 /* cover-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38549D90149F2278004D2189 /* cover-background@2x.png */; };
 		38549D95149F235F004D2189 /* CoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 38549D94149F235F004D2189 /* CoverView.m */; };
@@ -226,6 +232,13 @@
 		384EBA5D149F64C4000973CD /* case-nothingplayingnow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "case-nothingplayingnow.png"; sourceTree = "<group>"; };
 		384EBA60149F653E000973CD /* button-info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-info@2x.png"; sourceTree = "<group>"; };
 		384EBA61149F653E000973CD /* button-info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-info.png"; sourceTree = "<group>"; };
+		384EBA6914A058F5000973CD /* HomeScreenDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeScreenDelegate.h; sourceTree = "<group>"; };
+		384EBA6A14A08655000973CD /* button-schedule@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-schedule@2x.png"; sourceTree = "<group>"; };
+		384EBA6B14A08655000973CD /* button-schedule.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-schedule.png"; sourceTree = "<group>"; };
+		384EBA6E14A0A686000973CD /* case-schedule-clickable-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "case-schedule-clickable-2@2x.png"; sourceTree = "<group>"; };
+		384EBA6F14A0A686000973CD /* case-schedule-clickable-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "case-schedule-clickable-2.png"; sourceTree = "<group>"; };
+		384EBA7014A0A686000973CD /* case-schedule-clickable.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "case-schedule-clickable.png"; sourceTree = "<group>"; };
+		384EBA7114A0A686000973CD /* case-schedule-clickable@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "case-schedule-clickable@2x.png"; sourceTree = "<group>"; };
 		38549D8F149F2278004D2189 /* cover-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cover-background.png"; sourceTree = "<group>"; };
 		38549D90149F2278004D2189 /* cover-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cover-background@2x.png"; sourceTree = "<group>"; };
 		38549D93149F235F004D2189 /* CoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverView.h; sourceTree = "<group>"; };
@@ -429,6 +442,7 @@
 				38549D94149F235F004D2189 /* CoverView.m */,
 				38549D96149F23B5004D2189 /* ScheduleView.h */,
 				38549D97149F23B5004D2189 /* ScheduleView.m */,
+				384EBA6914A058F5000973CD /* HomeScreenDelegate.h */,
 			);
 			name = HomeScreen;
 			sourceTree = "<group>";
@@ -619,6 +633,12 @@
 		38A7EC88148DDC03002120F3 /* png */ = {
 			isa = PBXGroup;
 			children = (
+				384EBA6E14A0A686000973CD /* case-schedule-clickable-2@2x.png */,
+				384EBA6F14A0A686000973CD /* case-schedule-clickable-2.png */,
+				384EBA7014A0A686000973CD /* case-schedule-clickable.png */,
+				384EBA7114A0A686000973CD /* case-schedule-clickable@2x.png */,
+				384EBA6A14A08655000973CD /* button-schedule@2x.png */,
+				384EBA6B14A08655000973CD /* button-schedule.png */,
 				384EBA60149F653E000973CD /* button-info@2x.png */,
 				384EBA61149F653E000973CD /* button-info.png */,
 				384EBA5C149F64C4000973CD /* case-nothingplayingnow@2x.png */,
@@ -924,6 +944,12 @@
 				384EBA5F149F64C4000973CD /* case-nothingplayingnow.png in Resources */,
 				384EBA62149F653E000973CD /* button-info@2x.png in Resources */,
 				384EBA63149F653E000973CD /* button-info.png in Resources */,
+				384EBA6C14A08655000973CD /* button-schedule@2x.png in Resources */,
+				384EBA6D14A08655000973CD /* button-schedule.png in Resources */,
+				384EBA7214A0A686000973CD /* case-schedule-clickable-2@2x.png in Resources */,
+				384EBA7314A0A686000973CD /* case-schedule-clickable-2.png in Resources */,
+				384EBA7414A0A686000973CD /* case-schedule-clickable.png in Resources */,
+				384EBA7514A0A686000973CD /* case-schedule-clickable@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1090,7 +1116,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
 				INFOPLIST_FILE = "Pipture/Pipture-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Pipture/Classes/GA\"",
@@ -1109,7 +1135,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
 				INFOPLIST_FILE = "Pipture/Pipture-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Pipture/Classes/GA\"",
@@ -1181,7 +1207,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pipture/Pipture-Prefix.pch";
 				INFOPLIST_FILE = "Pipture/Pipture-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Pipture/Classes/GA\"",

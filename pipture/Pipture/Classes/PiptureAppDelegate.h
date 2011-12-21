@@ -40,6 +40,9 @@
 
 +(PiptureAppDelegate*) instance;
 
+- (void)putHomescreenState:(int)state;
+- (int)getHomescreenState;
+
 - (void)setBalance:(NSDecimalNumber*)newBalance;
 - (float)getBalance;
 - (void)updateBalance;

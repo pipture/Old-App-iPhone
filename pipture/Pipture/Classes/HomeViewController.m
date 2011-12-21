@@ -13,6 +13,9 @@
 #import "Timeslot.h"
 #import "AsyncImageView.h"
 
+#define TIMESLOT_CHANGE_POLL_INTERVAL 60
+#define TIMESLOT_REGULAR_POLL_INTERVAL 900
+
 @implementation HomeViewController
 @synthesize tabbarContainer;
 @synthesize tabbarPanel;
@@ -25,18 +28,66 @@
 
 #pragma mark - View lifecycle
 
+- (void)scheduleButtonHidden:(BOOL)hidden {
+    scheduleButton.hidden = hidden;
+}
+
+- (void)updateTimeslots:(NSTimer*)timer {
+    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
+}
+
+- (void)resetScheduleTimer {
+    if (changeTimer != nil) {
+        [changeTimer invalidate];
+        changeTimer = nil;
+    }
+}
+
+- (void)stopTimer {
+    if (updateTimer != nil) {
+        [updateTimer invalidate];
+        updateTimer = nil;
+    }
+}
+
+- (void)startTimer:(float)interval {
+    [self stopTimer];
+    updateTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(updateTimeslots:) userInfo:nil repeats:YES];
+}
+
+- (void)scheduleTimeslotChange:(NSArray *)timeslots {
+    [self resetScheduleTimer];
+    
+    NSDate * date = [NSDate dateWithTimeIntervalSinceNow:0];
+    for (int i = 0; i < timeslots.count; i++) {
+        Timeslot * slot = [timeslots objectAtIndex:i];
+        NSDate * early = [date laterDate:slot.startTime];
+        NSDate * later = [date laterDate:slot.endTime];
+        NSDate * scheduleTime = [early laterDate:later];
+        if (![date isEqualToDate:scheduleTime] && [[scheduleTime earlierDate:date] isEqualToDate:date]) {
+            changeTimer = [[NSTimer alloc] initWithFireDate:scheduleTime interval:TIMESLOT_CHANGE_POLL_INTERVAL target:self selector:@selector(updateTimeslots:) userInfo:nil repeats:YES];
+            [[NSRunLoop currentRunLoop] addTimer:changeTimer forMode:NSDefaultRunLoopMode];
+            NSLog(@"Scheduled to: %@", scheduleTime);
+            
+            return;
+        }
+    }
+    NSLog(@"Timer not scheduled");
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     homeScreenMode = HomeScreenMode_Unknown;
     
-    [self setHomeScreenMode:HomeScreenMode_PlayingNow];
-    return;
+    [scheduleView prepareWith:self];
+    [coverView prepareWith:self];
     
-    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
+    [self setHomeScreenMode:[[PiptureAppDelegate instance] getHomescreenState]];
     
-    //[self updateControls];
+    [self updateTimeslots:nil];
 }
 
 
@@ -57,16 +108,13 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
     
-    //[self refreshTimeSlots];
-    //[self startTimer:TIMESLOT_REGULAR_POLL_INTERVAL];
+    [self updateTimeslots:nil];
+    [self startTimer:TIMESLOT_REGULAR_POLL_INTERVAL];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-    /*if (changeTimer != nil) {
-        [changeTimer invalidate];
-        changeTimer = nil;
-    }
-    [self stopTimer];*/
+    [self resetScheduleTimer];
+    [self stopTimer];
     [super viewDidDisappear:animated];
 }
 
@@ -98,6 +146,10 @@
     [scheduleButton release];
     [powerButton release];
     [super dealloc];
+}
+
+- (void)powerButtonEnable:(BOOL)enable {
+    powerButton.enabled = enable;
 }
 
 //The event handling method
@@ -142,12 +194,6 @@
         default:
             break;
     }
-    /*
-    if (!scheduleMode) {
-        [self scrollToTopPage];
-    } else {
-        [self updateControls];
-    }*/
 }
 
 - (IBAction)flipAction:(id)sender {
@@ -215,9 +261,15 @@
                 [self setFullScreenMode];
                 
                 [self.navigationController setNavigationBarHidden:YES animated:YES];
+                
+                [self tabbarVisible:YES];
+                tabbarControl.selectedItem = [tabbarControl.items objectAtIndex:0];
                 flipButton.hidden = NO;
                 [flipButton setImage:[UIImage imageNamed:@"button-flip.png"] forState:UIControlStateNormal];
                 scheduleButton.hidden = YES;
+                
+                [[PiptureAppDelegate instance] putHomescreenState:mode];
+                
                 break;
             case HomeScreenMode_PlayingNow: 
                 [tabbarContainer addSubview:scheduleView];
@@ -225,29 +277,33 @@
                 
                 [self setFullScreenMode];
                 [self.navigationController setNavigationBarHidden:YES animated:YES];
+                
+                [scheduleView setTimeslotsMode:TimeslotsMode_PlayingNow];
+                [self tabbarVisible:YES];
                 tabbarControl.selectedItem = [tabbarControl.items objectAtIndex:0];
-                powerButton.enabled = YES;
                 flipButton.hidden = NO;
                 [flipButton setImage:[UIImage imageNamed:@"button-flip-back.png"] forState:UIControlStateNormal];
+                [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] forState:UIControlStateNormal];
                 scheduleButton.hidden = NO;
-                scheduleButton.titleLabel.text = @"Schedule";
-                [scheduleView navPanelVisible:NO];
-                [scheduleView pnPanelVisible:YES];
-                [self tabbarVisible:YES];
+                [scheduleButton setTitle:@"Schedule" forState:UIControlStateNormal];
+                scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
+                
+                [[PiptureAppDelegate instance] putHomescreenState:mode];
+                
                 break;
             case HomeScreenMode_Schedule: 
-                [scheduleView navPanelVisible:YES];
-                [scheduleView pnPanelVisible:NO];
-                flipButton.hidden = YES;
-                scheduleButton.hidden = NO;
-                scheduleButton.titleLabel.text = @"Done";
+                [scheduleView setTimeslotsMode:TimeslotsMode_Schedule];
                 [self tabbarVisible:NO];
+                flipButton.hidden = YES;
+                [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule-done.png"] forState:UIControlStateNormal];
+                scheduleButton.hidden = NO;
+                [scheduleButton setTitle:@"Done" forState:UIControlStateNormal];
+                scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
                 break;
             case HomeScreenMode_Albums:
                 [self.navigationController setNavigationBarHidden:NO animated:NO];
                 [self setNavBarMode];
-                
-                powerButton.enabled = NO;
+                [self powerButtonEnable:NO];
                 flipButton.hidden = YES;
                 scheduleButton.hidden = YES;
                 break;
@@ -256,6 +312,10 @@
                 
         homeScreenMode = mode;
     }
+}
+
+- (void)doFlip {
+    [self flipAction:nil];
 }
 
 #pragma mark PiptureModelDelegate methods
@@ -269,6 +329,7 @@
 
 -(void)timeslotsReceived:(NSArray *)timeslots {
     [scheduleView updateTimeslots:timeslots];
+    [coverView updateTimeslots:timeslots];
 }
 
 #pragma mark PlaylistReceiver methods
