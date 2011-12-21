@@ -57,6 +57,14 @@
 }
 
 - (IBAction)showDetail:(id)sender {
+    int page = [self getPageNumber];
+    
+    if (![self pageInRange:page]) return;
+    //TODO: get album by timeslotId
+    //Timeslot * slot = [timelineArray objectAtIndex:page];
+    //Album * album = slot ;
+    //[delegate showAlbumDetails:album];
+    //}
 }
 
 - (void) prepareImageFor: (int) timeslot {
