@@ -10,8 +10,8 @@
 
 @implementation ScreenshotImage
 
-static NSString* const JSON_PARAM_IMAGE_URL = @"ImageURL";
-static NSString* const JSON_PARAM_IMAGE_DESCRIPTION = @"ImageDescription";
+static NSString* const JSON_PARAM_IMAGE_URL = @"URL";
+static NSString* const JSON_PARAM_IMAGE_DESCRIPTION = @"Description";
 
 @synthesize imageURL;
 @synthesize imageDescription;

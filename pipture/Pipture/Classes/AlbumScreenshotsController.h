@@ -12,13 +12,10 @@
 
 @interface AlbumScreenshotsController : UIViewController<AlbumScreenshotControllerDelegate>
 @property (retain, nonatomic) IBOutlet UIScrollView *imagesScrollView;
-
+@property (retain, nonatomic) NSArray* screenshotImages;
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil mailComposerController: (MailComposerController*)mailComposerController;
-
--(void)loadImages:(NSArray*)screenshotImages;
-
 
 
 @end

@@ -681,7 +681,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             switch (errCode) { 
                 case 0:   
                 {
-                    NSArray* screenshotImages = [PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_VIDEOS itemCreator:^(NSDictionary*jsonIT)
+                    NSArray* screenshotImages = [PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_SCREENSHOTS itemCreator:^(NSDictionary*jsonIT)
                                               {
                                                   return [[ScreenshotImage alloc] initWithJSON:jsonIT];
                                                   

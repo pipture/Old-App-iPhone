@@ -23,9 +23,9 @@
 @synthesize playlistItem;
 @synthesize timeslotId;
 
-ScreenshotImage* screenshotImage_ = nil;
-AsyncImageView * lastScreenshotView = nil;
-NSArray* screenshotImages_ = nil;
+ScreenshotImage* screenshotImage_;
+AsyncImageView * lastScreenshotView;
+NSArray* screenshotImages_;
 
 static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
 
@@ -68,9 +68,20 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 {
     [super viewDidLoad];
  
+    screenshotImage_ = nil;
+    lastScreenshotView = nil;
+    screenshotImages_ = nil;
+    
+    UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];        
+    self.navigationItem.leftBarButtonItem = cancelButton;
+    [cancelButton release];
+
     nextButton = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStylePlain target:self action:@selector(nextButton:)];
     self.navigationItem.rightBarButtonItem = nextButton;
     [nextButton release];
+    
+    //Dont work
+    //self.navigationItem.titleView = self.navigationController.parentViewController.navigationItem.titleView;
     
     [self displayScreenshot];
     
@@ -83,6 +94,12 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];    
     screenshotCell.accessoryType = UITableViewCellAccessoryNone;    
 }
+
+-(void)onCancel
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 
 -(void)screenshotsNotSupported
 {
@@ -346,7 +363,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     if ([self calcCellRow:indexPath] == SCREENSHOT_CELL_ROW && screenshotImages_) {
         
         AlbumScreenshotsController* asctrl = [[AlbumScreenshotsController alloc] initWithNibName:@"AlbumScreenshots" bundle:nil mailComposerController:self];             
-        [asctrl loadImages:screenshotImages_];
+        asctrl.screenshotImages = screenshotImages_;
+
         [self.navigationController pushViewController:asctrl animated:YES];
     }    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
