@@ -109,4 +109,8 @@ static NSString* const VIDEO_KEY_NAME = @"TrailerId";
     }
 }
 
+-(BOOL) supportsScreenshotCollection
+{
+    return NO;
+}
 @end

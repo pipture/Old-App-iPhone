@@ -12,6 +12,7 @@
 #import "Album.h"
 #import "PlaylistItem.h"
 #import "SBJson.h"
+#import "ScreenshotImage.h"
 
 @interface DefaultDataRequestFactory : NSObject<DataRequestManager>
 
@@ -89,9 +90,10 @@
 -(void)notEnoughMoneyForSend:(PlaylistItem*)playlistItem;
 @end
 
-@protocol AlbumScreenshotsReceiver <PiptureModelDelegate>
+@protocol ScreenshotCollectionReceiver <PiptureModelDelegate>
 @required
--(void)screenshotsReceived:(NSArray*)urls;
+-(void)screenshotsNotSupported;
+-(void)screenshotsReceived:(NSArray*)screenshotImages;
 @end
 
 
@@ -101,7 +103,6 @@
 @property (retain,nonatomic) DefaultDataRequestFactory* dataRequestFactory; 
 
 - (NSString*)getEndPoint;
-
 
 -(void)loginWithUUID:(NSString*)uuid receiver:(NSObject<AuthenticationDelegate>*)receiver;
 
@@ -125,8 +126,7 @@
 
 -(BOOL)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId screenshotImage:(NSString*)screenshotImage userName:(NSString*)userName receiver:(NSObject<SendMessageDelegate>*)receiver;
 
--(BOOL)getAlbumScreenshots:(NSInteger)episodeId receiver:(NSObject<AlbumScreenshotsReceiver>*)receiver;
-
+-(BOOL)getScreenshotCollectionFor:(PlaylistItem*)playlistItem receiver:(NSObject<ScreenshotCollectionReceiver>*)receiver;
 
 @end
 

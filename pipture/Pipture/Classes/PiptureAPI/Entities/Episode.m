@@ -178,4 +178,9 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
     }
 }
 
+-(BOOL) supportsScreenshotCollection
+{
+    return YES;
+}
+
 @end

@@ -9,15 +9,24 @@
 #import <UIKit/UIKit.h>
 #import <MessageUI/MFMailComposeViewController.h>
 #import "PiptureModel.h"
+#import "ScreenshotImage.h"
 
-@interface MailComposerController : UIViewController <UITextViewDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate> {
+@interface MailComposerController : UIViewController <UITextViewDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver> {
+
     UIStatusBarStyle lastStatusStyle;
     UIBarStyle lastNaviStyle;
 }
 @property (retain, nonatomic) IBOutlet UIView *picturePlaceholder;
 @property (retain, nonatomic) IBOutlet UITextView *messageEdit;
+@property (retain, nonatomic) IBOutlet UITableViewCell *screenshotCell;
+@property (retain, nonatomic) IBOutlet UITableViewCell *messageCell;
+@property (retain, nonatomic) IBOutlet UITableView *layoutTableView;
+@property (retain, nonatomic) IBOutlet UILabel *screenshotName;
+
 @property (retain, nonatomic) UIBarButtonItem * nextButton;
 @property (assign, nonatomic) PlaylistItem * playlistItem;
 @property (assign, nonatomic) NSNumber * timeslotId;
 
+- (IBAction)onTableTap:(id)sender;
+- (void) setScreenshotImage:(ScreenshotImage*)screenshotImage;
 @end
