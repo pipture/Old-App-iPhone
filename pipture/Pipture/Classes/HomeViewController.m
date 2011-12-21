@@ -274,6 +274,23 @@
     [self flipAction:nil];
 }
 
+- (void)doPower {
+    switch (homeScreenMode) {
+        case HomeScreenMode_Cover:
+            //coverView 
+            break;
+        case HomeScreenMode_PlayingNow:
+        {
+            Timeslot * slot = [scheduleView getTimeslot];
+            if (slot) {
+                reqTimeslotId = slot.timeslotId;
+                [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];
+            }
+        } break;
+        default: break;
+    }
+}
+
 - (void)showAlbumDetails:(Album*)album {
     [[[PiptureAppDelegate instance] model] getDetailsForAlbum:album receiver:self];
 }

@@ -26,6 +26,7 @@ enum HomeScreenMode {
 - (void)scheduleTimeslotChange:(NSArray *)timeslots;
 - (void)setHomeScreenMode:(enum HomeScreenMode)mode;
 - (void)doFlip;
+- (void)doPower;
 - (void)scheduleButtonHidden:(BOOL)hidden;
 - (void)showAlbumDetails:(Album*)album;
 

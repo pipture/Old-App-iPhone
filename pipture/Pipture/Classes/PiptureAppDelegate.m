@@ -9,6 +9,7 @@
 #import "PiptureAppDelegate.h"
 #import "GANTracker.h"
 #import "InAppPurchaseManager.h"
+#import "HomeViewController.h"
 
 // Dispatch period in seconds
 static const NSInteger kGANDispatchPeriodSec = 10;
@@ -331,23 +332,21 @@ NSInteger networkActivityIndecatorCount;
     powerButton.enabled = enable;
 }
 
+- (HomeViewController*)getHomeView {
+    UIViewController * visible = [homeNavigationController visibleViewController];
+    if (visible.class == [HomeViewController class]) {
+        return (HomeViewController*)visible;
+    }
+    return nil;
+}
+
 //The event handling method
 - (void)actionButton:(id)sender {
     if (self.powerButton.enabled) {
-        /*switch (homeScreenMode) {
-            case HomeScreenMode_Cover:
-                //coverView 
-                break;
-            case HomeScreenMode_PlayingNow:
-            {
-                Timeslot * slot = [scheduleView getTimeslot];
-                if (slot) {
-                    reqTimeslotId = slot.timeslotId;
-                    [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];
-                }
-            } break;
-            default: break;
-        }*/
+        HomeViewController * vc = [self getHomeView];
+        if (vc) {
+            [vc doPower];
+        }
     }
 }
 - (void)tabbarSelect:(int)item {
@@ -394,11 +393,14 @@ NSInteger networkActivityIndecatorCount;
 #pragma mark UITabBarDelegate methods
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
-    /*switch (item.tag) {
-        case 1: [self setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
-        case 2: break;
-        case 3: [self setHomeScreenMode:HomeScreenMode_Albums]; break;
-    }*/
+    HomeViewController * vc = [self getHomeView];
+    if (vc) {
+        switch (item.tag) {
+            case 1: [vc setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
+            case 2: break;
+            case 3: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
+        }
+    }
 }
 
 
