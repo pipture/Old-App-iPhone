@@ -57,7 +57,7 @@
 	<key>Rest Get albums request</key>
 	<string>getAlbums?</string>
 	<key>Rest Get album screenshots</key>
-	<string>getAlbumScreenshots?EpisodeId=%@</string>
+	<string>getAlbumScreenshots?%@=%@</string>
 	<key>Rest Get balance</key>
 	<string>getBalance?</string>
 	<key>Rest Get current timeslots</key>
@@ -74,10 +74,12 @@
 	<string>login</string>
 	<key>Rest Register</key>
 	<string>register</string>
-	<key>Rest end point st</key>
-	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
 	<key>Rest end point</key>
+	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
+	<key>Rest end point dev</key>
 	<string>http://192.168.9.131:8000/</string>
+	<key>Rest Send message</key>
+	<string>sendMessage</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
