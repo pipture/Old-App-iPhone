@@ -9,15 +9,27 @@
 #import "PiptureAppDelegate.h"
 #import "GANTracker.h"
 #import "InAppPurchaseManager.h"
+#import "HomeViewController.h"
 
 // Dispatch period in seconds
 static const NSInteger kGANDispatchPeriodSec = 10;
 
 @implementation PiptureAppDelegate
 @synthesize busyView;
+@synthesize tabView;
+@synthesize powerButton;
+@synthesize tabbarControl;
+@synthesize buyButton;
 @synthesize window = _window;
 @synthesize homeNavigationController;
+@synthesize videoNavigationController;
 @synthesize model = model_;
+
+static NSString* const UUID_KEY = @"UserUID";
+static NSString* const HOMESCREENSTATE_KEY = @"HSState";
+
+BOOL registrationRequired = NO;
+BOOL loggedIn = NO;
 
 static PiptureAppDelegate *instance;
 
@@ -26,19 +38,19 @@ static PiptureAppDelegate *instance;
     [busyView release];
     [[GANTracker sharedTracker] stopTracker];
     
-    if (vc != nil) {
-        [vc release];
-        vc = nil;
-    }
     [purchases release];
     [homeNavigationController release];
     [_window release];
     [model_ release];
+    [buyButton release];
+    [videoNavigationController release];
+    [tabView release];
+    [tabbarControl release];
+    [powerButton release];
     [super dealloc];
 }
 
 - (id) init {
-    vc = nil;
     instance = nil;
     balance = 0;
     self = [super init];
@@ -52,10 +64,88 @@ static PiptureAppDelegate *instance;
     return self;
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (NSString*)loadUserUUID
+{    
+    return [[NSUserDefaults standardUserDefaults] stringForKey:UUID_KEY];
+}
+
+- (void)saveUUID:(NSString*)uuid
 {
+    [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:UUID_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)putHomescreenState:(int)state {
+    [[NSUserDefaults standardUserDefaults] setInteger:state forKey:HOMESCREENSTATE_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (int)getHomescreenState {
+    int state = [[NSUserDefaults standardUserDefaults] integerForKey:HOMESCREENSTATE_KEY];
+    return state;
+}
+
+
+-(void) processAuthentication
+{
+    if (loggedIn)
+    {
+        return;
+    }
+    if (registrationRequired)
+    {
+        [model_ registerWithReceiver:self];
+    } 
+    else
+    {
+        NSString* uuid = [self loadUserUUID];        
+        if ([uuid length] == 0)
+        {
+            registrationRequired = YES;
+            [self processAuthentication];
+        }
+        else
+        {
+            [model_ loginWithUUID:uuid receiver:self];
+        }
+    }
+}
+
+-(void)loggedIn
+{
+    loggedIn = YES;
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
- 
+    
+    [self.window setRootViewController:homeNavigationController];
+    [self.window bringSubviewToFront:tabView];
+    
+    UITabBarItem * item = [tabbarControl.items objectAtIndex:1];
+    item.enabled = NO;
+    
+    [self.window makeKeyAndVisible];    
+}
+
+-(void)loginFailed
+{    
+    registrationRequired = YES;
+    [self processAuthentication];
+}
+
+-(void)registred:(NSString *)uuid
+{    
+    [self saveUUID:uuid];
+}
+
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    //Every time app become active we need to check if authentification is passed. If not - login or register.
+    //It is needed for case when connection were missed on first try.
+    [self processAuthentication];    
+}
+
+-(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
     [[GANTracker sharedTracker] startTrackerWithAccountID:@"UA-27681421-1"
                                            dispatchPeriod:kGANDispatchPeriodSec
                                                  delegate:nil];
@@ -72,31 +162,53 @@ static PiptureAppDelegate *instance;
     if (![[GANTracker sharedTracker] trackPageview:@"/app_entry_point"
                                          withError:&error]) {
         NSLog(@"error in trackPageview");
-    }
-    
-    [self.window setRootViewController:homeNavigationController];
-    [self.window makeKeyAndVisible];
-    
+    }        
     return YES;
 }
+
+
 
 + (PiptureAppDelegate*) instance {
     return instance;
 }
 
+- (void)openHome {
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.5];
+    [animation setType:kCATransitionPush];
+    [animation setSubtype:kCATransitionFromTop];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    
+    [self.window setRootViewController:homeNavigationController];
+    
+    [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+    
+    [self.window bringSubviewToFront:tabView];
+}
+
 - (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId{
-    if (vc == nil) {
-        vc = [[VideoViewController alloc] initWithNibName:@"VideoView" bundle:nil];
-    }
-    if (navigationController.visibleViewController != vc) {
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+    videoNavigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.5];
+    [animation setType:kCATransitionPush];
+    [animation setSubtype:kCATransitionFromTop];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    
+    [self.window setRootViewController:videoNavigationController];
+    
+    UIViewController * visible = [videoNavigationController visibleViewController];
+    if (visible.class == [VideoViewController class]) {
+        VideoViewController * vc = (VideoViewController*)visible;
         vc.timeslotId = timeslotId;
         vc.playlist = playlist;
         vc.wantsFullScreenLayout = YES;
         vc.simpleMode = noNavi;
-        [navigationController pushViewController:vc animated:YES];
+        [vc initVideo];
     }
     
-    [vc initVideo];
+    [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
     
     TRACK_EVENT(@"Open Activity", @"Video player");
 }
@@ -209,6 +321,51 @@ NSInteger networkActivityIndecatorCount;
     }
 }
 
+- (IBAction)buyAction:(id)sender {
+}
+
+- (IBAction)videoDone:(id)sender {
+    [self openHome];
+}
+
+- (void)powerButtonEnable:(BOOL)enable {
+    powerButton.enabled = enable;
+}
+
+- (HomeViewController*)getHomeView {
+    UIViewController * visible = [homeNavigationController visibleViewController];
+    if (visible.class == [HomeViewController class]) {
+        return (HomeViewController*)visible;
+    }
+    return nil;
+}
+
+//The event handling method
+- (void)actionButton:(id)sender {
+    if (self.powerButton.enabled) {
+        HomeViewController * vc = [self getHomeView];
+        if (vc) {
+            [vc doPower];
+        }
+    }
+}
+- (void)tabbarSelect:(int)item {
+    UITabBarItem * i = [tabbarControl.items objectAtIndex:item];
+    tabbarControl.selectedItem = i;
+}
+
+- (void)tabbarVisible:(BOOL)visible {
+    CGRect rect = tabView.frame;
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    if (!visible)
+        tabView.frame = CGRectMake(0, self.window.frame.size.height, rect.size.width, tabView.frame.size.height);
+    else
+        tabView.frame = CGRectMake(0, self.window.frame.size.height - tabView.frame.size.height, rect.size.width, tabView.frame.size.height);
+    
+    [UIView commitAnimations]; 
+}
+
 - (void)showModalBusy:(void (^)(void))completion {
     [[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
@@ -222,7 +379,7 @@ NSInteger networkActivityIndecatorCount;
 #pragma mark BalanceReceiver methods
 
 -(void)dataRequestFailed:(DataRequestError*)error {
-    NSLog(@"Req failed: %@", error);
+    [self processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];    
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)newBalance {
@@ -232,5 +389,19 @@ NSInteger networkActivityIndecatorCount;
 -(void)authenticationFailed {
     NSLog(@"auth failed!");
 }
+
+#pragma mark UITabBarDelegate methods
+
+- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
+    HomeViewController * vc = [self getHomeView];
+    if (vc) {
+        switch (item.tag) {
+            case 1: [vc setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
+            case 2: break;
+            case 3: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
+        }
+    }
+}
+
 
 @end

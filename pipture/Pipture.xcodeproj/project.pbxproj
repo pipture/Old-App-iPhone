@@ -156,12 +156,6 @@
 		888780D2149749A100C9AD36 /* UIDevice+IdentifierAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 888780D0149749A100C9AD36 /* UIDevice+IdentifierAddition.m */; };
 		88982B8814923FBD0012BEC2 /* DataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8514923FBD0012BEC2 /* DataRequest.m */; };
 		88982B8914923FBD0012BEC2 /* DataRequestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8714923FBD0012BEC2 /* DataRequestError.m */; };
-		889F002514A0828600F8432A /* AlbumScreenshotsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 889F002314A0828600F8432A /* AlbumScreenshotsController.m */; };
-		889F002814A082E000F8432A /* AlbumScreenshots.xib in Resources */ = {isa = PBXBuildFile; fileRef = 889F002714A082DF00F8432A /* AlbumScreenshots.xib */; };
-		889F002C14A0874400F8432A /* screenshotSelectionMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 889F002B14A0874300F8432A /* screenshotSelectionMark.png */; };
-		889F003414A0A42000F8432A /* AlbumScreenshotController.m in Sources */ = {isa = PBXBuildFile; fileRef = 889F003214A0A41F00F8432A /* AlbumScreenshotController.m */; };
-		889F003814A0A47100F8432A /* AlbumScreenshot.xib in Resources */ = {isa = PBXBuildFile; fileRef = 889F003714A0A47100F8432A /* AlbumScreenshot.xib */; };
-		889F003B14A0ADBD00F8432A /* ScreenshotImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 889F003A14A0ADBD00F8432A /* ScreenshotImage.m */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
 		88FC5C0814922C2800C40DA1 /* NSDictionary+ValueHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0714922C2800C40DA1 /* NSDictionary+ValueHelper.m */; };
@@ -374,15 +368,6 @@
 		88982B8514923FBD0012BEC2 /* DataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequest.m; sourceTree = "<group>"; };
 		88982B8614923FBD0012BEC2 /* DataRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequestError.h; sourceTree = "<group>"; };
 		88982B8714923FBD0012BEC2 /* DataRequestError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequestError.m; sourceTree = "<group>"; };
-		889F002214A0828500F8432A /* AlbumScreenshotsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumScreenshotsController.h; sourceTree = "<group>"; };
-		889F002314A0828600F8432A /* AlbumScreenshotsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumScreenshotsController.m; sourceTree = "<group>"; };
-		889F002714A082DF00F8432A /* AlbumScreenshots.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumScreenshots.xib; sourceTree = "<group>"; };
-		889F002B14A0874300F8432A /* screenshotSelectionMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshotSelectionMark.png; sourceTree = "<group>"; };
-		889F003114A0A41F00F8432A /* AlbumScreenshotController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumScreenshotController.h; sourceTree = "<group>"; };
-		889F003214A0A41F00F8432A /* AlbumScreenshotController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumScreenshotController.m; sourceTree = "<group>"; };
-		889F003714A0A47100F8432A /* AlbumScreenshot.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumScreenshot.xib; sourceTree = "<group>"; };
-		889F003914A0ADBD00F8432A /* ScreenshotImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenshotImage.h; sourceTree = "<group>"; };
-		889F003A14A0ADBD00F8432A /* ScreenshotImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenshotImage.m; sourceTree = "<group>"; };
 		88BE44B11483A341002D30ED /* PiptureModelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureModelTest.h; sourceTree = "<group>"; };
 		88BE44B21483A341002D30ED /* PiptureModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModelTest.m; sourceTree = "<group>"; };
 		88D84207147B626C00E47EF8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
@@ -437,10 +422,6 @@
 				382D9C2A148E034600005F16 /* MailComposerController.m */,
 				38D510021497417E009BF5E9 /* InAppPurchaseManager.h */,
 				38D510031497417E009BF5E9 /* InAppPurchaseManager.m */,
-				889F002214A0828500F8432A /* AlbumScreenshotsController.h */,
-				889F002314A0828600F8432A /* AlbumScreenshotsController.m */,
-				889F003114A0A41F00F8432A /* AlbumScreenshotController.h */,
-				889F003214A0A41F00F8432A /* AlbumScreenshotController.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -485,8 +466,6 @@
 				384A1F941491C21C007D5E0B /* Timeslot.m */,
 				384A1F951491C21C007D5E0B /* Trailer.h */,
 				384A1F961491C21C007D5E0B /* Trailer.m */,
-				889F003914A0ADBD00F8432A /* ScreenshotImage.h */,
-				889F003A14A0ADBD00F8432A /* ScreenshotImage.m */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -608,12 +587,9 @@
 		38989D17147A6483004DE1E0 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				889F003714A0A47100F8432A /* AlbumScreenshot.xib */,
-				889F002B14A0874300F8432A /* screenshotSelectionMark.png */,
 				38A7EC88148DDC03002120F3 /* png */,
 				387A94641484F8C2000F9433 /* mockdata */,
 				385FC39C147CD818001CDF43 /* VideoView.xib */,
-				889F002714A082DF00F8432A /* AlbumScreenshots.xib */,
 				382D9C25148E030100005F16 /* MailComposer.xib */,
 				8811ED94147B6FC5008CC877 /* HomeView.xib */,
 				38989D18147A6568004DE1E0 /* MainWindow.xib */,
@@ -966,9 +942,6 @@
 				384EBA5F149F64C4000973CD /* case-nothingplayingnow.png in Resources */,
 				384EBA62149F653E000973CD /* button-info@2x.png in Resources */,
 				384EBA63149F653E000973CD /* button-info.png in Resources */,
-				889F002814A082E000F8432A /* AlbumScreenshots.xib in Resources */,
-				889F002C14A0874400F8432A /* screenshotSelectionMark.png in Resources */,
-				889F003814A0A47100F8432A /* AlbumScreenshot.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1046,9 +1019,6 @@
 				38BC27C4149870E6002B938F /* BusyViewController.m in Sources */,
 				38549D95149F235F004D2189 /* CoverView.m in Sources */,
 				38549D98149F23B5004D2189 /* ScheduleView.m in Sources */,
-				889F002514A0828600F8432A /* AlbumScreenshotsController.m in Sources */,
-				889F003414A0A42000F8432A /* AlbumScreenshotController.m in Sources */,
-				889F003B14A0ADBD00F8432A /* ScreenshotImage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

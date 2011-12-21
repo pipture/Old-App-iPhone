@@ -63,8 +63,12 @@ static NSString* const JSON_PARAM_TIMESLOT_STATUS = @"TimeslotStatus";
 }
 
 -(NSString*)timeDescription {
-        
-    return self.timeslotStatus == Current ? @"Playing now" : [NSString stringWithFormat:@"%@ to %@",[self representTime:startTime],[self representTime:endTime]];
+    switch (self.timeslotStatus) {
+        case TimeslotStatus_Current:
+            return @"Playing now";
+        default:
+            return [NSString stringWithFormat:@"%@ to %@",[self representTime:startTime],[self representTime:endTime]];
+    }
 }
 
 - (id)initWith:(NSString*)_title desc:(NSString*)_desc image:(UIImage*)_image {

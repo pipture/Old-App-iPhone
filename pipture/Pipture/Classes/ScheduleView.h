@@ -8,26 +8,43 @@
 
 #import <UIKit/UIKit.h>
 #import "Timeslot.h"
+#import "HomeScreenDelegate.h"
+
+enum TimeslotsMode{
+    TimeslotsMode_PlayingNow,
+    TimeslotsMode_Schedule,
+    TimeslotsMode_Schedule_Fillscreen,
+};
 
 @interface ScheduleView : UIView<UIScrollViewDelegate>
 {
-    NSTimer *changeTimer;
-    NSTimer *updateTimer;
+    enum TimeslotsMode timeslotsMode;
     NSMutableArray * timelineArray;
+    NSMutableArray * coverItems;
 }
 
-- (void)updateControls;
+- (void)prepareWith:(id<HomeScreenDelegate>)parent;
+
+- (void)updateNotify;
 - (void)scrollToPage:(int) page;
 - (int)getPageNumber;
 - (void)prepareImageFor:(int)timeslot;
 - (void)updateTimeslots:(NSArray*) timeslots;
 
+- (Timeslot*)getTimeslot;
+
+- (void)setTimeslotsMode:(enum TimeslotsMode)mode;
+- (BOOL)pageInRange:(int)page;
+
 - (void)navPanelVisible:(BOOL)visible;
 - (void)pnPanelVisible:(BOOL)visible;
+- (void)psPanelVisible:(BOOL)visible;
 
 - (IBAction)showDetail:(id)sender;
 - (IBAction)prevAction:(id)sender;
 - (IBAction)nextAction:(id)sender;
+
+@property (assign, nonatomic) id<HomeScreenDelegate> delegate;
 
 @property (retain, nonatomic) IBOutlet UIView *navPanel;
 @property (retain, nonatomic) IBOutlet UIButton *prevBtn;

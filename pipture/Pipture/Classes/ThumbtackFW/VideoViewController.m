@@ -226,7 +226,7 @@
     
     waitForNext = NO;
     needToBack = NO;
-    suspended = YES;
+    //suspended = YES;
     precacheBegin = NO;
     pausedStatus = NO;
     [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
@@ -263,6 +263,7 @@
     videoTitleView.view.frame = CGRectMake(0, 0, 130,44);
     self.navigationItem.titleView = videoTitleView.view;
     
+    [self initVideo];
     NSLog(@"video player loaded");
 }
 
@@ -293,9 +294,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    lastStatusStyle = [UIApplication sharedApplication].statusBarStyle;
-    lastNaviStyle = self.navigationController.navigationBar.barStyle;
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
