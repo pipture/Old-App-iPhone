@@ -15,8 +15,8 @@
 {
 }
 
-- (IBAction)closeLibrary:(id)sender;
-- (IBAction)purchaseCredits:(id)sender;
+//- (IBAction)closeLibrary:(id)sender;
+//- (IBAction)purchaseCredits:(id)sender;
 - (void)updateBalance:(float)balance;
 
 @property (retain, nonatomic) NSArray * albums;

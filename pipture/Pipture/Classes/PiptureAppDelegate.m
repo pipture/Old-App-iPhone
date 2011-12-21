@@ -15,6 +15,9 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 
 @implementation PiptureAppDelegate
 @synthesize busyView;
+@synthesize tabView;
+@synthesize powerButton;
+@synthesize tabbarControl;
 @synthesize buyButton;
 @synthesize window = _window;
 @synthesize homeNavigationController;
@@ -40,6 +43,9 @@ static PiptureAppDelegate *instance;
     [model_ release];
     [buyButton release];
     [videoNavigationController release];
+    [tabView release];
+    [tabbarControl release];
+    [powerButton release];
     [super dealloc];
 }
 
@@ -110,6 +116,11 @@ static PiptureAppDelegate *instance;
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     
     [self.window setRootViewController:homeNavigationController];
+    [self.window bringSubviewToFront:tabView];
+    
+    UITabBarItem * item = [tabbarControl.items objectAtIndex:1];
+    item.enabled = NO;
+    
     [self.window makeKeyAndVisible];    
 }
 
@@ -170,6 +181,8 @@ static PiptureAppDelegate *instance;
     [self.window setRootViewController:homeNavigationController];
     
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+    
+    [self.window bringSubviewToFront:tabView];
 }
 
 - (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId{
@@ -314,6 +327,46 @@ NSInteger networkActivityIndecatorCount;
     [self openHome];
 }
 
+- (void)powerButtonEnable:(BOOL)enable {
+    powerButton.enabled = enable;
+}
+
+//The event handling method
+- (void)actionButton:(id)sender {
+    if (self.powerButton.enabled) {
+        /*switch (homeScreenMode) {
+            case HomeScreenMode_Cover:
+                //coverView 
+                break;
+            case HomeScreenMode_PlayingNow:
+            {
+                Timeslot * slot = [scheduleView getTimeslot];
+                if (slot) {
+                    reqTimeslotId = slot.timeslotId;
+                    [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];
+                }
+            } break;
+            default: break;
+        }*/
+    }
+}
+- (void)tabbarSelect:(int)item {
+    UITabBarItem * i = [tabbarControl.items objectAtIndex:item];
+    tabbarControl.selectedItem = i;
+}
+
+- (void)tabbarVisible:(BOOL)visible {
+    CGRect rect = tabView.frame;
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    if (!visible)
+        tabView.frame = CGRectMake(0, self.window.frame.size.height, rect.size.width, tabView.frame.size.height);
+    else
+        tabView.frame = CGRectMake(0, self.window.frame.size.height - tabView.frame.size.height, rect.size.width, tabView.frame.size.height);
+    
+    [UIView commitAnimations]; 
+}
+
 - (void)showModalBusy:(void (^)(void))completion {
     [[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
@@ -337,5 +390,16 @@ NSInteger networkActivityIndecatorCount;
 -(void)authenticationFailed {
     NSLog(@"auth failed!");
 }
+
+#pragma mark UITabBarDelegate methods
+
+- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
+    /*switch (item.tag) {
+        case 1: [self setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
+        case 2: break;
+        case 3: [self setHomeScreenMode:HomeScreenMode_Albums]; break;
+    }*/
+}
+
 
 @end

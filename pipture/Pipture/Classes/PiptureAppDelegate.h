@@ -26,12 +26,15 @@
 #define SHOW_ERROR(title, msg) [[PiptureAppDelegate instance] showError:title message:msg];
 
 
-@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver>
+@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UITabBarDelegate>
 {
     float balance;
     InAppPurchaseManager * purchases;
 }
 
+@property (retain, nonatomic) IBOutlet UIView *tabView;
+@property (retain, nonatomic) IBOutlet UIButton *powerButton;
+@property (retain, nonatomic) IBOutlet UITabBar *tabbarControl;
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
@@ -41,6 +44,9 @@
 
 +(PiptureAppDelegate*) instance;
 
+- (void)powerButtonEnable:(BOOL)enable;
+- (void)tabbarVisible:(BOOL)visible;
+- (void)tabbarSelect:(int)item;
 - (void)putHomescreenState:(int)state;
 - (int)getHomescreenState;
 
@@ -48,6 +54,9 @@
 - (float)getBalance;
 - (void)updateBalance;
 - (void)buyCredits;
+
+
+- (IBAction)actionButton:(id)sender;
 - (IBAction)buyAction:(id)sender;
 - (IBAction)videoDone:(id)sender;
 

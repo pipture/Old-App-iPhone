@@ -19,11 +19,8 @@
 
 @implementation HomeViewController
 @synthesize tabbarContainer;
-@synthesize tabbarPanel;
-@synthesize tabbarControl;
 @synthesize flipButton;
 @synthesize scheduleButton;
-@synthesize powerButton;
 @synthesize scheduleView;
 @synthesize coverView;
 @synthesize albumsView;
@@ -94,9 +91,6 @@
     
     [self setHomeScreenMode:[[PiptureAppDelegate instance] getHomescreenState]];
     
-    UITabBarItem * item = [tabbarControl.items objectAtIndex:1];
-    item.enabled = NO;
-    
     [self updateTimeslots:nil];
 }
 
@@ -107,11 +101,8 @@
     [self setScheduleView:nil];
     [self setCoverView:nil];
     [self setTabbarContainer:nil];
-    [self setTabbarPanel:nil];
-    [self setTabbarControl:nil];
     [self setFlipButton:nil];
     [self setScheduleButton:nil];
-    [self setPowerButton:nil];
     [self setAlbumsView:nil];
     [super viewDidUnload];
 }
@@ -139,52 +130,13 @@
     [scheduleView release];
     [coverView release];
     [tabbarContainer release];
-    [tabbarPanel release];
-    [tabbarControl release];
     [flipButton release];
     [scheduleButton release];
-    [powerButton release];
     [albumsView release];
     [super dealloc];
 }
 
-- (void)powerButtonEnable:(BOOL)enable {
-    powerButton.enabled = enable;
-}
-
 //The event handling method
-- (void)actionButton:(id)sender {
-    if (self.powerButton.enabled) {
-        switch (homeScreenMode) {
-            case HomeScreenMode_Cover:
-                //coverView 
-                break;
-            case HomeScreenMode_PlayingNow:
-            {
-                Timeslot * slot = [scheduleView getTimeslot];
-                if (slot) {
-                    reqTimeslotId = slot.timeslotId;
-                    [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];
-                }
-            } break;
-            default: break;
-        }
-    }
-}
-
-//The event handling method
-
-- (void)tabbarVisible:(BOOL)visible {
-    CGRect rect = tabbarPanel.frame;
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0.3];
-    if (!visible)
-        tabbarPanel.frame = CGRectMake(0, self.view.frame.size.height, rect.size.width, tabbarPanel.frame.size.height);
-    else
-        tabbarPanel.frame = CGRectMake(0, self.view.frame.size.height - tabbarPanel.frame.size.height, rect.size.width, tabbarPanel.frame.size.height);
-    
-    [UIView commitAnimations]; 
-}
 
 - (void)scheduleAction:(id)sender {
     NSLog(@"schedule action!");
@@ -217,25 +169,21 @@
 }
 
 - (void)setFullScreenMode {
-    CGRect rect = [[UIScreen mainScreen] bounds];
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
     [self.navigationController setNavigationBarHidden:YES animated:YES];
-    tabbarPanel.frame = CGRectMake(0, self.view.frame.size.height - tabbarPanel.frame.size.height, rect.size.width, tabbarPanel.frame.size.height);
 }
 
 - (void)setNavBarMode {
-    CGRect rect = [[UIScreen mainScreen] bounds];
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     [self.navigationController setNavigationBarHidden:NO animated:NO];
-    tabbarPanel.frame = CGRectMake(0, self.view.frame.size.height - tabbarPanel.frame.size.height, rect.size.width, tabbarPanel.frame.size.height);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    if (homeScreenMode == HomeScreenMode_Schedule) {
+    if (homeScreenMode == HomeScreenMode_Albums) {
         [self setNavBarMode];
     } else {
         [self setFullScreenMode];
@@ -267,8 +215,8 @@
                 
                 [self setFullScreenMode];
                 
-                [self tabbarVisible:YES];
-                tabbarControl.selectedItem = [tabbarControl.items objectAtIndex:0];
+                [[PiptureAppDelegate instance] tabbarVisible:YES];
+                [[PiptureAppDelegate instance] tabbarSelect:0];
                 flipButton.hidden = NO;
                 [flipButton setImage:[UIImage imageNamed:@"button-flip.png"] forState:UIControlStateNormal];
                 scheduleButton.hidden = YES;
@@ -283,8 +231,8 @@
                 [self setFullScreenMode];
                 
                 [scheduleView setTimeslotsMode:TimeslotsMode_PlayingNow];
-                [self tabbarVisible:YES];
-                tabbarControl.selectedItem = [tabbarControl.items objectAtIndex:0];
+                [[PiptureAppDelegate instance] tabbarVisible:YES];
+                [[PiptureAppDelegate instance] tabbarSelect:0];
                 flipButton.hidden = NO;
                 [flipButton setImage:[UIImage imageNamed:@"button-flip-back.png"] forState:UIControlStateNormal];
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] forState:UIControlStateNormal];
@@ -297,7 +245,7 @@
                 break;
             case HomeScreenMode_Schedule: 
                 [scheduleView setTimeslotsMode:TimeslotsMode_Schedule];
-                [self tabbarVisible:NO];
+                [[PiptureAppDelegate instance] tabbarVisible:NO];
                 flipButton.hidden = YES;
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule-done.png"] forState:UIControlStateNormal];
                 scheduleButton.hidden = NO;
@@ -309,7 +257,9 @@
                 
                 [self updafeAlbums];
                 [self setNavBarMode];
-                [self powerButtonEnable:NO];
+                
+                [[PiptureAppDelegate instance] tabbarSelect:2];
+                [[PiptureAppDelegate instance] powerButtonEnable:NO];
                 flipButton.hidden = YES;
                 scheduleButton.hidden = YES;
                 break;
@@ -393,14 +343,5 @@
 -(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album {
 }
 
-#pragma mark UITabBarDelegate methods
-
-- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
-    switch (item.tag) {
-        case 1: [self setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
-        case 2: [self actionButton:item]; break;
-        case 3: [self setHomeScreenMode:HomeScreenMode_Albums]; break;
-    }
-}
 
 @end

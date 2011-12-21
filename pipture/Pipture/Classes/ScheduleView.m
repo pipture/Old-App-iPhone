@@ -8,6 +8,7 @@
 
 #import "ScheduleView.h"
 #import "AsyncImageView.h"
+#import "PiptureAppDelegate.h"
 
 @implementation ScheduleView
 @synthesize navPanel;
@@ -340,19 +341,19 @@
                 case TimeslotStatus_Current:
                     [self psPanelVisible:NO];
                     [self pnPanelVisible:YES];
-                    [delegate powerButtonEnable:YES];
+                    [[PiptureAppDelegate instance] powerButtonEnable:YES];
                     [self updateTimeSlotInfo:slot panel:pnPanel];
                     break;
                 case TimeslotStatus_Next:
                     [self pnPanelVisible:NO];
                     [self psPanelVisible:YES];
-                    [delegate powerButtonEnable:NO];
+                    [[PiptureAppDelegate instance] powerButtonEnable:NO];
                     [self updateTimeSlotInfo:slot panel:psPanel];
                     break;    
                 default:
                     [self pnPanelVisible:NO];
                     [self psPanelVisible:NO];
-                    [delegate powerButtonEnable:NO];
+                    [[PiptureAppDelegate instance] powerButtonEnable:NO];
                     break;
             }
             break;

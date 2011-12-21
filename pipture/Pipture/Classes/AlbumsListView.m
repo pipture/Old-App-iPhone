@@ -93,8 +93,8 @@
 
 - (void)detailAlbumShow:(id)sender {
     if (sender && [sender superview]) {
-        int tag = [[[sender superview] superview] tag];
-        Album * album = [albumsArray objectAtIndex:tag];
+        //int tag = [[[sender superview] superview] tag];
+        //Album * album = [albumsArray objectAtIndex:tag];
         
     }
 }

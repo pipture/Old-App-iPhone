@@ -28,16 +28,12 @@
 
 //returns current visible page in scrollview
 
-- (IBAction)actionButton:(id)sender;
 - (IBAction)scheduleAction:(id)sender;
 - (IBAction)flipAction:(id)sender;
 
 @property (retain, nonatomic) IBOutlet UIView *tabbarContainer;
-@property (retain, nonatomic) IBOutlet UIView *tabbarPanel;
-@property (retain, nonatomic) IBOutlet UITabBar *tabbarControl;
 @property (retain, nonatomic) IBOutlet UIButton *flipButton;
 @property (retain, nonatomic) IBOutlet UIButton *scheduleButton;
-@property (retain, nonatomic) IBOutlet UIButton *powerButton;
 @property (retain, nonatomic) IBOutlet ScheduleView *scheduleView;
 @property (retain, nonatomic) IBOutlet CoverView *coverView;
 @property (retain, nonatomic) IBOutlet AlbumsView *albumsView;
