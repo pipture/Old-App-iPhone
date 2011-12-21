@@ -26,7 +26,7 @@
 #define SHOW_ERROR(title, msg) [[PiptureAppDelegate instance] showError:title message:msg];
 
 
-@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UITabBarDelegate>
+@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UITabBarDelegate, UINavigationControllerDelegate>
 {
     float balance;
     InAppPurchaseManager * purchases;
