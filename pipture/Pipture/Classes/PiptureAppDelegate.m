@@ -15,6 +15,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 
 @implementation PiptureAppDelegate
 @synthesize busyView;
+@synthesize buyButton;
 @synthesize window = _window;
 @synthesize homeNavigationController;
 @synthesize model = model_;
@@ -40,6 +41,7 @@ static PiptureAppDelegate *instance;
     [homeNavigationController release];
     [_window release];
     [model_ release];
+    [buyButton release];
     [super dealloc];
 }
 
@@ -284,6 +286,9 @@ NSInteger networkActivityIndecatorCount;
     } else {
         SHOW_ERROR(@"Purchase failed", @"Can't make purchases!");
     }
+}
+
+- (IBAction)buyAction:(id)sender {
 }
 
 - (void)showModalBusy:(void (^)(void))completion {

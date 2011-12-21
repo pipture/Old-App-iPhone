@@ -20,6 +20,7 @@ enum TimeslotsMode{
 {
     enum TimeslotsMode timeslotsMode;
     NSMutableArray * timelineArray;
+    NSMutableArray * coverItems;
 }
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent;
@@ -29,6 +30,8 @@ enum TimeslotsMode{
 - (int)getPageNumber;
 - (void)prepareImageFor:(int)timeslot;
 - (void)updateTimeslots:(NSArray*) timeslots;
+
+- (Timeslot*)getTimeslot;
 
 - (void)setTimeslotsMode:(enum TimeslotsMode)mode;
 - (BOOL)pageInRange:(int)page;

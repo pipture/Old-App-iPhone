@@ -25,11 +25,16 @@
 @synthesize powerButton;
 @synthesize scheduleView;
 @synthesize coverView;
+@synthesize albumsView;
 
 #pragma mark - View lifecycle
 
 - (void)scheduleButtonHidden:(BOOL)hidden {
     scheduleButton.hidden = hidden;
+}
+
+- (void)updafeAlbums {
+    [[[PiptureAppDelegate instance] model] getAlbumsForReciever:self];
 }
 
 - (void)updateTimeslots:(NSTimer*)timer {
@@ -84,8 +89,12 @@
     
     [scheduleView prepareWith:self];
     [coverView prepareWith:self];
+    [albumsView prepareWith:self];
     
     [self setHomeScreenMode:[[PiptureAppDelegate instance] getHomescreenState]];
+    
+    UITabBarItem * item = [tabbarControl.items objectAtIndex:1];
+    item.enabled = NO;
     
     [self updateTimeslots:nil];
 }
@@ -102,6 +111,7 @@
     [self setFlipButton:nil];
     [self setScheduleButton:nil];
     [self setPowerButton:nil];
+    [self setAlbumsView:nil];
     [super viewDidUnload];
 }
 
@@ -116,18 +126,6 @@
     [self resetScheduleTimer];
     [self stopTimer];
     [super viewDidDisappear:animated];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    lastStatusStyle = [UIApplication sharedApplication].statusBarStyle;
-    lastNaviStyle = self.navigationController.navigationBar.barStyle;
-    
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
-    //[UIApplication sharedApplication].statusBarHidden = NO;
-    //[self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -145,6 +143,7 @@
     [flipButton release];
     [scheduleButton release];
     [powerButton release];
+    [albumsView release];
     [super dealloc];
 }
 
@@ -154,22 +153,25 @@
 
 //The event handling method
 - (void)actionButton:(id)sender {
-    //int page = [self getPageNumber];
-    /*if (scheduleMode && page != 0) {
-        [self scheduleAction:nil];
-    } else {
-        if (timelineArray.count > 0) {
-            Timeslot * slot = [timelineArray objectAtIndex:page];
-            reqTimeslotId = slot.timeslotId;
-            [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];
+    if (self.powerButton.enabled) {
+        switch (homeScreenMode) {
+            case HomeScreenMode_Cover:
+                //coverView 
+                break;
+            case HomeScreenMode_PlayingNow:
+            {
+                Timeslot * slot = [scheduleView getTimeslot];
+                if (slot) {
+                    reqTimeslotId = slot.timeslotId;
+                    [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];
+                }
+            } break;
+            default: break;
         }
-    }*/
+    }
 }
 
 //The event handling method
-- (void)libraryBarResponder:(UITapGestureRecognizer *)recognizer {
-    [[[PiptureAppDelegate instance] model] getAlbumsForReciever:self];
-}
 
 - (void)tabbarVisible:(BOOL)visible {
     CGRect rect = tabbarPanel.frame;
@@ -215,23 +217,27 @@
 
 - (void)setFullScreenMode {
     CGRect rect = [[UIScreen mainScreen] bounds];
-    if (rect.size.height != self.view.frame.size.height) {
-        [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
-        self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
-        self.view.frame = rect;
-        tabbarPanel.frame = CGRectMake(0, self.view.frame.size.height - tabbarPanel.frame.size.height, rect.size.width, tabbarPanel.frame.size.height);
-    }
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    tabbarPanel.frame = CGRectMake(0, self.view.frame.size.height - tabbarPanel.frame.size.height, rect.size.width, tabbarPanel.frame.size.height);
 }
 
 - (void)setNavBarMode {
     CGRect rect = [[UIScreen mainScreen] bounds];
-    if (rect.size.height != self.view.frame.size.height) {
-        int height = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-        
-        [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
-        self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
-        self.view.frame = CGRectMake(0, 0, rect.size.width, rect.size.height - height);
-        tabbarPanel.frame = CGRectMake(0, self.view.frame.size.height - tabbarPanel.frame.size.height, rect.size.width, tabbarPanel.frame.size.height);
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
+    tabbarPanel.frame = CGRectMake(0, self.view.frame.size.height - tabbarPanel.frame.size.height, rect.size.width, tabbarPanel.frame.size.height);
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (homeScreenMode == HomeScreenMode_Schedule) {
+        [self setNavBarMode];
+    } else {
+        [self setFullScreenMode];
     }
 }
 
@@ -260,8 +266,6 @@
                 
                 [self setFullScreenMode];
                 
-                [self.navigationController setNavigationBarHidden:YES animated:YES];
-                
                 [self tabbarVisible:YES];
                 tabbarControl.selectedItem = [tabbarControl.items objectAtIndex:0];
                 flipButton.hidden = NO;
@@ -276,7 +280,6 @@
                 if (flipAction) [UIView commitAnimations];
                 
                 [self setFullScreenMode];
-                [self.navigationController setNavigationBarHidden:YES animated:YES];
                 
                 [scheduleView setTimeslotsMode:TimeslotsMode_PlayingNow];
                 [self tabbarVisible:YES];
@@ -301,7 +304,9 @@
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
                 break;
             case HomeScreenMode_Albums:
-                [self.navigationController setNavigationBarHidden:NO animated:NO];
+                [tabbarContainer addSubview:albumsView];
+                
+                [self updafeAlbums];
                 [self setNavBarMode];
                 [self powerButtonEnable:NO];
                 flipButton.hidden = YES;
@@ -365,6 +370,8 @@
 
 -(void)albumsReceived:(NSArray*)albums {
     NSLog(@"Albums received: %@", albums);
+    
+    [albumsView updateAlbums:albums];
     //[self scrollToCurPage];
    // [[PiptureAppDelegate instance] onLibrary:albums];    
 }

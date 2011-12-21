@@ -66,15 +66,18 @@
         Timeslot * slot = [timelineArray objectAtIndex:timeslot];
         
         NSURL * url = [NSURL URLWithString:[slot closupBackground]];
-        
         AsyncImageView * imageView = nil;
-        if (timeslot >= 0 && timeslot < scrollView.subviews.count) {
-            imageView = [scrollView.subviews objectAtIndex:timeslot];
-        } else {
-            imageView = [[[AsyncImageView alloc] initWithFrame:frame] autorelease];
-            [scrollView addSubview:imageView];
+        if (timeslot >= 0 && timeslot < coverItems.count) {
+            id obj = [coverItems objectAtIndex:timeslot];
+            if (obj != [NSNull null]) {
+                imageView = obj;
+            } else {
+                imageView = [[[AsyncImageView alloc] initWithFrame:frame] autorelease];
+                [scrollView addSubview:imageView];
+                [coverItems replaceObjectAtIndex:timeslot withObject:imageView];
+            }
+            [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:nil] localStore:NO asButton:NO target:nil selector:nil];
         }
-        [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:nil] localStore:NO asButton:NO target:nil selector:nil];
     }    
     NSLog(@"ScrollView subs: %d", [[scrollView subviews]count]);
 }
@@ -190,13 +193,32 @@
             
         Timeslot * slot = [timeslots objectAtIndex:page];
         if (lastTimeSlotId != slot.timeslotId || timeslots.count != timelineArray.count) {
-             [timelineArray removeAllObjects];
-             [timelineArray addObjectsFromArray:timeslots];
-             scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * timeslots.count, scrollView.frame.size.height);
-             //remove deprecated data
-             while (timelineArray.count < scrollView.subviews.count) {
-                 [[scrollView.subviews lastObject] removeFromSuperview];
-             }
+            [timelineArray removeAllObjects];
+            [timelineArray addObjectsFromArray:timeslots];
+            
+            if (coverItems) {
+                for (int i = 0; i < coverItems.count; i++) {
+                    id obj = [coverItems objectAtIndex:i];
+                    if ([NSNull null] != obj) {
+                        [(UIView*)obj removeFromSuperview];
+                    }
+                }
+                [coverItems release];
+                coverItems = nil;
+            }
+            
+            //prepare lazy array
+            coverItems = [[NSMutableArray alloc] initWithCapacity:timeslots.count];
+            for (int i = 0; i < timeslots.count; i++) {
+                [coverItems addObject:[NSNull null]];
+            }
+            
+            
+            scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * timeslots.count, scrollView.frame.size.height);
+            //remove deprecated data
+            while (timelineArray.count < scrollView.subviews.count) {
+                [[scrollView.subviews lastObject] removeFromSuperview];
+            }
          
             [self scrollToPage:page];
             [self prepareImageFor: page - 1];
@@ -228,6 +250,7 @@
 	
     // load images for the near timeslots
     [self prepareImageFor:page - 1];
+    [self prepareImageFor:page];
     [self prepareImageFor:page + 1];
     
     NSLog(@"end decelerating on page: %d", page);
@@ -292,6 +315,18 @@
     [self updateNotify];
 }
 
+- (Timeslot*)getTimeslot {
+    int page = [self getPageNumber];
+    if (![self pageInRange:page]) return nil;
+    
+    Timeslot * slot = [timelineArray objectAtIndex:page];
+    if (slot.timeslotStatus != TimeslotStatus_Current) {
+        return nil;
+    }
+    
+    return slot;
+}
+
 - (void)updateNotify {
     int page = [self getPageNumber];
     
@@ -340,6 +375,7 @@
 }
 
 - (void)dealloc {
+    [coverItems release];
     [timelineArray release];
     [navPanel release];
     [prevBtn release];

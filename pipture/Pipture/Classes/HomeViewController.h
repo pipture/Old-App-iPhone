@@ -10,6 +10,7 @@
 #import "CoverView.h"
 #import "ScheduleView.h"
 #import "HomeScreenDelegate.h"
+#import "AlbumsView.h"
 
 @interface HomeViewController : UIViewController <TimeslotsReceiver, PlaylistReceiver, AlbumsReceiver, UIAlertViewDelegate, UITabBarDelegate, HomeScreenDelegate>
 {
@@ -39,5 +40,6 @@
 @property (retain, nonatomic) IBOutlet UIButton *powerButton;
 @property (retain, nonatomic) IBOutlet ScheduleView *scheduleView;
 @property (retain, nonatomic) IBOutlet CoverView *coverView;
+@property (retain, nonatomic) IBOutlet AlbumsView *albumsView;
 
 @end

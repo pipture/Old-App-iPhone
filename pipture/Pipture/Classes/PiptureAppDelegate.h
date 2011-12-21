@@ -33,6 +33,7 @@
     InAppPurchaseManager * purchases;
 }
 
+@property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
 @property (readonly, nonatomic) PiptureModel * model;
@@ -47,6 +48,7 @@
 - (float)getBalance;
 - (void)updateBalance;
 - (void)buyCredits;
+- (IBAction)buyAction:(id)sender;
 
 - (BOOL)trackEvent:(NSString*)event :(NSString*)action;
 - (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId;//TODO: add video mode, playlist, e .t.c
