@@ -400,8 +400,26 @@ NSInteger networkActivityIndecatorCount;
             case 2: break;
             case 3: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
         }
+    } else {
+        self.homeNavigationController.delegate = self;
+        [self.homeNavigationController popToRootViewControllerAnimated:YES];
     }
 }
 
+#pragma mark UINavigationControllerdelegate methods
+
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    if (navigationController == self.homeNavigationController) {
+        self.homeNavigationController.delegate = nil;
+        HomeViewController * vc = [self getHomeView];
+        if (vc) {
+            switch (tabbarControl.selectedItem.tag) {
+                case 1: [vc setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
+                case 2: break;
+                case 3: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
+            }
+        }
+    }
+}
 
 @end

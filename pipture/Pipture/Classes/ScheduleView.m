@@ -57,6 +57,14 @@
 }
 
 - (IBAction)showDetail:(id)sender {
+    int page = [self getPageNumber];
+    
+    if (![self pageInRange:page]) return;
+    //TODO: get album by timeslotId
+    //Timeslot * slot = [timelineArray objectAtIndex:page];
+    //Album * album = slot ;
+    //[delegate showAlbumDetails:album];
+    //}
 }
 
 - (void) prepareImageFor: (int) timeslot {
@@ -139,7 +147,8 @@
     scrollView.delegate = self;
     
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
-    [self addGestureRecognizer:singleFingerTap];
+    singleFingerTap.cancelsTouchesInView = NO;
+    [self.scrollView addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];
 }
 
@@ -337,6 +346,7 @@
     switch (timeslotsMode) {
         case TimeslotsMode_PlayingNow:
             [self navPanelVisible:NO];
+            [UIApplication sharedApplication].statusBarHidden = NO;
             switch (slot.timeslotStatus) {
                 case TimeslotStatus_Current:
                     [self psPanelVisible:NO];
@@ -361,6 +371,7 @@
             [self psPanelVisible:NO];
             [self pnPanelVisible:NO];
             [self navPanelVisible:YES];
+            [UIApplication sharedApplication].statusBarHidden = NO;
             [delegate scheduleButtonHidden:NO];
             [self updateTimeSlotInfo:slot panel:navPanel];
             break;
@@ -368,6 +379,7 @@
             [self psPanelVisible:NO];
             [self pnPanelVisible:NO];
             [self navPanelVisible:NO];
+            [UIApplication sharedApplication].statusBarHidden = YES;
             [delegate scheduleButtonHidden:YES];
             [self updateTimeSlotInfo:slot panel:navPanel];
             break;
