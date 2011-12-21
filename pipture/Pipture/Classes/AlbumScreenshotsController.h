@@ -7,7 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AlbumScreenshotController.h"
+#import "MailComposerController.h"
 
-@interface AlbumScreenshotsController : UIViewController
+@interface AlbumScreenshotsController : UIViewController<AlbumScreenshotControllerDelegate>
+@property (retain, nonatomic) IBOutlet UIScrollView *imagesScrollView;
+
+
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil mailComposerController: (MailComposerController*)mailComposerController;
+
+-(void)loadImages:(NSArray*)screenshotImages;
+
+
 
 @end

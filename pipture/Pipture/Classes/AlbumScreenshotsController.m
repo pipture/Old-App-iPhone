@@ -7,45 +7,73 @@
 //
 
 #import "AlbumScreenshotsController.h"
+#import "ScreenshotImage.h"
 
 @implementation AlbumScreenshotsController
+@synthesize imagesScrollView;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+MailComposerController* mailComposerController_; 
+NSArray* screenshotContollers;
+ScreenshotImage* curScreenshotImage = nil;
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil mailComposerController: (MailComposerController*)mailComposerController
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+        mailComposerController_ = [mailComposerController retain];
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:nil];
+        
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(onDone)];        
     }
     return self;
 }
 
-- (void)didReceiveMemoryWarning
+-(void)onDone
 {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
+    [mailComposerController_ setScreenshotImage:curScreenshotImage];
+}
+
+-(void)loadImages:(NSArray*)screenshotImages
+{
+    //create albums
+    if (screenshotContollers) {
+        [screenshotContollers release];
+    }
+    NSMutableArray *mscreenshotContollers = [[NSMutableArray alloc] initWithCapacity:[screenshotImages count]];
     
-    // Release any cached data, images, etc that aren't in use.
+    for (ScreenshotImage *im in screenshotImages) {
+        
+
+        AlbumScreenshotController * asctrl = [[AlbumScreenshotController alloc] initWithScreenshotImage:im delegate:self NibName:@"AlbumScreenshot" bundle:nil];
+        [asctrl loadView];
+        
+        [mscreenshotContollers addObject:asctrl];                                    
+        [asctrl release];
+    }
+    
+}
+
+-(void)imagePressed:(id)albumScreenshotController
+{
+    AlbumScreenshotController*asctrl = (AlbumScreenshotController*)albumScreenshotController;
+    
+    [asctrl setSelectedState:YES];
+    for (AlbumScreenshotController*otherasctrl in screenshotContollers) {
+        [otherasctrl setSelectedState:NO];
+    }
+    curScreenshotImage = asctrl.screenshotImage;
 }
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+- (void)dealloc {
+    [imagesScrollView release];
+    [mailComposerController_ release];
+    if (screenshotContollers)
+    {
+        [screenshotContollers release];
+    }
+    [super dealloc];
+    
 }
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
 @end

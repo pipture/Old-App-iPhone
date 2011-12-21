@@ -7,24 +7,39 @@
 //
 
 #import "AlbumScreenshotController.h"
+#import "AsyncImageView.h"
 
 @implementation AlbumScreenshotController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+@synthesize screenshotImageHolder;
+@synthesize selectionMarkImage;
+@synthesize screenshotImage = screenshotImage_;
+
+id<AlbumScreenshotControllerDelegate> myDelegate = nil;
+ 
+- (id)initWithScreenshotImage:(ScreenshotImage *)screenshotImage delegate:(id<AlbumScreenshotControllerDelegate>)delegate NibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+        myDelegate = delegate;
+        screenshotImage_ = [screenshotImage retain];
+        [self setSelectedState:NO];
     }
     return self;
 }
 
-- (void)didReceiveMemoryWarning
+- (void)setSelectedState:(BOOL)state
 {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
+    if (state == NO)
+    {
+        selectionMarkImage.hidden = YES;
+        screenshotImageHolder.alpha = 1;
+    }
+    else
+    {
+        selectionMarkImage.hidden = NO;
+        screenshotImageHolder.alpha = 0.7;        
+    }
 }
 
 #pragma mark - View lifecycle
@@ -32,20 +47,29 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+
+    
+    CGRect rect = screenshotImageHolder.frame;
+    
+    AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
+    [screenshotImageHolder addSubview:imageView];
+    
+    [imageView loadImageFromURL:[NSURL URLWithString:screenshotImage_.imageURL] withDefImage:[UIImage imageNamed:@"default.png"] localStore:NO asButton:YES target:self selector:@selector(imagePressed)];
+    
 }
 
-- (void)viewDidUnload
+- (void)imagePressed
 {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+    [myDelegate imagePressed:self];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+- (void)dealloc {
+    [screenshotImageHolder release];
+    [selectionMarkImage release];
+    if (screenshotImage_)
+    {
+        [screenshotImage_ release];
+    }             
+    [super dealloc];
 }
-
 @end

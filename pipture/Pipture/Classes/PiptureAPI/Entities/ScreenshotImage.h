@@ -10,4 +10,9 @@
 
 @interface ScreenshotImage : NSObject
 
+@property(retain, nonatomic) NSString* imageURL;
+@property(retain, nonatomic) NSString* imageDescription;
+
+-(id)initWithJSON:(NSDictionary*)jsonData;
+
 @end
