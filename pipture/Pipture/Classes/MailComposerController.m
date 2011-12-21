@@ -10,21 +10,58 @@
 #import "PiptureAppDelegate.h"
 #import "AsyncImageView.h"
 #import "PiptureModel.h"
-
+#import "AlbumScreenshotsController.h"
 
 @implementation MailComposerController
 @synthesize picturePlaceholder;
 @synthesize messageEdit;
+@synthesize screenshotCell;
+@synthesize messageCell;
+@synthesize layoutTableView;
+@synthesize screenshotName;
 @synthesize nextButton;
 @synthesize playlistItem;
 @synthesize timeslotId;
+
+ScreenshotImage* screenshotImage_ = nil;
+AsyncImageView * lastScreenshotView = nil;
+NSArray* screenshotImages_ = nil;
 
 static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
 
 static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 
+- (void) displayScreenshot
+{
+    NSString*url;
+    if (screenshotImage_)
+    {
+        screenshotName.text = screenshotImage_.imageDescription;
+        url = screenshotImage_.imageURL;
+    }
+    else
+    {
+        screenshotName.text = @"Default";
+        url = playlistItem.emailScreenshot;        
+    }
+    if (lastScreenshotView)
+    {
+        [lastScreenshotView removeFromSuperview];
+        [lastScreenshotView release];
+    }
+    
+    CGRect rect = picturePlaceholder.frame;
+    
+    lastScreenshotView  = [[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)];
+    [picturePlaceholder addSubview:lastScreenshotView];
+    
+    [lastScreenshotView loadImageFromURL:[NSURL URLWithString:url] withDefImage:[UIImage imageNamed:PLACEHOLDER1] localStore:NO asButton:NO target:nil selector:nil];
+    
+}
+
 #pragma mark - View lifecycle
+
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
@@ -35,11 +72,36 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     self.navigationItem.rightBarButtonItem = nextButton;
     [nextButton release];
     
-    CGRect rect = picturePlaceholder.frame;
-    AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
-    [picturePlaceholder addSubview:imageView];
+    [self displayScreenshot];
     
-    [imageView loadImageFromURL:[NSURL URLWithString:playlistItem.emailScreenshot] withDefImage:[UIImage imageNamed:PLACEHOLDER1] localStore:NO asButton:NO target:nil selector:nil];
+    UITapGestureRecognizer *singleFingerDTap = [[UITapGestureRecognizer alloc]
+                                                initWithTarget:self action:@selector(onTableTap:)];
+    singleFingerDTap.numberOfTapsRequired = 1;
+    singleFingerDTap.cancelsTouchesInView = NO;
+    [layoutTableView addGestureRecognizer:singleFingerDTap];
+    [singleFingerDTap release];
+    [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];    
+    screenshotCell.accessoryType = UITableViewCellAccessoryNone;    
+}
+
+-(void)screenshotsNotSupported
+{
+    screenshotCell.accessoryType = UITableViewCellAccessoryNone;
+}
+
+-(void)screenshotsReceived:(NSArray*)screenshotImages
+{
+    [screenshotImages_ release];    
+    if ([screenshotImages count])
+    {
+        screenshotImages_ = [screenshotImages retain];
+        screenshotCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;    
+    }
+    else
+    {
+        screenshotImages_ = nil;
+        screenshotCell.accessoryType = UITableViewCellAccessoryNone;        
+    }
 }
 
 - (void)nextButton:(id)sender {
@@ -59,6 +121,10 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 {
     [self setMessageEdit:nil];
     [self setPicturePlaceholder:nil];
+    [self setScreenshotCell:nil];
+    [self setMessageCell:nil];
+    [self setLayoutTableView:nil];
+    [self setScreenshotName:nil];
     [super viewDidUnload];
 }
 
@@ -83,7 +149,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
             messageEdit.text = @"";
             messageEdit.textColor = [UIColor darkTextColor];
         }
-        [self shrinkView:YES];
+        //[self shrinkView:YES];
     }
 }
 
@@ -103,7 +169,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
         messageEdit.textColor = [UIColor grayColor];
     }
     
-    [self shrinkView:NO];
+    //[self shrinkView:NO];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -129,6 +195,13 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 - (void)dealloc {
     [messageEdit release];
     [picturePlaceholder release];
+    [screenshotCell release];
+    [messageCell release];
+    [layoutTableView release];
+    [screenshotImage_ release];
+    [screenshotName release];
+    [lastScreenshotView release];
+    [screenshotImages_ release];
     [super dealloc];
 }
 
@@ -137,6 +210,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     //TODO: process result
     [self dismissModalViewControllerAnimated:YES];
     self.navigationItem.hidesBackButton = NO;
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -163,6 +237,16 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     [controller release];    
 }
 
+- (void) setScreenshotImage:(ScreenshotImage*)screenshotImage
+{
+    ScreenshotImage* newscreenshotImage = [screenshotImage retain];
+    [screenshotImage_ release];
+    screenshotImage_ = newscreenshotImage;
+    [self displayScreenshot];
+}
+
+
+
 
 -(void)balanceReceived:(NSDecimalNumber*)balance
 {
@@ -188,6 +272,87 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
 }
 
+#pragma mark Table delegates
+
+#define MESSAGE_CELL_ROW 1
+#define SCREENSHOT_CELL_ROW 2
+
+- (NSInteger)calcCellRow:(NSIndexPath*)indexPath
+{
+    int section = indexPath.section;
+    int row = indexPath.row;    
+    if (section == 0 && row == 0) {    
+        return MESSAGE_CELL_ROW;
+    }
+    else if (section == 1 && row == 0) {
+        return SCREENSHOT_CELL_ROW;
+    }
+    else
+    {
+        return 0;
+    }
+    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    switch ([self calcCellRow:indexPath]) {
+        case MESSAGE_CELL_ROW:
+            return messageCell.frame.size.height;
+        case SCREENSHOT_CELL_ROW:
+            return screenshotCell.frame.size.height;                    
+        default:
+            return 0;
+    }
+}
 
 
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 1;
+}
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 2;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    switch ([self calcCellRow:indexPath]) {
+        case MESSAGE_CELL_ROW:
+            return messageCell;
+        case SCREENSHOT_CELL_ROW:
+            return screenshotCell;                    
+        default:
+            return nil;
+    }    
+}
+
+
+
+-(NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    switch (section) {
+        case 0:
+            return nil;
+        case 1:
+            return @"Screenshot selection";                    
+        default:
+            return nil;
+    }        
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self calcCellRow:indexPath] == SCREENSHOT_CELL_ROW && screenshotImages_) {
+        
+        AlbumScreenshotsController* asctrl = [[AlbumScreenshotsController alloc] initWithNibName:@"AlbumScreenshots" bundle:nil mailComposerController:self];             
+        [asctrl loadImages:screenshotImages_];
+        [self.navigationController pushViewController:asctrl animated:YES];
+    }    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (IBAction)onTableTap:(id)sender {
+    [messageEdit resignFirstResponder];
+}
 @end

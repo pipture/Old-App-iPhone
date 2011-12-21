@@ -12,6 +12,7 @@
 #import "Album.h"
 #import "PlaylistItem.h"
 #import "SBJson.h"
+#import "ScreenshotImage.h"
 
 @interface DefaultDataRequestFactory : NSObject<DataRequestManager>
 
@@ -71,8 +72,7 @@
 @required
 -(void)loggedIn;
 -(void)loginFailed;
--(void)registred;
--(void)alreadyRegistredWithOtherDevice;
+-(void)registred:(NSString*)uuid;
 @end
 
 @protocol PurchaseDelegate <PiptureModelDelegate>
@@ -90,9 +90,10 @@
 -(void)notEnoughMoneyForSend:(PlaylistItem*)playlistItem;
 @end
 
-@protocol AlbumScreenshotsReceiver <PiptureModelDelegate>
+@protocol ScreenshotCollectionReceiver <PiptureModelDelegate>
 @required
--(void)screenshotsReceived:(NSArray*)urls;
+-(void)screenshotsNotSupported;
+-(void)screenshotsReceived:(NSArray*)screenshotImages;
 @end
 
 
@@ -103,10 +104,9 @@
 
 - (NSString*)getEndPoint;
 
--(BOOL)loginWithEmail:(NSString*)emailAddress password:(NSString*)password receiver:(NSObject<AuthenticationDelegate>*)receiver;
+-(void)loginWithUUID:(NSString*)uuid receiver:(NSObject<AuthenticationDelegate>*)receiver;
 
--(BOOL)registerWithEmail:(NSString*)emailAddress password:(NSString*)password firstName:(NSString*)firstName lastName:(NSString*)lastName receiver:(NSObject<AuthenticationDelegate>*)receiver;
-
+-(void)registerWithReceiver:(NSObject<AuthenticationDelegate>*)receiver;
 
 -(BOOL)getTimeslotsFromId:(NSInteger)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver;
 
@@ -126,8 +126,7 @@
 
 -(BOOL)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId screenshotImage:(NSString*)screenshotImage userName:(NSString*)userName receiver:(NSObject<SendMessageDelegate>*)receiver;
 
--(BOOL)getAlbumScreenshots:(NSInteger)episodeId receiver:(NSObject<AlbumScreenshotsReceiver>*)receiver;
-
+-(BOOL)getScreenshotCollectionFor:(PlaylistItem*)playlistItem receiver:(NSObject<ScreenshotCollectionReceiver>*)receiver;
 
 @end
 
