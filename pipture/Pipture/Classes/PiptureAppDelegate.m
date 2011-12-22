@@ -299,10 +299,11 @@ NSInteger networkActivityIndecatorCount;
 - (void)setBalance:(NSDecimalNumber*)newBalance {
     NSLog(@"New balance: %@", newBalance);
     balance = [newBalance floatValue];
-    
-    /*if (self.window.rootViewController == libraryNavigationController) {
-        [libraryNavigationController updateBalance:balance];
-    }*/
+    if (balance == 0) {
+        buyButton.title = @"Buy";
+    } else {
+        buyButton.title = [NSString stringWithFormat:@"%0.2f$", balance];
+    }
 }
 
 - (float)getBalance {

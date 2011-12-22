@@ -9,10 +9,10 @@
 #import "PiptureAppDelegate.h"
 #import "HomeViewController.h"
 #import "VideoViewController.h"
-#import "LibraryViewController.h"
 #import "Album.h"
 #import "Timeslot.h"
 #import "AsyncImageView.h"
+#import "AlbumDetailInfoController.h"
 
 #define TIMESLOT_CHANGE_POLL_INTERVAL 60
 #define TIMESLOT_REGULAR_POLL_INTERVAL 900
@@ -358,6 +358,8 @@
 }
 
 -(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album {
+    //TODO nothing to do?
+    NSLog(@"Details for unknown album: %@", album);
 }
 
 

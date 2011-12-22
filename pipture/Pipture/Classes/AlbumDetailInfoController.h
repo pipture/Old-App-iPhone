@@ -8,7 +8,6 @@
 
 #import "AlbumDetailPage.h"
 #import "Album.h"
-#import "LibraryDelegateProtocol.h"
 
 enum DetailAlbumViewType {
     DetailAlbumViewType_Videos = 20,
@@ -28,7 +27,6 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;
 @property (retain, nonatomic) IBOutlet AlbumDetailPage *detailPage;
 @property (retain, nonatomic) IBOutlet UITableView *videosTable;
-@property (assign, nonatomic) id<LibraryViewDelegate> libraryDelegate;
 @property (retain, nonatomic) IBOutlet UITableViewCell *videoTableCell;
 @property (retain, nonatomic) IBOutlet UITableViewCell *dividerTableCell;
 @property (retain, nonatomic) IBOutlet UIButton *detailsButton;

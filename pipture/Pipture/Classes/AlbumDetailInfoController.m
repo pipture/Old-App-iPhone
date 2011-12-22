@@ -15,7 +15,6 @@
 @synthesize subViewContainer;
 @synthesize detailPage;
 @synthesize videosTable;
-@synthesize libraryDelegate;
 @synthesize videoTableCell;
 @synthesize dividerTableCell;
 @synthesize detailsButton;

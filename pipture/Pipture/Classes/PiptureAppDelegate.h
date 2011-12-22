@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "VideoViewController.h"
-#import "LibraryNavigationController.h"
 #import "PiptureModel.h"
 #import "DataRequest.h"
 #import "InAppPurchaseManager.h"

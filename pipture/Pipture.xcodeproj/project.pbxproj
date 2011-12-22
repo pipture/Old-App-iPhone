@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		381935C1147D04540049B30E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 381935C0147D04540049B30E /* MessageUI.framework */; };
-		381935C6147D067D0049B30E /* LibraryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C5147D067D0049B30E /* LibraryNavigationController.m */; };
-		381935C9147E29920049B30E /* AlbumsListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935C8147E29920049B30E /* AlbumsListView.m */; };
 		381935CC147E2C850049B30E /* AlbumItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935CB147E2C850049B30E /* AlbumItemView.xib */; };
 		381935CF147E2F180049B30E /* AlbumItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935CE147E2F180049B30E /* AlbumItemViewController.m */; };
 		382D9C26148E030100005F16 /* MailComposer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 382D9C25148E030100005F16 /* MailComposer.xib */; };
@@ -137,7 +135,6 @@
 		38D5100114964123009BF5E9 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D5100014964123009BF5E9 /* libsqlite3.0.dylib */; };
 		38D510041497417E009BF5E9 /* InAppPurchaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D510031497417E009BF5E9 /* InAppPurchaseManager.m */; };
 		38D51006149741C6009BF5E9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D51005149741C6009BF5E9 /* StoreKit.framework */; };
-		38D7454E147E640100062441 /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D7454D147E640100062441 /* LibraryViewController.m */; };
 		38D74550147E660B00062441 /* LibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D7454F147E660B00062441 /* LibraryView.xib */; };
 		38D74553147E6AA600062441 /* AlbumDetailInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D74552147E6AA600062441 /* AlbumDetailInfoController.m */; };
 		38D74555147E6ABC00062441 /* AlbumDetailInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D74554147E6ABC00062441 /* AlbumDetailInfo.xib */; };
@@ -186,10 +183,6 @@
 
 /* Begin PBXFileReference section */
 		381935C0147D04540049B30E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		381935C4147D067D0049B30E /* LibraryNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryNavigationController.h; sourceTree = "<group>"; };
-		381935C5147D067D0049B30E /* LibraryNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryNavigationController.m; sourceTree = "<group>"; };
-		381935C8147E29920049B30E /* AlbumsListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumsListView.m; sourceTree = "<group>"; };
-		381935CA147E29DB0049B30E /* AlbumsListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumsListView.h; sourceTree = "<group>"; };
 		381935CB147E2C850049B30E /* AlbumItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumItemView.xib; sourceTree = "<group>"; };
 		381935CD147E2F180049B30E /* AlbumItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumItemViewController.h; sourceTree = "<group>"; };
 		381935CE147E2F180049B30E /* AlbumItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumItemViewController.m; sourceTree = "<group>"; };
@@ -340,9 +333,6 @@
 		38D510021497417E009BF5E9 /* InAppPurchaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InAppPurchaseManager.h; sourceTree = "<group>"; };
 		38D510031497417E009BF5E9 /* InAppPurchaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InAppPurchaseManager.m; sourceTree = "<group>"; };
 		38D51005149741C6009BF5E9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		38D7454A147E604B00062441 /* LibraryDelegateProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryDelegateProtocol.h; sourceTree = "<group>"; };
-		38D7454C147E640100062441 /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
-		38D7454D147E640100062441 /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
 		38D7454F147E660B00062441 /* LibraryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryView.xib; sourceTree = "<group>"; };
 		38D74551147E6AA600062441 /* AlbumDetailInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailInfoController.h; sourceTree = "<group>"; };
 		38D74552147E6AA600062441 /* AlbumDetailInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailInfoController.m; sourceTree = "<group>"; };
@@ -464,13 +454,7 @@
 				38549D94149F235F004D2189 /* CoverView.m */,
 				38549D96149F23B5004D2189 /* ScheduleView.h */,
 				38549D97149F23B5004D2189 /* ScheduleView.m */,
-				381935CA147E29DB0049B30E /* AlbumsListView.h */,
-				381935C8147E29920049B30E /* AlbumsListView.m */,
 				384EBA6914A058F5000973CD /* HomeScreenDelegate.h */,
-				384EBA7614A19317000973CD /* AlbumsView.h */,
-				384EBA7714A19317000973CD /* AlbumsView.m */,
-				381935CD147E2F180049B30E /* AlbumItemViewController.h */,
-				381935CE147E2F180049B30E /* AlbumItemViewController.m */,
 			);
 			name = HomeScreen;
 			sourceTree = "<group>";
@@ -761,11 +745,10 @@
 		38D74559147F701200062441 /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				381935C4147D067D0049B30E /* LibraryNavigationController.h */,
-				381935C5147D067D0049B30E /* LibraryNavigationController.m */,
-				38D7454A147E604B00062441 /* LibraryDelegateProtocol.h */,
-				38D7454C147E640100062441 /* LibraryViewController.h */,
-				38D7454D147E640100062441 /* LibraryViewController.m */,
+				384EBA7614A19317000973CD /* AlbumsView.h */,
+				384EBA7714A19317000973CD /* AlbumsView.m */,
+				381935CD147E2F180049B30E /* AlbumItemViewController.h */,
+				381935CE147E2F180049B30E /* AlbumItemViewController.m */,
 				38D74551147E6AA600062441 /* AlbumDetailInfoController.h */,
 				38D74552147E6AA600062441 /* AlbumDetailInfoController.m */,
 				38D7455A147F728200062441 /* AlbumDetailPage.h */,
@@ -1018,10 +1001,7 @@
 			files = (
 				38989CEF147A631F004DE1E0 /* main.m in Sources */,
 				88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */,
-				381935C6147D067D0049B30E /* LibraryNavigationController.m in Sources */,
-				381935C9147E29920049B30E /* AlbumsListView.m in Sources */,
 				381935CF147E2F180049B30E /* AlbumItemViewController.m in Sources */,
-				38D7454E147E640100062441 /* LibraryViewController.m in Sources */,
 				38D74553147E6AA600062441 /* AlbumDetailInfoController.m in Sources */,
 				38D7455C147F728200062441 /* AlbumDetailPage.m in Sources */,
 				88751791148CAD3B00AFFFAC /* NSObject+SBJson.m in Sources */,
