@@ -121,7 +121,7 @@ static PiptureAppDelegate *instance;
     
     UITabBarItem * item = [tabbarControl.items objectAtIndex:1];
     item.enabled = NO;
-    
+    tabView.hidden = NO;
     [self.window makeKeyAndVisible];    
 }
 

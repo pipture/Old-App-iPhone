@@ -17,8 +17,10 @@
 @synthesize messageEdit;
 @synthesize screenshotCell;
 @synthesize messageCell;
+@synthesize fromCell;
 @synthesize layoutTableView;
 @synthesize screenshotName;
+@synthesize nameTextField;
 @synthesize nextButton;
 @synthesize playlistItem;
 @synthesize timeslotId;
@@ -91,7 +93,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     singleFingerDTap.cancelsTouchesInView = NO;
     [layoutTableView addGestureRecognizer:singleFingerDTap];
     [singleFingerDTap release];
-    [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];    
+    [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];
     screenshotCell.accessoryType = UITableViewCellAccessoryNone;    
 }
 
@@ -128,7 +130,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     {
         self.navigationItem.hidesBackButton = YES;
 
-        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId screenshotImage:playlistItem.emailScreenshot userName:@"Test User Name"  receiver:self];
+        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : playlistItem.emailScreenshot userName:@"Test User Name"  receiver:self];
     } else {
         [messageEdit becomeFirstResponder];
     }
@@ -142,6 +144,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     [self setMessageCell:nil];
     [self setLayoutTableView:nil];
     [self setScreenshotName:nil];
+    [self setFromCell:nil];
+    [self setNameTextField:nil];
     [super viewDidUnload];
 }
 
@@ -219,6 +223,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     [screenshotName release];
     [lastScreenshotView release];
     [screenshotImages_ release];
+    [fromCell release];
+    [nameTextField release];
     [super dealloc];
 }
 
@@ -292,7 +298,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 #pragma mark Table delegates
 
 #define MESSAGE_CELL_ROW 1
-#define SCREENSHOT_CELL_ROW 2
+#define FROM_CELL_ROW 2
+#define SCREENSHOT_CELL_ROW 3
 
 - (NSInteger)calcCellRow:(NSIndexPath*)indexPath
 {
@@ -302,8 +309,11 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
         return MESSAGE_CELL_ROW;
     }
     else if (section == 1 && row == 0) {
-        return SCREENSHOT_CELL_ROW;
+        return FROM_CELL_ROW;
     }
+    else if (section == 2 && row == 0) {
+        return SCREENSHOT_CELL_ROW;
+    }    
     else
     {
         return 0;
@@ -315,6 +325,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     switch ([self calcCellRow:indexPath]) {
         case MESSAGE_CELL_ROW:
             return messageCell.frame.size.height;
+        case FROM_CELL_ROW:
+            return fromCell.frame.size.height;                                
         case SCREENSHOT_CELL_ROW:
             return screenshotCell.frame.size.height;                    
         default:
@@ -329,7 +341,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return 3;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -337,6 +349,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     switch ([self calcCellRow:indexPath]) {
         case MESSAGE_CELL_ROW:
             return messageCell;
+        case FROM_CELL_ROW:
+            return fromCell;            
         case SCREENSHOT_CELL_ROW:
             return screenshotCell;                    
         default:
@@ -352,6 +366,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
         case 0:
             return nil;
         case 1:
+            return @"From";                                
+        case 2:
             return @"Screenshot selection";                    
         default:
             return nil;

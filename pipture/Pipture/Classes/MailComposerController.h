@@ -20,8 +20,10 @@
 @property (retain, nonatomic) IBOutlet UITextView *messageEdit;
 @property (retain, nonatomic) IBOutlet UITableViewCell *screenshotCell;
 @property (retain, nonatomic) IBOutlet UITableViewCell *messageCell;
+@property (retain, nonatomic) IBOutlet UITableViewCell *fromCell;
 @property (retain, nonatomic) IBOutlet UITableView *layoutTableView;
 @property (retain, nonatomic) IBOutlet UILabel *screenshotName;
+@property (retain, nonatomic) IBOutlet UITextField *nameTextField;
 
 @property (retain, nonatomic) UIBarButtonItem * nextButton;
 @property (assign, nonatomic) PlaylistItem * playlistItem;

@@ -62,7 +62,7 @@
 					</object>
 					<object class="IBUIView" id="29760908">
 						<reference key="NSNextResponder" ref="380026005"/>
-						<int key="NSvFlags">1316</int>
+						<int key="NSvFlags">-2147482332</int>
 						<array class="NSMutableArray" key="NSSubviews">
 							<object class="IBUITabBar" id="600393945">
 								<reference key="NSNextResponder" ref="29760908"/>
@@ -128,7 +128,6 @@
 								<string key="NSFrame">{{114, 8}, {92, 39}}</string>
 								<reference key="NSSuperview" ref="29760908"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:225</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -213,7 +212,6 @@
 				<array class="NSMutableArray" key="IBUIViewControllers">
 					<object class="IBUIViewController" id="794762067">
 						<object class="IBUINavigationItem" key="IBUINavigationItem" id="118096285">
-							<reference key="IBUINavigationBar"/>
 							<string key="IBUITitle">Library</string>
 							<object class="IBUIBarButtonItem" key="IBUIRightBarButtonItem" id="948065552">
 								<string key="IBUITitle">Buy</string>
