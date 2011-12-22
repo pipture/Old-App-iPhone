@@ -25,6 +25,11 @@
 @synthesize videoTitleView;
 @synthesize timeslotId;
 
+-(void)goBack {
+    self.busyContainer.hidden = YES;
+    [[PiptureAppDelegate instance] videoDone:nil];
+}
+
 - (void)destroyNextItem {
     if ((nextPlayerItem != nil) && ((player && player.currentItem != nextPlayerItem) || !player)) {
         NSLog(@"Destroyed next item");
@@ -165,9 +170,7 @@
                 [[[PiptureAppDelegate instance] model] getVideoURL:item forceBuy:YES forTimeslotId:timeslotId receiver:self];
             }
         } else {
-            self.busyContainer.hidden = YES;
-            //reached end of playlist
-            [self.navigationController popViewControllerAnimated:YES];
+            [self goBack];
         }
     }
 }
@@ -223,7 +226,6 @@
 - (void)initVideo {
     
     waitForNext = NO;
-    needToBack = NO;
     //suspended = YES;
     precacheBegin = NO;
     pausedStatus = NO;
@@ -243,8 +245,8 @@
     if (!simpleMode) {
         self.navigationItem.title = @"Video";
     } 
-    prevButton.hidden = simpleMode;
-    nextButton.hidden = simpleMode;
+    //prevButton.hidden = simpleMode;
+    //nextButton.hidden = simpleMode;
     
     [self nextVideo];
 }
@@ -283,11 +285,6 @@
     [super viewDidAppear:animated];
     
     suspended = NO;
-    
-    //needed to close view
-    if (needToBack) {
-        [self.navigationController popViewControllerAnimated:YES];
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -421,15 +418,6 @@
             [self playNextItem];
         }
         waitForNext = NO;
-    }
-}
-
--(void)goBack {
-    self.busyContainer.hidden = YES;
-    if (suspended) {
-        needToBack = YES;
-    } else {
-        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 

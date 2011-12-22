@@ -116,7 +116,6 @@
 						<string key="NSFrame">{{220, 23}, {90, 35}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:225</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -235,7 +234,7 @@
 							<object class="IBUILabel" id="758485000">
 								<reference key="NSNextResponder" ref="987429825"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{11, 4}, {192, 19}}</string>
+								<string key="NSFrame">{{11, 6}, {192, 19}}</string>
 								<reference key="NSSuperview" ref="987429825"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="31090226"/>
@@ -264,7 +263,7 @@
 							<object class="IBUILabel" id="31090226">
 								<reference key="NSNextResponder" ref="987429825"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{11, 24}, {192, 15}}</string>
+								<string key="NSFrame">{{11, 27}, {192, 15}}</string>
 								<reference key="NSSuperview" ref="987429825"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="683338666"/>
@@ -325,7 +324,6 @@
 								<string key="NSFrame">{{209.5, 1.5}, {25, 43}}</string>
 								<reference key="NSSuperview" ref="556824954"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:225</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<int key="IBUIContentMode">4</int>
@@ -345,7 +343,7 @@
 							<object class="IBUILabel" id="780982004">
 								<reference key="NSNextResponder" ref="556824954"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{11, 5.5}, {192, 19}}</string>
+								<string key="NSFrame">{{11, 6.5}, {192, 19}}</string>
 								<reference key="NSSuperview" ref="556824954"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="808224519"/>
@@ -367,7 +365,7 @@
 							<object class="IBUILabel" id="808224519">
 								<reference key="NSNextResponder" ref="556824954"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{11, 24.5}, {192, 15}}</string>
+								<string key="NSFrame">{{11, 26.5}, {192, 15}}</string>
 								<reference key="NSSuperview" ref="556824954"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="408601059"/>
@@ -468,7 +466,7 @@
 							<object class="IBUILabel" id="995577807">
 								<reference key="NSNextResponder" ref="385849236"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{44, 25}, {192, 15}}</string>
+								<string key="NSFrame">{{44, 26}, {192, 15}}</string>
 								<reference key="NSSuperview" ref="385849236"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="338946677"/>
@@ -512,7 +510,7 @@
 							<object class="IBUILabel" id="368272616">
 								<reference key="NSNextResponder" ref="385849236"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{44, 4}, {192, 19}}</string>
+								<string key="NSFrame">{{44, 6}, {192, 19}}</string>
 								<reference key="NSSuperview" ref="385849236"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="995577807"/>
@@ -674,7 +672,6 @@
 								<string key="NSFrame">{{204, 8}, {30, 30}}</string>
 								<reference key="NSSuperview" ref="449669602"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:225</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -763,7 +760,6 @@
 						<string key="NSFrameSize">{320, 367}</string>
 						<reference key="NSSuperview" ref="426447957"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:190</string>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIMultipleTouchEnabled">YES</bool>
