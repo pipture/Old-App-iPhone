@@ -38,6 +38,7 @@
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
 @property (retain, nonatomic) IBOutlet UINavigationController * videoNavigationController;
+@property (retain, nonatomic) IBOutlet UIView *welcomeMessage;
 @property (readonly, nonatomic) PiptureModel * model;
 @property (retain, nonatomic) BusyViewController * busyView;
 
@@ -53,10 +54,11 @@
 - (void)putUserName:(NSString*)name;
 - (NSString*)getUserName;
 
+- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key;
+
 - (void)setBalance:(NSDecimalNumber*)newBalance;
 - (float)getBalance;
 - (void)updateBalance;
-- (void)buyCredits;
 
 
 - (IBAction)actionButton:(id)sender;
