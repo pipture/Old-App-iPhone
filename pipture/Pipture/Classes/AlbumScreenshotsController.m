@@ -23,14 +23,14 @@ ScreenshotImage* curScreenshotImage;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         mailComposerController_ = [mailComposerController retain];
-        UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];                
+        /*UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];                
         self.navigationItem.leftBarButtonItem = cancelButton;
-        [cancelButton release];
+        [cancelButton release];*/
         
         self.navigationItem.hidesBackButton = YES;
         
         UIBarButtonItem* doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(onDone)];
-        self.navigationItem.rightBarButtonItem = doneButton;
+        self.navigationItem.leftBarButtonItem = doneButton;
         [doneButton release];
     }
     return self;

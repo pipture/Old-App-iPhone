@@ -31,7 +31,9 @@ static NSString* const USERNAME_KEY = @"UserName";
 static NSString* const HOMESCREENSTATE_KEY = @"HSState";
 
 static NSInteger const INSUFFICIENT_FUND_ALERT = 1;
+static NSInteger const GENERAL_ALERT = 42;
 
+UIAlertView * alert;
 BOOL registrationRequired = NO;
 BOOL loggedIn = NO;
 
@@ -299,7 +301,7 @@ NSInteger networkActivityIndecatorCount;
         UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:delegate cancelButtonTitle:btnTitle otherButtonTitles:nil];
         requestIssuesAlert.tag = alertId;
         [requestIssuesAlert show];
-        [requestIssuesAlert release]; 
+        [requestIssuesAlert release];
     }
 }
 
@@ -334,17 +336,6 @@ NSInteger networkActivityIndecatorCount;
     alert.tag = INSUFFICIENT_FUND_ALERT;
     [alert show];
     [alert release];
-}
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if (alertView.tag == INSUFFICIENT_FUND_ALERT)
-    {
-        if (buttonIndex == 1)
-        {
-            [self buyAction:self];
-        }
-    }
 }
 
 - (IBAction)buyAction:(id)sender {
@@ -422,7 +413,7 @@ NSInteger networkActivityIndecatorCount;
 
 - (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo {
     
-    //if ([[NSUserDefaults standardUserDefaults] boolForKey:key]) return;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:key]) return;
     
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:key];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -471,8 +462,16 @@ NSInteger networkActivityIndecatorCount;
 #pragma mark AlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (alertView.tag == 42) {
-        [self processAuthentication];
+    switch (alertView.tag) {
+        case INSUFFICIENT_FUND_ALERT:
+            if (buttonIndex == 1)
+            {
+                [self buyAction:self];
+            }
+            break;
+        case GENERAL_ALERT:
+            [self processAuthentication];
+            break;
     }
 }
 

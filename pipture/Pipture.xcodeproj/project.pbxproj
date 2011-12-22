@@ -617,7 +617,6 @@
 		38989D17147A6483004DE1E0 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				889F003714A0A47100F8432A /* AlbumScreenshot.xib */,
 				889F002B14A0874300F8432A /* screenshotSelectionMark.png */,
 				38A7EC88148DDC03002120F3 /* png */,
 				387A94641484F8C2000F9433 /* mockdata */,
@@ -634,6 +633,7 @@
 				38A0B98A148F86430060420F /* HomeScreenTitleView.xib */,
 				38A0B992148F8DE60060420F /* VideoTitleView.xib */,
 				38BC27BF1498707D002B938F /* PurchaseBusyView.xib */,
+				889F003714A0A47100F8432A /* AlbumScreenshot.xib */,
 				382D9C2C148E178300005F16 /* snippet.html */,
 			);
 			path = Resources;
