@@ -42,6 +42,7 @@ NSString *GET_VIDEO_FROM_TIMESLOT_REQUEST;
 NSString *GET_VIDEO_REQUEST;
 NSString *GET_ALBUMS_REQUEST;
 NSString *GET_ALBUM_DETAILS_REQUEST;
+NSString *GET_ALBUM_DETAILS_FOR_TIMESLOT_REQUEST;
 NSString *GET_BALANCE_REQUEST;
 NSString *GET_BUY_REQUEST;
 NSString *SEND_MESSAGE_REQUEST;
@@ -88,6 +89,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         GET_VIDEO_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get video"] retain];        
         GET_ALBUMS_REQUEST =  [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get albums request"] retain];
         GET_ALBUM_DETAILS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get album details"] retain]; 
+        GET_ALBUM_DETAILS_FOR_TIMESLOT_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get album details for timeslot"] retain]; 
         GET_BALANCE_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get balance"] retain];
         GET_BUY_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Buy"] retain];
         SEND_MESSAGE_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Send message"] retain];
@@ -100,73 +102,23 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
 }
 
 - (void)dealloc {
-    if (dataRequestFactory_)
-    {
-        [dataRequestFactory_ release];
-    }
-    if (END_POINT_URL)
-    {
-        [END_POINT_URL release];
-    }
-    if (API_VERSION)
-    {
-        [API_VERSION release];
-    }
-    if (LOGIN_REQUEST)
-    {
-        [LOGIN_REQUEST release];
-    }    
-    if (REGISTER_REQUEST)
-    {
-        [REGISTER_REQUEST release];
-    }    
-    if (GET_TIMESLOTS_REQUEST)
-    {
-        [GET_TIMESLOTS_REQUEST release];
-    }
-    if (GET_CURRENT_TIMESLOTS_REQUEST)
-    {
-        [GET_CURRENT_TIMESLOTS_REQUEST release];  
-    }
-    if (GET_PLAYLIST_FOR_TIMESLOT_REQUEST)
-    {
-        [GET_PLAYLIST_FOR_TIMESLOT_REQUEST release];  
-    }
-    if (GET_VIDEO_FROM_TIMESLOT_REQUEST)
-    {
-        [GET_VIDEO_FROM_TIMESLOT_REQUEST release];  
-    }
-    if (GET_ALBUMS_REQUEST)
-    {
-        [GET_ALBUMS_REQUEST release];  
-    }
-    if (GET_ALBUM_DETAILS_REQUEST)
-    {
-        [GET_ALBUM_DETAILS_REQUEST release];  
-    }        
-    if (GET_VIDEO_REQUEST)
-    {
-        [GET_VIDEO_REQUEST release];  
-    }    
-    
-    if (GET_BALANCE_REQUEST)
-    {
-        [GET_BALANCE_REQUEST release];
-    }
-    if (GET_BUY_REQUEST)
-    {
-        [GET_BUY_REQUEST release];
-    }
-    
-    if (SEND_MESSAGE_REQUEST)
-    {
-        [SEND_MESSAGE_REQUEST release]; 
-    }
-    
-    if (GET_SCREENSHOT_COLLECTION)
-    {
-        [GET_SCREENSHOT_COLLECTION release];
-    }
+    [dataRequestFactory_ release];
+    [END_POINT_URL release];
+    [API_VERSION release];
+    [LOGIN_REQUEST release];
+    [REGISTER_REQUEST release];
+    [GET_TIMESLOTS_REQUEST release];
+    [GET_CURRENT_TIMESLOTS_REQUEST release];  
+    [GET_PLAYLIST_FOR_TIMESLOT_REQUEST release];  
+    [GET_VIDEO_FROM_TIMESLOT_REQUEST release];  
+    [GET_ALBUMS_REQUEST release];  
+    [GET_ALBUM_DETAILS_REQUEST release];  
+    [GET_ALBUM_DETAILS_FOR_TIMESLOT_REQUEST release];
+    [GET_VIDEO_REQUEST release];  
+    [GET_BALANCE_REQUEST release];
+    [GET_BUY_REQUEST release];
+    [SEND_MESSAGE_REQUEST release]; 
+    [GET_SCREENSHOT_COLLECTION release];
     
     if (sessionKey)
     {
@@ -460,17 +412,8 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
     return [request startExecute];    
 }
 
--(BOOL)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumsReceiver>*)receiver {
-    
-    if (album.detailsLoaded)
-    {
-        [receiver albumDetailsReceived:album];
-        return YES;
-    }
-    
-    //Include episodes always 1 in this version    
-    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_ALBUM_DETAILS_REQUEST, [NSNumber numberWithInt:album.albumId], @"1"]];
-    
+-(BOOL)getAlbumDetails:(NSURL*)url album:(Album*)album receiver:(NSObject<AlbumDetailsReceiver>*)receiver
+{
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
         
         if (error) 
@@ -504,8 +447,31 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         
     }];
     
-    return [request startExecute];    
+    return [request startExecute];        
+}
+
+-(BOOL)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumDetailsReceiver>*)receiver {
     
+    if (album.detailsLoaded)
+    {
+        [receiver albumDetailsReceived:album];
+        return YES;
+    }
+    
+    //Include episodes always 1 in this version    
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_ALBUM_DETAILS_REQUEST, [NSNumber numberWithInt:album.albumId], @"1"]];
+    
+    return [self getAlbumDetails:url album:album receiver:receiver];      
+}
+
+-(BOOL)getAlbumDetailsForTimeslotId:(NSInteger)timeslotId receiver:(NSObject<AlbumDetailsReceiver>*)receiver
+{
+    //Include episodes always 1 in this version    
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_ALBUM_DETAILS_FOR_TIMESLOT_REQUEST, [NSNumber numberWithInt:timeslotId], @"1"]];
+    Album* album = [[Album alloc] init]; 
+    BOOL result = [self getAlbumDetails:url album:album receiver:receiver];      
+    [album release];
+    return result;
 }
 
 

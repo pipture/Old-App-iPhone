@@ -29,6 +29,7 @@ enum HomeScreenMode {
 - (void)doPower;
 - (void)scheduleButtonHidden:(BOOL)hidden;
 - (void)showAlbumDetails:(Album*)album;
+- (void)showAlbumDetailsForTimeslot:(NSInteger)timeslotId;
 
 @end
 

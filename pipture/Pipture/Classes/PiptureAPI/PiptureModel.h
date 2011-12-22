@@ -61,11 +61,15 @@
 -(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem;
 @end
 
+@protocol AlbumDetailsReceiver <PiptureModelDelegate>
+@required
+-(void)albumDetailsReceived:(Album*)album;
+-(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album;
+@end
+
 @protocol AlbumsReceiver <PiptureModelDelegate>
 @required
 -(void)albumsReceived:(NSArray*)albums;
--(void)albumDetailsReceived:(Album*)album;
--(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album;
 @end
 
 @protocol AuthenticationDelegate <PiptureModelDelegate>
@@ -118,7 +122,9 @@
 
 -(BOOL)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver;
 
--(BOOL)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumsReceiver>*)receiver;
+-(BOOL)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumDetailsReceiver>*)receiver;
+
+-(BOOL)getAlbumDetailsForTimeslotId:(NSInteger)timeslotId receiver:(NSObject<AlbumDetailsReceiver>*)receiver;
 
 -(BOOL)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver;
 

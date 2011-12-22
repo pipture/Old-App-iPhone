@@ -24,4 +24,5 @@
 @property (retain, nonatomic) IBOutlet UIView *coverPanel;
 @property (retain, nonatomic) IBOutlet UIButton *coverButton;
 @property (retain, nonatomic) IBOutlet UIButton *detailButton;
+@property (retain, nonatomic) Timeslot*currentTimeslot;
 @end
