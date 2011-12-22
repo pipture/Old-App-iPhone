@@ -107,6 +107,18 @@
     [super viewDidUnload];
 }
 
+- (void)setFullScreenMode {
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+
+- (void)setNavBarMode {
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
     
@@ -114,9 +126,22 @@
     [self startTimer:TIMESLOT_REGULAR_POLL_INTERVAL];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    self.navigationItem.title = @"Library";
+    
+    if (homeScreenMode == HomeScreenMode_Albums) {
+        [self setNavBarMode];
+    } else {
+        [self setFullScreenMode];
+    }
+}
 - (void)viewDidDisappear:(BOOL)animated {
     [self resetScheduleTimer];
     [self stopTimer];
+    
+    self.navigationItem.title = @"Back";
     [super viewDidDisappear:animated];
 }
 
@@ -168,28 +193,6 @@
     [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:tabbarContainer cache:YES];
 }
 
-- (void)setFullScreenMode {
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
-}
-
-- (void)setNavBarMode {
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    if (homeScreenMode == HomeScreenMode_Albums) {
-        [self setNavBarMode];
-    } else {
-        [self setFullScreenMode];
-    }
-}
-
 - (void)setHomeScreenMode:(enum HomeScreenMode)mode {
     if (mode != homeScreenMode) {
         //flip to cover or back to PN
@@ -209,7 +212,10 @@
         }
         
         switch (mode) {
-            case HomeScreenMode_Cover: 
+            case HomeScreenMode_Cover:
+                [[PiptureAppDelegate instance] showWelcomeScreenWithTitle:@"Welcome to Pipture."
+                                                                  message:@"Enjoy watching scheduled video programs shot specifically for smartphones users and send hilarious video messages performed by great talents." storeKey:@"AppWelcomeShown"];
+                
                 [tabbarContainer addSubview:coverView];
                 if (flipAction) [UIView commitAnimations];
                 
@@ -253,6 +259,8 @@
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
                 break;
             case HomeScreenMode_Albums:
+                [[PiptureAppDelegate instance] showWelcomeScreenWithTitle:@"Library Usage" message:@"Bla bla bla\nasdfhkdshf" storeKey:@"LibraryWelcomeShown"];
+                
                 [tabbarContainer addSubview:albumsView];
                 
                 [self updateAlbums];
@@ -354,6 +362,7 @@
 
 #pragma mark AlbumsDetailsDelegate
 -(void)albumDetailsReceived:(Album*)album {
+    self.navigationItem.title = @"Back";
     NSLog(@"%@", self.navigationController.visibleViewController.class);
     if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
         AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
