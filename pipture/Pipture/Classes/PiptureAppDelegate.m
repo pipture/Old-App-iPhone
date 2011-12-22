@@ -317,7 +317,7 @@ NSInteger networkActivityIndecatorCount;
     if (balance == 0) {
         buyButton.title = @"Buy";
     } else {
-        buyButton.title = [NSString stringWithFormat:@"%0.2f$", balance];
+        buyButton.title = [NSString stringWithFormat:@"$%0.4f", balance];
     }
 }
 

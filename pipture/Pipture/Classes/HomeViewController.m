@@ -359,6 +359,8 @@
     NSLog(@"Albums received: %@", albums);
     
     [albumsView updateAlbums:albums];
+    
+    [[PiptureAppDelegate instance] updateBalance];
 }
 
 #pragma mark AlbumsDetailsDelegate
