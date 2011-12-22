@@ -214,7 +214,7 @@
         switch (mode) {
             case HomeScreenMode_Cover:
                 [[PiptureAppDelegate instance] showWelcomeScreenWithTitle:@"Welcome to Pipture."
-                                                                  message:@"Enjoy watching scheduled video programs shot specifically for smartphones users and send hilarious video messages performed by great talents." storeKey:@"AppWelcomeShown"];
+                                                                  message:@"Enjoy watching scheduled video programs shot specifically for smartphones users and send hilarious video messages performed by great talents." storeKey:@"AppWelcomeShown" image:YES];
                 
                 [tabbarContainer addSubview:coverView];
                 if (flipAction) [UIView commitAnimations];
@@ -259,7 +259,8 @@
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
                 break;
             case HomeScreenMode_Albums:
-                [[PiptureAppDelegate instance] showWelcomeScreenWithTitle:@"Library Usage" message:@"Bla bla bla\nasdfhkdshf" storeKey:@"LibraryWelcomeShown"];
+                [[PiptureAppDelegate instance] showWelcomeScreenWithTitle:@"About the Pipture Library"
+                                                                  message:@"Add credit to your App and gain access to the entire collection of videos that have already been broadcast.\n\nEach time you watch or send an episode $0.0099 will be deducted from your credits. That's 1 PIP less than a penny!\n\nTo add credit, which starts at $0.99, click the button at the top right in the Library section. Enjoy!" storeKey:@"LibraryWelcomeShown" image:NO];
                 
                 [tabbarContainer addSubview:albumsView];
                 

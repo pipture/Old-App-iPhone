@@ -25,7 +25,7 @@
 #define SHOW_ERROR(title, msg) [[PiptureAppDelegate instance] showError:title message:msg];
 
 
-@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UITabBarDelegate, UINavigationControllerDelegate>
+@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UITabBarDelegate, UINavigationControllerDelegate, UIAlertViewDelegate>
 {
     float balance;
     InAppPurchaseManager * purchases;
@@ -54,7 +54,7 @@
 - (void)putUserName:(NSString*)name;
 - (NSString*)getUserName;
 
-- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key;
+- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo;
 
 - (void)setBalance:(NSDecimalNumber*)newBalance;
 - (float)getBalance;

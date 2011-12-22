@@ -398,18 +398,29 @@ NSInteger networkActivityIndecatorCount;
     [UIView commitAnimations];
 }
 
-- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key {
+- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo {
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:key]) return;
+    //if ([[NSUserDefaults standardUserDefaults] boolForKey:key]) return;
     
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:key];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     [self.window addSubview:welcomeMessage];
     
+    UIImageView * logoImage = (UIImageView*)[welcomeMessage viewWithTag:4];
     UILabel * titleLabel = (UILabel*)[welcomeMessage viewWithTag:1];
     UILabel * messageLabel = (UILabel*)[welcomeMessage viewWithTag:2];
     UIButton * okButton = (UIButton*)[welcomeMessage viewWithTag:3];
+    
+    if (logo) {
+        logoImage.hidden = NO;
+        titleLabel.frame = CGRectMake(20, 184, 280, 21);
+        messageLabel.frame = CGRectMake(20, 213, 280, 21);
+    } else {
+        logoImage.hidden = YES;
+        titleLabel.frame = CGRectMake(20, 95, 280, 21);
+        messageLabel.frame = CGRectMake(20, 124, 280, 21);
+    }
     
     titleLabel.text = title;
     
@@ -434,10 +445,19 @@ NSInteger networkActivityIndecatorCount;
 }
 
 #pragma mark -
+
+#pragma mark AlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == 42) {
+        [self processAuthentication];
+    }
+}
+
 #pragma mark BalanceReceiver methods
 
 -(void)dataRequestFailed:(DataRequestError*)error {
-    [self processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];    
+    [self processDataRequestError:error delegate:self cancelTitle:@"OK" alertId:42];    
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)newBalance {
