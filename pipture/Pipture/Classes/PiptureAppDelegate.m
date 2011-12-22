@@ -23,11 +23,14 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize window = _window;
 @synthesize homeNavigationController;
 @synthesize videoNavigationController;
+@synthesize welcomeMessage;
 @synthesize model = model_;
 
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
 static NSString* const HOMESCREENSTATE_KEY = @"HSState";
+
+static NSInteger const INSUFFICIENT_FUND_ALERT = 1;
 
 BOOL registrationRequired = NO;
 BOOL loggedIn = NO;
@@ -48,6 +51,7 @@ static PiptureAppDelegate *instance;
     [tabView release];
     [tabbarControl release];
     [powerButton release];
+    [welcomeMessage release];
     [super dealloc];
 }
 
@@ -323,15 +327,32 @@ NSInteger networkActivityIndecatorCount;
     [self.model getBalanceWithReceiver:self];
 }
 
-- (void)buyCredits {
+
+- (void)showInsufficientFunds;
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Your balance is low" message:@"Add credit to your App to watch or send the videos from the library" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue",nil];
+    alert.tag = INSUFFICIENT_FUND_ALERT;
+    [alert show];
+    [alert release];
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == INSUFFICIENT_FUND_ALERT)
+    {
+        if (buttonIndex == 1)
+        {
+            [self buyAction:self];
+        }
+    }
+}
+
+- (IBAction)buyAction:(id)sender {
     if ([purchases canMakePurchases]) {
         [purchases purchaseCredits];
     } else {
         SHOW_ERROR(@"Purchase failed", @"Can't make purchases!");
     }
-}
-
-- (IBAction)buyAction:(id)sender {
 }
 
 - (IBAction)videoDone:(id)sender {
@@ -377,12 +398,61 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (void)showModalBusy:(void (^)(void))completion {
-    [[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
+    //[[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    //[[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
 }
 
 - (void)dismissModalBusy {
-    [[[self window] rootViewController] dismissViewControllerAnimated:YES completion:nil];
+    //[[[self window] rootViewController] dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)welcomeDissolved {
+    [welcomeMessage removeFromSuperview];
+}
+
+- (void)okPressed:(id)sender{
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    [UIView setAnimationDidStopSelector:@selector(welcomeDissolved:)];
+    
+    welcomeMessage.alpha = 0;
+    
+    [UIView commitAnimations];
+}
+
+- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key {
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:key]) return;
+    
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:key];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self.window addSubview:welcomeMessage];
+    
+    UILabel * titleLabel = (UILabel*)[welcomeMessage viewWithTag:1];
+    UILabel * messageLabel = (UILabel*)[welcomeMessage viewWithTag:2];
+    UIButton * okButton = (UIButton*)[welcomeMessage viewWithTag:3];
+    
+    titleLabel.text = title;
+    
+    CGRect rect = messageLabel.frame;
+    //Calculate the expected size based on the font and linebreak mode of your label
+    CGSize maximumLabelSize = CGSizeMake(rect.size.width,9999);
+    CGSize expectedLabelSize = [message sizeWithFont:messageLabel.font constrainedToSize:maximumLabelSize lineBreakMode:UILineBreakModeWordWrap]; 
+    
+    messageLabel.frame = CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, expectedLabelSize.height);
+    messageLabel.text = message;
+    
+    
+    [okButton addTarget:self action:@selector(okPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+
+    welcomeMessage.alpha = 1;
+    
+    [UIView commitAnimations]; 
+    
 }
 
 #pragma mark -
