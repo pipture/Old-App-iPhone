@@ -20,6 +20,7 @@
 
 + (NSMutableArray *)parseItems:(NSDictionary *)jsonResult jsonArrayParamName:(NSString*)paramName itemCreator:(id (^)(NSDictionary*dct))createItem itemName:(NSString*)itemName;
 
++ (void)setModelRequestingState:(BOOL)state receiver:(NSObject<PiptureModelDelegate>*)receiver;
 + (void)processError:(DataRequestError *)error receiver:(NSObject<PiptureModelDelegate>*)receiver;
 + (void)processAPIError:(NSInteger)code description:(NSString*)description receiver:(NSObject<PiptureModelDelegate>*)receiver;
 + (NSInteger)parseErrorCode:(NSDictionary*)jsonResponse description:(NSMutableString*)description;
@@ -158,10 +159,11 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                     break;
             }                                   
         }
-        
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
     [request startExecute];
-    
+
 }
 
 -(void)registerWithReceiver:(NSObject<AuthenticationDelegate> *)receiver
@@ -205,8 +207,11 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             }                        
         }
         
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    [request startExecute];        
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    [request startExecute];
+       
 }
 
 -(BOOL)getTimeslotsFromId:(NSInteger)timeslotId maxCount:(int)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver
@@ -248,8 +253,9 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             }
         }
         
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
     return [request startExecute];
 }
 
@@ -310,8 +316,9 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             }
         }
         
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
     return [request startExecute];
 }
 
@@ -376,9 +383,11 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                 }                
             }
             
+            [PiptureModel setModelRequestingState:NO receiver:receiver];        
         }];
-        
+        [PiptureModel setModelRequestingState:YES receiver:receiver];    
         return [request startExecute];
+
     }    
     
 }
@@ -407,9 +416,11 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             }
         }
         
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    
-    return [request startExecute];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    return [request startExecute];
+ 
 }
 
 -(BOOL)getAlbumDetails:(NSURL*)url album:(Album*)album receiver:(NSObject<AlbumDetailsReceiver>*)receiver
@@ -445,8 +456,9 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             [receiver performSelectorOnMainThread:@selector(albumDetailsReceived:) withObject:album waitUntilDone:YES];
         }
         
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
     return [request startExecute];        
 }
 
@@ -521,10 +533,10 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                     break;
             }                
         }
-        
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    
-    return [request startExecute];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    return [request startExecute];
     
 }
 
@@ -566,8 +578,9 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             }                
         }
         
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
     return [request startExecute];
     
     
@@ -620,9 +633,10 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                     break;
             }
         }
-        
-    }];    
-    return [request startExecute];        
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
+    }];
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    return [request startExecute];      
 }
 
 -(BOOL)getScreenshotCollectionFor:(PlaylistItem*)playlistItem receiver:(NSObject<ScreenshotCollectionReceiver>*)receiver
@@ -669,9 +683,19 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             }                
         }
         
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    
-    return [request startExecute];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    return [request startExecute];  
+}
+
+
++ (void)setModelRequestingState:(BOOL)state receiver:(NSObject<PiptureModelDelegate>*)receiver
+{
+    if ([receiver respondsToSelector:@selector(onSetModelRequestingState:)])
+    {
+        [receiver onSetModelRequestingState:state];
+    }    
 }
 
 + (void)processAPIError:(NSInteger)code description:(NSString*)description receiver:(NSObject<PiptureModelDelegate>*)receiver

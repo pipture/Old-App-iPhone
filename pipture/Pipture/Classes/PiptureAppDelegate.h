@@ -25,7 +25,7 @@
 #define SHOW_ERROR(title, msg) [[PiptureAppDelegate instance] showError:title message:msg];
 
 
-@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UITabBarDelegate, UINavigationControllerDelegate>
+@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UITabBarDelegate, UINavigationControllerDelegate, UIAlertViewDelegate>
 {
     float balance;
     InAppPurchaseManager * purchases;
@@ -72,4 +72,5 @@
 
 - (void)processDataRequestError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate cancelTitle:(NSString*)title alertId:(int)alertId;
 - (void)showError:(NSString*)title message:(NSString*)message;
+- (void)showInsufficientFunds;
 @end

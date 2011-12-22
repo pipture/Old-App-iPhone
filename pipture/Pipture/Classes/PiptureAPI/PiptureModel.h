@@ -27,6 +27,7 @@
 -(void)dataRequestFailed:(DataRequestError*)error;
 -(void)unexpectedAPIError:(NSInteger)code description:(NSString*)description;
 -(void)authenticationFailed;
+-(void)onSetModelRequestingState:(BOOL)state;
 
 @end
 

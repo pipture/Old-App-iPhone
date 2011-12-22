@@ -29,6 +29,8 @@ static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
 static NSString* const HOMESCREENSTATE_KEY = @"HSState";
 
+static NSInteger const INSUFFICIENT_FUND_ALERT = 1;
+
 BOOL registrationRequired = NO;
 BOOL loggedIn = NO;
 
@@ -321,6 +323,25 @@ NSInteger networkActivityIndecatorCount;
 
 - (void)updateBalance {
     [self.model getBalanceWithReceiver:self];
+}
+
+- (void)showInsufficientFunds;
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Your balance is low" message:@"Add credit to your App to watch or send the videos from the library" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue",nil];
+    alert.tag = INSUFFICIENT_FUND_ALERT;
+    [alert show];
+    [alert release];
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == INSUFFICIENT_FUND_ALERT)
+    {
+        if (buttonIndex == 1)
+        {
+            [self buyAction:self];
+        }
+    }
 }
 
 - (void)buyCredits {
