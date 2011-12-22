@@ -26,6 +26,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize model = model_;
 
 static NSString* const UUID_KEY = @"UserUID";
+static NSString* const USERNAME_KEY = @"UserName";
 static NSString* const HOMESCREENSTATE_KEY = @"HSState";
 
 BOOL registrationRequired = NO;
@@ -85,6 +86,14 @@ static PiptureAppDelegate *instance;
     return state;
 }
 
+- (void)putUserName:(NSString*)name {
+    [[NSUserDefaults standardUserDefaults] setObject:name forKey:USERNAME_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSString*)getUserName {
+    return [[NSUserDefaults standardUserDefaults] stringForKey:USERNAME_KEY];
+}
 
 -(void) processAuthentication
 {
@@ -121,7 +130,7 @@ static PiptureAppDelegate *instance;
     
     UITabBarItem * item = [tabbarControl.items objectAtIndex:1];
     item.enabled = NO;
-    
+    tabView.hidden = NO;
     [self.window makeKeyAndVisible];    
 }
 

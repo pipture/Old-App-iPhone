@@ -46,8 +46,12 @@
 - (void)powerButtonEnable:(BOOL)enable;
 - (void)tabbarVisible:(BOOL)visible;
 - (void)tabbarSelect:(int)item;
+
 - (void)putHomescreenState:(int)state;
 - (int)getHomescreenState;
+
+- (void)putUserName:(NSString*)name;
+- (NSString*)getUserName;
 
 - (void)setBalance:(NSDecimalNumber*)newBalance;
 - (float)getBalance;

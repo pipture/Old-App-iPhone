@@ -178,6 +178,11 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
     }
 }
 
+-(NSString*) emailSubject
+{
+    return [NSString stringWithFormat:@"%@ - Pipture Video Message", self.title];
+}
+
 -(BOOL) supportsScreenshotCollection
 {
     return YES;

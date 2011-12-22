@@ -16,6 +16,7 @@
 @property(readonly,nonatomic) NSString *videoPath;
 @property(readonly,nonatomic) BOOL supportsScreenshotCollection;
 @property(readonly,nonatomic) NSString *emailScreenshot;
+@property(readonly,nonatomic) NSString *emailSubject;
 
 @property(retain,nonatomic) NSString *videoUrl;
 

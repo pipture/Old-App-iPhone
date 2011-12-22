@@ -109,6 +109,11 @@ static NSString* const VIDEO_KEY_NAME = @"TrailerId";
     }
 }
 
+-(NSString*) emailSubject
+{
+    return [NSString stringWithFormat:@"%@ - Pipture Series Trailer", self.title];
+}
+
 -(BOOL) supportsScreenshotCollection
 {
     return NO;

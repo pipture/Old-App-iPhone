@@ -297,6 +297,7 @@
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
 
     controlsHidded = YES;
+    self.busyContainer.hidden = YES;
     
     [self updateControlsAnimated:YES];
 }

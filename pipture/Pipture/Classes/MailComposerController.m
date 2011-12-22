@@ -97,7 +97,10 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     [layoutTableView addGestureRecognizer:singleFingerDTap];
     [singleFingerDTap release];
     [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];
-    screenshotCell.accessoryType = UITableViewCellAccessoryNone;    
+    screenshotCell.accessoryType = UITableViewCellAccessoryNone;
+    
+    
+    nameTextField.text = [[PiptureAppDelegate instance] getUserName];
 }
 
 -(void)onCancel
@@ -127,15 +130,24 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 }
 
 - (void)nextButton:(id)sender {
-    if (playlistItem &&
-        [messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER] == NO && 
-        [messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0)
+    if ([messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER] == YES || 
+        [messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
     {
+        [messageEdit becomeFirstResponder];
+        return;
+    }
+    
+    if ([nameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
+        [nameTextField becomeFirstResponder];
+        return;
+    }
+
+    if (playlistItem) {
         self.navigationItem.hidesBackButton = YES;
 
+        [[PiptureAppDelegate instance] putUserName:nameTextField.text];
+        
         [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : playlistItem.emailScreenshot userName:nameTextField.text  receiver:self];
-    } else {
-        [messageEdit becomeFirstResponder];
     }
 }
 

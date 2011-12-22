@@ -54,7 +54,7 @@ static NSString* const REST_PARAM_UUID = @"UUID";
 static NSString* const REST_PARAM_RECEIPT_DATA = @"AppleReceiptData";
 static NSString* const REST_PARAM_MESSAGE = @"Message";
 static NSString* const REST_PARAM_TIMESLOT_ID = @"TimeslotId";
-static NSString* const REST_PARAM_SCREENSHOT_IMAGE = @"ScreenshotImage";
+static NSString* const REST_PARAM_SCREENSHOT_IMAGE = @"ScreenshotURL";
 static NSString* const REST_PARAM_USER_NAME = @"UserName";
 
 static NSString* const JSON_PARAM_TIMESLOTS = @"Timeslots";
@@ -611,7 +611,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
 {
     NSURL* url = [self buildURLWithRequest:SEND_MESSAGE_REQUEST sendAPIVersion:NO sendKey:NO];    
     
-    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%d&%@=%@&%@=%d&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, playlistItem.videoKeyName, playlistItem.videoKeyValue, REST_PARAM_SCREENSHOT_IMAGE, screenshotImage, REST_PARAM_USER_NAME, userName, REST_PARAM_MESSAGE, message];
+    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%d&%@=%@&%@=%@&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, playlistItem.videoKeyName, playlistItem.videoKeyValue, REST_PARAM_SCREENSHOT_IMAGE, screenshotImage, REST_PARAM_USER_NAME, userName, REST_PARAM_MESSAGE, message];
     
     if (timeslotId)
     {
