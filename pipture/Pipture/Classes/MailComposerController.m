@@ -25,6 +25,7 @@
 @synthesize nextButton;
 @synthesize playlistItem;
 @synthesize timeslotId;
+@synthesize cancelButton;
 
 ScreenshotImage* screenshotImage_;
 AsyncImageView * lastScreenshotView;
@@ -34,6 +35,18 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
 
 static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
+
+- (void) hideCancelButton:(BOOL)hide
+{
+    if (hide)
+    {
+        self.navigationItem.leftBarButtonItem = nil;
+    }
+    else
+    {
+        self.navigationItem.leftBarButtonItem = cancelButton;        
+    }
+}
 
 - (void) displayScreenshot
 {
@@ -75,9 +88,9 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     lastScreenshotView = nil;
     screenshotImages_ = nil;
     
-    UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];        
+    self.cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];        
     self.navigationItem.leftBarButtonItem = cancelButton;
-    [cancelButton release];
+    
 
     nextButton = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStylePlain target:self action:@selector(nextButton:)];
     self.navigationItem.rightBarButtonItem = nextButton;
@@ -142,13 +155,20 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
         return;
     }
 
+    [messageEdit resignFirstResponder];
+    [nameTextField resignFirstResponder];
+
     if (playlistItem) {
-        self.navigationItem.hidesBackButton = YES;
 
         [[PiptureAppDelegate instance] putUserName:nameTextField.text];
         
         [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : playlistItem.emailScreenshot userName:nameTextField.text  receiver:self];
     }
+}
+
+- (void)onSetModelRequestingState:(BOOL)state
+{
+    [self hideCancelButton:state];
 }
 
 - (void)viewDidUnload
@@ -224,6 +244,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    
+    self.navigationItem.hidesBackButton = YES;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -249,6 +271,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     [titleViewController release];
     [fromCell release];
     [nameTextField release];
+    [cancelButton release];
     [super dealloc];
 }
 
@@ -256,7 +279,6 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 {
     //TODO: process result
     [self dismissModalViewControllerAnimated:YES];
-    self.navigationItem.hidesBackButton = NO;
     
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -270,7 +292,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     NSString * newUrl = [[endPoint substringToIndex:endPoint.length - 1] stringByAppendingString:url];
     
     [htmlData replaceOccurrencesOfString:HTML_MACROS_MESSAGE_URL withString:newUrl options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
-    [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
+    [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:screenshotImage_ ? screenshotImage_.imageURL : playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
     
     MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
     controller.mailComposeDelegate = self;
@@ -297,7 +319,6 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 
 -(void)balanceReceived:(NSDecimalNumber*)balance
 {
-    self.navigationItem.hidesBackButton = NO;
     SET_BALANCE(balance);
 }
 
@@ -307,15 +328,12 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 }
 
 -(void)notEnoughMoneyForSend:(PlaylistItem*)playlistItem {
-    self.navigationItem.hidesBackButton = NO;
-    SHOW_ERROR(@"Sending failed", @"Insufficient funds!");    
-    NSLog(@"No enought money");
+    [[PiptureAppDelegate instance] showInsufficientFunds];
 }
 
 
 -(void)dataRequestFailed:(DataRequestError*)error
 {
-    self.navigationItem.hidesBackButton = NO;
     [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
 }
 

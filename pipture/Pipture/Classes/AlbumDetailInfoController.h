@@ -8,13 +8,14 @@
 
 #import "AlbumDetailPage.h"
 #import "Album.h"
+#import "PiptureModel.h"
 
 enum DetailAlbumViewType {
     DetailAlbumViewType_Videos = 20,
     DetailAlbumViewType_Credits = 10,
 };
 
-@interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource>
+@interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource, VideoURLReceiver>
 {
     enum DetailAlbumViewType viewType;
     NSMutableArray * videosArray;

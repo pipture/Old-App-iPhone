@@ -27,6 +27,8 @@ ScreenshotImage* curScreenshotImage;
         self.navigationItem.leftBarButtonItem = cancelButton;
         [cancelButton release];
         
+        self.navigationItem.hidesBackButton = YES;
+        
         UIBarButtonItem* doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(onDone)];
         self.navigationItem.rightBarButtonItem = doneButton;
         [doneButton release];

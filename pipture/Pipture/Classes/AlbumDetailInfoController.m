@@ -131,10 +131,48 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row %2 == 0) {
         Episode * episode = [album.episodes objectAtIndex:indexPath.row / 2];
-        NSArray * playlist = [NSArray arrayWithObject:episode];
-        [[PiptureAppDelegate instance] showVideo:playlist noNavi:YES timeslotId:nil];
+        [[[PiptureAppDelegate instance] model] getVideoURL:episode forceBuy:YES forTimeslotId:nil receiver:self];
+
     }
 }
+
+
+#pragma mark VideoURLReceiver protocol
+
+-(void)videoURLReceived:(PlaylistItem*)playlistItem {
+    NSArray * playlist = [NSArray arrayWithObject:playlistItem];
+    [[PiptureAppDelegate instance] showVideo:playlist noNavi:YES timeslotId:nil];        
+}
+
+-(void)videoNotPurchased:(PlaylistItem*)playlistItem {
+    NSLog(@"Video not purchased: %@", playlistItem);
+    SHOW_ERROR(@"Playing failed", @"Video not purchased!");
+}
+
+-(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem {
+    //Do nothing - no timeslots in library
+}
+
+-(void)authenticationFailed {
+    NSLog(@"Authentication failed");
+    SHOW_ERROR(@"Playing failed", @"Authentication failed");
+}
+
+-(void)balanceReceived:(NSDecimalNumber*)balance {
+    SET_BALANCE(balance);
+}
+
+-(void)notEnoughMoneyForWatch:(PlaylistItem*)playlistItem {
+    [[PiptureAppDelegate instance] showInsufficientFunds];
+}
+
+-(void)dataRequestFailed:(DataRequestError*)error
+{
+    if (error.errorCode != DRErrorNoInternet) {
+        [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
+    }
+}
+
 
 - (IBAction)tabChanged:(id)sender {
     if (!sender) return;

@@ -445,8 +445,8 @@
 
 -(void)notEnoughMoneyForWatch:(PlaylistItem*)playlistItem {
     NSLog(@"No enought money");
-    SHOW_ERROR(@"Playing failed", @"Insufficient funds!");
     [self goBack];   
+    [[PiptureAppDelegate instance] showInsufficientFunds];
 }
 
 -(void)dataRequestFailed:(DataRequestError*)error

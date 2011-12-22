@@ -74,4 +74,5 @@
 
 - (void)processDataRequestError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate cancelTitle:(NSString*)title alertId:(int)alertId;
 - (void)showError:(NSString*)title message:(NSString*)message;
+- (void)showInsufficientFunds;
 @end
