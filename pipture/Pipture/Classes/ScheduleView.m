@@ -60,11 +60,9 @@
     int page = [self getPageNumber];
     
     if (![self pageInRange:page]) return;
-    //TODO: get album by timeslotId
-    //Timeslot * slot = [timelineArray objectAtIndex:page];
-    //Album * album = slot ;
-    //[delegate showAlbumDetails:album];
-    //}
+    Timeslot * slot = [timelineArray objectAtIndex:page];
+    [delegate showAlbumDetailsForTimeslot:slot.timeslotId];
+    
 }
 
 - (void) prepareImageFor: (int) timeslot {

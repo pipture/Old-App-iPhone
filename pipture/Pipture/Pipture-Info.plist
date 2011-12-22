@@ -56,6 +56,8 @@
 	<string>buy</string>
 	<key>Rest Get album details</key>
 	<string>getAlbumDetail?AlbumId=%@&amp;IncludeEpisodes=%@</string>
+	<key>Rest Get album details for timeslot</key>
+	<string>getAlbumDetail?TimeslotId=%@&amp;IncludeEpisodes=%@</string>
 	<key>Rest Get albums request</key>
 	<string>getAlbums?</string>
 	<key>Rest Get album screenshots</key>

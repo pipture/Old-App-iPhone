@@ -15,6 +15,7 @@
 @synthesize coverButton;
 @synthesize detailButton;
 @synthesize delegate;
+@synthesize currentTimeslot;
 
 #pragma mark - View lifecycle
 
@@ -28,11 +29,15 @@
     [UIView setAnimationDuration:0.3];
     panel.alpha  = visible?1:0;
     
+    
     [UIView setAnimationDidStopSelector:@selector(updateHidden:)];
     [UIView commitAnimations];
 }
 
+
+
 - (void)updateTimeSlotInfo:(Timeslot*)timeslot {
+    currentTimeslot = timeslot;    
     if (timeslot) {
         UILabel * title = (UILabel*)[coverPanel viewWithTag:1];
         UILabel * status = (UILabel*)[coverPanel viewWithTag:2];
@@ -56,6 +61,7 @@
     } else {
         [self panel:coverPanel visible:NO];
     }
+
 }
 
 - (void)updateTimeslots:(NSArray*) timeslots {
@@ -90,6 +96,7 @@
 }
 
 - (IBAction)detailsClick:(id)sender {
+    [self.delegate showAlbumDetailsForTimeslot:currentTimeslot.timeslotId];
 }
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent {
@@ -97,10 +104,12 @@
 }
 
 - (void)dealloc {
+    [currentTimeslot release];
     [coverContainer release];
     [coverPanel release];
     [coverButton release];
     [detailButton release];
+    
     [super dealloc];
 }
 

@@ -12,7 +12,7 @@
 #import "HomeScreenDelegate.h"
 #import "AlbumsView.h"
 
-@interface HomeViewController : UIViewController <TimeslotsReceiver, PlaylistReceiver, AlbumsReceiver, UIAlertViewDelegate, UITabBarDelegate, HomeScreenDelegate>
+@interface HomeViewController : UIViewController <TimeslotsReceiver, PlaylistReceiver, AlbumsReceiver, AlbumDetailsReceiver, UIAlertViewDelegate, UITabBarDelegate, HomeScreenDelegate>
 {
     enum HomeScreenMode homeScreenMode;
     

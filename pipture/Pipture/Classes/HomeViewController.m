@@ -295,6 +295,12 @@
     [[[PiptureAppDelegate instance] model] getDetailsForAlbum:album receiver:self];
 }
 
+- (void)showAlbumDetailsForTimeslot:(NSInteger)timeslotId
+{    
+    [[[PiptureAppDelegate instance] model] getAlbumDetailsForTimeslotId:timeslotId receiver:self];
+}
+
+
 #pragma mark PiptureModelDelegate methods
 
 -(void)dataRequestFailed:(DataRequestError*)error
