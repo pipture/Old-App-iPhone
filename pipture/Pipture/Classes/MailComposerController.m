@@ -17,9 +17,11 @@
 @synthesize messageEdit;
 @synthesize screenshotCell;
 @synthesize messageCell;
+@synthesize fromCell;
 @synthesize layoutTableView;
 @synthesize screenshotName;
 @synthesize titleViewController;
+@synthesize nameTextField;
 @synthesize nextButton;
 @synthesize playlistItem;
 @synthesize timeslotId;
@@ -94,7 +96,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     singleFingerDTap.cancelsTouchesInView = NO;
     [layoutTableView addGestureRecognizer:singleFingerDTap];
     [singleFingerDTap release];
-    [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];    
+    [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];
     screenshotCell.accessoryType = UITableViewCellAccessoryNone;    
 }
 
@@ -131,7 +133,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     {
         self.navigationItem.hidesBackButton = YES;
 
-        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId screenshotImage:playlistItem.emailScreenshot userName:@"Test User Name"  receiver:self];
+        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : playlistItem.emailScreenshot userName:nameTextField.text  receiver:self];
     } else {
         [messageEdit becomeFirstResponder];
     }
@@ -146,18 +148,20 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     [self setLayoutTableView:nil];
     [self setScreenshotName:nil];
     [self setTitleViewController:nil];
+    [self setFromCell:nil];
+    [self setNameTextField:nil];
     [super viewDidUnload];
 }
 
 //method to move the view up/down whenever the keyboard is shown/dismissed
--(void)shrinkView:(BOOL)shrink
+-(void)moveView:(BOOL)move
 {
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.2]; // if you want to slide up the view
     
-    CGRect rect = messageEdit.frame;
-    rect.size.height = shrink?rect.size.height - kHEIGHT_FOR_KEYBOARD:rect.size.height + kHEIGHT_FOR_KEYBOARD;
-    messageEdit.frame = rect;
+    CGRect rect = layoutTableView.frame;
+    rect.origin.y = move?-90:0;
+    layoutTableView.frame = rect;
     
     [UIView commitAnimations];
 }
@@ -166,11 +170,11 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 {
     if ([sender isEqual:messageEdit])
     {
+        [self moveView:NO];
         if ([messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER]) {
             messageEdit.text = @"";
             messageEdit.textColor = [UIColor darkTextColor];
         }
-        //[self shrinkView:YES];
     }
 }
 
@@ -183,6 +187,13 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     }
 }
 
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    if ([textField isEqual:nameTextField])
+    {
+        [self moveView:YES];
+    }
+}
+
 - (void)keyboardWillHide:(NSNotification *)notif
 {
     if ([messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
@@ -190,7 +201,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
         messageEdit.textColor = [UIColor grayColor];
     }
     
-    //[self shrinkView:NO];
+    [self moveView:NO];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -224,6 +235,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     [lastScreenshotView release];
     [screenshotImages_ release];
     [titleViewController release];
+    [fromCell release];
+    [nameTextField release];
     [super dealloc];
 }
 
@@ -249,7 +262,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     
     MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
     controller.mailComposeDelegate = self;
-    [controller setSubject:@"Look at this video!"];
+    [controller setSubject:playlistItem.emailSubject];
     //TODO: snippet
     [controller setMessageBody:htmlData isHTML:YES]; 
     if (controller) {
@@ -297,7 +310,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 #pragma mark Table delegates
 
 #define MESSAGE_CELL_ROW 1
-#define SCREENSHOT_CELL_ROW 2
+#define FROM_CELL_ROW 2
+#define SCREENSHOT_CELL_ROW 3
 
 - (NSInteger)calcCellRow:(NSIndexPath*)indexPath
 {
@@ -307,8 +321,11 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
         return MESSAGE_CELL_ROW;
     }
     else if (section == 1 && row == 0) {
-        return SCREENSHOT_CELL_ROW;
+        return FROM_CELL_ROW;
     }
+    else if (section == 2 && row == 0) {
+        return SCREENSHOT_CELL_ROW;
+    }    
     else
     {
         return 0;
@@ -320,6 +337,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     switch ([self calcCellRow:indexPath]) {
         case MESSAGE_CELL_ROW:
             return messageCell.frame.size.height;
+        case FROM_CELL_ROW:
+            return fromCell.frame.size.height;                                
         case SCREENSHOT_CELL_ROW:
             return screenshotCell.frame.size.height;                    
         default:
@@ -334,7 +353,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return 3;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -342,6 +361,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     switch ([self calcCellRow:indexPath]) {
         case MESSAGE_CELL_ROW:
             return messageCell;
+        case FROM_CELL_ROW:
+            return fromCell;            
         case SCREENSHOT_CELL_ROW:
             return screenshotCell;                    
         default:
@@ -357,6 +378,8 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
         case 0:
             return nil;
         case 1:
+            return @"From";                                
+        case 2:
             return @"Screenshot selection";                    
         default:
             return nil;
@@ -377,5 +400,6 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 
 - (IBAction)onTableTap:(id)sender {
     [messageEdit resignFirstResponder];
+    [nameTextField resignFirstResponder];
 }
 @end
