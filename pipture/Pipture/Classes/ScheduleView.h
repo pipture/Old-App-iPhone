@@ -30,6 +30,7 @@ enum TimeslotsMode{
 - (int)getPageNumber;
 - (void)prepareImageFor:(int)timeslot;
 - (void)updateTimeslots:(NSArray*) timeslots;
+- (void)scrollToCurPage;
 
 - (Timeslot*)getTimeslot;
 

@@ -13,7 +13,14 @@
 @synthesize line2;
 @synthesize line3;
 
-#pragma mark - View lifecycle
+- (void)composeTitle:(PlaylistItem*)item
+{
+    if (item) {
+        self.line1.text = item.videoContainerName;
+        self.line2.text = item.videoName;
+        self.line3.text = item.videoPath;
+    }
+}
 
 - (void)viewDidUnload
 {

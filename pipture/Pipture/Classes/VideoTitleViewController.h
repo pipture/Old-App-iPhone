@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PlaylistItem.h"
 
 @interface VideoTitleViewController : UIViewController
+
+- (void)composeTitle:(PlaylistItem*)item;
+
 @property (retain, nonatomic) IBOutlet UILabel *line1;
 @property (retain, nonatomic) IBOutlet UILabel *line2;
 @property (retain, nonatomic) IBOutlet UILabel *line3;

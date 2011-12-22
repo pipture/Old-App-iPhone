@@ -10,8 +10,9 @@
 #import <MessageUI/MFMailComposeViewController.h>
 #import "PiptureModel.h"
 #import "ScreenshotImage.h"
+#import "VideoTitleViewController.h"
 
-@interface MailComposerController : UIViewController <UITextViewDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver> {
+@interface MailComposerController : UIViewController <UITextViewDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver>{
 
     UIStatusBarStyle lastStatusStyle;
     UIBarStyle lastNaviStyle;
@@ -23,6 +24,7 @@
 @property (retain, nonatomic) IBOutlet UITableView *layoutTableView;
 @property (retain, nonatomic) IBOutlet UILabel *screenshotName;
 
+@property (retain, nonatomic) IBOutlet VideoTitleViewController *titleViewController;
 @property (retain, nonatomic) UIBarButtonItem * nextButton;
 @property (assign, nonatomic) PlaylistItem * playlistItem;
 @property (assign, nonatomic) NSNumber * timeslotId;

@@ -44,9 +44,7 @@
     if (playlist && pos >= 0 && pos < playlist.count) {
         PlaylistItem * item = [playlist objectAtIndex:pos];
         
-        videoTitleView.line1.text = item.videoContainerName;
-        videoTitleView.line2.text = item.videoName;
-        videoTitleView.line3.text = item.videoPath;
+        [videoTitleView composeTitle:item];
     }
 }
 

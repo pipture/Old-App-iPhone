@@ -186,7 +186,7 @@ static PiptureAppDelegate *instance;
     [self.window bringSubviewToFront:tabView];
 }
 
-- (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId{
+- (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId{
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     videoNavigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
     

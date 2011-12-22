@@ -61,7 +61,7 @@
 
 - (BOOL)trackEvent:(NSString*)event :(NSString*)action;
 - (void)openHome;
-- (void)showVideo:(NSArray*)playlist navigationController:(UINavigationController*)navigationController noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId;//TODO: add video mode, playlist, e .t.c
+- (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId;//TODO: add video mode, playlist, e .t.c
 
 - (void)showModalBusy:(void (^)(void))completion;
 - (void)dismissModalBusy;

@@ -31,7 +31,7 @@
     scheduleButton.hidden = hidden;
 }
 
-- (void)updafeAlbums {
+- (void)updateAlbums {
     [[[PiptureAppDelegate instance] model] getAlbumsForReciever:self];
 }
 
@@ -255,7 +255,7 @@
             case HomeScreenMode_Albums:
                 [tabbarContainer addSubview:albumsView];
                 
-                [self updafeAlbums];
+                [self updateAlbums];
                 [self setNavBarMode];
                 
                 [[PiptureAppDelegate instance] tabbarSelect:2];
@@ -314,8 +314,8 @@
 -(void)playlistReceived:(NSArray*)playlistItems {
     NSLog(@"Playlist: %@", playlistItems);
     if (playlistItems && playlistItems.count > 0) {
-        //[self scrollToCurPage];
-        [[PiptureAppDelegate instance] showVideo:playlistItems navigationController:self.navigationController noNavi:NO timeslotId:[NSNumber numberWithInt:reqTimeslotId]];
+        [scheduleView scrollToCurPage];
+        [[PiptureAppDelegate instance] showVideo:playlistItems noNavi:NO timeslotId:[NSNumber numberWithInt:reqTimeslotId]];
     }
     reqTimeslotId = -1;
 }
@@ -323,19 +323,19 @@
 -(void)playlistCantBeReceivedForUnknownTimeslot:(NSNumber*)timeslotId {
     NSLog(@"Unknown timeslot: %@", timeslotId);
     reqTimeslotId = -1;
-    //[self refreshTimeSlots];
+    [self updateTimeslots:nil];
 }
                                                                        
 -(void)playlistCantBeReceivedForExpiredTimeslot:(NSNumber*)timeslotId {
     NSLog(@"Expired timeslot: %@", timeslotId);
     reqTimeslotId = -1;
-    //[self refreshTimeSlots];
+    [self updateTimeslots:nil];
 }
 
 -(void)playlistCantBeReceivedForFutureTimeslot:(NSNumber*)timeslotId {
     NSLog(@"Future timeslot: %@", timeslotId);
     reqTimeslotId = -1;
-    //[self refreshTimeSlots];
+    [self updateTimeslots:nil];
 }
 
 #pragma mark AlbumsDelegate methods

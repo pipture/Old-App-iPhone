@@ -19,6 +19,7 @@
 @synthesize messageCell;
 @synthesize layoutTableView;
 @synthesize screenshotName;
+@synthesize titleViewController;
 @synthesize nextButton;
 @synthesize playlistItem;
 @synthesize timeslotId;
@@ -80,8 +81,10 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     self.navigationItem.rightBarButtonItem = nextButton;
     [nextButton release];
     
-    //Dont work
-    //self.navigationItem.titleView = self.navigationController.parentViewController.navigationItem.titleView;
+    self.navigationItem.title = @"mail";
+    titleViewController.view.frame = CGRectMake(0, 0, 130,44);
+    self.navigationItem.titleView = titleViewController.view;
+    [titleViewController composeTitle:playlistItem];
     
     [self displayScreenshot];
     
@@ -142,6 +145,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     [self setMessageCell:nil];
     [self setLayoutTableView:nil];
     [self setScreenshotName:nil];
+    [self setTitleViewController:nil];
     [super viewDidUnload];
 }
 
@@ -219,6 +223,7 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
     [screenshotName release];
     [lastScreenshotView release];
     [screenshotImages_ release];
+    [titleViewController release];
     [super dealloc];
 }
 

@@ -132,7 +132,7 @@
     if (indexPath.row %2 == 0) {
         Episode * episode = [album.episodes objectAtIndex:indexPath.row / 2];
         NSArray * playlist = [NSArray arrayWithObject:episode];
-        [[PiptureAppDelegate instance] showVideo:playlist navigationController:self.navigationController noNavi:YES timeslotId:nil];
+        [[PiptureAppDelegate instance] showVideo:playlist noNavi:YES timeslotId:nil];
     }
 }
 
@@ -167,10 +167,9 @@
 }
 
 - (IBAction)trailerShow:(id)sender {
-/*    NSLog(@"Trailer Show");
+    NSLog(@"Trailer Show");
     NSArray * playlist = [NSArray arrayWithObject:album.trailer];
-    UINavigationController * navi = [PiptureAppDelegate instance].libraryNavigationController;
-    [[PiptureAppDelegate instance] showVideo:playlist navigationController:navi noNavi:YES timeslotId:nil];    */
+    [[PiptureAppDelegate instance] showVideo:playlist noNavi:YES timeslotId:nil];    
 }
 
 @end
