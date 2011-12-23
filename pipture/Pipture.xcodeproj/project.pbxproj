@@ -977,15 +977,12 @@
 				3859070414A31F0E0099B800 /* popup-background@2x.png in Resources */,
 				3859070814A31FF40099B800 /* button-black-up.png in Resources */,
 				3859070914A31FF40099B800 /* button-black-up@2x.png in Resources */,
-<<<<<<< HEAD
 				385CC83114A44B6A00D21D94 /* selected.png in Resources */,
 				385CC83214A44B6A00D21D94 /* selected@2x.png in Resources */,
-=======
 				889B379914A45929000B03D2 /* message_screenshot_frame.png in Resources */,
 				889B379A14A45929000B03D2 /* message_screenshot_frame@2x.png in Resources */,
 				8805614014A46A79004A445C /* checked-selected.png in Resources */,
 				8805614114A46A79004A445C /* checked-selected@2x.png in Resources */,
->>>>>>> 78d41dc88ee0e9e0d7a3dce8b86e9956c51d9eb7
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

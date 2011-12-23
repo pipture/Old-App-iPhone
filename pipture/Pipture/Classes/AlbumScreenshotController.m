@@ -1,4 +1,4 @@
-//
+    //
 //  AlbumScreenshotController.m
 //  Pipture
 //
@@ -54,11 +54,11 @@ id<AlbumScreenshotControllerDelegate> myDelegate = nil;
     AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
     [screenshotImageHolder addSubview:imageView];
     
-    [imageView loadImageFromURL:[NSURL URLWithString:screenshotImage_.imageURL] withDefImage:[UIImage imageNamed:@"default.png"] localStore:NO asButton:YES target:self selector:@selector(imagePressed)];
+    [imageView loadImageFromURL:[NSURL URLWithString:screenshotImage_.imageURL] withDefImage:[UIImage imageNamed:@"default.png"] localStore:NO asButton:YES target:self selector:@selector(imagePressed:)];
     
 }
 
-- (void)imagePressed
+- (void)imagePressed:(id)sender
 {
     [myDelegate imagePressed:self];
 }
