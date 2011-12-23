@@ -10,7 +10,7 @@
 #import "GANTracker.h"
 #import "InAppPurchaseManager.h"
 #import "HomeViewController.h"
-
+#import "UILabel+ResizeForVerticalAlign.h"
 // Dispatch period in seconds
 static const NSInteger kGANDispatchPeriodSec = 10;
 
@@ -436,14 +436,8 @@ NSInteger networkActivityIndecatorCount;
     }
     
     titleLabel.text = title;
-    
-    CGRect rect = messageLabel.frame;
-    //Calculate the expected size based on the font and linebreak mode of your label
-    CGSize maximumLabelSize = CGSizeMake(rect.size.width,9999);
-    CGSize expectedLabelSize = [message sizeWithFont:messageLabel.font constrainedToSize:maximumLabelSize lineBreakMode:UILineBreakModeWordWrap]; 
-    
-    messageLabel.frame = CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, expectedLabelSize.height);
-    messageLabel.text = message;
+        
+    [messageLabel setTextWithVerticalResize:message];
     
     
     [okButton addTarget:self action:@selector(okPressed:) forControlEvents:UIControlEventTouchUpInside];

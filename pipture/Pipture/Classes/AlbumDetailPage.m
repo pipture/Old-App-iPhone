@@ -9,6 +9,7 @@
 #import "AlbumDetailPage.h"
 #import "AsyncImageView.h"
 #import "PiptureAppDelegate.h"
+#import "UILabel+ResizeForVerticalAlign.h"
 
 @implementation AlbumDetailPage
 
@@ -26,14 +27,7 @@
     [super dealloc];
 }
 
-- (int)heightFor:(NSString *)text withWidth:(int)width withFont:(UIFont *)font {
-    //Calculate the expected size based on the font and linebreak mode of your label
-    CGSize maximumLabelSize = CGSizeMake(width,9999);
-    
-    CGSize expectedLabelSize = [text sizeWithFont:font constrainedToSize:maximumLabelSize lineBreakMode:UILineBreakModeWordWrap]; 
-    
-    return expectedLabelSize.height;    
-}
+
 
 - (int)addSection:(int)topPos sectionName:(NSString*)name sectionData:(NSArray*)data {
     int width = self.frame.size.width - 40;
@@ -123,14 +117,13 @@
     
     NSString * albumDescription = album.albumDescription;
     
-    height = [self heightFor:albumDescription withWidth:width withFont:[UIFont systemFontOfSize:11]];
     text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
     text.font = [UIFont systemFontOfSize:11];
-    text.text = albumDescription;
     text.backgroundColor = [UIColor clearColor];
     text.textColor = [UIColor whiteColor];
     text.lineBreakMode = UILineBreakModeWordWrap;
     text.numberOfLines = 100;
+    [text setTextWithVerticalResize:albumDescription];
     [credits addObject:text];
     [text release];
     top += height + 10;

@@ -10,6 +10,7 @@
 #import "AlbumItemViewController.h"
 #import "Album.h"
 #import "AsyncImageView.h"
+#import "UILabel+ResizeForVerticalAlign.h"
 
 //TODO: maybe not hardcode?
 #define ITEM_HEIGHT 200
@@ -67,7 +68,7 @@
         
         [imageView loadImageFromURL:[NSURL URLWithString:album.thumbnail] withDefImage:nil localStore:NO asButton:YES target:self selector:@selector(showDetails:)];
         
-        item.titleLabel.text = album.series.title;
+        [item.titleLabel setTextWithVerticalResize:album.series.title];
         item.tagLabel.text = @"";
         switch (album.status) {
             case Normal:        item.tagLabel.text = @""; break;
