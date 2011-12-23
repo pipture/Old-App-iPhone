@@ -22,22 +22,6 @@
     return self;
 }
 
-/*- (void)cleanDocDir:(NSString*)documentsDirectory maxSize{
-    //Use an enumerator to store all the valid music file paths at the top level of your App's Documents directory
-    NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:documentsDirectory];
-    
-    for (NSString *path in directoryEnumerator) 
-    {
-        NSDictionary *attribs;
-        
-        //check for all music file formats you need to play
-        if ([[path pathExtension] isEqualToString:@"mp3"] || [[path pathExtension] isEqualToString:@"aiff"] ) 
-        { 
-            [myMusicFiles addObject:path];         
-        }
-    }
-}*/
-
 //get storage filename
 - (NSString*)storageFile:(NSString *)file {
     NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);

@@ -380,6 +380,7 @@
     NSLog(@"%@", self.navigationController.visibleViewController.class);
     if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
         AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
+        [[PiptureAppDelegate instance] powerButtonEnable:NO];
         adic.album = album;
         NSLog(@"Album episodes: %@", album.episodes);
         [self.navigationController pushViewController:adic animated:YES];

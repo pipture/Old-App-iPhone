@@ -23,7 +23,7 @@ enum TimeslotStatus{
 @property(retain, nonatomic) NSDate* endTime;
 @property(retain, nonatomic) NSString* title;
 @property(retain, nonatomic) NSString* closupBackground;
-@property(assign, nonatomic) NSString* scheduleDescription;
+@property(retain, nonatomic) NSString* scheduleDescription;
 @property(assign, nonatomic) enum TimeslotStatus timeslotStatus;
 @property(readonly, nonatomic) NSString* timeDescription; //TODO to be moved to controller layer because it is presentation
 

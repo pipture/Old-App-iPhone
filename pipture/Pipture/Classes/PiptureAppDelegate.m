@@ -71,6 +71,48 @@ static PiptureAppDelegate *instance;
     return self;
 }
 
+- (void)cleanDocDir:(int) limit{
+    NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [savePaths objectAtIndex:0];
+    
+    //Use an enumerator to store all the valid music file paths at the top level of your App's Documents directory
+    NSFileManager * manager = [NSFileManager defaultManager];
+    NSDirectoryEnumerator * directoryEnumerator = [manager enumeratorAtPath:documentsDirectory];
+    unsigned long long int documentsFolderSize = 0;
+    for (NSString * path in directoryEnumerator) 
+    {
+        NSDictionary * documentFileAttributes = [manager attributesOfItemAtPath:[documentsDirectory stringByAppendingPathComponent:path] error:nil];
+        documentsFolderSize += [documentFileAttributes fileSize];
+    }
+    
+    //if documens folder size over than limit
+    NSLog(@"Doc filesize: %llu, limit %d", documentsFolderSize, limit);
+    if (documentsFolderSize > limit) {
+        for (NSString * path in directoryEnumerator) 
+        {
+            NSString * filePath = [documentsDirectory stringByAppendingPathComponent:path];
+            NSDictionary * documentFileAttributes = [manager attributesOfItemAtPath:filePath error:nil];
+            unsigned long long fileSize = [documentFileAttributes fileSize];
+            NSDate * modifDate = [documentFileAttributes fileModificationDate];
+            
+            NSDate * yesterday = [NSDate dateWithTimeIntervalSinceNow:-86400];
+            //if file older than yesterday, delete it
+            if ([modifDate laterDate:yesterday] == yesterday &&
+                [manager removeItemAtPath:filePath error:nil]) {
+                
+                NSLog(@"deleted file: %@, with size:%llu, with modif: %@", filePath, fileSize, modifDate);
+                documentsFolderSize -= fileSize;
+                
+                if (documentsFolderSize <= limit - 1000000 || documentsFolderSize <= 0) {
+                    break;
+                }
+            }
+        }
+        
+        NSLog(@"Doc filesize after cleaning: %llu, limit %d", documentsFolderSize, limit);
+    }
+}
+
 - (NSString*)loadUserUUID
 {    
     return [[NSUserDefaults standardUserDefaults] stringForKey:UUID_KEY];
@@ -161,6 +203,8 @@ static PiptureAppDelegate *instance;
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [self cleanDocDir:200000000];//200Mb limit
+    
     [[GANTracker sharedTracker] startTrackerWithAccountID:@"UA-27681421-1"
                                            dispatchPeriod:kGANDispatchPeriodSec
                                                  delegate:nil];

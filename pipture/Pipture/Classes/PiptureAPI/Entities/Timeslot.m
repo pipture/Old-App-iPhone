@@ -83,6 +83,7 @@ static NSString* const JSON_PARAM_TIMESLOT_STATUS = @"TimeslotStatus";
 
 
 - (void)dealloc {
+    [scheduleDescription release];
     [startTime release];
     [endTime release];
     [title release];

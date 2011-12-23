@@ -115,7 +115,32 @@
     [text release];
     top += height + 10;
     
-    NSString * albumDescription = album.albumDescription;
+    text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
+    text.font = [UIFont systemFontOfSize:11];
+    text.backgroundColor = [UIColor clearColor];
+    text.textColor = [UIColor whiteColor];
+    text.numberOfLines = 1;
+    
+    NSString *relDate = nil;
+    switch (album.status) {
+        case Normal:        relDate = @""; break;
+        case CommingSoon:   relDate = @"COMING SOON"; break;
+        case Premiere:      relDate = @"PREMIERE"; break;
+    }
+    if (relDate.length == 0 && album.releaseDate) {
+        NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
+        [NSDateFormatter dateFormatFromTemplate:@"MMM yyyy" options:0 locale:[NSLocale currentLocale]];
+        relDate = [formatter stringFromDate:album.releaseDate];
+        [formatter release];
+    }
+    if (relDate) {
+        [text setTextWithVerticalResize:[NSString stringWithFormat:@"Rating: %@, Released: %@", album.rating, relDate]];
+    } else {
+        [text setTextWithVerticalResize:[NSString stringWithFormat:@"Rating: %@", album.rating]];
+    }
+    [credits addObject:text];
+    [text release];
+    top += height + 10;
     
     text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
     text.font = [UIFont systemFontOfSize:11];
@@ -123,10 +148,10 @@
     text.textColor = [UIColor whiteColor];
     text.lineBreakMode = UILineBreakModeWordWrap;
     text.numberOfLines = 100;
-    [text setTextWithVerticalResize:albumDescription];
+    [text setTextWithVerticalResize:album.albumDescription];
     [credits addObject:text];
+    top += text.frame.size.height + 10;
     [text release];
-    top += height + 10;
     
     for (id key in [album.credits allKeys]) {
         NSArray * data = [album.credits objectForKey:key];

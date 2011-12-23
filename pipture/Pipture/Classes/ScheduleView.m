@@ -31,7 +31,11 @@
     UILabel * status = (UILabel*)[panel viewWithTag:2];
     
     if (title) title.text = timeslot.title;
-    if (status)status.text= timeslot.timeDescription;
+    if (timeslot.timeslotStatus == TimeslotStatus_Current) {
+        if (status)status.text= timeslot.timeDescription;
+    } else {
+        if (status)status.text= [NSString stringWithFormat:@"%@ %@", timeslot.scheduleDescription, timeslot.timeDescription];
+    }
 }
 
 - (void)panel:(UIView*)panel visible:(BOOL)visible {
@@ -83,7 +87,7 @@
                 [scrollView addSubview:imageView];
                 [coverItems replaceObjectAtIndex:timeslot withObject:imageView];
             }
-            [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:nil] localStore:NO asButton:NO target:nil selector:nil];
+            [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:nil] localStore:YES asButton:NO target:nil selector:nil];
         }
     }    
     NSLog(@"ScrollView subs: %d", [[scrollView subviews]count]);
