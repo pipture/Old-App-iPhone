@@ -12,15 +12,19 @@
 
 - (void)setTextWithVerticalResize:(NSString*)text
 {
+
     NSInteger width = self.frame.size.width;
     UIFont *font = self.font;
     
     CGSize maximumLabelSize = CGSizeMake(width,9999);
     
-    CGSize expectedLabelSize = [text sizeWithFont:font constrainedToSize:maximumLabelSize lineBreakMode:UILineBreakModeWordWrap]; 
     
-    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, width, expectedLabelSize.height);
-    self.text = text;
+    NSInteger newHeight = [text sizeWithFont:font constrainedToSize:maximumLabelSize lineBreakMode:UILineBreakModeWordWrap].height; 
+    if (!self.numberOfLines || (newHeight <= self.numberOfLines * font.lineHeight))
+    {
+        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, width, newHeight);        
+    }        
+    self.text = text;    
 }
  
 

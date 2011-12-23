@@ -652,7 +652,6 @@
 		38A7EC88148DDC03002120F3 /* png */ = {
 			isa = PBXGroup;
 			children = (
-				889F002B14A0874300F8432A /* screenshotSelectionMark.png */,
 				385CC82F14A44B6A00D21D94 /* selected.png */,
 				385CC83014A44B6A00D21D94 /* selected@2x.png */,
 				3859070614A31FF40099B800 /* button-black-up.png */,

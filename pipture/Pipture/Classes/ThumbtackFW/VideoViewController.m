@@ -264,6 +264,18 @@
     self.navigationItem.titleView = videoTitleView.view;
     
     [self initVideo];
+    
+    NSError *activationError  = nil;    
+    if ([[AVAudioSession sharedInstance]
+                                 setActive: YES 
+                                 error: &activationError])
+    {
+        NSError *setCategoryError = nil; 
+        [[AVAudioSession sharedInstance] 
+             setCategory: AVAudioSessionCategoryPlayback 
+             error: &setCategoryError];
+    }
+    
     NSLog(@"video player loaded");
 }
 
