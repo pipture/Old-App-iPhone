@@ -36,6 +36,7 @@
 }
 
 - (void)updateTimeslots:(NSTimer*)timer {
+    NSLog(@"timeslots updating");
     [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
 }
 
@@ -226,6 +227,8 @@
                 flipButton.hidden = NO;
                 [flipButton setImage:[UIImage imageNamed:@"button-flip.png"] forState:UIControlStateNormal];
                 scheduleButton.hidden = YES;
+
+                [self updateTimeslots:nil];
                 
                 [[PiptureAppDelegate instance] putHomescreenState:mode];
                 
@@ -245,6 +248,8 @@
                 scheduleButton.hidden = NO;
                 [scheduleButton setTitle:@"Schedule" forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
+                
+                [self updateTimeslots:nil];
                 
                 [[PiptureAppDelegate instance] putHomescreenState:mode];
                 

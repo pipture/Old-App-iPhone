@@ -57,7 +57,7 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<object class="NSCustomResource" key="IBUIHighlightedImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">tablebacks.png</string>
+									<string key="NSResourceName">selected.png</string>
 								</object>
 							</object>
 							<object class="IBUILabel" id="996063027">
@@ -98,7 +98,6 @@
 								<string key="NSFrame">{{116, 45}, {195, 36}}</string>
 								<reference key="NSSuperview" ref="619726731"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:328</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -333,29 +332,37 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">AlbumDetailInfoController</string>
 					<string key="superclassName">UIViewController</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">tabChanged:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">tabChanged:</string>
-						<object class="IBActionInfo" key="NS.object.0">
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="tabChanged:">id</string>
+						<string key="trailerShow:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="tabChanged:">
 							<string key="name">tabChanged:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-					</object>
+						<object class="IBActionInfo" key="trailerShow:">
+							<string key="name">trailerShow:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="detailPage">AlbumDetailPage</string>
+						<string key="detailsButton">UIButton</string>
 						<string key="dividerTableCell">UITableViewCell</string>
 						<string key="subViewContainer">UIView</string>
-						<string key="tabController">UISegmentedControl</string>
 						<string key="videoTableCell">UITableViewCell</string>
+						<string key="videosButton">UIButton</string>
 						<string key="videosTable">UITableView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="detailPage">
 							<string key="name">detailPage</string>
 							<string key="candidateClassName">AlbumDetailPage</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="detailsButton">
+							<string key="name">detailsButton</string>
+							<string key="candidateClassName">UIButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="dividerTableCell">
 							<string key="name">dividerTableCell</string>
@@ -365,13 +372,13 @@
 							<string key="name">subViewContainer</string>
 							<string key="candidateClassName">UIView</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="tabController">
-							<string key="name">tabController</string>
-							<string key="candidateClassName">UISegmentedControl</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="videoTableCell">
 							<string key="name">videoTableCell</string>
 							<string key="candidateClassName">UITableViewCell</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="videosButton">
+							<string key="name">videosButton</string>
+							<string key="candidateClassName">UIButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="videosTable">
 							<string key="name">videosTable</string>
@@ -409,7 +416,7 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="tablebacks.png">{320, 92}</string>
+			<string key="selected.png">{320, 89}</string>
 			<string key="thumbnail-default-table.png">{60, 88}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">933</string>

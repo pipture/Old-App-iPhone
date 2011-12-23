@@ -37,7 +37,7 @@
 {
     [super viewDidLoad];
 
-    [self tabChanged:videosButton];
+    [self tabChanged:detailsButton];
 }
 
 - (void)viewDidUnload
@@ -113,6 +113,7 @@
         if (cell == nil) {
             [[NSBundle mainBundle] loadNibNamed:@"DetailTableItemView" owner:self options:nil];
             cell = videoTableCell;
+            cell.selectionStyle = UITableViewCellSelectionStyleGray;
             videoTableCell = nil;
         }
         [self fillCell:[indexPath row] cell:cell];
