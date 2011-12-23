@@ -553,7 +553,10 @@ NSInteger networkActivityIndecatorCount;
             switch (tabbarControl.selectedItem.tag) {
                 case 1: [vc setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
                 case 2: break;
-                case 3: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
+                case 3: 
+                    [self powerButtonEnable:NO];
+                    [vc setHomeScreenMode:HomeScreenMode_Albums];
+                    break;
             }
         }
     }

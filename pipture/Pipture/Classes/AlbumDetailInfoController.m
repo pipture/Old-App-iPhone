@@ -20,6 +20,7 @@
 @synthesize dividerTableCell;
 @synthesize detailsButton;
 @synthesize videosButton;
+@synthesize titleView;
 @synthesize album;
 
 #pragma mark - View lifecycle
@@ -33,12 +34,17 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     
     [self tabChanged:(album.episodes.count == 0)?detailsButton:videosButton];
+    
+    [titleView composeTitle:album];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    titleView.view.frame = CGRectMake(0, 0, 170,44);
+    self.navigationItem.titleView = titleView.view;
 
     [self tabChanged:detailsButton];
 }
@@ -52,6 +58,7 @@
     [self setDividerTableCell:nil];
     [self setDetailsButton:nil];
     [self setVideosButton:nil];
+    [self setTitleView:nil];
     [super viewDidUnload];
 }
 
@@ -64,6 +71,7 @@
     [dividerTableCell release];
     [detailsButton release];
     [videosButton release];
+    [titleView release];
     [super dealloc];
 }
 

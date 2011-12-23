@@ -9,6 +9,7 @@
 #import "AlbumDetailPage.h"
 #import "Album.h"
 #import "PiptureModel.h"
+#import "DetailsTitleViewController.h"
 
 enum DetailAlbumViewType {
     DetailAlbumViewType_Videos = 20,
@@ -31,5 +32,6 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) IBOutlet UITableViewCell *dividerTableCell;
 @property (retain, nonatomic) IBOutlet UIButton *detailsButton;
 @property (retain, nonatomic) IBOutlet UIButton *videosButton;
+@property (retain, nonatomic) IBOutlet DetailsTitleViewController *titleView;
 
 @end
