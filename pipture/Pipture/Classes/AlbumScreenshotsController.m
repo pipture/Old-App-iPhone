@@ -46,20 +46,25 @@ ScreenshotImage* curScreenshotImage;
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
-static const NSInteger ITEM_HEIGHT = 151;
-static const NSInteger ITEM_WIDTH = 96;
+
 
 - (void) prepareLayout {
     //clear scroll view
     for (int i = 0; i < [imagesScrollView.subviews count]; i++) {
         [[[imagesScrollView subviews] objectAtIndex:i] removeFromSuperview];
     }
-    
+    if (![screenshotContollers count])
+    {
+        return;
+    }
     CGRect rect = imagesScrollView.frame;
     
+    AlbumScreenshotController * item = [screenshotContollers objectAtIndex:0];
+    NSInteger w = item.view.frame.size.width;
+    NSInteger h = item.view.frame.size.height;
     
     int rows = ([screenshotContollers count] + (3 - 1)) / 3;
-    imagesScrollView.contentSize = CGSizeMake(rect.size.width, ITEM_HEIGHT * rows);
+    imagesScrollView.contentSize = CGSizeMake(rect.size.width, h * rows);
     
     int i = 0;
     
@@ -68,7 +73,7 @@ static const NSInteger ITEM_WIDTH = 96;
             if (i >= [screenshotContollers count])
                 break;
             AlbumScreenshotController * item = [screenshotContollers objectAtIndex:i++];
-            item.view.frame = CGRectMake(6+ (x * ITEM_WIDTH), 5 + y * ITEM_HEIGHT, ITEM_WIDTH, ITEM_HEIGHT);
+            item.view.frame = CGRectMake(6+ (x * w), 5 + y * h, w, h);
             [imagesScrollView addSubview:item.view];
         }
     }
