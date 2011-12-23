@@ -260,7 +260,7 @@
     [singleFingerTap release];
     
     //install out titleview to navigation controller
-    videoTitleView.view.frame = CGRectMake(0, 0, 130,44);
+    videoTitleView.view.frame = CGRectMake(0, 0, 170,44);
     self.navigationItem.titleView = videoTitleView.view;
     
     [self initVideo];

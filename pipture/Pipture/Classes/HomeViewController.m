@@ -36,7 +36,7 @@
 }
 
 - (void)updateTimeslots:(NSTimer*)timer {
-    NSLog(@"timeslots updating");
+    NSLog(@"timeslots updating by timer: %@", timer);
     [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
 }
 
@@ -111,10 +111,12 @@
 - (void)setFullScreenMode {
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    [UIApplication sharedApplication].statusBarHidden = NO;
     [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 - (void)setNavBarMode {
+    [UIApplication sharedApplication].statusBarHidden = NO;
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     [self.navigationController setNavigationBarHidden:NO animated:NO];
@@ -134,8 +136,10 @@
     
     if (homeScreenMode == HomeScreenMode_Albums) {
         [self setNavBarMode];
+        [self updateAlbums];
     } else {
         [self setFullScreenMode];
+        [self updateTimeslots:nil];
     }
 }
 - (void)viewDidDisappear:(BOOL)animated {
@@ -289,19 +293,21 @@
 }
 
 - (void)doPower {
+    Timeslot * slot = nil;
     switch (homeScreenMode) {
         case HomeScreenMode_Cover:
-            //coverView 
+            slot = [coverView getTimeslot];
             break;
         case HomeScreenMode_PlayingNow:
         {
-            Timeslot * slot = [scheduleView getTimeslot];
-            if (slot) {
-                reqTimeslotId = slot.timeslotId;
-                [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];
-            }
+            slot = [scheduleView getTimeslot];
         } break;
         default: break;
+    }
+    
+    if (slot) {
+        reqTimeslotId = slot.timeslotId;
+        [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];
     }
 }
 
@@ -375,6 +381,7 @@
     if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
         AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
         adic.album = album;
+        NSLog(@"Album episodes: %@", album.episodes);
         [self.navigationController pushViewController:adic animated:YES];
         [adic release];
     }

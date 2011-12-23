@@ -18,7 +18,6 @@ enum DetailAlbumViewType {
 @interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource, VideoURLReceiver>
 {
     enum DetailAlbumViewType viewType;
-    NSMutableArray * videosArray;
 }
 - (IBAction)tabChanged:(id)sender;
 - (IBAction)trailerShow:(id)sender;

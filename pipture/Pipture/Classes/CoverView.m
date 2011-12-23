@@ -8,6 +8,7 @@
 
 #import "CoverView.h"
 #import "Timeslot.h"
+#import "PiptureAppDelegate.h"
 
 @implementation CoverView
 @synthesize coverContainer;
@@ -34,6 +35,13 @@
     [UIView commitAnimations];
 }
 
+- (Timeslot*)getTimeslot {
+    if (currentTimeslot.timeslotStatus != TimeslotStatus_Current) {
+        return nil;
+    }
+    
+    return currentTimeslot;
+}
 
 
 - (void)updateTimeSlotInfo:(Timeslot*)timeslot {
@@ -49,13 +57,16 @@
             case TimeslotStatus_Current:
                 [self panel:coverPanel visible:YES];
                 [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable.png"] forState:UIControlStateNormal];
+                [[PiptureAppDelegate instance] powerButtonEnable:YES];
                 break;
             case TimeslotStatus_Next:
                 [self panel:coverPanel visible:YES];
+                [[PiptureAppDelegate instance] powerButtonEnable:NO];
                 [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable-2.png"] forState:UIControlStateNormal];
                 break;
             default:
                 [self panel:coverPanel visible:NO];
+                [[PiptureAppDelegate instance] powerButtonEnable:NO];
                 break;    
         }
     } else {

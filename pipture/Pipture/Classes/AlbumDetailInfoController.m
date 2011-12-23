@@ -10,6 +10,7 @@
 #import "PiptureAppDelegate.h"
 #import "Episode.h"
 #import "AsyncImageView.h"
+#import "UILabel+ResizeForVerticalAlign.h"
 
 @implementation AlbumDetailInfoController
 @synthesize subViewContainer;
@@ -30,6 +31,8 @@
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     [UIApplication sharedApplication].statusBarHidden = NO;
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+    [self tabChanged:(album.episodes.count == 0)?detailsButton:videosButton];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -54,7 +57,6 @@
 
 - (void)dealloc {
     [album release];
-    [videosArray release];
     [subViewContainer release];
     [detailPage release];
     [videosTable release];
@@ -96,7 +98,7 @@
         [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:nil localStore:NO asButton:NO target:nil selector:nil];
         
         counter.text = [NSString stringWithFormat:@"%d.", row/2 + 1];
-        series.text = slot.title;
+        [series setTextWithVerticalResize:slot.title];
         title.text  = slot.script;
         fromto.text = slot.senderToReceiver;
     }
@@ -182,10 +184,10 @@
     if ([[subViewContainer subviews] count] > 0) {
         [[[subViewContainer subviews] objectAtIndex:0] removeFromSuperview];
     }
-    
+    CGRect rect = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height - [PiptureAppDelegate instance].tabView.frame.size.height);
     switch (viewType) {
         case DetailAlbumViewType_Credits:
-            detailPage.frame = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height);
+            detailPage.frame = rect;
             [detailPage prepareLayout:album];
             [subViewContainer addSubview:detailPage];
             
@@ -194,7 +196,7 @@
             [videosButton setBackgroundImage:[UIImage imageNamed:@"button-videos-active.png"] forState:UIControlStateSelected];
             break;
         case DetailAlbumViewType_Videos:
-            videosTable.frame = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height);
+            videosTable.frame = rect;
             [subViewContainer addSubview:videosTable];
             [videosTable reloadData];
             

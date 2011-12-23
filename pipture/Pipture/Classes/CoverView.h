@@ -12,7 +12,7 @@
 @interface CoverView : UIView
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent;
-
+- (Timeslot*)getTimeslot;
 - (void)updateTimeslots:(NSArray*) timeslots;
 
 - (IBAction)coverClick:(id)sender;
