@@ -10,4 +10,6 @@
 
 @interface UILabel (ResizeForVerticalAlign)
 
+- (void)setTextWithVerticalResize:(NSString*)text;
+
 @end
