@@ -11,20 +11,24 @@
 #import "InAppPurchaseManager.h"
 #import "HomeViewController.h"
 #import "UILabel+ResizeForVerticalAlign.h"
+
 // Dispatch period in seconds
 static const NSInteger kGANDispatchPeriodSec = 10;
 
 @implementation PiptureAppDelegate
 @synthesize busyView;
 @synthesize tabView;
+@synthesize tabViewBaseHeigh;
 @synthesize powerButton;
 @synthesize tabbarControl;
+@synthesize powerButtonImage;
 @synthesize buyButton;
 @synthesize window = _window;
 @synthesize homeNavigationController;
 @synthesize videoNavigationController;
-@synthesize welcomeMessage;
 @synthesize model = model_;
+@synthesize homeViewController;
+@synthesize welcomeScreen;
 
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
@@ -41,6 +45,8 @@ static PiptureAppDelegate *instance;
 
 - (void)dealloc
 {
+    [welcomeScreen release];
+    [homeViewController release];
     [busyView release];
     [[GANTracker sharedTracker] stopTracker];
     
@@ -53,7 +59,8 @@ static PiptureAppDelegate *instance;
     [tabView release];
     [tabbarControl release];
     [powerButton release];
-    [welcomeMessage release];
+    [welcomeScreen release];
+    [powerButtonImage release];
     [super dealloc];
 }
 
@@ -70,6 +77,23 @@ static PiptureAppDelegate *instance;
     }
     return self;
 }
+
+- (BOOL)homeViewVisible {
+    UIViewController * visible = [homeNavigationController visibleViewController];
+    return visible.class == [HomeViewController class];
+}
+
+- (HomeViewController*)getHomeView {
+    if (!homeViewController)
+    {    
+        UIViewController * visible = [homeNavigationController visibleViewController];
+        if (visible.class == [HomeViewController class]) {
+            homeViewController = visible;
+        }
+    }
+    return (HomeViewController*)homeViewController;
+}
+
 
 - (void)cleanDocDir:(int) limit{
     NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -88,6 +112,7 @@ static PiptureAppDelegate *instance;
     //if documens folder size over than limit
     NSLog(@"Doc filesize: %llu, limit %d", documentsFolderSize, limit);
     if (documentsFolderSize > limit) {
+        directoryEnumerator = [manager enumeratorAtPath:documentsDirectory];
         for (NSString * path in directoryEnumerator) 
         {
             NSString * filePath = [documentsDirectory stringByAppendingPathComponent:path];
@@ -103,7 +128,7 @@ static PiptureAppDelegate *instance;
                 NSLog(@"deleted file: %@, with size:%llu, with modif: %@", filePath, fileSize, modifDate);
                 documentsFolderSize -= fileSize;
                 
-                if (documentsFolderSize <= limit - 1000000 || documentsFolderSize <= 0) {
+                if (documentsFolderSize <= (limit - limit*.1) || documentsFolderSize <= 0) {
                     break;
                 }
             }
@@ -180,6 +205,8 @@ static PiptureAppDelegate *instance;
     item.enabled = NO;
     tabView.hidden = NO;
     [self.window makeKeyAndVisible];    
+    
+    [self getHomeView];
 }
 
 -(void)loginFailed
@@ -204,6 +231,7 @@ static PiptureAppDelegate *instance;
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self cleanDocDir:200000000];//200Mb limit
+    //[self cleanDocDir:2000];//200Mb limit
     
     [[GANTracker sharedTracker] startTrackerWithAccountID:@"UA-27681421-1"
                                            dispatchPeriod:kGANDispatchPeriodSec
@@ -398,14 +426,6 @@ NSInteger networkActivityIndecatorCount;
     powerButton.enabled = enable;
 }
 
-- (HomeViewController*)getHomeView {
-    UIViewController * visible = [homeNavigationController visibleViewController];
-    if (visible.class == [HomeViewController class]) {
-        return (HomeViewController*)visible;
-    }
-    return nil;
-}
-
 //The event handling method
 - (void)actionButton:(id)sender {
     if (self.powerButton.enabled) {
@@ -432,6 +452,11 @@ NSInteger networkActivityIndecatorCount;
     [UIView commitAnimations]; 
 }
 
+-(NSInteger)tabViewBaseHeigh
+{
+    return tabbarControl.frame.size.height;  
+}
+
 - (void)showModalBusy:(void (^)(void))completion {
     //[[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     //[[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
@@ -441,58 +466,9 @@ NSInteger networkActivityIndecatorCount;
     //[[[self window] rootViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)welcomeDissolved {
-    [welcomeMessage removeFromSuperview];
-}
-
-- (void)okPressed:(id)sender{
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0.3];
-    [UIView setAnimationDidStopSelector:@selector(welcomeDissolved:)];
+- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo tag:(int)screenId delegate:(id<WelcomeScreenProtocol>)delegate{
     
-    welcomeMessage.alpha = 0;
-    
-    [UIView commitAnimations];
-}
-
-- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo {
-    
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:key]) return;
-    
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:key];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    [self.window addSubview:welcomeMessage];
-    
-    UIImageView * logoImage = (UIImageView*)[welcomeMessage viewWithTag:4];
-    UILabel * titleLabel = (UILabel*)[welcomeMessage viewWithTag:1];
-    UILabel * messageLabel = (UILabel*)[welcomeMessage viewWithTag:2];
-    UIButton * okButton = (UIButton*)[welcomeMessage viewWithTag:3];
-    
-    if (logo) {
-        logoImage.hidden = NO;
-        titleLabel.frame = CGRectMake(20, 184, 280, 21);
-        messageLabel.frame = CGRectMake(20, 213, 280, 21);
-    } else {
-        logoImage.hidden = YES;
-        titleLabel.frame = CGRectMake(20, 95, 280, 21);
-        messageLabel.frame = CGRectMake(20, 124, 280, 21);
-    }
-    
-    titleLabel.text = title;
-        
-    [messageLabel setTextWithVerticalResize:message];
-    
-    
-    [okButton addTarget:self action:@selector(okPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0.3];
-
-    welcomeMessage.alpha = 1;
-    
-    [UIView commitAnimations]; 
-    
+    [welcomeScreen showWelcomeScreenWithTitle:title message:message storeKey:key image:logo parent:self.window tag:screenId delegate:delegate];    
 }
 
 #pragma mark -
@@ -537,27 +513,9 @@ NSInteger networkActivityIndecatorCount;
             case 2: break;
             case 3: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
         }
-    } else {
-        self.homeNavigationController.delegate = self;
-        [self.homeNavigationController popToRootViewControllerAnimated:YES];
-    }
-}
-
-#pragma mark UINavigationControllerdelegate methods
-
-- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    if (navigationController == self.homeNavigationController) {
-        self.homeNavigationController.delegate = nil;
-        HomeViewController * vc = [self getHomeView];
-        if (vc) {
-            switch (tabbarControl.selectedItem.tag) {
-                case 1: [vc setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
-                case 2: break;
-                case 3: 
-                    [self powerButtonEnable:NO];
-                    [vc setHomeScreenMode:HomeScreenMode_Albums];
-                    break;
-            }
+        
+        if (![self homeViewVisible]) {
+            [self.homeNavigationController popToRootViewControllerAnimated:YES];
         }
     }
 }
