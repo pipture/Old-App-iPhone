@@ -8,6 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
-@interface WelcomeScreenManager : NSObject
+@protocol WelcomeScreenProtocol <NSObject>
+
+-(void)weclomeScreenDidDissmis:(int)screenId;
+
+@end
+
+@interface WelcomeScreenManager : UIViewController
+{
+    int _screenId;
+    id<WelcomeScreenProtocol> parentTarget;
+}
+- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo parent:(UIView*)view tag:(int)screenId delegate:(id<WelcomeScreenProtocol>)delegate;
 
 @end

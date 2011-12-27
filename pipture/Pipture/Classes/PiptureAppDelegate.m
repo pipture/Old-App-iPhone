@@ -11,6 +11,7 @@
 #import "InAppPurchaseManager.h"
 #import "HomeViewController.h"
 #import "UILabel+ResizeForVerticalAlign.h"
+
 // Dispatch period in seconds
 static const NSInteger kGANDispatchPeriodSec = 10;
 
@@ -23,9 +24,9 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize window = _window;
 @synthesize homeNavigationController;
 @synthesize videoNavigationController;
-@synthesize welcomeMessage;
 @synthesize model = model_;
 @synthesize homeViewController;
+@synthesize welcomeScreen;
 
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
@@ -42,6 +43,7 @@ static PiptureAppDelegate *instance;
 
 - (void)dealloc
 {
+    [welcomeScreen release];
     [homeViewController release];
     [busyView release];
     [[GANTracker sharedTracker] stopTracker];
@@ -55,7 +57,7 @@ static PiptureAppDelegate *instance;
     [tabView release];
     [tabbarControl release];
     [powerButton release];
-    [welcomeMessage release];
+    [welcomeScreen release];
     [super dealloc];
 }
 
@@ -454,58 +456,9 @@ NSInteger networkActivityIndecatorCount;
     //[[[self window] rootViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)welcomeDissolved {
-    [welcomeMessage removeFromSuperview];
-}
-
-- (void)okPressed:(id)sender{
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0.3];
-    [UIView setAnimationDidStopSelector:@selector(welcomeDissolved:)];
+- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo tag:(int)screenId delegate:(id<WelcomeScreenProtocol>)delegate{
     
-    welcomeMessage.alpha = 0;
-    
-    [UIView commitAnimations];
-}
-
-- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo {
-    
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:key]) return;
-    
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:key];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    [self.window addSubview:welcomeMessage];
-    
-    UIImageView * logoImage = (UIImageView*)[welcomeMessage viewWithTag:4];
-    UILabel * titleLabel = (UILabel*)[welcomeMessage viewWithTag:1];
-    UILabel * messageLabel = (UILabel*)[welcomeMessage viewWithTag:2];
-    UIButton * okButton = (UIButton*)[welcomeMessage viewWithTag:3];
-    
-    if (logo) {
-        logoImage.hidden = NO;
-        titleLabel.frame = CGRectMake(20, 184, 280, 21);
-        messageLabel.frame = CGRectMake(20, 213, 280, 21);
-    } else {
-        logoImage.hidden = YES;
-        titleLabel.frame = CGRectMake(20, 95, 280, 21);
-        messageLabel.frame = CGRectMake(20, 124, 280, 21);
-    }
-    
-    titleLabel.text = title;
-        
-    [messageLabel setTextWithVerticalResize:message];
-    
-    
-    [okButton addTarget:self action:@selector(okPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0.3];
-
-    welcomeMessage.alpha = 1;
-    
-    [UIView commitAnimations]; 
-    
+    [welcomeScreen showWelcomeScreenWithTitle:title message:message storeKey:key image:logo parent:self.window tag:screenId delegate:delegate];    
 }
 
 #pragma mark -
@@ -553,28 +506,6 @@ NSInteger networkActivityIndecatorCount;
         
         if (![self homeViewVisible]) {
             [self.homeNavigationController popToRootViewControllerAnimated:YES];
-        }
-    }/* else {
-        self.homeNavigationController.delegate = self;
-        [self.homeNavigationController popToRootViewControllerAnimated:YES];
-    }*/
-}
-
-#pragma mark UINavigationControllerdelegate methods
-
-- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    if (navigationController == self.homeNavigationController) {
-        self.homeNavigationController.delegate = nil;
-        HomeViewController * vc = [self getHomeView];
-        if (vc) {
-            switch (tabbarControl.selectedItem.tag) {
-                case 1: [vc setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
-                case 2: break;
-                case 3: 
-                    [self powerButtonEnable:NO];
-                    [vc setHomeScreenMode:HomeScreenMode_Albums];
-                    break;
-            }
         }
     }
 }

@@ -17,6 +17,9 @@
 #define TIMESLOT_CHANGE_POLL_INTERVAL 60
 #define TIMESLOT_REGULAR_POLL_INTERVAL 900
 
+#define WELCOMESCREEN_COVER 1
+#define WELCOMESCREEN_LIBRARY 2
+
 @implementation HomeViewController
 @synthesize tabbarContainer;
 @synthesize flipButton;
@@ -134,13 +137,25 @@
 
     self.navigationItem.title = @"Library";
     
-    if (homeScreenMode == HomeScreenMode_Albums) {
-        [self setNavBarMode];
-        [self updateAlbums];
-    } else {
-        [self setFullScreenMode];
-        [self updateTimeslots:nil];
-    }
+    switch (homeScreenMode) {
+        case HomeScreenMode_Albums:
+            [self setNavBarMode];
+            [self updateAlbums];
+            [[PiptureAppDelegate instance] tabbarVisible:YES];
+            break;
+        case HomeScreenMode_PlayingNow:
+        case HomeScreenMode_Cover:
+            [self setFullScreenMode];
+            [self updateTimeslots:nil];
+            [[PiptureAppDelegate instance] tabbarVisible:YES];
+            break;
+        case HomeScreenMode_Schedule:
+            [self setFullScreenMode];
+            [self updateTimeslots:nil];
+            [[PiptureAppDelegate instance] tabbarVisible:NO];
+            break;
+        default:break;
+    } 
 }
 - (void)viewDidDisappear:(BOOL)animated {
     [self resetScheduleTimer];
@@ -190,8 +205,6 @@
 }
 
 - (void)createFlipAnimation {
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(animationDidStop:animationIDfinished:finished:context:)];
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.5];
     
@@ -218,8 +231,10 @@
         
         switch (mode) {
             case HomeScreenMode_Cover:
-                [[PiptureAppDelegate instance] showWelcomeScreenWithTitle:@"Welcome to Pipture."
-                                                                  message:@"Enjoy watching scheduled video programs shot specifically for smartphones users and send hilarious video messages performed by great talents." storeKey:@"AppWelcomeShown" image:YES];
+                [[PiptureAppDelegate instance] 
+                 showWelcomeScreenWithTitle:@"Welcome to Pipture."
+                 message:@"Enjoy watching scheduled video programs shot specifically for smartphones users and send hilarious video messages performed by great talents." 
+                 storeKey:@"AppWelcomeShown" image:YES tag:WELCOMESCREEN_COVER delegate:self];
                 
                 [tabbarContainer addSubview:coverView];
                 if (flipAction) [UIView commitAnimations];
@@ -268,8 +283,10 @@
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
                 break;
             case HomeScreenMode_Albums:
-                [[PiptureAppDelegate instance] showWelcomeScreenWithTitle:@"About the Pipture Library"
-                                                                  message:@"Add credit to your App and gain access to the entire collection of videos that have already been broadcast.\n\nEach time you watch or send an episode $0.0099 will be deducted from your credits. That's 1 PIP less than a penny!\n\nTo add credit, which starts at $0.99, click the button at the top right in the Library section. Enjoy!" storeKey:@"LibraryWelcomeShown" image:NO];
+                [[PiptureAppDelegate instance] 
+                 showWelcomeScreenWithTitle:@"About the Pipture Library"                                                 
+                 message:@"Add credit to your App and gain access to the entire collection of videos that have already been broadcast.\n\nEach time you watch or send an episode $0.0099 will be deducted from your credits. That's 1 PIP less than a penny!\n\nTo add credit, which starts at $0.99, click the button at the top right in the Library section. Enjoy!" 
+                 storeKey:@"LibraryWelcomeShown" image:NO tag:WELCOMESCREEN_LIBRARY delegate:self];
                 
                 [tabbarContainer addSubview:albumsView];
                 
@@ -394,5 +411,16 @@
     NSLog(@"Details for unknown album: %@", album);
 }
 
+#pragma mark WelcomeScreenProtocol Methods
+
+-(void)weclomeScreenDidDissmis:(int)tag {
+    switch (tag) {
+        case WELCOMESCREEN_COVER:
+            [coverView allowShowBubble:YES];
+            break;
+        case WELCOMESCREEN_LIBRARY:
+            break;
+    }
+}
 
 @end

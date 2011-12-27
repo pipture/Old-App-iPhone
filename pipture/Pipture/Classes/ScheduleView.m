@@ -19,7 +19,7 @@
 @synthesize scrollView;
 @synthesize delegate;
 
-- (void)updateHidden {
+- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     navPanel.hidden = navPanel.alpha == 0.0;
     pnPanel.hidden = pnPanel.alpha == 0.0;
     psPanel.hidden = psPanel.alpha == 0.0;
@@ -44,7 +44,8 @@
     [UIView setAnimationDuration:0.3];
     panel.alpha  = visible?1:0;
     
-    [UIView setAnimationDidStopSelector:@selector(updateHidden:)];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
     [UIView commitAnimations];
 }
 

@@ -144,8 +144,9 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         // error!
         [self finishTransaction:transaction wasSuccessful:NO];
 
-        NSString * err = [NSString stringWithFormat:@"Purchasing error: ", transaction.error.description];
+        NSString * err = [NSString stringWithFormat:@"Transaction finished with error: %@!", transaction.error.localizedDescription];
         TRACK_EVENT(@"Purchase", err);
+        SHOW_ERROR(@"Purchase failed", err);
     }
     else
     {

@@ -20,7 +20,7 @@
 
 #pragma mark - View lifecycle
 
-- (void)updateHidden {
+- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     coverPanel.hidden = coverPanel.alpha == 0.0;
 }
 
@@ -30,8 +30,8 @@
     [UIView setAnimationDuration:0.3];
     panel.alpha  = visible?1:0;
     
-    
-    [UIView setAnimationDidStopSelector:@selector(updateHidden:)];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
     [UIView commitAnimations];
 }
 
@@ -45,8 +45,8 @@
 
 
 - (void)updateTimeSlotInfo:(Timeslot*)timeslot {
-    currentTimeslot = timeslot;    
-    if (timeslot) {
+    self.currentTimeslot = timeslot;    
+    if (timeslot && allowBubble) {
         UILabel * title = (UILabel*)[coverPanel viewWithTag:1];
         UILabel * status = (UILabel*)[coverPanel viewWithTag:2];
         
@@ -73,6 +73,11 @@
         [self panel:coverPanel visible:NO];
     }
 
+}
+
+- (void)allowShowBubble:(BOOL)allow {
+    allowBubble = allow;
+    [self updateTimeSlotInfo:currentTimeslot];
 }
 
 - (void)updateTimeslots:(NSArray*) timeslots {
@@ -111,6 +116,7 @@
 }
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent {
+    allowBubble = NO;
     self.delegate = parent;
 }
 

@@ -78,6 +78,8 @@
 		387E9F5714A493A800355C43 /* DetailsTitleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 387E9F5614A493A800355C43 /* DetailsTitleViewController.m */; };
 		3881FBE314A9AF5E008DC616 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3881FBE114A9AF5E008DC616 /* icon.png */; };
 		3881FBE414A9AF5E008DC616 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3881FBE214A9AF5E008DC616 /* icon@2x.png */; };
+		3881FBE814A9C227008DC616 /* WelcomeScreenManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3881FBE714A9C227008DC616 /* WelcomeScreenManager.m */; };
+		3881FBEA14A9C3A1008DC616 /* WelcomeScreenView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3881FBE914A9C3A1008DC616 /* WelcomeScreenView.xib */; };
 		3886C268149B33B7007A0317 /* Thumbnail-default.png in Resources */ = {isa = PBXBuildFile; fileRef = 3886C267149B33B7007A0317 /* Thumbnail-default.png */; };
 		3886C26C149B3490007A0317 /* thumbnail-default-table.png in Resources */ = {isa = PBXBuildFile; fileRef = 3886C26A149B3490007A0317 /* thumbnail-default-table.png */; };
 		3886C26D149B3490007A0317 /* thumbnail-default-table@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3886C26B149B3490007A0317 /* thumbnail-default-table@2x.png */; };
@@ -276,6 +278,9 @@
 		387E9F5614A493A800355C43 /* DetailsTitleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailsTitleViewController.m; sourceTree = "<group>"; };
 		3881FBE114A9AF5E008DC616 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		3881FBE214A9AF5E008DC616 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
+		3881FBE614A9C227008DC616 /* WelcomeScreenManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomeScreenManager.h; sourceTree = "<group>"; };
+		3881FBE714A9C227008DC616 /* WelcomeScreenManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeScreenManager.m; sourceTree = "<group>"; };
+		3881FBE914A9C3A1008DC616 /* WelcomeScreenView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WelcomeScreenView.xib; sourceTree = "<group>"; };
 		3886C267149B33B7007A0317 /* Thumbnail-default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Thumbnail-default.png"; sourceTree = "<group>"; };
 		3886C26A149B3490007A0317 /* thumbnail-default-table.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "thumbnail-default-table.png"; sourceTree = "<group>"; };
 		3886C26B149B3490007A0317 /* thumbnail-default-table@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "thumbnail-default-table@2x.png"; sourceTree = "<group>"; };
@@ -457,6 +462,8 @@
 				889F002314A0828600F8432A /* AlbumScreenshotsController.m */,
 				889F003114A0A41F00F8432A /* AlbumScreenshotController.h */,
 				889F003214A0A41F00F8432A /* AlbumScreenshotController.m */,
+				3881FBE614A9C227008DC616 /* WelcomeScreenManager.h */,
+				3881FBE714A9C227008DC616 /* WelcomeScreenManager.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -634,6 +641,7 @@
 				38A0B992148F8DE60060420F /* VideoTitleView.xib */,
 				38BC27BF1498707D002B938F /* PurchaseBusyView.xib */,
 				382D9C2C148E178300005F16 /* snippet.html */,
+				3881FBE914A9C3A1008DC616 /* WelcomeScreenView.xib */,
 			);
 			path = Resources;
 			sourceTree = SOURCE_ROOT;
@@ -987,6 +995,7 @@
 				8805614114A46A79004A445C /* checked-selected@2x.png in Resources */,
 				3881FBE314A9AF5E008DC616 /* icon.png in Resources */,
 				3881FBE414A9AF5E008DC616 /* icon@2x.png in Resources */,
+				3881FBEA14A9C3A1008DC616 /* WelcomeScreenView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1065,6 +1074,7 @@
 				384EBA7814A19318000973CD /* AlbumsView.m in Sources */,
 				889B379614A441CE000B03D2 /* UILabel+ResizeForVerticalAlign.m in Sources */,
 				387E9F5714A493A800355C43 /* DetailsTitleViewController.m in Sources */,
+				3881FBE814A9C227008DC616 /* WelcomeScreenManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,10 +10,15 @@
 #import "HomeScreenDelegate.h"
 
 @interface CoverView : UIView
+{
+    BOOL allowBubble;
+}
+
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent;
 - (Timeslot*)getTimeslot;
 - (void)updateTimeslots:(NSArray*) timeslots;
+- (void)allowShowBubble:(BOOL)allow;
 
 - (IBAction)coverClick:(id)sender;
 - (IBAction)detailsClick:(id)sender;

@@ -300,7 +300,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
     controller.mailComposeDelegate = self;
     [controller setSubject:playlistItem.emailSubject];
-    //TODO: snippet
+
     [controller setMessageBody:htmlData isHTML:YES]; 
     if (controller) {
         [self presentModalViewController:controller animated:YES];

@@ -99,8 +99,6 @@
     
     credits = [[NSMutableArray alloc] initWithCapacity:20];
     
-    //TODO: load poster and credits
-    
     int top = posterPlaceholder.frame.size.height + 15;
     int width = self.frame.size.width - 40;
     
