@@ -25,6 +25,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize videoNavigationController;
 @synthesize welcomeMessage;
 @synthesize model = model_;
+@synthesize homeViewController;
 
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
@@ -41,6 +42,7 @@ static PiptureAppDelegate *instance;
 
 - (void)dealloc
 {
+    [homeViewController release];
     [busyView release];
     [[GANTracker sharedTracker] stopTracker];
     
@@ -70,6 +72,23 @@ static PiptureAppDelegate *instance;
     }
     return self;
 }
+
+- (BOOL)homeViewVisible {
+    UIViewController * visible = [homeNavigationController visibleViewController];
+    return visible.class == [HomeViewController class];
+}
+
+- (HomeViewController*)getHomeView {
+    if (!homeViewController)
+    {    
+        UIViewController * visible = [homeNavigationController visibleViewController];
+        if (visible.class == [HomeViewController class]) {
+            homeViewController = visible;
+        }
+    }
+    return (HomeViewController*)homeViewController;
+}
+
 
 - (void)cleanDocDir:(int) limit{
     NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -180,6 +199,8 @@ static PiptureAppDelegate *instance;
     item.enabled = NO;
     tabView.hidden = NO;
     [self.window makeKeyAndVisible];    
+    
+    [self getHomeView];
 }
 
 -(void)loginFailed
@@ -398,14 +419,6 @@ NSInteger networkActivityIndecatorCount;
     powerButton.enabled = enable;
 }
 
-- (HomeViewController*)getHomeView {
-    UIViewController * visible = [homeNavigationController visibleViewController];
-    if (visible.class == [HomeViewController class]) {
-        return (HomeViewController*)visible;
-    }
-    return nil;
-}
-
 //The event handling method
 - (void)actionButton:(id)sender {
     if (self.powerButton.enabled) {
@@ -537,10 +550,14 @@ NSInteger networkActivityIndecatorCount;
             case 2: break;
             case 3: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
         }
-    } else {
+        
+        if (![self homeViewVisible]) {
+            [self.homeNavigationController popToRootViewControllerAnimated:YES];
+        }
+    }/* else {
         self.homeNavigationController.delegate = self;
         [self.homeNavigationController popToRootViewControllerAnimated:YES];
-    }
+    }*/
 }
 
 #pragma mark UINavigationControllerdelegate methods

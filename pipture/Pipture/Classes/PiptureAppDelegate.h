@@ -41,6 +41,7 @@
 @property (retain, nonatomic) IBOutlet UIView *welcomeMessage;
 @property (readonly, nonatomic) PiptureModel * model;
 @property (retain, nonatomic) BusyViewController * busyView;
+@property (retain, nonatomic) UIViewController * homeViewController;
 
 +(PiptureAppDelegate*) instance;
 
