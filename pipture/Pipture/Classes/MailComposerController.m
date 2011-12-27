@@ -170,7 +170,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (void)onSetModelRequestingState:(BOOL)state
 {
-    [self hideCancelButton:state];
+    //[self hideCancelButton:state];
 }
 
 - (void)viewDidUnload
@@ -252,6 +252,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
     [UIApplication sharedApplication].statusBarStyle = lastStatusStyle;
     self.navigationController.navigationBar.barStyle = lastNaviStyle;
     
@@ -287,6 +288,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 -(void)messageSiteURLreceived:(NSString*)url
 {
+    
     NSString *snippet = [[NSBundle mainBundle] pathForResource:@"snippet" ofType:@"html"];  
     NSMutableString * htmlData = [[NSMutableString alloc] initWithContentsOfFile:snippet encoding:NSUTF8StringEncoding error:nil];
     

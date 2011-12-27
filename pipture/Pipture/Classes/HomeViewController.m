@@ -229,6 +229,9 @@
             }
         }
         
+        [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+        
+        
         switch (mode) {
             case HomeScreenMode_Cover:
                 [[PiptureAppDelegate instance] 

@@ -12,7 +12,6 @@
 #import "PiptureModel.h"
 #import "DataRequest.h"
 #import "InAppPurchaseManager.h"
-#import "WelcomeScreenManager.h"
 
 #define PLACEHOLDER1 @"default.png"
 
@@ -39,10 +38,9 @@
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
 @property (retain, nonatomic) IBOutlet UINavigationController * videoNavigationController;
+@property (retain, nonatomic) IBOutlet UIView *welcomeMessage;
 @property (readonly, nonatomic) PiptureModel * model;
 @property (retain, nonatomic) BusyViewController * busyView;
-@property (retain, nonatomic) UIViewController * homeViewController;
-@property (retain, nonatomic) IBOutlet WelcomeScreenManager *welcomeScreen;
 
 +(PiptureAppDelegate*) instance;
 
@@ -56,8 +54,7 @@
 - (void)putUserName:(NSString*)name;
 - (NSString*)getUserName;
 
-- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo tag:(int)screenId delegate:(id<WelcomeScreenProtocol>)delegate;
-//- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo;
+- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo;
 
 - (void)setBalance:(NSDecimalNumber*)newBalance;
 - (float)getBalance;
