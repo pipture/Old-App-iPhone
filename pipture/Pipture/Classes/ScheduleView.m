@@ -69,34 +69,53 @@
     
 }
 
+- (CGRect) rectImageForIdx:(int)idx {
+    int w = scrollView.frame.size.width;
+    return CGRectMake(w*idx, 0, w, scrollView.frame.size.height);
+}
+
+- (void) imagePlace:(Timeslot *) slot rect:(CGRect) frame idx:(int)idx{
+    NSURL * url = [NSURL URLWithString:[slot closupBackground]];
+    AsyncImageView * imageView = nil;
+
+    id obj = [coverItems objectAtIndex:idx];
+    if (obj != [NSNull null]) {
+        imageView = obj;
+    } else {
+        imageView = [[[AsyncImageView alloc] initWithFrame:frame] autorelease];
+        [scrollView addSubview:imageView];
+        [coverItems replaceObjectAtIndex:idx withObject:imageView];
+    }
+    [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:nil] localStore:YES asButton:NO target:nil selector:nil];
+}
+
 - (void) prepareImageFor: (int) timeslot {
     if (timeslot >= 0 && timeslot < timelineArray.count) {
-        int w = scrollView.frame.size.width;
-        CGRect frame = CGRectMake(w*timeslot, 0, w, scrollView.frame.size.height);
         
         Timeslot * slot = [timelineArray objectAtIndex:timeslot];
+        //+1 for skip first fake image at begin
+        [self imagePlace:slot rect:[self rectImageForIdx:timeslot + 1] idx:timeslot + 1];
         
-        NSURL * url = [NSURL URLWithString:[slot closupBackground]];
-        AsyncImageView * imageView = nil;
-        if (timeslot >= 0 && timeslot < coverItems.count) {
-            id obj = [coverItems objectAtIndex:timeslot];
-            if (obj != [NSNull null]) {
-                imageView = obj;
-            } else {
-                imageView = [[[AsyncImageView alloc] initWithFrame:frame] autorelease];
-                [scrollView addSubview:imageView];
-                [coverItems replaceObjectAtIndex:timeslot withObject:imageView];
-            }
-            [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:nil] localStore:YES asButton:NO target:nil selector:nil];
+        //for first create fake image at the end
+        if (timeslot == 0) {
+            Timeslot * slot = [timelineArray objectAtIndex:0];
+            [self imagePlace:slot rect:[self rectImageForIdx:coverItems.count-1] idx:coverItems.count-1];
+        }
+        
+        //for last create fake page at the begin
+        if (timeslot == timelineArray.count - 1) {
+            Timeslot * slot = [timelineArray lastObject];
+            [self imagePlace:slot rect:[self rectImageForIdx:0] idx:0];
         }
     }    
     NSLog(@"ScrollView subs: %d", [[scrollView subviews]count]);
 }
 
 - (void)scrollToPage:(int) page {
-    if (page < [timelineArray count] && page >= 0) {
+    NSLog(@"scroll to page %d called", page);
+    if ((page < coverItems.count && page >= 0) || page == -1) {
         CGRect frame = scrollView.frame;
-        frame.origin.x = frame.size.width * page;
+        frame.origin.x = frame.size.width * (page + 1);
         frame.origin.y = 0;
         [scrollView scrollRectToVisible:frame animated:YES];
     }
@@ -122,7 +141,7 @@
 {
     // Switch the indicator when more than 50% of the previous/next page is visible
     CGFloat pageW = scrollView.frame.size.width;
-    return floor((scrollView.contentOffset.x - pageW / 2) / pageW) + 1;
+    return floor((scrollView.contentOffset.x - pageW / 2) / pageW);
 }
 
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer {
@@ -220,13 +239,13 @@
             }
             
             //prepare lazy array
-            coverItems = [[NSMutableArray alloc] initWithCapacity:timeslots.count];
-            for (int i = 0; i < timeslots.count; i++) {
+            //+2 for fakes items at begin and end of list (for wrapping)
+            coverItems = [[NSMutableArray alloc] initWithCapacity:timeslots.count + 2];
+            for (int i = 0; i < timeslots.count + 2; i++) {
                 [coverItems addObject:[NSNull null]];
             }
             
-            
-            scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * timeslots.count, scrollView.frame.size.height);
+            scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * coverItems.count, scrollView.frame.size.height);
             //remove deprecated data
             while (timelineArray.count < scrollView.subviews.count) {
                 [[scrollView.subviews lastObject] removeFromSuperview];
@@ -257,7 +276,21 @@
     [self scrollToPage:page];
 }
 
+- (void)processWrap {
+    int page = [self getPageNumber] + 1;
+    
+    int width = scrollView.frame.size.width;
+    int pages = scrollView.contentSize.width / width;
+    if(page == 0){
+        scrollView.contentOffset = CGPointMake(width*(pages - 2), 0);
+    } else if(page == pages - 1){
+        scrollView.contentOffset = CGPointMake(width, 0);
+    }
+}
+
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self processWrap];    
+    
     int page = [self getPageNumber];
 	
     // load images for the near timeslots
@@ -273,6 +306,8 @@
 
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    [self processWrap];
+    
     int page = [self getPageNumber];
     NSLog(@"end scrolling on page: %d", page);
     
