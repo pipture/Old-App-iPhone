@@ -123,7 +123,6 @@
         if (cell == nil) {
             [[NSBundle mainBundle] loadNibNamed:@"DetailTableItemView" owner:self options:nil];
             cell = videoTableCell;
-            cell.selectionStyle = UITableViewCellSelectionStyleGray;
             videoTableCell = nil;
         }
         [self fillCell:[indexPath row] cell:cell];
@@ -143,6 +142,7 @@
     if (indexPath.row %2 == 0) {
         Episode * episode = [album.episodes objectAtIndex:indexPath.row / 2];
         [[[PiptureAppDelegate instance] model] getVideoURL:episode forceBuy:YES forTimeslotId:nil receiver:self];
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
 
     }
 }
