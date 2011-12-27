@@ -97,6 +97,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         GET_SCREENSHOT_COLLECTION = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get album screenshots"] retain];
         DefaultDataRequestFactory* factory = [[[DefaultDataRequestFactory alloc] init] autorelease];
         [self setDataRequestFactory:factory];
+//        currentRequests = [[NSMutableDictionary alloc] init];
         
     }    
     return self;
@@ -120,13 +121,56 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
     [GET_BUY_REQUEST release];
     [SEND_MESSAGE_REQUEST release]; 
     [GET_SCREENSHOT_COLLECTION release];
-    
-    if (sessionKey)
-    {
-        [sessionKey release];
-    }
+//    [currentRequests release];
+    [sessionKey release];
     
     [super dealloc];
+}
+
+//-(void)putRequest:(DataRequest*)request forReceiver:(id<PiptureModelDelegate>)receiver
+//{
+//    @synchronized(self)
+//    {            
+//        NSMutableArray*requests = [currentRequests objectForKey:receiver];
+//        if (!requests)
+//        {
+//            requests = [[NSMutableArray alloc] init];
+//            [currentRequests setObject:requests forKey:receiver];
+//            [requests release];
+//        }
+//        [requests addObject:request];
+//    }
+//}
+//
+//-(BOOL)popRequest:(DataRequest*)request forReceiver:(id<PiptureModelDelegate>)receiver
+//{
+//    @synchronized(self)
+//    {
+//        NSMutableArray*requests = [currentRequests objectForKey:receiver];
+//        if (requests && ([requests indexOfObject:request] != NSNotFound))
+//        {
+//            [requests removeObject:request];
+//            return YES;
+//        }
+//        return NO;
+//    }
+//}
+//
+//-(void)cancelAllRequestsForReceiver:(id<PiptureModelDelegate>)receiver
+//{
+//    @synchronized(self)
+//    {
+//        NSMutableArray*requests = [currentRequests objectForKey:receiver];
+//        if (requests)
+//        {
+//            [requests removeAllObjects];
+//        }
+//    }
+//}
+
+-(void)cancelCurrentRequest
+{
+    [dataRequestFactory_ cancelCurrentRequest];
 }
 
 -(void)loginWithUUID:(NSString *)uuid receiver:(NSObject<AuthenticationDelegate> *)receiver
@@ -613,7 +657,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                 {
                     NSString *messageURL = [jsonResult objectForKey:JSON_PARAM_MESSAGE_URL];
                     if ([messageURL length] > 0)
-                    {                        
+                    {                  ;
                         [receiver performSelectorOnMainThread:@selector(messageSiteURLreceived:) withObject:messageURL waitUntilDone:NO];
                     }
                     else
@@ -692,8 +736,17 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
 
 + (void)setModelRequestingState:(BOOL)state receiver:(NSObject<PiptureModelDelegate>*)receiver
 {
-    if ([receiver respondsToSelector:@selector(onSetModelRequestingState:)])
+    if (state)
     {
+        [receiver retain];
+    }
+    else
+    {
+        [receiver release];
+    }
+    
+    if ([receiver respondsToSelector:@selector(onSetModelRequestingState:)])
+    {        
         [receiver onSetModelRequestingState:state];
     }    
 }
@@ -794,14 +847,34 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
     return [self createDataRequestWithURL:url postParams:nil  callback:callback];
 }
 
+DataRequest*current = nil;
+BOOL needInvokeCallback;
+
+-(void)cancelCurrentRequest
+{
+    @synchronized(self)
+    {
+        needInvokeCallback = NO;
+    }
+}
+
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url postParams:(NSString*)params callback:(DataRequestCallback)callback
 {
-    DataRequest* req = [[[DataRequest alloc]initWithURL:url postParams:params requestManager:self callback:callback]autorelease];
+    DataRequest* req = [[[DataRequest alloc]initWithURL:url postParams:params requestManager:self callback:^(NSDictionary* jsonResult, DataRequestError* error)
+                         {
+                              @synchronized(self)
+                             {
+                                 if (needInvokeCallback)
+                                 {
+                                     needInvokeCallback = NO;
+                                     callback(jsonResult, error);
+                                 }
+                             }
+                         }]autorelease];
     req.progress = [PiptureAppDelegate instance];
     return req;    
 }
 
-DataRequest*current = nil;
 
 -(BOOL)addRequest:(DataRequest*)request
 {
@@ -814,6 +887,7 @@ DataRequest*current = nil;
         else
         {
             current = request;
+            needInvokeCallback = YES;
             return YES;
         }
     }
@@ -823,7 +897,7 @@ DataRequest*current = nil;
 {
     @synchronized(self)
     {
-        if (current != request)
+        if (current != request && current != nil)
         {
             //WTF!!!!
             NSLog(@"Request manager unexpected state. Two request were runned in same time");                    

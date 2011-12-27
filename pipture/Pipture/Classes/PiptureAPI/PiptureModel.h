@@ -19,6 +19,8 @@
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url postParams:(NSString*)params callback:(DataRequestCallback)callback;
 
+-(void)cancelCurrentRequest;
+
 @end
 
 @protocol PiptureModelDelegate 
@@ -103,11 +105,18 @@
 
 
 @interface PiptureModel : NSObject
+{
+//@private
+//    NSMutableDictionary* currentRequests;
+}
 
 //Using standard factory by default
 @property (retain,nonatomic) DefaultDataRequestFactory* dataRequestFactory; 
 
 - (NSString*)getEndPoint;
+
+//-(void)cancelAllRequestsForReceiver:(id<PiptureModelDelegate>)receiver;
+-(void)cancelCurrentRequest;
 
 -(void)loginWithUUID:(NSString*)uuid receiver:(NSObject<AuthenticationDelegate>*)receiver;
 
