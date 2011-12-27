@@ -109,6 +109,7 @@ static PiptureAppDelegate *instance;
     //if documens folder size over than limit
     NSLog(@"Doc filesize: %llu, limit %d", documentsFolderSize, limit);
     if (documentsFolderSize > limit) {
+        directoryEnumerator = [manager enumeratorAtPath:documentsDirectory];
         for (NSString * path in directoryEnumerator) 
         {
             NSString * filePath = [documentsDirectory stringByAppendingPathComponent:path];
@@ -124,7 +125,7 @@ static PiptureAppDelegate *instance;
                 NSLog(@"deleted file: %@, with size:%llu, with modif: %@", filePath, fileSize, modifDate);
                 documentsFolderSize -= fileSize;
                 
-                if (documentsFolderSize <= limit - 1000000 || documentsFolderSize <= 0) {
+                if (documentsFolderSize <= (limit - limit*.1) || documentsFolderSize <= 0) {
                     break;
                 }
             }
@@ -227,6 +228,7 @@ static PiptureAppDelegate *instance;
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self cleanDocDir:200000000];//200Mb limit
+    //[self cleanDocDir:2000];//200Mb limit
     
     [[GANTracker sharedTracker] startTrackerWithAccountID:@"UA-27681421-1"
                                            dispatchPeriod:kGANDispatchPeriodSec

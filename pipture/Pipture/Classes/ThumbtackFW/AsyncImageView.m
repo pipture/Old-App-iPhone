@@ -116,7 +116,9 @@
         [data writeToFile:imageFile atomically:YES];
     }
     
-    [self updateViewWith:[UIImage imageWithData:data]];
+    UIImage *image = [UIImage imageWithData:data];
+    NSLog(@"image: %@", image);
+    [self updateViewWith:image];
     [data release];
     data=nil;
 }
