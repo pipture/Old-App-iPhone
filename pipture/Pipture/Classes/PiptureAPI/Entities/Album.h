@@ -11,9 +11,9 @@
 #import "Trailer.h"
 
 enum AlbumStatus{
-    Normal = 1,
-    Premiere = 2,
-    CommingSoon = 3,    
+    AlbumStatus_Normal = 1,
+    AlbumStatus_Premiere = 2,
+    AlbumStatus_CommingSoon = 3,    
 };
 
 @interface Album : NSObject

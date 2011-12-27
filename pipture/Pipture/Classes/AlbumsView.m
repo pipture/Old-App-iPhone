@@ -71,9 +71,9 @@
         [item.titleLabel setTextWithVerticalResize:album.series.title];
         item.tagLabel.text = @"";
         switch (album.status) {
-            case Normal:        item.tagLabel.text = @""; break;
-            case CommingSoon:   item.tagLabel.text = @"COMING SOON"; break;
-            case Premiere:      item.tagLabel.text = @"PREMIERE"; break;
+            case AlbumStatus_Normal:        item.tagLabel.text = @""; break;
+            case AlbumStatus_CommingSoon:   item.tagLabel.text = @"COMING SOON"; break;
+            case AlbumStatus_Premiere:      item.tagLabel.text = @"PREMIERE"; break;
         }
         item.thumbnailButton.tag = i;
         

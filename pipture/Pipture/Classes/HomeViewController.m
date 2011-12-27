@@ -294,6 +294,7 @@
                 [self setNavBarMode];
                 
                 [[PiptureAppDelegate instance] tabbarSelect:2];
+                [[PiptureAppDelegate instance] tabbarVisible:YES];
                 [[PiptureAppDelegate instance] powerButtonEnable:NO];
                 flipButton.hidden = YES;
                 scheduleButton.hidden = YES;

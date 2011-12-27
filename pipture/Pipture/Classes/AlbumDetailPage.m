@@ -121,23 +121,37 @@
     
     NSString *relDate = nil;
     switch (album.status) {
-        case Normal:        relDate = @""; break;
-        case CommingSoon:   relDate = @"COMING SOON"; break;
-        case Premiere:      relDate = @"PREMIERE"; break;
+        case AlbumStatus_Normal:
+            if (album.releaseDate) {
+                NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
+                [NSDateFormatter dateFormatFromTemplate:@"MMM yyyy" options:0 locale:[NSLocale currentLocale]];
+                relDate = [formatter stringFromDate:album.releaseDate];
+                [formatter release];
+            }
+        //case AlbumStatus_CommingSoon:   relDate = @""; break;
+        case AlbumStatus_Premiere:      relDate = @"PREMIERE"; break;
+        default:break;
     }
-    if (relDate.length == 0 && album.releaseDate) {
-        NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
-        [NSDateFormatter dateFormatFromTemplate:@"MMM yyyy" options:0 locale:[NSLocale currentLocale]];
-        relDate = [formatter stringFromDate:album.releaseDate];
-        [formatter release];
-    }
+    
     if (relDate) {
         [text setTextWithVerticalResize:[NSString stringWithFormat:@"Rating: %@, Released: %@", album.rating, relDate]];
     } else {
         [text setTextWithVerticalResize:[NSString stringWithFormat:@"Rating: %@", album.rating]];
     }
+    
     [credits addObject:text];
     [text release];
+    
+    if (album.status == AlbumStatus_CommingSoon) {
+        CGSize size = [text.text sizeWithFont:text.font];
+        size.width += text.frame.origin.x + 10;
+        size.height = text.frame.origin.y;
+        UIImage * image = [UIImage imageNamed:@"comingsoon.png"];
+        UIImageView * cs = [[UIImageView alloc] initWithFrame:CGRectMake(size.width, size.height, image.size.width, image.size.height)];
+        [cs setImage:image];
+        [credits addObject:cs];
+    }
+    
     top += height + 10;
     
     text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
