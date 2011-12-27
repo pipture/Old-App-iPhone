@@ -17,8 +17,10 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @implementation PiptureAppDelegate
 @synthesize busyView;
 @synthesize tabView;
+@synthesize tabViewBaseHeigh;
 @synthesize powerButton;
 @synthesize tabbarControl;
+@synthesize powerButtonImage;
 @synthesize buyButton;
 @synthesize window = _window;
 @synthesize homeNavigationController;
@@ -54,6 +56,7 @@ static PiptureAppDelegate *instance;
     [tabbarControl release];
     [powerButton release];
     [welcomeMessage release];
+    [powerButtonImage release];
     [super dealloc];
 }
 
@@ -430,6 +433,11 @@ NSInteger networkActivityIndecatorCount;
         tabView.frame = CGRectMake(0, self.window.frame.size.height - tabView.frame.size.height, rect.size.width, tabView.frame.size.height);
     
     [UIView commitAnimations]; 
+}
+
+-(NSInteger)tabViewBaseHeigh
+{
+    return tabbarControl.frame.size.height;  
 }
 
 - (void)showModalBusy:(void (^)(void))completion {

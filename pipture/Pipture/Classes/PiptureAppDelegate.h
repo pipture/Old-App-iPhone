@@ -34,6 +34,7 @@
 @property (retain, nonatomic) IBOutlet UIView *tabView;
 @property (retain, nonatomic) IBOutlet UIButton *powerButton;
 @property (retain, nonatomic) IBOutlet UITabBar *tabbarControl;
+@property (retain, nonatomic) IBOutlet UIImageView *powerButtonImage;
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
@@ -41,6 +42,7 @@
 @property (retain, nonatomic) IBOutlet UIView *welcomeMessage;
 @property (readonly, nonatomic) PiptureModel * model;
 @property (retain, nonatomic) BusyViewController * busyView;
+@property (readonly, nonatomic) NSInteger tabViewBaseHeigh;
 
 +(PiptureAppDelegate*) instance;
 

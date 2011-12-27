@@ -129,6 +129,7 @@
 								<string key="NSFrame">{{114, 8}, {92, 39}}</string>
 								<reference key="NSSuperview" ref="29760908"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:225</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -213,7 +214,6 @@
 				<array class="NSMutableArray" key="IBUIViewControllers">
 					<object class="IBUIViewController" id="794762067">
 						<object class="IBUINavigationItem" key="IBUINavigationItem" id="118096285">
-							<reference key="IBUINavigationBar"/>
 							<string key="IBUITitle"/>
 							<object class="IBUIBarButtonItem" key="IBUIRightBarButtonItem" id="948065552">
 								<string key="IBUITitle">Buy</string>
@@ -510,6 +510,14 @@
 					<int key="connectionID">105</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">powerButtonImage</string>
+						<reference key="source" ref="982200970"/>
+						<reference key="destination" ref="537177897"/>
+					</object>
+					<int key="connectionID">108</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">buyAction:</string>
 						<reference key="source" ref="948065552"/>
@@ -781,7 +789,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">107</int>
+			<int key="maxID">108</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -932,6 +940,7 @@
 						<string key="buyButton">UIBarButtonItem</string>
 						<string key="homeNavigationController">UINavigationController</string>
 						<string key="powerButton">UIButton</string>
+						<string key="powerButtonImage">UIImageView</string>
 						<string key="tabView">UIView</string>
 						<string key="tabbarControl">UITabBar</string>
 						<string key="videoNavigationController">UINavigationController</string>
@@ -950,6 +959,10 @@
 						<object class="IBToOneOutletInfo" key="powerButton">
 							<string key="name">powerButton</string>
 							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="powerButtonImage">
+							<string key="name">powerButtonImage</string>
+							<string key="candidateClassName">UIImageView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="tabView">
 							<string key="name">tabView</string>
