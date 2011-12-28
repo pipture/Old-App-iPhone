@@ -168,10 +168,10 @@ AAgACAAIAAEAAQABAAE</bytes>
 							<object class="IBUIView" id="998007003">
 								<reference key="NSNextResponder" ref="674479035"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{22, 22}, {41, 61}}</string>
+								<string key="NSFrame">{{25, 25}, {90, 135}}</string>
 								<reference key="NSSuperview" ref="674479035"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
+								<reference key="NSNextKeyView" ref="862147700"/>
 								<string key="NSReuseIdentifierKey">_NS:196</string>
 								<reference key="IBUIBackgroundColor" ref="940335774"/>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -179,10 +179,10 @@ AAgACAAIAAEAAQABAAE</bytes>
 							<object class="IBUILabel" id="862147700">
 								<reference key="NSNextResponder" ref="674479035"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{118, 42}, {65, 21}}</string>
+								<string key="NSFrame">{{140, 82}, {65, 21}}</string>
 								<reference key="NSSuperview" ref="674479035"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="998007003"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:328</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -4601,10 +4601,10 @@ AAgAAAAIAAIACAACAAAAAgAAAAEAAQABAAE</bytes>
 							<object class="IBUIImageView" id="669564414">
 								<reference key="NSNextResponder" ref="674479035"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{20, 20}, {45, 65}}</string>
+								<string key="NSFrame">{{20, 20}, {100, 145}}</string>
 								<reference key="NSSuperview" ref="674479035"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="862147700"/>
+								<reference key="NSNextKeyView" ref="998007003"/>
 								<string key="NSReuseIdentifierKey">_NS:567</string>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -4614,7 +4614,7 @@ AAgAAAAIAAIACAACAAAAAgAAAAEAAQABAAE</bytes>
 								</object>
 							</object>
 						</object>
-						<string key="NSFrameSize">{300, 105}</string>
+						<string key="NSFrameSize">{300, 185}</string>
 						<reference key="NSSuperview" ref="992638400"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="669564414"/>
@@ -4627,7 +4627,7 @@ AAgAAAAIAAIACAACAAAAAgAAAAEAAQABAAE</bytes>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
 				</object>
-				<string key="NSFrameSize">{320, 106}</string>
+				<string key="NSFrameSize">{320, 186}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="674479035"/>
@@ -4635,7 +4635,7 @@ AAgAAAAIAAIACAACAAAAAgAAAAEAAQABAAE</bytes>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<int key="IBUIAccessoryType">1</int>
 				<reference key="IBUIContentView" ref="674479035"/>
-				<real value="106" key="IBUIRowHeight"/>
+				<real value="186" key="IBUIRowHeight"/>
 			</object>
 			<object class="IBUITableViewCell" id="276754043">
 				<reference key="NSNextResponder"/>
@@ -4738,6 +4738,7 @@ AAgAAAAIAAIACAACAAAAAgAAAAEAAQABAAE</bytes>
 								<bool key="IBUIAdjustsFontSizeToFit">YES</bool>
 								<float key="IBUIMinimumFontSize">17</float>
 								<object class="IBUITextInputTraits" key="IBUITextInputTraits">
+									<int key="IBUIAutocapitalizationType">1</int>
 									<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								</object>
 								<reference key="IBUIFontDescription" ref="862526093"/>
@@ -4926,9 +4927,9 @@ AAgAAAAIAAIACAACAAAAAgAAAAEAAQABAAE</bytes>
 						<reference key="object" ref="992638400"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="862147700"/>
 							<reference ref="998007003"/>
 							<reference ref="669564414"/>
+							<reference ref="862147700"/>
 						</object>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">ScreenshotCell</string>
@@ -5205,7 +5206,7 @@ AAgAAAAIAAIACAACAAAAAgAAAAEAAQABAAE</bytes>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="NS.key.0">message_screenshot_frame.png</string>
-			<string key="NS.object.0">{45, 65}</string>
+			<string key="NS.object.0">{101, 147}</string>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">933</string>
 	</data>

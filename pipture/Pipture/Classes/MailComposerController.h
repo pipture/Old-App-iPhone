@@ -12,7 +12,7 @@
 #import "ScreenshotImage.h"
 #import "VideoTitleViewController.h"
 
-@interface MailComposerController : UIViewController <UITextViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver>{
+@interface MailComposerController : UIViewController <UITextViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate>{
 
     UIStatusBarStyle lastStatusStyle;
     UIBarStyle lastNaviStyle;
