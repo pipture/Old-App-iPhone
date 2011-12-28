@@ -111,11 +111,25 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     singleFingerDTap.cancelsTouchesInView = NO;
     [layoutTableView addGestureRecognizer:singleFingerDTap];
     [singleFingerDTap release];
+    
+    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc]
+                                                initWithTarget:self action:@selector(onTableThumbUp:)];
+    panGestureRecognizer.delegate = self;
+    
+    panGestureRecognizer.cancelsTouchesInView = NO;    
+    [layoutTableView addGestureRecognizer:panGestureRecognizer];
+    [panGestureRecognizer release];
+    
     [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];
     screenshotCell.accessoryType = UITableViewCellAccessoryNone;
     
     
     nameTextField.text = [[PiptureAppDelegate instance] getUserName];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
 }
 
 -(void)onCancel
@@ -226,6 +240,16 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     {
         [self moveView:YES];
     }
+}
+
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if ([textField isEqual:nameTextField])
+    {
+        [textField resignFirstResponder];
+    }
+    return YES;    
 }
 
 - (void)keyboardWillHide:(NSNotification *)notif
@@ -431,6 +455,16 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         [self.navigationController pushViewController:asctrl animated:YES];
     }    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (IBAction)onTableThumbUp:(UIPanGestureRecognizer*)gestureRecognizer
+{
+    
+    if (gestureRecognizer.state == UIGestureRecognizerStateEnded)
+    {
+        [messageEdit resignFirstResponder];
+        [nameTextField resignFirstResponder];        
+    }
 }
 
 - (IBAction)onTableTap:(id)sender {
