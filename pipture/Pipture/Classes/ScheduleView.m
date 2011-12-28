@@ -117,13 +117,13 @@
     NSLog(@"ScrollView subs: %d", [[scrollView subviews]count]);
 }
 
-- (void)scrollToPage:(int) page {
+- (void)scrollToPage:(int)page animated:(BOOL)animated{
     NSLog(@"scroll to page %d called", page);
     if ((page < coverItems.count && page >= 0) || page == -1) {
         CGRect frame = scrollView.frame;
         frame.origin.x = frame.size.width * (page + 1);
         frame.origin.y = 0;
-        [scrollView scrollRectToVisible:frame animated:YES];
+        [scrollView scrollRectToVisible:frame animated:animated];
     }
 }
 
@@ -257,7 +257,7 @@
                 [[scrollView.subviews lastObject] removeFromSuperview];
             }
          
-            [self scrollToPage:page];
+            [self scrollToPage:page animated:NO];
             [self prepareImageFor: page - 1];
             [self prepareImageFor: page];
             [self prepareImageFor: page + 1];
@@ -276,14 +276,14 @@
     int page = [self getPageNumber] - 1;
     [self prepareImageFor:page];
     [self prepareImageFor:page - 1];
-    [self scrollToPage:page];
+    [self scrollToPage:page animated:YES];
 }
 
 - (IBAction)nextAction:(id)sender {
     int page = [self getPageNumber] + 1;
     [self prepareImageFor:page];
     [self prepareImageFor:page + 1];
-    [self scrollToPage:page];
+    [self scrollToPage:page animated:YES];
 }
 
 - (void)processWrap {
@@ -354,7 +354,7 @@
     }
 
     if (page != -1) {
-        [self scrollToPage:page];
+        [self scrollToPage:page animated:NO];
         [self prepareImageFor: page - 1];
         [self prepareImageFor: page];
         [self prepareImageFor: page + 1];

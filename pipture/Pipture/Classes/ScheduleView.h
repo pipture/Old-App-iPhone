@@ -26,7 +26,7 @@ enum TimeslotsMode{
 - (void)prepareWith:(id<HomeScreenDelegate>)parent;
 
 - (void)updateNotify;
-- (void)scrollToPage:(int) page;
+- (void)scrollToPage:(int) page animated:(BOOL)animated;
 - (int)getPageNumber;
 - (void)prepareImageFor:(int)timeslot;
 - (void)updateTimeslots:(NSArray*) timeslots;
