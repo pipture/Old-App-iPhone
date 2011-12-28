@@ -9,32 +9,7 @@
 #import "MailComposerNavigationController.h"
 
 @implementation MailComposerNavigationController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
-#pragma mark - View lifecycle
-
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView
-{
-}
-*/
+@synthesize mailComposer;
 
 /*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -51,10 +26,14 @@
     // e.g. self.myOutlet = nil;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+- (void)dealloc {
+    [mailComposer release];
+    [super dealloc];
+}
+
+- (void)prepareMailComposer:(PlaylistItem*)item timeslot:(NSNumber*)timeslotId {
+    mailComposer.timeslotId = timeslotId;
+    mailComposer.playlistItem = item;
 }
 
 @end

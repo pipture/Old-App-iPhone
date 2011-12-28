@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MailComposerController.h"
+
 
 @interface MailComposerNavigationController : UINavigationController
+
+- (void)prepareMailComposer:(PlaylistItem*)item timeslot:(NSNumber*)timeslotId;
+
+@property (retain, nonatomic) IBOutlet MailComposerController *mailComposer;
 
 @end

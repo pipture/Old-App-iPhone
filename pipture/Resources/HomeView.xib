@@ -204,7 +204,7 @@
 									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 								</object>
 								<reference key="IBUINormalTitleShadowColor" ref="812085847"/>
-								<object class="NSCustomResource" key="IBUISelectedImage" id="859437670">
+								<object class="NSCustomResource" key="IBUIHighlightedImage" id="834358634">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">button-info-down.png</string>
 								</object>
@@ -321,7 +321,7 @@
 									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 								</object>
 								<reference key="IBUINormalTitleShadowColor" ref="812085847"/>
-								<reference key="IBUISelectedImage" ref="859437670"/>
+								<reference key="IBUIHighlightedImage" ref="834358634"/>
 								<reference key="IBUINormalImage" ref="216065573"/>
 								<reference key="IBUIFontDescription" ref="291193503"/>
 								<reference key="IBUIFont" ref="818211076"/>
@@ -498,8 +498,8 @@
 									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 								</object>
 								<reference key="IBUINormalTitleShadowColor" ref="812085847"/>
-								<reference key="IBUIHighlightedImage" ref="859437670"/>
-								<reference key="IBUISelectedImage" ref="859437670"/>
+								<reference key="IBUIHighlightedImage" ref="834358634"/>
+								<reference key="IBUISelectedImage" ref="834358634"/>
 								<reference key="IBUINormalImage" ref="216065573"/>
 								<reference key="IBUIFontDescription" ref="291193503"/>
 								<reference key="IBUIFont" ref="818211076"/>
@@ -675,7 +675,7 @@
 									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 								</object>
 								<reference key="IBUINormalTitleShadowColor" ref="812085847"/>
-								<reference key="IBUIHighlightedImage" ref="859437670"/>
+								<reference key="IBUIHighlightedImage" ref="834358634"/>
 								<reference key="IBUINormalImage" ref="216065573"/>
 								<reference key="IBUIFontDescription" ref="291193503"/>
 								<reference key="IBUIFont" ref="818211076"/>
@@ -1382,7 +1382,7 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<real value="2"/>
+					<real value="1"/>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">

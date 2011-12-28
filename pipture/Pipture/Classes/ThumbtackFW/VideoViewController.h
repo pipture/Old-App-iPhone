@@ -11,6 +11,7 @@
 #import "VideoTitleViewController.h"
 #import "PlayerView.h"
 #import "PiptureModel.h"
+#import "MailComposerNavigationController.h"
 
 @interface VideoViewController : UIViewController<VideoURLReceiver>
 {
@@ -25,8 +26,6 @@
 
     AVPlayerItem * nextPlayerItem;
     
-    UIStatusBarStyle lastStatusStyle;
-    UIBarStyle lastNaviStyle;
     BOOL controlsHidded;
     BOOL pausedStatus;
 }
@@ -54,6 +53,7 @@
 @property (retain, nonatomic) IBOutlet UIButton *nextButton;
 @property (retain, nonatomic) IBOutlet UIButton *pauseButton;
 @property (retain, nonatomic) IBOutlet UIButton *prevButton;
+@property (retain, nonatomic) IBOutlet MailComposerNavigationController *mailComposerNavigationController;
 
 @property (assign, nonatomic) BOOL simpleMode;
 
