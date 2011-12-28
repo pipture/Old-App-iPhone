@@ -30,10 +30,14 @@
 
 - (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo parent:(UIView*)parentView tag:(int)screenId delegate:(id<WelcomeScreenProtocol>)delegate {
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:key]) return;
-    
     _screenId = screenId;
     parentTarget = delegate;
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:key]) {
+        [parentTarget weclomeScreenDidDissmis:_screenId];
+        return;
+    }
+    
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:key];
     [[NSUserDefaults standardUserDefaults] synchronize];
     

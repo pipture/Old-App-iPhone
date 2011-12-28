@@ -9,6 +9,7 @@
 #import "ScheduleView.h"
 #import "AsyncImageView.h"
 #import "PiptureAppDelegate.h"
+#import "HomeItemViewController.h"
 
 @implementation ScheduleView
 @synthesize navPanel;
@@ -77,17 +78,21 @@
 
 - (void) imagePlace:(Timeslot *) slot rect:(CGRect) frame idx:(int)idx{
     NSURL * url = [NSURL URLWithString:[slot closupBackground]];
-    AsyncImageView * imageView = nil;
 
+    HomeItemViewController * hivc;
     id obj = [coverItems objectAtIndex:idx];
     if (obj != [NSNull null]) {
-        imageView = obj;
+        hivc = obj;
     } else {
-        imageView = [[[AsyncImageView alloc] initWithFrame:frame] autorelease];
-        [scrollView addSubview:imageView];
-        [coverItems replaceObjectAtIndex:idx withObject:imageView];
+        hivc = [[HomeItemViewController alloc] initWithNibName:@"HomeItemViewController" bundle:nil];
+        [hivc loadView];
+        hivc.view.frame = frame;
+        
+        
+        [scrollView addSubview:hivc.view];
+        [coverItems replaceObjectAtIndex:idx withObject:hivc];
     }
-    [imageView loadImageFromURL:url withDefImage:[UIImage imageNamed:nil] localStore:YES asButton:NO target:nil selector:nil];
+    [hivc updateImageView:url];
 }
 
 - (void) prepareImageFor: (int) timeslot {
@@ -232,7 +237,7 @@
                 for (int i = 0; i < coverItems.count; i++) {
                     id obj = [coverItems objectAtIndex:i];
                     if ([NSNull null] != obj) {
-                        [(UIView*)obj removeFromSuperview];
+                        [((UIViewController*)obj).view removeFromSuperview];
                     }
                 }
                 [coverItems release];

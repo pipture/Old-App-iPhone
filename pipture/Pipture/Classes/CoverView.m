@@ -57,12 +57,14 @@
             case TimeslotStatus_Current:
                 [self panel:coverPanel visible:YES];
                 [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable.png"] forState:UIControlStateNormal];
+                [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable-down.png"] forState:UIControlStateHighlighted];
                 [[PiptureAppDelegate instance] powerButtonEnable:YES];
                 break;
             case TimeslotStatus_Next:
                 [self panel:coverPanel visible:YES];
                 [[PiptureAppDelegate instance] powerButtonEnable:NO];
-                [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable-2.png"] forState:UIControlStateNormal];
+                [coverButton setImage:[UIImage imageNamed:@"case-schedule-noshow-clickable.png"] forState:UIControlStateNormal];
+                [coverButton setImage:[UIImage imageNamed:@"case-schedule-noshow-clickable-down.png"] forState:UIControlStateHighlighted];
                 break;
             default:
                 [self panel:coverPanel visible:NO];

@@ -76,12 +76,12 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return (indexPath.row % 2 == 0)?88:2;
+    return (indexPath.row % 2 == 0)?86:2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (album.episodes.count > 0)
-        return album.episodes.count+album.episodes.count-1;
+        return album.episodes.count*2;
     else
         return 0;
 }
