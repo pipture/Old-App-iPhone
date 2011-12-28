@@ -32,11 +32,7 @@
     UILabel * status = (UILabel*)[panel viewWithTag:2];
     
     if (title) title.text = timeslot.title;
-    if (timeslot.timeslotStatus == TimeslotStatus_Current) {
-        if (status)status.text= timeslot.timeDescription;
-    } else {
-        if (status)status.text= [NSString stringWithFormat:@"%@ %@", timeslot.scheduleDescription, timeslot.timeDescription];
-    }
+    if (status)status.text= timeslot.timeDescription;
 }
 
 - (void)panel:(UIView*)panel visible:(BOOL)visible {
@@ -92,6 +88,7 @@
         [scrollView addSubview:hivc.view];
         [coverItems replaceObjectAtIndex:idx withObject:hivc];
     }
+    NSLog(@"Update image url %@", url);
     [hivc updateImageView:url];
 }
 
@@ -305,6 +302,7 @@
 	
     // load images for the near timeslots
     [self prepareImageFor:page - 1];
+    [self prepareImageFor:page];    
     [self prepareImageFor:page + 1];
     
     NSLog(@"end decelerating on page: %d", page);
