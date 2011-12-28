@@ -51,13 +51,18 @@ static NSString* const JSON_PARAM_TIMESLOT_STATUS = @"TimeslotStatus";
 
     NSCalendar *cal = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *comp = [cal components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:date];
-    NSInteger hour = [comp hour] % 12;
+    NSInteger hour = comp.hour % 12;
+    if (hour == 0) 
+    {
+        hour = 12;
+    }
+    
     NSInteger min = [comp minute];
     NSMutableString * retStr = [[[NSMutableString alloc] initWithFormat:@"%d",hour] autorelease];
     if (min > 0) {
         [retStr appendFormat:@":%02d",min];
     }
-    [retStr appendString:(hour < 13 ? @"AM" : @"PM")];
+    [retStr appendString:(comp.hour < 12 ? @"AM" : @"PM")];
     [cal release];    
     return retStr;
 }
