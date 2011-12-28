@@ -261,6 +261,10 @@
             [self prepareImageFor: page - 1];
             [self prepareImageFor: page];
             [self prepareImageFor: page + 1];
+            
+            [self prepareImageFor: 0];
+            [self prepareImageFor: timeslots.count - 1];
+            
             [self updateNotify];
       
             [delegate scheduleTimeslotChange:timeslots];
@@ -388,24 +392,26 @@
     
     switch (timeslotsMode) {
         case TimeslotsMode_PlayingNow:
-            [self navPanelVisible:NO];
             [UIApplication sharedApplication].statusBarHidden = NO;
             switch (slot.timeslotStatus) {
                 case TimeslotStatus_Current:
                     [self psPanelVisible:NO];
                     [self pnPanelVisible:YES];
+                    [self navPanelVisible:NO];
                     [[PiptureAppDelegate instance] powerButtonEnable:YES];
                     [self updateTimeSlotInfo:slot panel:pnPanel];
                     break;
                 case TimeslotStatus_Next:
                     [self pnPanelVisible:NO];
                     [self psPanelVisible:YES];
+                    [self navPanelVisible:NO];
                     [[PiptureAppDelegate instance] powerButtonEnable:NO];
                     [self updateTimeSlotInfo:slot panel:psPanel];
                     break;    
                 default:
                     [self pnPanelVisible:NO];
                     [self psPanelVisible:NO];
+                    [self navPanelVisible:NO];
                     [[PiptureAppDelegate instance] powerButtonEnable:NO];
                     break;
             }

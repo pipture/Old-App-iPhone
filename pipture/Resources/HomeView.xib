@@ -157,7 +157,7 @@
 						<string key="NSFrameSize">{320, 480}</string>
 						<reference key="NSSuperview" ref="26185690"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="987429825"/>
+						<reference key="NSNextKeyView" ref="385849236"/>
 						<string key="NSReuseIdentifierKey">_NS:190</string>
 						<reference key="IBUIBackgroundColor" ref="574625973"/>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -204,7 +204,7 @@
 									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 								</object>
 								<reference key="IBUINormalTitleShadowColor" ref="812085847"/>
-								<object class="NSCustomResource" key="IBUISelectedImage" id="1061515325">
+								<object class="NSCustomResource" key="IBUISelectedImage" id="859437670">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">button-info-down.png</string>
 								</object>
@@ -321,7 +321,7 @@
 									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 								</object>
 								<reference key="IBUINormalTitleShadowColor" ref="812085847"/>
-								<reference key="IBUISelectedImage" ref="1061515325"/>
+								<reference key="IBUISelectedImage" ref="859437670"/>
 								<reference key="IBUINormalImage" ref="216065573"/>
 								<reference key="IBUIFontDescription" ref="291193503"/>
 								<reference key="IBUIFont" ref="818211076"/>
@@ -434,7 +434,7 @@
 								<string key="NSFrame">{{271, 0}, {35, 46}}</string>
 								<reference key="NSSuperview" ref="385849236"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="505186130"/>
+								<reference key="NSNextKeyView" ref="987429825"/>
 								<string key="NSReuseIdentifierKey">_NS:225</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -488,6 +488,7 @@
 								<reference key="NSNextKeyView" ref="146182046"/>
 								<string key="NSReuseIdentifierKey">_NS:225</string>
 								<bool key="IBUIOpaque">NO</bool>
+								<int key="IBUIContentMode">4</int>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
@@ -497,8 +498,8 @@
 									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 								</object>
 								<reference key="IBUINormalTitleShadowColor" ref="812085847"/>
-								<reference key="IBUIHighlightedImage" ref="1061515325"/>
-								<reference key="IBUISelectedImage" ref="1061515325"/>
+								<reference key="IBUIHighlightedImage" ref="859437670"/>
+								<reference key="IBUISelectedImage" ref="859437670"/>
 								<reference key="IBUINormalImage" ref="216065573"/>
 								<reference key="IBUIFontDescription" ref="291193503"/>
 								<reference key="IBUIFont" ref="818211076"/>
@@ -538,7 +539,7 @@
 				<string key="NSFrameSize">{320, 480}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
-				<reference key="NSNextKeyView"/>
+				<reference key="NSNextKeyView" ref="505186130"/>
 				<string key="NSReuseIdentifierKey">_NS:196</string>
 				<reference key="IBUIBackgroundColor" ref="574625973"/>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -674,7 +675,7 @@
 									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 								</object>
 								<reference key="IBUINormalTitleShadowColor" ref="812085847"/>
-								<reference key="IBUIHighlightedImage" ref="1061515325"/>
+								<reference key="IBUIHighlightedImage" ref="859437670"/>
 								<reference key="IBUINormalImage" ref="216065573"/>
 								<reference key="IBUIFontDescription" ref="291193503"/>
 								<reference key="IBUIFont" ref="818211076"/>
