@@ -121,13 +121,17 @@
     
     NSString *relDate = nil;
     switch (album.status) {
+        case 0:
         case AlbumStatus_Normal:
             if (album.releaseDate) {
-                NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
-                [NSDateFormatter dateFormatFromTemplate:@"MMM yyyy" options:0 locale:[NSLocale currentLocale]];
-                relDate = [formatter stringFromDate:album.releaseDate];
-                [formatter release];
+                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                [dateFormatter setDateFormat:@"MMM yyyy"];
+                [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+                [dateFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease]];
+                relDate = [dateFormatter stringFromDate:album.releaseDate];
+                [dateFormatter release];
             }
+            break;
         //case AlbumStatus_CommingSoon:   relDate = @""; break;
         case AlbumStatus_Premiere:      relDate = @"PREMIERE"; break;
         default:break;
