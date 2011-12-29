@@ -43,7 +43,8 @@
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
-@property (retain, nonatomic) IBOutlet UINavigationController * videoNavigationController;
+@property (retain, nonatomic) IBOutlet VideoViewController *videoViewController;
+
 @property (readonly, nonatomic) PiptureModel * model;
 @property (retain, nonatomic) BusyViewController * busyView;
 @property (retain, nonatomic) UIViewController * homeViewController;
@@ -72,7 +73,6 @@
 
 - (IBAction)actionButton:(id)sender;
 - (IBAction)buyAction:(id)sender;
-- (IBAction)videoDone:(id)sender;
 
 - (BOOL)trackEvent:(NSString*)event :(NSString*)action;
 - (void)openHome;

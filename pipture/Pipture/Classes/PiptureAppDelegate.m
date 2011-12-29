@@ -26,7 +26,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize buyButton;
 @synthesize window = _window;
 @synthesize homeNavigationController;
-@synthesize videoNavigationController;
+@synthesize videoViewController;
 @synthesize model = model_;
 @synthesize homeViewController;
 @synthesize welcomeScreen;
@@ -56,13 +56,13 @@ static PiptureAppDelegate *instance;
     [_window release];
     [model_ release];
     [buyButton release];
-    [videoNavigationController release];
     [tabView release];
     [powerButton release];
     [welcomeScreen release];
     [tabbarView release];
     [channelButton release];
     [libraryButton release];
+    [videoViewController release];
     [super dealloc];
 }
 
@@ -281,17 +281,13 @@ static PiptureAppDelegate *instance;
     [animation setSubtype:kCATransitionFromTop];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     
-    [self.window setRootViewController:videoNavigationController];
+    videoViewController.timeslotId = timeslotId;
+    videoViewController.playlist = playlist;
+    videoViewController.wantsFullScreenLayout = YES;
+    videoViewController.simpleMode = noNavi;
     
-    UIViewController * visible = [videoNavigationController visibleViewController];
-    if (visible.class == [VideoViewController class]) {
-        VideoViewController * vc = (VideoViewController*)visible;
-        vc.timeslotId = timeslotId;
-        vc.playlist = playlist;
-        vc.wantsFullScreenLayout = YES;
-        vc.simpleMode = noNavi;
-        [vc initVideo];
-    }
+    [self.window setRootViewController:videoViewController];
+    [videoViewController initVideo];
     
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
     
@@ -414,10 +410,6 @@ NSInteger networkActivityIndecatorCount;
     } else {
         SHOW_ERROR(@"Purchase failed", @"Can't make purchases!");
     }
-}
-
-- (IBAction)videoDone:(id)sender {
-    [self openHome];
 }
 
 - (void)powerButtonEnable:(BOOL)enable {

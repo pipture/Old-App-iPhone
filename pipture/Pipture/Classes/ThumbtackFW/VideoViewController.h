@@ -40,9 +40,12 @@
 - (IBAction)prevAction:(id)sender;
 - (IBAction)playpauseAction:(id)sender;
 - (IBAction)nextAction:(id)sender;
+- (IBAction)doneAction:(id)sender;
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer;
 - (void) movieFinishedCallback:(NSNotification*) aNotification;
 
+@property (retain, nonatomic) IBOutlet UINavigationBar *navigationBar;
+@property (retain, nonatomic) IBOutlet UINavigationItem *navigationItem;
 @property (retain, nonatomic) NSNumber * timeslotId;
 @property (retain, nonatomic) NSArray * playlist;
 @property (retain, nonatomic) IBOutlet VideoTitleViewController *videoTitleView;

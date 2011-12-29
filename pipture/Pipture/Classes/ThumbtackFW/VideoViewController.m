@@ -24,11 +24,13 @@
 @synthesize simpleMode;
 @synthesize playlist;
 @synthesize videoTitleView;
+@synthesize navigationBar;
+@synthesize navigationItem;
 @synthesize timeslotId;
 
 -(void)goBack {
     self.busyContainer.hidden = YES;
-    [[PiptureAppDelegate instance] videoDone:nil];
+    [[PiptureAppDelegate instance] openHome];
 }
 
 - (void)destroyNextItem {
@@ -249,12 +251,6 @@
     
     pos = -1;
     
-    if (!simpleMode) {
-        self.navigationItem.title = @"Video";
-    } 
-    //prevButton.hidden = simpleMode;
-    //nextButton.hidden = simpleMode;
-    
     [self nextVideo];
 }
 
@@ -298,6 +294,8 @@
     [self setBusyContainer:nil];
     [self setVideoTitleView:nil];
     [self setMailComposerNavigationController:nil];
+    [self setNavigationItem:nil];
+    [self setNavigationBar:nil];
     [super viewDidUnload];
 }
 
@@ -308,11 +306,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
 
-    self.navigationController.wantsFullScreenLayout = YES;
-    
     controlsHidded = NO;
     controlsShouldBeHiddenOnPlay = YES;
     self.busyContainer.hidden = YES;
@@ -333,18 +327,32 @@
     [super viewWillDisappear:animated];
 }
 
-- (void)updateControlsAnimated:(BOOL)animated {
-    [UIApplication sharedApplication].statusBarHidden = controlsHidded;
-    [self.navigationController setNavigationBarHidden:controlsHidded animated:animated];
+- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+    controlsPanel.hidden = controlsHidded;
+    navigationBar.hidden = controlsHidded;
+}
 
+- (void)updateControlsAnimated:(BOOL)animated {
+    if (!controlsHidded) {
+        controlsPanel.hidden = NO;
+        navigationBar.hidden = NO;
+    }
     if (animated) {
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:0.3];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+
+        [UIApplication sharedApplication].statusBarHidden = controlsHidded;
         controlsPanel.alpha = (controlsHidded) ? 0 : 0.8;
+        navigationBar.alpha = (controlsHidded) ? 0 : 1;
+        
         [UIView commitAnimations];        
+    } else {
+        [UIApplication sharedApplication].statusBarHidden = controlsHidded;
+        controlsPanel.hidden = controlsHidded;
+        navigationBar.hidden = controlsHidded;
     }
-    
-    controlsPanel.hidden = controlsHidded;
 }
 
 //The event handling method
@@ -358,7 +366,7 @@
     
     if ([MFMailComposeViewController canSendMail] && pos >= 0 && pos < playlist.count) {
         [mailComposerNavigationController prepareMailComposer:[playlist objectAtIndex:pos] timeslot:timeslotId];
-        [self.navigationController presentModalViewController:mailComposerNavigationController animated:YES];
+        [self presentModalViewController:mailComposerNavigationController animated:YES];
     } else {
         //TODO: can't send message
     }
@@ -387,6 +395,10 @@
     }
 }
 
+- (IBAction)doneAction:(id)sender {
+    [self goBack];
+}
+
 - (void)dealloc {
     NSLog(@"video released");
     
@@ -409,6 +421,8 @@
     [busyContainer release];
     [videoTitleView release];
     [mailComposerNavigationController release];
+    [navigationItem release];
+    [navigationBar release];
     [super dealloc];
 }
 
