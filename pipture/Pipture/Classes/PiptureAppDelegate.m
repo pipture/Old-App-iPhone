@@ -18,14 +18,15 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @implementation PiptureAppDelegate
 @synthesize busyView;
 @synthesize tabView;
+@synthesize channelButton;
+@synthesize libraryButton;
+@synthesize tabbarView;
 @synthesize tabViewBaseHeight;
 @synthesize powerButton;
-@synthesize tabbarControl;
-@synthesize powerButtonImage;
 @synthesize buyButton;
 @synthesize window = _window;
 @synthesize homeNavigationController;
-@synthesize videoNavigationController;
+@synthesize videoViewController;
 @synthesize model = model_;
 @synthesize homeViewController;
 @synthesize welcomeScreen;
@@ -55,12 +56,13 @@ static PiptureAppDelegate *instance;
     [_window release];
     [model_ release];
     [buyButton release];
-    [videoNavigationController release];
     [tabView release];
-    [tabbarControl release];
     [powerButton release];
     [welcomeScreen release];
-    [powerButtonImage release];
+    [tabbarView release];
+    [channelButton release];
+    [libraryButton release];
+    [videoViewController release];
     [super dealloc];
 }
 
@@ -201,8 +203,6 @@ static PiptureAppDelegate *instance;
     [self.window setRootViewController:homeNavigationController];
     [self.window bringSubviewToFront:tabView];
     
-    UITabBarItem * item = [tabbarControl.items objectAtIndex:1];
-    item.enabled = NO;
     tabView.hidden = NO;
     [self.window makeKeyAndVisible];    
     
@@ -262,7 +262,7 @@ static PiptureAppDelegate *instance;
 - (void)openHome {
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.5];
-    [animation setType:kCATransitionPush];
+    [animation setType:kCATransitionMoveIn];
     [animation setSubtype:kCATransitionFromTop];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     
@@ -277,21 +277,17 @@ static PiptureAppDelegate *instance;
     
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.5];
-    [animation setType:kCATransitionPush];
+    [animation setType:kCATransitionMoveIn];
     [animation setSubtype:kCATransitionFromTop];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     
-    [self.window setRootViewController:videoNavigationController];
+    videoViewController.timeslotId = timeslotId;
+    videoViewController.playlist = playlist;
+    videoViewController.wantsFullScreenLayout = YES;
+    videoViewController.simpleMode = noNavi;
     
-    UIViewController * visible = [videoNavigationController visibleViewController];
-    if (visible.class == [VideoViewController class]) {
-        VideoViewController * vc = (VideoViewController*)visible;
-        vc.timeslotId = timeslotId;
-        vc.playlist = playlist;
-        vc.wantsFullScreenLayout = YES;
-        vc.simpleMode = noNavi;
-        [vc initVideo];
-    }
+    [self.window setRootViewController:videoViewController];
+    [videoViewController initVideo];
     
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
     
@@ -416,10 +412,6 @@ NSInteger networkActivityIndecatorCount;
     }
 }
 
-- (IBAction)videoDone:(id)sender {
-    [self openHome];
-}
-
 - (void)powerButtonEnable:(BOOL)enable {
     powerButton.enabled = enable;
 }
@@ -434,9 +426,46 @@ NSInteger networkActivityIndecatorCount;
     }
 }
 - (void)tabbarSelect:(int)item {
-    UITabBarItem * i = [tabbarControl.items objectAtIndex:item];
-    tabbarControl.selectedItem = i;
+    switch (item) {
+        case TABBARITEM_CHANNEL:
+            [channelButton setBackgroundImage:[UIImage imageNamed:@"nav-button-active-background.png"] forState:UIControlStateNormal];
+            [channelButton setImage:[UIImage imageNamed:@"nav-button-channel-active.png"] forState:UIControlStateNormal];
+            [channelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            
+            [libraryButton setBackgroundImage:nil forState:UIControlStateNormal];
+            [libraryButton setImage:[UIImage imageNamed:@"nav-button-library-inactive.png"] forState:UIControlStateNormal];
+            [libraryButton setTitleColor:[UIColor colorWithRed:.75 green:.75 blue:.75 alpha:1] forState:UIControlStateNormal];
+            break;
+        case TABBARITEM_LIBRARY:
+            [libraryButton setBackgroundImage:[UIImage imageNamed:@"nav-button-active-background.png"] forState:UIControlStateNormal];
+            [libraryButton setImage:[UIImage imageNamed:@"nav-button-library-active.png"] forState:UIControlStateNormal];
+            [libraryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            
+            [channelButton setBackgroundImage:nil forState:UIControlStateNormal];
+            [channelButton setImage:[UIImage imageNamed:@"nav-button-channel-inactive.png"] forState:UIControlStateNormal];
+            [channelButton setTitleColor:[UIColor colorWithRed:.75 green:.75 blue:.75 alpha:1] forState:UIControlStateNormal];
+            break;
+    }
 }
+
+- (void)tabBarClick:(id)sender {
+    if (!sender) return;
+    
+    HomeViewController * vc = [self getHomeView];
+    if (vc) {
+        switch ([sender tag]) {
+            case TABBARITEM_CHANNEL: [vc setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
+            case TABBARITEM_LIBRARY: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
+        }
+        
+        [self tabbarSelect:[sender tag]];
+        
+        if (![self homeViewVisible]) {
+            [self.homeNavigationController popToRootViewControllerAnimated:YES];
+        }
+    }
+}
+
 
 - (void)tabbarVisible:(BOOL)visible {
     CGRect rect = tabView.frame;
@@ -452,7 +481,7 @@ NSInteger networkActivityIndecatorCount;
 
 -(NSInteger)tabViewBaseHeight
 {
-    return tabbarControl.frame.size.height;  
+    return tabbarView.frame.size.height;  
 }
 
 - (void)showModalBusy:(void (^)(void))completion {
@@ -505,23 +534,6 @@ NSInteger networkActivityIndecatorCount;
 
 -(void)authenticationFailed {
     NSLog(@"auth failed!");
-}
-
-#pragma mark UITabBarDelegate methods
-
-- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
-    HomeViewController * vc = [self getHomeView];
-    if (vc) {
-        switch (item.tag) {
-            case 1: [vc setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
-            case 2: break;
-            case 3: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
-        }
-        
-        if (![self homeViewVisible]) {
-            [self.homeNavigationController popToRootViewControllerAnimated:YES];
-        }
-    }
 }
 
 @end

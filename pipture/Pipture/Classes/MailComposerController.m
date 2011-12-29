@@ -20,7 +20,6 @@
 @synthesize fromCell;
 @synthesize layoutTableView;
 @synthesize screenshotName;
-@synthesize titleViewController;
 @synthesize nameTextField;
 @synthesize nextButton;
 @synthesize playlistItem;
@@ -52,7 +51,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (void) displayScreenshot
 {
-    [titleViewController composeTitle:playlistItem];
     NSString*url;
     if (screenshotImage_)
     {
@@ -99,9 +97,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     self.navigationItem.rightBarButtonItem = nextButton;
     [nextButton release];
     
-    self.navigationItem.title = @"mail";
-    titleViewController.view.frame = CGRectMake(0, 0, 170,44);
-    self.navigationItem.titleView = titleViewController.view;
+    self.navigationItem.title = @"New Message";
     
     UITapGestureRecognizer *singleFingerDTap = [[UITapGestureRecognizer alloc]
                                                 initWithTarget:self action:@selector(onTableTap:)];
@@ -188,7 +184,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self setMessageCell:nil];
     [self setLayoutTableView:nil];
     [self setScreenshotName:nil];
-    [self setTitleViewController:nil];
     [self setFromCell:nil];
     [self setNameTextField:nil];
     [super viewDidUnload];
@@ -291,7 +286,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [screenshotName release];
     [lastScreenshotView release];
     [screenshotImages_ release];
-    [titleViewController release];
     [fromCell release];
     [nameTextField release];
     [cancelButton release];
