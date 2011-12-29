@@ -300,17 +300,17 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
+    [super viewDidAppear:animated];    
     suspended = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
 
+    self.navigationController.wantsFullScreenLayout = YES;
+    
     controlsHidded = NO;
     controlsShouldBeHiddenOnPlay = YES;
     self.busyContainer.hidden = YES;
@@ -337,7 +337,7 @@
 - (void)updateControlsAnimated:(BOOL)animated {
     [UIApplication sharedApplication].statusBarHidden = controlsHidded;
     [self.navigationController setNavigationBarHidden:controlsHidded animated:animated];
-    
+
     if (animated) {
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:0.3];

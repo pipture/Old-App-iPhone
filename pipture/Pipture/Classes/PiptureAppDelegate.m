@@ -274,8 +274,6 @@ static PiptureAppDelegate *instance;
 }
 
 - (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId{
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
-    videoNavigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
     
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.5];
@@ -459,10 +457,16 @@ NSInteger networkActivityIndecatorCount;
 
 - (void)showModalBusy:(void (^)(void))completion {
     //[[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    
     //[[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
+    [[self window] addSubview:busyView.view];
+    [busyView loadView];
+    [[self window] bringSubviewToFront:busyView.view];    
+    completion();
 }
 
 - (void)dismissModalBusy {
+    [busyView.view removeFromSuperview];
     //[[[self window] rootViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 

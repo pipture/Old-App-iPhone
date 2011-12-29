@@ -165,11 +165,6 @@
     [super viewDidDisappear:animated];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [UIApplication sharedApplication].statusBarStyle = lastStatusStyle;
-    self.navigationController.navigationBar.barStyle = lastNaviStyle;
-}
-
 
 - (void)dealloc {
     [scheduleView release];
