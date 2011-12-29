@@ -182,7 +182,7 @@
 - (void)updateTimeslots:(NSArray*) timeslots {
     @synchronized(self) {
         NSLog(@"Timeslots: %@", timeslots);
-        NSLog(@"was size = %d", scrollView.subviews.count);
+        NSLog(@"was size = %d", timelineArray.count);
         NSLog(@"new size = %d", timeslots.count);
         int lastTimeSlotId = -1;
         if (timelineArray.count > 0)
@@ -197,39 +197,41 @@
             }
              
             [delegate resetScheduleTimer];
-            //[self updateControls];
+            [self updateNotify];
          
             return;
         }
          
-        int page = [self getPageNumber];
-        //if new timeslots array shorter, then found current timeslot
-        if (lastTimeSlotId == -1 || page >= timeslots.count) {
-            page = -1;
+        //find new current timeslot
+        int newCurrentTimeslotPage = -1;
+        for (int i = 0; i < timeslots.count; i++) {
+            if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Current) {
+                newCurrentTimeslotPage = i;
+                break;
+            }
+        }
+        //current did not founded, find next
+        if (newCurrentTimeslotPage == -1) {
             for (int i = 0; i < timeslots.count; i++) {
-                if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Current) {
-                    page = i;
+                if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Next) {
+                    newCurrentTimeslotPage = i;
                     break;
                 }
             }
-            //current did not founded, find next
-            if (page == -1) {
-                for (int i = 0; i < timeslots.count; i++) {
-                    if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Next) {
-                        page = i;
-                        break;
-                    }
-                }
-            }
-            
-            //next did not founded, get last
-            if (page == -1) {
-                page = timeslots.count - 1;
-            }
         }
-            
-        Timeslot * slot = [timeslots objectAtIndex:page];
-        if (lastTimeSlotId != slot.timeslotId || timeslots.count != timelineArray.count) {
+        
+        //next did not founded, get last
+        if (newCurrentTimeslotPage == -1) {
+            newCurrentTimeslotPage = timeslots.count - 1;
+        }
+
+        int page = [self getPageNumber];
+        Timeslot * slot = nil;
+        if (timeslots != nil && timeslots.count > 0 && page >= 0 && page < timeslots.count)
+            slot = [timeslots objectAtIndex:page];
+        if ((slot && lastTimeSlotId != slot.timeslotId) || timeslots.count != timelineArray.count ||
+            (timeslots.count == timelineArray.count && 
+             [[timeslots objectAtIndex:newCurrentTimeslotPage] timeslotStatus] != [[timelineArray objectAtIndex:newCurrentTimeslotPage] timeslotStatus])) {
             [timelineArray removeAllObjects];
             [timelineArray addObjectsFromArray:timeslots];
             
@@ -257,6 +259,7 @@
                 [[scrollView.subviews lastObject] removeFromSuperview];
             }
          
+            page = newCurrentTimeslotPage;
             [self scrollToPage:page animated:NO];
             [self prepareImageFor: page - 1];
             [self prepareImageFor: page];

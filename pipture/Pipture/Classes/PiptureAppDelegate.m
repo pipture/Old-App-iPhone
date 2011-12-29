@@ -18,7 +18,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @implementation PiptureAppDelegate
 @synthesize busyView;
 @synthesize tabView;
-@synthesize tabViewBaseHeigh;
+@synthesize tabViewBaseHeight;
 @synthesize powerButton;
 @synthesize tabbarControl;
 @synthesize powerButtonImage;
@@ -452,7 +452,7 @@ NSInteger networkActivityIndecatorCount;
     [UIView commitAnimations]; 
 }
 
--(NSInteger)tabViewBaseHeigh
+-(NSInteger)tabViewBaseHeight
 {
     return tabbarControl.frame.size.height;  
 }

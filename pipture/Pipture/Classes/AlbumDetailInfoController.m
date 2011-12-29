@@ -21,6 +21,9 @@
 @synthesize detailsButton;
 @synthesize videosButton;
 @synthesize titleView;
+@synthesize detailsButtonEnhancer;
+@synthesize videosButtonEnhancer;
+@synthesize trailerButtonEnhancer;
 @synthesize album;
 
 #pragma mark - View lifecycle
@@ -38,6 +41,17 @@
     [titleView composeTitle:album];
 }
 
+- (void)tapResponder:(UITapGestureRecognizer *)recognizer {
+    if (recognizer.view == videosButtonEnhancer) {
+        [self tabChanged:videosButton];
+    } else if (recognizer.view == detailsButtonEnhancer) {
+        [self tabChanged:detailsButton];
+    } else if (recognizer.view == trailerButtonEnhancer) {
+        [self trailerShow:nil];
+    }
+}
+
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
@@ -46,6 +60,18 @@
     titleView.view.frame = CGRectMake(0, 0, 170,44);
     self.navigationItem.titleView = titleView.view;
 
+    UITapGestureRecognizer * tapVRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    [videosButtonEnhancer addGestureRecognizer:tapVRec];
+    [tapVRec release];
+    
+    UITapGestureRecognizer * tapDRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    [detailsButtonEnhancer addGestureRecognizer:tapDRec];
+    [tapDRec release];
+    
+    UITapGestureRecognizer * tapTRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    [trailerButtonEnhancer addGestureRecognizer:tapTRec];
+    [tapTRec release];
+    
     [self tabChanged:detailsButton];
 }
 
@@ -59,6 +85,9 @@
     [self setDetailsButton:nil];
     [self setVideosButton:nil];
     [self setTitleView:nil];
+    [self setDetailsButtonEnhancer:nil];
+    [self setVideosButtonEnhancer:nil];
+    [self setTrailerButtonEnhancer:nil];
     [super viewDidUnload];
 }
 
@@ -72,6 +101,9 @@
     [detailsButton release];
     [videosButton release];
     [titleView release];
+    [detailsButtonEnhancer release];
+    [videosButtonEnhancer release];
+    [trailerButtonEnhancer release];
     [super dealloc];
 }
 
@@ -192,25 +224,37 @@
     if ([[subViewContainer subviews] count] > 0) {
         [[[subViewContainer subviews] objectAtIndex:0] removeFromSuperview];
     }
-    CGRect rect = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height - [PiptureAppDelegate instance].tabViewBaseHeigh);
+    CGRect rect = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height - [PiptureAppDelegate instance].tabViewBaseHeight);
     switch (viewType) {
         case DetailAlbumViewType_Credits:
             detailPage.frame = rect;
             [detailPage prepareLayout:album];
             [subViewContainer addSubview:detailPage];
             
+            //[detailsButton setHighlighted:YES];
+            //[videosButton setHighlighted:NO];
+            [detailsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            [detailsButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];
             [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-active.png"] forState:UIControlStateNormal];
+            [videosButton setTitleColor:[UIColor colorWithRed:.75 green:.75 blue:.75 alpha:1] forState:UIControlStateNormal];
+            [videosButton setTitleShadowColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:.5] forState:UIControlStateNormal];
             [videosButton setBackgroundImage:[UIImage imageNamed:@"button-videos-inactive.png"] forState:UIControlStateNormal];
-            [videosButton setBackgroundImage:[UIImage imageNamed:@"button-videos-active.png"] forState:UIControlStateSelected];
+            [videosButton setBackgroundImage:[UIImage imageNamed:@"button-videos-active.png"] forState:UIControlStateHighlighted];
             break;
         case DetailAlbumViewType_Videos:
             videosTable.frame = rect;
             [subViewContainer addSubview:videosTable];
             [videosTable reloadData];
             
+            //[detailsButton setHighlighted:NO];
+            //[videosButton setHighlighted:YES];
+            [videosButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            [videosButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];
             [videosButton setBackgroundImage:[UIImage imageNamed:@"button-videos-active.png"] forState:UIControlStateNormal];
+            [detailsButton setTitleColor:[UIColor colorWithRed:.75 green:.75 blue:.75 alpha:1] forState:UIControlStateNormal];
+            [detailsButton setTitleShadowColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:.5] forState:UIControlStateNormal];
             [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-inactive.png"] forState:UIControlStateNormal];
-            [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-active.png"] forState:UIControlStateSelected];
+            [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-active.png"] forState:UIControlStateHighlighted];
             break;
     }
 }

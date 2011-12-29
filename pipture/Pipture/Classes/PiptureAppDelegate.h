@@ -44,7 +44,7 @@
 @property (retain, nonatomic) BusyViewController * busyView;
 @property (retain, nonatomic) UIViewController * homeViewController;
 @property (retain, nonatomic) IBOutlet WelcomeScreenManager *welcomeScreen;
-@property (readonly, nonatomic) NSInteger tabViewBaseHeigh;
+@property (readonly, nonatomic) NSInteger tabViewBaseHeight;
 
 +(PiptureAppDelegate*) instance;
 
