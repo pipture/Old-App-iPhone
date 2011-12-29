@@ -72,7 +72,7 @@ static NSString* const JSON_PARAM_TIMESLOT_STATUS = @"TimeslotStatus";
         case TimeslotStatus_Current:
             return @"Playing now";
         default:
-            return [NSString stringWithFormat:@"%@ to %@",[self representTime:startTime],[self representTime:endTime]];
+            return [NSString stringWithFormat:@"%@ %@ to %@",scheduleDescription, [self representTime:startTime],[self representTime:endTime]];            
     }
 }
 

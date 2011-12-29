@@ -19,8 +19,6 @@
     NSTimer *changeTimer;
     NSTimer *updateTimer;
     
-    UIStatusBarStyle lastStatusStyle;
-    UIBarStyle lastNaviStyle;
     
     //container for timeslots
     NSInteger reqTimeslotId;

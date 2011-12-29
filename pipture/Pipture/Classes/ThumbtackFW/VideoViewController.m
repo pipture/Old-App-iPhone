@@ -108,6 +108,12 @@
         [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
         [player play];
         pausedStatus = NO;
+        if (!controlsHidded && controlsShouldBeHiddenOnPlay)
+        {
+            controlsShouldBeHiddenOnPlay = NO;
+            controlsHidded = YES;
+            [self updateControlsAnimated:YES];            
+        }
     }
 }
 
@@ -296,19 +302,21 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
+    [super viewDidAppear:animated];    
     suspended = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
 
-    controlsHidded = YES;
+    self.navigationController.wantsFullScreenLayout = YES;
+    
+    controlsHidded = NO;
+    controlsShouldBeHiddenOnPlay = YES;
     self.busyContainer.hidden = YES;
+    
     
     [self updateControlsAnimated:YES];
 }
@@ -328,7 +336,7 @@
 - (void)updateControlsAnimated:(BOOL)animated {
     [UIApplication sharedApplication].statusBarHidden = controlsHidded;
     [self.navigationController setNavigationBarHidden:controlsHidded animated:animated];
-    
+
     if (animated) {
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:0.3];
@@ -364,6 +372,7 @@
 
 - (IBAction)playpauseAction:(id)sender {
     if (player != nil) {
+        controlsShouldBeHiddenOnPlay = NO;
         if (pausedStatus) {//paused
             [self setPlay];
         } else { //played

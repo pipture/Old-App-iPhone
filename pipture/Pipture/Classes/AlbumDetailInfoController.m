@@ -36,7 +36,7 @@
     [UIApplication sharedApplication].statusBarHidden = NO;
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     
-    [self tabChanged:(album.episodes.count == 0)?detailsButton:videosButton];
+    [self tabChanged:detailsButton];
     
     [titleView composeTitle:album];
 }
