@@ -25,7 +25,6 @@
 		3829907514AB06330003A202 /* HomeItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3829907414AB06330003A202 /* HomeItemViewController.m */; };
 		3829907714AB06830003A202 /* HomeItemViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3829907614AB06830003A202 /* HomeItemViewController.xib */; };
 		3829907A14AB33D60003A202 /* MailComposerNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3829907914AB33D60003A202 /* MailComposerNavigationController.m */; };
-		3829907C14AC67BE0003A202 /* nav-button-channel-active-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 3829907B14AC67BE0003A202 /* nav-button-channel-active-2.png */; };
 		382D9C26148E030100005F16 /* MailComposer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 382D9C25148E030100005F16 /* MailComposer.xib */; };
 		382D9C2B148E034600005F16 /* MailComposerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 382D9C2A148E034600005F16 /* MailComposerController.m */; };
 		382D9C2D148E178300005F16 /* snippet.html in Resources */ = {isa = PBXBuildFile; fileRef = 382D9C2C148E178300005F16 /* snippet.html */; };
@@ -160,9 +159,6 @@
 		38D74557147E6DAB00062441 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D74556147E6DAB00062441 /* QuartzCore.framework */; };
 		38D74558147E6DBE00062441 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38989CE6147A631E004DE1E0 /* CoreGraphics.framework */; };
 		38D7455C147F728200062441 /* AlbumDetailPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D7455B147F728200062441 /* AlbumDetailPage.m */; };
-		38DD10A714AC6E5400B14869 /* nav-button-channel-active-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38DD10A614AC6E5400B14869 /* nav-button-channel-active-2@2x.png */; };
-		38DD10AA14AC70DA00B14869 /* nav-button-library-active-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38DD10A814AC70DA00B14869 /* nav-button-library-active-2@2x.png */; };
-		38DD10AB14AC70DA00B14869 /* nav-button-library-active-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 38DD10A914AC70DA00B14869 /* nav-button-library-active-2.png */; };
 		38E9E0A114A9ED9400A2C039 /* comingsoon.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E9E09F14A9ED9400A2C039 /* comingsoon.png */; };
 		38E9E0A214A9ED9400A2C039 /* comingsoon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E9E0A014A9ED9400A2C039 /* comingsoon@2x.png */; };
 		38E9FA89148CEE1E0075463E /* playBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E9FA88148CEE1E0075463E /* playBtn.png */; };
@@ -231,7 +227,6 @@
 		3829907614AB06830003A202 /* HomeItemViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeItemViewController.xib; sourceTree = "<group>"; };
 		3829907814AB33D60003A202 /* MailComposerNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailComposerNavigationController.h; sourceTree = "<group>"; };
 		3829907914AB33D60003A202 /* MailComposerNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MailComposerNavigationController.m; sourceTree = "<group>"; };
-		3829907B14AC67BE0003A202 /* nav-button-channel-active-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav-button-channel-active-2.png"; sourceTree = "<group>"; };
 		382D9C25148E030100005F16 /* MailComposer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MailComposer.xib; sourceTree = "<group>"; };
 		382D9C29148E034600005F16 /* MailComposerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailComposerController.h; sourceTree = "<group>"; };
 		382D9C2A148E034600005F16 /* MailComposerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MailComposerController.m; sourceTree = "<group>"; };
@@ -391,9 +386,6 @@
 		38D74556147E6DAB00062441 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		38D7455A147F728200062441 /* AlbumDetailPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailPage.h; sourceTree = "<group>"; };
 		38D7455B147F728200062441 /* AlbumDetailPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailPage.m; sourceTree = "<group>"; };
-		38DD10A614AC6E5400B14869 /* nav-button-channel-active-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav-button-channel-active-2@2x.png"; sourceTree = "<group>"; };
-		38DD10A814AC70DA00B14869 /* nav-button-library-active-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav-button-library-active-2@2x.png"; sourceTree = "<group>"; };
-		38DD10A914AC70DA00B14869 /* nav-button-library-active-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav-button-library-active-2.png"; sourceTree = "<group>"; };
 		38E9E09F14A9ED9400A2C039 /* comingsoon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = comingsoon.png; sourceTree = "<group>"; };
 		38E9E0A014A9ED9400A2C039 /* comingsoon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "comingsoon@2x.png"; sourceTree = "<group>"; };
 		38E9FA88148CEE1E0075463E /* playBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playBtn.png; sourceTree = "<group>"; };
@@ -708,10 +700,6 @@
 		38A7EC88148DDC03002120F3 /* png */ = {
 			isa = PBXGroup;
 			children = (
-				38DD10A814AC70DA00B14869 /* nav-button-library-active-2@2x.png */,
-				38DD10A914AC70DA00B14869 /* nav-button-library-active-2.png */,
-				38DD10A614AC6E5400B14869 /* nav-button-channel-active-2@2x.png */,
-				3829907B14AC67BE0003A202 /* nav-button-channel-active-2.png */,
 				3829906B14AAF4400003A202 /* arrow-prev-down.png */,
 				3829906C14AAF4400003A202 /* arrow-next-down.png */,
 				3829906D14AAF4400003A202 /* arrow-next-down@2x.png */,
@@ -1070,10 +1058,6 @@
 				3829907114AAF4400003A202 /* arrow-next-down@2x.png in Resources */,
 				3829907214AAF4400003A202 /* arrow-prev-down@2x.png in Resources */,
 				3829907714AB06830003A202 /* HomeItemViewController.xib in Resources */,
-				3829907C14AC67BE0003A202 /* nav-button-channel-active-2.png in Resources */,
-				38DD10A714AC6E5400B14869 /* nav-button-channel-active-2@2x.png in Resources */,
-				38DD10AA14AC70DA00B14869 /* nav-button-library-active-2@2x.png in Resources */,
-				38DD10AB14AC70DA00B14869 /* nav-button-library-active-2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
