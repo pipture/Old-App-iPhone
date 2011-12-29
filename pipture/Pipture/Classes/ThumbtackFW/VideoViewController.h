@@ -29,6 +29,7 @@
     UIBarStyle lastNaviStyle;
     BOOL controlsHidded;
     BOOL pausedStatus;
+    BOOL controlsShouldBeHiddenOnPlay;
 }
 - (AVPlayerItem *)createItem:(PlaylistItem*)item;
 

@@ -191,6 +191,10 @@
             break;
         case HomeScreenMode_Schedule:
             [self setHomeScreenMode:HomeScreenMode_PlayingNow];
+            break;
+        case HomeScreenMode_Cover:
+            [self setHomeScreenMode:HomeScreenMode_Schedule];            
+            break;
         default:
             break;
     }
@@ -217,7 +221,7 @@
         
         BOOL flipAction = NO;
         if ((mode == HomeScreenMode_Cover && homeScreenMode == HomeScreenMode_PlayingNow)||
-            (mode == HomeScreenMode_PlayingNow && homeScreenMode == HomeScreenMode_Cover)) {
+            ((mode == HomeScreenMode_PlayingNow || mode == HomeScreenMode_Schedule) && homeScreenMode == HomeScreenMode_Cover)) {
             [self createFlipAnimation];
             flipAction = YES;
         }
@@ -248,7 +252,10 @@
                 [[PiptureAppDelegate instance] tabbarSelect:0];
                 flipButton.hidden = NO;
                 [flipButton setImage:[UIImage imageNamed:@"button-flip.png"] forState:UIControlStateNormal];
-                scheduleButton.hidden = YES;
+                scheduleButton.hidden = NO;
+                [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] forState:UIControlStateNormal];
+                [scheduleButton setTitle:@"Schedule" forState:UIControlStateNormal];
+                scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
 
                 [self updateTimeslots:nil];
                 
@@ -277,6 +284,12 @@
                 
                 break;
             case HomeScreenMode_Schedule: 
+                if (homeScreenMode == HomeScreenMode_Cover)
+                {
+                    [tabbarContainer addSubview:scheduleView];
+                    if (flipAction) [UIView commitAnimations];
+                }
+                
                 [scheduleView setTimeslotsMode:TimeslotsMode_Schedule];
                 [[PiptureAppDelegate instance] tabbarVisible:NO];
                 flipButton.hidden = YES;

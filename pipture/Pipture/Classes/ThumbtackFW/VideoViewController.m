@@ -107,6 +107,12 @@
         [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
         [player play];
         pausedStatus = NO;
+        if (!controlsHidded && controlsShouldBeHiddenOnPlay)
+        {
+            controlsShouldBeHiddenOnPlay = NO;
+            controlsHidded = YES;
+            [self updateControlsAnimated:YES];            
+        }
     }
 }
 
@@ -305,8 +311,10 @@
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
 
-    controlsHidded = YES;
+    controlsHidded = NO;
+    controlsShouldBeHiddenOnPlay = YES;
     self.busyContainer.hidden = YES;
+    
     
     [self updateControlsAnimated:YES];
 }
@@ -370,6 +378,7 @@
 
 - (IBAction)playpauseAction:(id)sender {
     if (player != nil) {
+        controlsShouldBeHiddenOnPlay = NO;
         if (pausedStatus) {//paused
             [self setPlay];
         } else { //played
