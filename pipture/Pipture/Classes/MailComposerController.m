@@ -52,6 +52,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (void) displayScreenshot
 {
+    [titleViewController composeTitle:playlistItem];
     NSString*url;
     if (screenshotImage_)
     {
@@ -101,9 +102,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     self.navigationItem.title = @"mail";
     titleViewController.view.frame = CGRectMake(0, 0, 170,44);
     self.navigationItem.titleView = titleViewController.view;
-    [titleViewController composeTitle:playlistItem];
-    
-    [self displayScreenshot];
     
     UITapGestureRecognizer *singleFingerDTap = [[UITapGestureRecognizer alloc]
                                                 initWithTarget:self action:@selector(onTableTap:)];
@@ -120,7 +118,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [layoutTableView addGestureRecognizer:panGestureRecognizer];
     [panGestureRecognizer release];
     
-    [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];
     screenshotCell.accessoryType = UITableViewCellAccessoryNone;
     
     
@@ -134,7 +131,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 -(void)onCancel
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissModalViewControllerAnimated:YES];
+    //[self.navigationController popViewControllerAnimated:YES];
 }
 
 
@@ -180,11 +178,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         
         [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : playlistItem.emailScreenshot userName:nameTextField.text  receiver:self];
     }
-}
-
-- (void)onSetModelRequestingState:(BOOL)state
-{
-    //[self hideCancelButton:state];
 }
 
 - (void)viewDidUnload
@@ -262,14 +255,19 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self moveView:NO];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    
+    [self displayScreenshot];
+    [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
-    
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     
     self.navigationItem.hidesBackButton = YES;
 }
@@ -277,8 +275,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (void)viewWillDisappear:(BOOL)animated
 {
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
-    [UIApplication sharedApplication].statusBarStyle = lastStatusStyle;
-    self.navigationController.navigationBar.barStyle = lastNaviStyle;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil]; 
     
@@ -305,9 +301,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error;
 {
     //TODO: process result
-    [self dismissModalViewControllerAnimated:YES];
-    
-    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissModalViewControllerAnimated:NO];//first std mailer
+    [self dismissModalViewControllerAnimated:YES];//second our composer
 }
 
 -(void)messageSiteURLreceived:(NSString*)url

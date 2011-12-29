@@ -24,6 +24,7 @@
 		3829907214AAF4400003A202 /* arrow-prev-down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3829906E14AAF4400003A202 /* arrow-prev-down@2x.png */; };
 		3829907514AB06330003A202 /* HomeItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3829907414AB06330003A202 /* HomeItemViewController.m */; };
 		3829907714AB06830003A202 /* HomeItemViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3829907614AB06830003A202 /* HomeItemViewController.xib */; };
+		3829907A14AB33D60003A202 /* MailComposerNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3829907914AB33D60003A202 /* MailComposerNavigationController.m */; };
 		382D9C26148E030100005F16 /* MailComposer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 382D9C25148E030100005F16 /* MailComposer.xib */; };
 		382D9C2B148E034600005F16 /* MailComposerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 382D9C2A148E034600005F16 /* MailComposerController.m */; };
 		382D9C2D148E178300005F16 /* snippet.html in Resources */ = {isa = PBXBuildFile; fileRef = 382D9C2C148E178300005F16 /* snippet.html */; };
@@ -224,6 +225,8 @@
 		3829907314AB06330003A202 /* HomeItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeItemViewController.h; sourceTree = "<group>"; };
 		3829907414AB06330003A202 /* HomeItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeItemViewController.m; sourceTree = "<group>"; };
 		3829907614AB06830003A202 /* HomeItemViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeItemViewController.xib; sourceTree = "<group>"; };
+		3829907814AB33D60003A202 /* MailComposerNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailComposerNavigationController.h; sourceTree = "<group>"; };
+		3829907914AB33D60003A202 /* MailComposerNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MailComposerNavigationController.m; sourceTree = "<group>"; };
 		382D9C25148E030100005F16 /* MailComposer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MailComposer.xib; sourceTree = "<group>"; };
 		382D9C29148E034600005F16 /* MailComposerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailComposerController.h; sourceTree = "<group>"; };
 		382D9C2A148E034600005F16 /* MailComposerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MailComposerController.m; sourceTree = "<group>"; };
@@ -493,6 +496,8 @@
 				889F003214A0A41F00F8432A /* AlbumScreenshotController.m */,
 				3881FBE614A9C227008DC616 /* WelcomeScreenManager.h */,
 				3881FBE714A9C227008DC616 /* WelcomeScreenManager.m */,
+				3829907814AB33D60003A202 /* MailComposerNavigationController.h */,
+				3829907914AB33D60003A202 /* MailComposerNavigationController.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -1133,6 +1138,7 @@
 				387E9F5714A493A800355C43 /* DetailsTitleViewController.m in Sources */,
 				3881FBE814A9C227008DC616 /* WelcomeScreenManager.m in Sources */,
 				3829907514AB06330003A202 /* HomeItemViewController.m in Sources */,
+				3829907A14AB33D60003A202 /* MailComposerNavigationController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

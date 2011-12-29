@@ -33,5 +33,8 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) IBOutlet UIButton *detailsButton;
 @property (retain, nonatomic) IBOutlet UIButton *videosButton;
 @property (retain, nonatomic) IBOutlet DetailsTitleViewController *titleView;
+@property (retain, nonatomic) IBOutlet UIView *detailsButtonEnhancer;
+@property (retain, nonatomic) IBOutlet UIView *videosButtonEnhancer;
+@property (retain, nonatomic) IBOutlet UIView *trailerButtonEnhancer;
 
 @end

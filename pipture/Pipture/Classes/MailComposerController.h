@@ -13,9 +13,6 @@
 #import "VideoTitleViewController.h"
 
 @interface MailComposerController : UIViewController <UITextViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate>{
-
-    UIStatusBarStyle lastStatusStyle;
-    UIBarStyle lastNaviStyle;
 }
 @property (retain, nonatomic) IBOutlet UIView *picturePlaceholder;
 @property (retain, nonatomic) IBOutlet UITextView *messageEdit;

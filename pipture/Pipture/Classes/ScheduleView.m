@@ -114,13 +114,13 @@
     NSLog(@"ScrollView subs: %d", [[scrollView subviews]count]);
 }
 
-- (void)scrollToPage:(int) page {
+- (void)scrollToPage:(int)page animated:(BOOL)animated{
     NSLog(@"scroll to page %d called", page);
     if ((page < coverItems.count && page >= 0) || page == -1) {
         CGRect frame = scrollView.frame;
         frame.origin.x = frame.size.width * (page + 1);
         frame.origin.y = 0;
-        [scrollView scrollRectToVisible:frame animated:YES];
+        [scrollView scrollRectToVisible:frame animated:animated];
     }
 }
 
@@ -179,7 +179,7 @@
 - (void)updateTimeslots:(NSArray*) timeslots {
     @synchronized(self) {
         NSLog(@"Timeslots: %@", timeslots);
-        NSLog(@"was size = %d", scrollView.subviews.count);
+        NSLog(@"was size = %d", timelineArray.count);
         NSLog(@"new size = %d", timeslots.count);
         int lastTimeSlotId = -1;
         if (timelineArray.count > 0)
@@ -194,39 +194,41 @@
             }
              
             [delegate resetScheduleTimer];
-            //[self updateControls];
+            [self updateNotify];
          
             return;
         }
          
-        int page = [self getPageNumber];
-        //if new timeslots array shorter, then found current timeslot
-        if (lastTimeSlotId == -1 || page >= timeslots.count) {
-            page = -1;
+        //find new current timeslot
+        int newCurrentTimeslotPage = -1;
+        for (int i = 0; i < timeslots.count; i++) {
+            if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Current) {
+                newCurrentTimeslotPage = i;
+                break;
+            }
+        }
+        //current did not founded, find next
+        if (newCurrentTimeslotPage == -1) {
             for (int i = 0; i < timeslots.count; i++) {
-                if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Current) {
-                    page = i;
+                if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Next) {
+                    newCurrentTimeslotPage = i;
                     break;
                 }
             }
-            //current did not founded, find next
-            if (page == -1) {
-                for (int i = 0; i < timeslots.count; i++) {
-                    if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Next) {
-                        page = i;
-                        break;
-                    }
-                }
-            }
-            
-            //next did not founded, get last
-            if (page == -1) {
-                page = timeslots.count - 1;
-            }
         }
-            
-        Timeslot * slot = [timeslots objectAtIndex:page];
-        if (lastTimeSlotId != slot.timeslotId || timeslots.count != timelineArray.count) {
+        
+        //next did not founded, get last
+        if (newCurrentTimeslotPage == -1) {
+            newCurrentTimeslotPage = timeslots.count - 1;
+        }
+
+        int page = [self getPageNumber];
+        Timeslot * slot = nil;
+        if (timeslots != nil && timeslots.count > 0 && page >= 0 && page < timeslots.count)
+            slot = [timeslots objectAtIndex:page];
+        if ((slot && lastTimeSlotId != slot.timeslotId) || timeslots.count != timelineArray.count ||
+            (timeslots.count == timelineArray.count && 
+             [[timeslots objectAtIndex:newCurrentTimeslotPage] timeslotStatus] != [[timelineArray objectAtIndex:newCurrentTimeslotPage] timeslotStatus])) {
             [timelineArray removeAllObjects];
             [timelineArray addObjectsFromArray:timeslots];
             
@@ -254,7 +256,8 @@
                 [[scrollView.subviews lastObject] removeFromSuperview];
             }
          
-            [self scrollToPage:page];
+            page = newCurrentTimeslotPage;
+            [self scrollToPage:page animated:NO];
             [self prepareImageFor: page - 1];
             [self prepareImageFor: page];
             [self prepareImageFor: page + 1];
@@ -273,14 +276,14 @@
     int page = [self getPageNumber] - 1;
     [self prepareImageFor:page];
     [self prepareImageFor:page - 1];
-    [self scrollToPage:page];
+    [self scrollToPage:page animated:YES];
 }
 
 - (IBAction)nextAction:(id)sender {
     int page = [self getPageNumber] + 1;
     [self prepareImageFor:page];
     [self prepareImageFor:page + 1];
-    [self scrollToPage:page];
+    [self scrollToPage:page animated:YES];
 }
 
 - (void)processWrap {
@@ -352,7 +355,7 @@
     }
 
     if (page != -1) {
-        [self scrollToPage:page];
+        [self scrollToPage:page animated:NO];
         [self prepareImageFor: page - 1];
         [self prepareImageFor: page];
         [self prepareImageFor: page + 1];

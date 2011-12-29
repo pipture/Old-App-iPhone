@@ -20,6 +20,7 @@
 @synthesize nextButton;
 @synthesize pauseButton;
 @synthesize prevButton;
+@synthesize mailComposerNavigationController;
 @synthesize simpleMode;
 @synthesize playlist;
 @synthesize videoTitleView;
@@ -296,6 +297,7 @@
     [self setVideoContainer:nil];
     [self setBusyContainer:nil];
     [self setVideoTitleView:nil];
+    [self setMailComposerNavigationController:nil];
     [super viewDidUnload];
 }
 
@@ -325,9 +327,6 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [UIApplication sharedApplication].statusBarStyle = lastStatusStyle;
-    self.navigationController.navigationBar.barStyle = lastNaviStyle;
-    
     suspended = YES;
     [self setPause];
     
@@ -358,13 +357,8 @@
 - (IBAction)sendAction:(id)sender{
     
     if ([MFMailComposeViewController canSendMail] && pos >= 0 && pos < playlist.count) {
-
-        MailComposerController* mcc = [[MailComposerController alloc] initWithNibName:@"MailComposer" bundle:nil];
-        mcc.playlistItem = [playlist objectAtIndex:pos];
-        mcc.timeslotId = timeslotId;
-        
-        [self.navigationController pushViewController:mcc animated:YES];
-        [mcc release];    
+        [mailComposerNavigationController prepareMailComposer:[playlist objectAtIndex:pos] timeslot:timeslotId];
+        [self.navigationController presentModalViewController:mailComposerNavigationController animated:YES];
     } else {
         //TODO: can't send message
     }
@@ -414,6 +408,7 @@
     [videoContainer release];
     [busyContainer release];
     [videoTitleView release];
+    [mailComposerNavigationController release];
     [super dealloc];
 }
 
