@@ -231,8 +231,6 @@
             [detailPage prepareLayout:album];
             [subViewContainer addSubview:detailPage];
             
-            //[detailsButton setHighlighted:YES];
-            //[videosButton setHighlighted:NO];
             [detailsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             [detailsButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];
             [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-active.png"] forState:UIControlStateNormal];
@@ -246,8 +244,6 @@
             [subViewContainer addSubview:videosTable];
             [videosTable reloadData];
             
-            //[detailsButton setHighlighted:NO];
-            //[videosButton setHighlighted:YES];
             [videosButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             [videosButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];
             [videosButton setBackgroundImage:[UIImage imageNamed:@"button-videos-active.png"] forState:UIControlStateNormal];
