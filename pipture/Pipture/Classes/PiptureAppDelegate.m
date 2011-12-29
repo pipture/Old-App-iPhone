@@ -262,7 +262,7 @@ static PiptureAppDelegate *instance;
 - (void)openHome {
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.5];
-    [animation setType:kCATransitionPush];
+    [animation setType:kCATransitionMoveIn];
     [animation setSubtype:kCATransitionFromTop];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     
@@ -279,7 +279,7 @@ static PiptureAppDelegate *instance;
     
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.5];
-    [animation setType:kCATransitionPush];
+    [animation setType:kCATransitionMoveIn];
     [animation setSubtype:kCATransitionFromTop];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     

@@ -19,6 +19,9 @@
 #define kOFFSET_FOR_KEYBOARD 60.0
 #define kHEIGHT_FOR_KEYBOARD 216.0
 
+#define TABBARITEM_CHANNEL 1
+#define TABBARITEM_LIBRARY 2
+
 #define TRACK_EVENT(event, action) [[PiptureAppDelegate instance] trackEvent:event:action]
 #define GET_CREDITS [[PiptureAppDelegate instance] getBalance];
 
@@ -26,15 +29,17 @@
 #define SHOW_ERROR(title, msg) [[PiptureAppDelegate instance] showError:title message:msg];
 
 
-@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UITabBarDelegate, UINavigationControllerDelegate, UIAlertViewDelegate>
+@interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UINavigationControllerDelegate, UIAlertViewDelegate>
 {
     float balance;
     InAppPurchaseManager * purchases;
 }
 
 @property (retain, nonatomic) IBOutlet UIView *tabView;
+@property (retain, nonatomic) IBOutlet UIButton *channelButton;
+@property (retain, nonatomic) IBOutlet UIButton *libraryButton;
+@property (retain, nonatomic) IBOutlet UIView *tabbarView;
 @property (retain, nonatomic) IBOutlet UIButton *powerButton;
-@property (retain, nonatomic) IBOutlet UITabBar *tabbarControl;
 @property (retain, nonatomic) IBOutlet UIImageView *powerButtonImage;
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
@@ -51,6 +56,7 @@
 - (void)powerButtonEnable:(BOOL)enable;
 - (void)tabbarVisible:(BOOL)visible;
 - (void)tabbarSelect:(int)item;
+- (IBAction)tabBarClick:(id)sender;
 
 - (void)putHomescreenState:(int)state;
 - (int)getHomescreenState;
@@ -59,7 +65,6 @@
 - (NSString*)getUserName;
 
 - (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo tag:(int)screenId delegate:(id<WelcomeScreenProtocol>)delegate;
-//- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo;
 
 - (void)setBalance:(NSDecimalNumber*)newBalance;
 - (float)getBalance;
