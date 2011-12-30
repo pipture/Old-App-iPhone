@@ -11,8 +11,15 @@
 #import "PiptureModel.h"
 #import "ScreenshotImage.h"
 #import "VideoTitleViewController.h"
+#import "AsyncImageView.h"
 
 @interface MailComposerController : UIViewController <UITextViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate>{
+
+    @private
+    ScreenshotImage* screenshotImage_;
+    PlaylistItem* playlistItem_;
+    AsyncImageView * lastScreenshotView;
+    NSArray* screenshotImages_;    
 }
 @property (retain, nonatomic) IBOutlet UIView *picturePlaceholder;
 @property (retain, nonatomic) IBOutlet UITextView *messageEdit;
@@ -23,9 +30,10 @@
 @property (retain, nonatomic) IBOutlet UILabel *screenshotName;
 @property (retain, nonatomic) IBOutlet UITextField *nameTextField;
 @property (retain, nonatomic) UIBarButtonItem* cancelButton;
+@property (retain, nonatomic) MFMailComposeViewController* mailComposer;
 
 @property (retain, nonatomic) UIBarButtonItem * nextButton;
-@property (assign, nonatomic) PlaylistItem * playlistItem;
+@property (retain, nonatomic) PlaylistItem * playlistItem;
 @property (assign, nonatomic) NSNumber * timeslotId;
 
 - (IBAction)onTableTap:(id)sender;
