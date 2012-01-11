@@ -14,6 +14,19 @@
 -(void)parseJSON:(NSDictionary*)jsonData;
 @end
 
+@implementation AlbumCredit
+
+@synthesize name;
+@synthesize content;
+
+- (void)dealloc {
+    [name release];
+    [content release];
+    [super dealloc];
+}
+
+@end
+
 @implementation Album
 
 @synthesize albumId;
@@ -109,7 +122,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     if (self) {        
         
         series = [[Series alloc] init];
-        credits_ = [[NSMutableDictionary alloc] init];
+        credits_ = [[NSMutableArray alloc] init];
         detailsLoaded = NO;
     }
     return self;
@@ -185,9 +198,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
                 NSString* partBody = [partTitleAndBody count] > 1 ? [[partTitleAndBody objectAtIndex:1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]: nil;
                 if (partTitle && partTitle.length > 0)
                 {
-                    NSMutableArray *partItems = [[NSMutableArray alloc] init];                        
-                    [credits_ setObject:partItems forKey:partTitle];
-                    [partItems release];
+                    NSMutableArray *partItems = [[NSMutableArray alloc] init];                                            
                     
                     if (partBody)
                     {
@@ -197,6 +208,14 @@ static NSString* const CREDITS_ITEM_TAB = @",";
                             [partItems addObject:partBodyItemComponents];
                         }
                     }
+
+                    AlbumCredit* credit = [[AlbumCredit alloc] init];
+                    credit.name = partTitle;
+                    credit.content = partItems;
+                    [credits_ addObject:credit];                    
+                    [credit release];
+                    [partItems release];
+                    
                     
                 }
             }

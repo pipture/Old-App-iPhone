@@ -33,7 +33,7 @@
     int width = self.frame.size.width - 40;
     
     int top = topPos;
-    int height = 15;
+    int height = 18;
     UILabel * text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
     text.font = [UIFont systemFontOfSize:15];
     text.text = name;
@@ -45,7 +45,7 @@
     
     for (NSArray* credit in data) {
         if (credit.count > 0) {
-            height = 15;
+            height = 18;
             text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
             text.font = [UIFont systemFontOfSize:12];
             text.text = [credit objectAtIndex:0];
@@ -60,7 +60,7 @@
         else 
         {
             for (int i = 1; i < credit.count; i++) {
-                height = 15;
+                height = 18;
                 text = [[UILabel alloc] initWithFrame:CGRectMake(120, top, width, height)];
                 text.font = [UIFont systemFontOfSize:12];
                 text.text = [credit objectAtIndex:i];
@@ -169,9 +169,8 @@
     top += text.frame.size.height + 10;
     [text release];
     
-    for (id key in [album.credits allKeys]) {
-        NSArray * data = [album.credits objectForKey:key];
-        top = [self addSection:top sectionName:key sectionData:data];
+    for (AlbumCredit* credit in album.credits) {
+        top = [self addSection:top sectionName:credit.name sectionData:credit.content];
     }
     
     self.contentSize = CGSizeMake(self.frame.size.width, top);

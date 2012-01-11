@@ -19,7 +19,7 @@ enum AlbumStatus{
 @interface Album : NSObject
 {
     @private
-    NSMutableDictionary* credits_;
+    NSMutableArray* credits_;
 }
 
 @property(assign, nonatomic) NSInteger albumId;
@@ -34,9 +34,7 @@ enum AlbumStatus{
 @property(retain, nonatomic) NSString* closeupBackground;
 @property(retain, nonatomic) NSString* emailScreenshot;
 
-// Key - Credit title, Value - NSArray of credit items
-// Each credit item is NSArray of NSString values
-@property(readonly, nonatomic) NSDictionary* credits;
+@property(readonly, nonatomic) NSArray* credits;
 @property(readonly, nonatomic) Series* series;
 @property(readonly, nonatomic) NSArray* episodes;
 @property(readonly, nonatomic) Trailer* trailer;
@@ -45,4 +43,14 @@ enum AlbumStatus{
 -(id)initWithJSON:(NSDictionary*)jsonData;
 -(void)updateWithDetails:(NSDictionary*)jsonData episodes:(NSArray*)episodes trailer:(Trailer*)trailer;
 
+@end
+
+@interface AlbumCredit : NSObject 
+
+@property(retain, nonatomic) NSString* name;
+
+//NSArray of credit items
+// Each credit item is NSArray of NSString values
+@property(retain, nonatomic) NSArray* content;
+    
 @end
