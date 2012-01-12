@@ -115,7 +115,7 @@
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
     [UIApplication sharedApplication].statusBarHidden = NO;
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
 }
 
 - (void)setNavBarMode {
@@ -321,18 +321,25 @@
     [self flipAction:nil];
 }
 
-- (void)doPower {
+- (Timeslot*)getTimeslot {
     Timeslot * slot = nil;
     switch (homeScreenMode) {
         case HomeScreenMode_Cover:
             slot = [coverView getTimeslot];
             break;
         case HomeScreenMode_PlayingNow:
+        case HomeScreenMode_Schedule:
         {
             slot = [scheduleView getTimeslot];
         } break;
         default: break;
     }
+    
+    return slot;
+}
+
+- (void)doPower {
+    Timeslot * slot = [self getTimeslot];
     
     if (slot) {
         reqTimeslotId = slot.timeslotId;
@@ -410,7 +417,9 @@
     if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
         AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
         [[PiptureAppDelegate instance] tabbarVisible:YES];
-        [[PiptureAppDelegate instance] powerButtonEnable:NO];
+        
+        Timeslot * slot = [self getTimeslot];
+        [[PiptureAppDelegate instance] powerButtonEnable:(slot && slot.timeslotStatus == TimeslotStatus_Current)];
         adic.album = album;
         NSLog(@"Album episodes: %@", album.episodes);
         [self.navigationController pushViewController:adic animated:YES];

@@ -26,7 +26,6 @@
 - (NSString*)storageFile:(NSString *)file {
     NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [savePaths objectAtIndex:0];
-    
     return [documentsDirectory stringByAppendingPathComponent:file];
 }
 
@@ -82,7 +81,7 @@
     actionSelector = action;
     data = nil;
     if (useStorage) {
-        imageFile = [[self storageFile:[NSString stringWithFormat:@"%d",[url.description hash]]] copy];
+        imageFile = [self storageFile:[NSString stringWithFormat:@"%d",[url.description hash]]];// retain];
         data = [[NSMutableData alloc] initWithContentsOfFile:imageFile];
     }
     if (data) {
@@ -129,10 +128,11 @@
 }
 
 - (void)dealloc {
+    NSLog(@"Async Image dealloc");
     [connection cancel];
     [connection release];
     [data release];
-    [imageFile release];
+    //[imageFile release];
     data = nil;
     if (defImage) {
         [defImage release];
