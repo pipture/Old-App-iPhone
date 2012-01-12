@@ -34,6 +34,10 @@
     scheduleButton.hidden = hidden;
 }
 
+- (void)flipButtonHidden:(BOOL)hidden {
+    flipButton.hidden = hidden;
+}
+
 - (void)updateAlbums {
     [[[PiptureAppDelegate instance] model] getAlbumsForReciever:self];
 }
@@ -141,18 +145,18 @@
         case HomeScreenMode_Albums:
             [self setNavBarMode];
             [self updateAlbums];
-            [[PiptureAppDelegate instance] tabbarVisible:YES];
+            [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
             [self setFullScreenMode];
             [self updateTimeslots:nil];
-            [[PiptureAppDelegate instance] tabbarVisible:YES];
+            [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
         case HomeScreenMode_Schedule:
             [self setFullScreenMode];
             [self updateTimeslots:nil];
-            [[PiptureAppDelegate instance] tabbarVisible:NO];
+            [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
             break;
         default:break;
     } 
@@ -243,7 +247,7 @@
                 
                 [self setFullScreenMode];
                 
-                [[PiptureAppDelegate instance] tabbarVisible:YES];
+                [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
                 [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_CHANNEL];
                 flipButton.hidden = NO;
                 [flipButton setImage:[UIImage imageNamed:@"button-flip.png"] forState:UIControlStateNormal];
@@ -264,7 +268,7 @@
                 [self setFullScreenMode];
                 
                 [scheduleView setTimeslotsMode:TimeslotsMode_PlayingNow];
-                [[PiptureAppDelegate instance] tabbarVisible:YES];
+                [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
                 [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_CHANNEL];
                 flipButton.hidden = NO;
                 [flipButton setImage:[UIImage imageNamed:@"button-flip-back.png"] forState:UIControlStateNormal];
@@ -286,7 +290,7 @@
                 }
                 
                 [scheduleView setTimeslotsMode:TimeslotsMode_Schedule];
-                [[PiptureAppDelegate instance] tabbarVisible:NO];
+                [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
                 flipButton.hidden = YES;
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule-done.png"] forState:UIControlStateNormal];
                 scheduleButton.hidden = NO;
@@ -305,7 +309,7 @@
                 [self setNavBarMode];
                 
                 [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_LIBRARY];
-                [[PiptureAppDelegate instance] tabbarVisible:YES];
+                [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
                 [[PiptureAppDelegate instance] powerButtonEnable:NO];
                 flipButton.hidden = YES;
                 scheduleButton.hidden = YES;
@@ -416,7 +420,7 @@
     NSLog(@"%@", self.navigationController.visibleViewController.class);
     if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
         AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
-        [[PiptureAppDelegate instance] tabbarVisible:YES];
+        [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
         
         Timeslot * slot = [self getTimeslot];
         [[PiptureAppDelegate instance] powerButtonEnable:(slot && slot.timeslotStatus == TimeslotStatus_Current)];

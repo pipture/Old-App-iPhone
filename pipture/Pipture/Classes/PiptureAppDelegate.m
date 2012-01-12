@@ -466,15 +466,25 @@ NSInteger networkActivityIndecatorCount;
     }
 }
 
+- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+    tabView.hidden = tabView.alpha == 0.0;
+}
 
-- (void)tabbarVisible:(BOOL)visible {
+- (void)tabbarVisible:(BOOL)visible slide:(BOOL)slide {
     CGRect rect = tabView.frame;
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.3];
-    if (!visible)
-        tabView.frame = CGRectMake(0, self.window.frame.size.height, rect.size.width, tabView.frame.size.height);
-    else
-        tabView.frame = CGRectMake(0, self.window.frame.size.height - tabView.frame.size.height, rect.size.width, tabView.frame.size.height);
+    if (slide) {
+        if (!visible)
+            tabView.frame = CGRectMake(0, self.window.frame.size.height, rect.size.width, tabView.frame.size.height);
+        else
+            tabView.frame = CGRectMake(0, self.window.frame.size.height - tabView.frame.size.height, rect.size.width, tabView.frame.size.height);
+    } else {
+        if (visible) tabView.hidden = NO;
+        tabView.alpha = visible?1:0;
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+    }
     
     [UIView commitAnimations]; 
 }

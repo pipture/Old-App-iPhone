@@ -12,8 +12,9 @@
 
 enum TimeslotsMode{
     TimeslotsMode_PlayingNow,
+    TimeslotsMode_PlayingNow_Fullscreen,
     TimeslotsMode_Schedule,
-    TimeslotsMode_Schedule_Fillscreen,
+    TimeslotsMode_Schedule_Fullscreen,
 };
 
 @interface ScheduleView : UIView<UIScrollViewDelegate>

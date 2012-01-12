@@ -54,7 +54,7 @@
 +(PiptureAppDelegate*) instance;
 
 - (void)powerButtonEnable:(BOOL)enable;
-- (void)tabbarVisible:(BOOL)visible;
+- (void)tabbarVisible:(BOOL)visible slide:(BOOL)slide;
 - (void)tabbarSelect:(int)item;
 - (IBAction)tabBarClick:(id)sender;
 

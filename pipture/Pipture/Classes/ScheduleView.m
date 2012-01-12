@@ -144,10 +144,16 @@
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer {
     switch (timeslotsMode) {
         case TimeslotsMode_Schedule:
-            [self setTimeslotsMode:TimeslotsMode_Schedule_Fillscreen];
+            [self setTimeslotsMode:TimeslotsMode_Schedule_Fullscreen];
             break;
-        case TimeslotsMode_Schedule_Fillscreen:
+        case TimeslotsMode_Schedule_Fullscreen:
             [self setTimeslotsMode:TimeslotsMode_Schedule];
+            break;
+        case TimeslotsMode_PlayingNow:
+            [self setTimeslotsMode:TimeslotsMode_PlayingNow_Fullscreen];
+            break;
+        case TimeslotsMode_PlayingNow_Fullscreen:
+            [self setTimeslotsMode:TimeslotsMode_PlayingNow];
             break;
         default: break;
     }
@@ -393,18 +399,25 @@
     
     switch (timeslotsMode) {
         case TimeslotsMode_PlayingNow:
-            [UIApplication sharedApplication].statusBarHidden = NO;
+        case TimeslotsMode_PlayingNow_Fullscreen:
+        {
+            BOOL visibleInfoPanel = (timeslotsMode != TimeslotsMode_PlayingNow_Fullscreen);
+
+            [UIApplication sharedApplication].statusBarHidden = !visibleInfoPanel;
+            [delegate scheduleButtonHidden:!visibleInfoPanel];
+            [delegate flipButtonHidden:!visibleInfoPanel];
+            [[PiptureAppDelegate instance] tabbarVisible:visibleInfoPanel slide:NO];
             switch (slot.timeslotStatus) {
                 case TimeslotStatus_Current:
                     [self psPanelVisible:NO];
-                    [self pnPanelVisible:YES];
+                    [self pnPanelVisible:visibleInfoPanel];
                     [self navPanelVisible:NO];
                     [[PiptureAppDelegate instance] powerButtonEnable:YES];
                     [self updateTimeSlotInfo:slot panel:pnPanel];
                     break;
                 case TimeslotStatus_Next:
                     [self pnPanelVisible:NO];
-                    [self psPanelVisible:YES];
+                    [self psPanelVisible:visibleInfoPanel];
                     [self navPanelVisible:NO];
                     [[PiptureAppDelegate instance] powerButtonEnable:NO];
                     [self updateTimeSlotInfo:slot panel:psPanel];
@@ -416,6 +429,7 @@
                     [[PiptureAppDelegate instance] powerButtonEnable:NO];
                     break;
             }
+        }
             break;
         case TimeslotsMode_Schedule:
             [self psPanelVisible:NO];
@@ -425,7 +439,7 @@
             [delegate scheduleButtonHidden:NO];
             [self updateTimeSlotInfo:slot panel:navPanel];
             break;
-        case TimeslotsMode_Schedule_Fillscreen:
+        case TimeslotsMode_Schedule_Fullscreen:
             [self psPanelVisible:NO];
             [self pnPanelVisible:NO];
             [self navPanelVisible:NO];
