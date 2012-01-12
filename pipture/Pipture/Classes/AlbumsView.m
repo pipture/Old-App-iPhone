@@ -13,7 +13,7 @@
 #import "UILabel+ResizeForVerticalAlign.h"
 
 //TODO: maybe not hardcode?
-#define ITEM_HEIGHT 200
+#define ITEM_HEIGHT 205
 #define ITEM_WIDTH 106
 
 @implementation AlbumsView
@@ -93,7 +93,7 @@
             if (i >= [albumsItemsArray count])
                 break;
             AlbumItemViewController * item = [albumsItemsArray objectAtIndex:i++];
-            item.view.frame = CGRectMake(1 + (x * ITEM_WIDTH), y * ITEM_HEIGHT, ITEM_WIDTH, ITEM_HEIGHT);
+            item.view.frame = CGRectMake(1 + (x * ITEM_WIDTH), 5 + (y * ITEM_HEIGHT), ITEM_WIDTH, ITEM_HEIGHT);
             [scrollView addSubview:item.view];
         }
     }

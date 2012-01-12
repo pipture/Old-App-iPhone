@@ -73,7 +73,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     lastScreenshotView  = [[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)];
     [picturePlaceholder addSubview:lastScreenshotView];
     
-    [lastScreenshotView loadImageFromURL:[NSURL URLWithString:url] withDefImage:[UIImage imageNamed:PLACEHOLDER1] localStore:YES asButton:NO target:nil selector:nil];
+    [lastScreenshotView loadImageFromURL:[NSURL URLWithString:url] withDefImage:[UIImage imageNamed:@"ThumbnailBack.png"] localStore:YES asButton:NO target:nil selector:nil];
     
 }
 

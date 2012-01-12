@@ -147,6 +147,16 @@
 }
 
 - (void)prevVideo {
+    if (player.currentItem) {
+        float position = CMTimeGetSeconds(player.currentItem.currentTime);
+        if (position > 2) {
+            [self setPause];
+            [player seekToTime:kCMTimeZero];
+            [self setPlay];
+            return;
+        }
+    }
+    
     //next player ready for playback
     if (!waitForNext && pos > 0) {
         [self stopTimer];
@@ -391,7 +401,9 @@
 
 - (IBAction)nextAction:(id)sender {
     if (player != nil) {
-        [self nextVideo];
+        if (playlist && (pos == -1 || pos < [playlist count] - 1)) {
+            [self nextVideo];
+        }
     }
 }
 
