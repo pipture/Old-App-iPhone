@@ -126,17 +126,11 @@
 
 - (void)scrollToCurPage {
     //scroll to top
-    int page = [self getPageNumber];
+    int page = [self getPageNumber] + 1;
     int top = page*scrollView.frame.size.width;
     if (scrollView.contentOffset.x != top) {
         [scrollView scrollRectToVisible:CGRectMake(top, 0, scrollView.frame.size.width, 10) animated:NO];
-    }
-}
-
-- (void)scrollToTopPage {
-    //scroll to top
-    if (scrollView.contentOffset.x != 0) {
-        [scrollView scrollRectToVisible:CGRectMake(0, 0, scrollView.frame.size.width, 10) animated:YES];
+        [self updateNotify];
     }
 }
 
@@ -182,8 +176,12 @@
         NSLog(@"was size = %d", timelineArray.count);
         NSLog(@"new size = %d", timeslots.count);
         int lastTimeSlotId = -1;
-        if (timelineArray.count > 0)
-            lastTimeSlotId = ((Timeslot*)[timelineArray objectAtIndex:0]).timeslotId;
+        if (timelineArray.count > 0) {
+            int page = [self getPageNumber];
+            if ([self pageInRange:page]) {
+                lastTimeSlotId = ((Timeslot*)[timelineArray objectAtIndex:page]).timeslotId;
+            }
+        }
          
         //if TV is switched off
         if (timeslots.count == 0) {
@@ -385,6 +383,8 @@
 }
 
 - (void)updateNotify {
+    NSLog(@"updateNotify called");
+    
     int page = [self getPageNumber];
     
     if (![self pageInRange:page]) return;

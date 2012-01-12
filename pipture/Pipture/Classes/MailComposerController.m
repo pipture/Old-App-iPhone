@@ -8,7 +8,6 @@
 
 #import "MailComposerController.h"
 #import "PiptureAppDelegate.h"
-#import "AsyncImageView.h"
 #import "PiptureModel.h"
 #import "AlbumScreenshotsController.h"
 
@@ -22,13 +21,11 @@
 @synthesize screenshotName;
 @synthesize nameTextField;
 @synthesize nextButton;
-@synthesize playlistItem;
 @synthesize timeslotId;
 @synthesize cancelButton;
+@synthesize mailComposer;
 
-ScreenshotImage* screenshotImage_;
-AsyncImageView * lastScreenshotView;
-NSArray* screenshotImages_;
+
 
 static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
 
@@ -49,6 +46,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     }
 }
 
+
 - (void) displayScreenshot
 {
     NSString*url;
@@ -60,7 +58,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     else
     {
         screenshotName.text = @"Default";
-        url = playlistItem.emailScreenshot;        
+        url = self.playlistItem.emailScreenshot;        
     }
     if (lastScreenshotView)
     {
@@ -84,11 +82,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
- 
-    screenshotImage_ = nil;
-    lastScreenshotView = nil;
-    screenshotImages_ = nil;
-    
+        
     self.cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];        
     self.navigationItem.leftBarButtonItem = cancelButton;
     
@@ -116,8 +110,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     screenshotCell.accessoryType = UITableViewCellAccessoryNone;
     
+    screenshotImage_ = nil;
+    lastScreenshotView = nil;
+    screenshotImages_ = nil;
     
-    nameTextField.text = [[PiptureAppDelegate instance] getUserName];
+    nameTextField.text = [[PiptureAppDelegate instance] getUserName];  
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -152,6 +149,33 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     }
 }
 
+-(PlaylistItem*)playlistItem
+{
+    return playlistItem_;
+}
+
+-(void)setPlaylistItem:(PlaylistItem*)playlistItem
+{
+    PlaylistItem*it = playlistItem_;
+    playlistItem_ = [playlistItem retain];
+    [it release];
+    if (messageEdit)
+    {
+         messageEdit.text = @"";   
+    }
+    if (screenshotImage_)
+    {
+        [screenshotImage_ release];
+        screenshotImage_ = nil;
+    }
+    if (screenshotImages_)
+    {
+        [screenshotImages_ release];
+        screenshotImages_ = nil;        
+    }
+}
+
+
 - (void)nextButton:(id)sender {
     if ([messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER] == YES || 
         [messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
@@ -168,11 +192,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [messageEdit resignFirstResponder];
     [nameTextField resignFirstResponder];
 
-    if (playlistItem) {
+    if (self.playlistItem) {
 
         [[PiptureAppDelegate instance] putUserName:nameTextField.text];
         
-        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : playlistItem.emailScreenshot userName:nameTextField.text  receiver:self];
+        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:self.playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot userName:nameTextField.text  receiver:self];
     }
 }
 
@@ -255,7 +279,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     
     [self displayScreenshot];
-    [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];
+    [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:self.playlistItem receiver:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -289,13 +313,14 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [fromCell release];
     [nameTextField release];
     [cancelButton release];
+    [mailComposer release];
     [super dealloc];
 }
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error;
 {
     //TODO: process result
-    [self dismissModalViewControllerAnimated:NO];//first std mailer
+    [controller dismissModalViewControllerAnimated:NO];//first std mailer
     [self dismissModalViewControllerAnimated:YES];//second our composer
 }
 
@@ -309,18 +334,20 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     NSString * newUrl = [[endPoint substringToIndex:endPoint.length - 1] stringByAppendingString:url];
     
     [htmlData replaceOccurrencesOfString:HTML_MACROS_MESSAGE_URL withString:newUrl options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
-    [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:screenshotImage_ ? screenshotImage_.imageURL : playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
+    [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
     [htmlData replaceOccurrencesOfString:HTML_MACROS_FROM_NAME withString:nameTextField.text options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
+    
     
     MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
     controller.mailComposeDelegate = self;
-    [controller setSubject:playlistItem.emailSubject];
+    [controller setSubject:self.playlistItem.emailSubject];
 
     [controller setMessageBody:htmlData isHTML:YES]; 
     if (controller) {
         [self presentModalViewController:controller animated:YES];
     }
     [htmlData release];
+    self.mailComposer = controller; // to work around #8901
     [controller release];    
 }
 
