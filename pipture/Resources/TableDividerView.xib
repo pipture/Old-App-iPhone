@@ -45,6 +45,7 @@
 								<string key="NSFrameSize">{320, 2}</string>
 								<reference key="NSSuperview" ref="97465859"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:567</string>
 								<int key="IBUIContentMode">5</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
@@ -79,6 +80,7 @@
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<int key="IBUISelectionStyle">0</int>
 				<reference key="IBUIContentView" ref="97465859"/>
+				<string key="IBUIReuseIdentifier">DivCellID</string>
 			</object>
 		</array>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -162,11 +164,14 @@
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="detailPage">AlbumDetailPage</string>
 						<string key="detailsButton">UIButton</string>
+						<string key="detailsButtonEnhancer">UIView</string>
 						<string key="dividerTableCell">UITableViewCell</string>
 						<string key="subViewContainer">UIView</string>
 						<string key="titleView">DetailsTitleViewController</string>
+						<string key="trailerButtonEnhancer">UIView</string>
 						<string key="videoTableCell">UITableViewCell</string>
 						<string key="videosButton">UIButton</string>
+						<string key="videosButtonEnhancer">UIView</string>
 						<string key="videosTable">UITableView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -177,6 +182,10 @@
 						<object class="IBToOneOutletInfo" key="detailsButton">
 							<string key="name">detailsButton</string>
 							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="detailsButtonEnhancer">
+							<string key="name">detailsButtonEnhancer</string>
+							<string key="candidateClassName">UIView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="dividerTableCell">
 							<string key="name">dividerTableCell</string>
@@ -190,6 +199,10 @@
 							<string key="name">titleView</string>
 							<string key="candidateClassName">DetailsTitleViewController</string>
 						</object>
+						<object class="IBToOneOutletInfo" key="trailerButtonEnhancer">
+							<string key="name">trailerButtonEnhancer</string>
+							<string key="candidateClassName">UIView</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="videoTableCell">
 							<string key="name">videoTableCell</string>
 							<string key="candidateClassName">UITableViewCell</string>
@@ -197,6 +210,10 @@
 						<object class="IBToOneOutletInfo" key="videosButton">
 							<string key="name">videosButton</string>
 							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="videosButtonEnhancer">
+							<string key="name">videosButtonEnhancer</string>
+							<string key="candidateClassName">UIView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="videosTable">
 							<string key="name">videosTable</string>

@@ -81,7 +81,7 @@
     actionSelector = action;
     data = nil;
     if (useStorage) {
-        imageFile = [self storageFile:[NSString stringWithFormat:@"%d",[url.description hash]]];// retain];
+        imageFile = [[NSString alloc] initWithString:[self storageFile:[NSString stringWithFormat:@"%d",[url.description hash]]]];
         data = [[NSMutableData alloc] initWithContentsOfFile:imageFile];
     }
     if (data) {
@@ -132,11 +132,15 @@
     [connection cancel];
     [connection release];
     [data release];
-    //[imageFile release];
     data = nil;
     if (defImage) {
         [defImage release];
         defImage = nil;
+    }
+
+    if (imageFile) {
+        [imageFile release];
+        imageFile = nil;
     }
     [super dealloc];
 }

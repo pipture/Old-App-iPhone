@@ -59,7 +59,7 @@
     
     titleView.view.frame = CGRectMake(0, 0, 170,44);
     self.navigationItem.titleView = titleView.view;
-
+    
     UITapGestureRecognizer * tapVRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     [videosButtonEnhancer addGestureRecognizer:tapVRec];
     [tapVRec release];
@@ -71,7 +71,7 @@
     UITapGestureRecognizer * tapTRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     [trailerButtonEnhancer addGestureRecognizer:tapTRec];
     [tapTRec release];
-    
+      
     [self tabChanged:detailsButton];
 }
 
@@ -128,14 +128,15 @@
         UILabel * fromto = (UILabel*)[cell viewWithTag:4];
         UILabel * counter = (UILabel*)[cell viewWithTag:5];
         
+        AsyncImageView* imageView = nil;
         if (placeholder.subviews.count > 0) {
-            [[placeholder.subviews objectAtIndex:0] removeFromSuperview];
+            imageView = [placeholder.subviews objectAtIndex:0];
         }
-        
-        AsyncImageView* imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, placeholder.frame.size.width, placeholder.frame.size.height)] autorelease];
-        [placeholder addSubview:imageView];
-        
-        [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:nil localStore:YES asButton:NO target:nil selector:nil];
+        if (!imageView) {
+            imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, placeholder.frame.size.width, placeholder.frame.size.height)] autorelease];
+            [placeholder addSubview:imageView];
+            [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:nil localStore:YES asButton:NO target:nil selector:nil];
+        }
         
         counter.text = [NSString stringWithFormat:@"%d.", row/2 + 1];
         [series setTextWithVerticalResize:slot.title];
@@ -153,6 +154,8 @@
     if (row % 2 == 0) {
         cell = [tableView dequeueReusableCellWithIdentifier:kNorCellID];
         if (cell == nil) {
+            NSLog(@"load table item");
+            
             [[NSBundle mainBundle] loadNibNamed:@"DetailTableItemView" owner:self options:nil];
             cell = videoTableCell;
             videoTableCell = nil;
@@ -161,6 +164,7 @@
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:kDivCellID];
         if (cell == nil) {
+            NSLog(@"load table divider");
             [[NSBundle mainBundle] loadNibNamed:@"TableDividerView" owner:self options:nil];
             cell = dividerTableCell;
             dividerTableCell = nil;
