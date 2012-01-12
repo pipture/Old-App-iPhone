@@ -137,7 +137,6 @@
 										<string key="NSFrame">{{218, 11}, {98, 44}}</string>
 										<reference key="NSSuperview" ref="795262716"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView"/>
 										<string key="NSReuseIdentifierKey">_NS:225</string>
 										<bool key="IBUIOpaque">NO</bool>
 										<int key="IBUITag">2</int>
@@ -422,18 +421,18 @@
 						<string key="label">tabBarClick:</string>
 						<reference key="source" ref="179866372"/>
 						<reference key="destination" ref="982200970"/>
-						<int key="IBEventType">7</int>
+						<int key="IBEventType">1</int>
 					</object>
-					<int key="connectionID">118</int>
+					<int key="connectionID">123</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">tabBarClick:</string>
 						<reference key="source" ref="901993547"/>
 						<reference key="destination" ref="982200970"/>
-						<int key="IBEventType">7</int>
+						<int key="IBEventType">1</int>
 					</object>
-					<int key="connectionID">119</int>
+					<int key="connectionID">122</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -597,7 +596,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">121</int>
+			<int key="maxID">123</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -985,12 +984,17 @@
 					<string key="className">VideoViewController</string>
 					<string key="superclassName">UIViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="doneAction:">id</string>
 						<string key="nextAction:">id</string>
 						<string key="playpauseAction:">id</string>
 						<string key="prevAction:">id</string>
 						<string key="sendAction:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="doneAction:">
+							<string key="name">doneAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="nextAction:">
 							<string key="name">nextAction:</string>
 							<string key="candidateClassName">id</string>
@@ -1012,6 +1016,8 @@
 						<string key="busyContainer">UIView</string>
 						<string key="controlsPanel">UIView</string>
 						<string key="mailComposerNavigationController">MailComposerNavigationController</string>
+						<string key="navigationBar">UINavigationBar</string>
+						<string key="navigationItem">UINavigationItem</string>
 						<string key="nextButton">UIButton</string>
 						<string key="pauseButton">UIButton</string>
 						<string key="prevButton">UIButton</string>
@@ -1031,6 +1037,14 @@
 						<object class="IBToOneOutletInfo" key="mailComposerNavigationController">
 							<string key="name">mailComposerNavigationController</string>
 							<string key="candidateClassName">MailComposerNavigationController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="navigationBar">
+							<string key="name">navigationBar</string>
+							<string key="candidateClassName">UINavigationBar</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="navigationItem">
+							<string key="name">navigationItem</string>
+							<string key="candidateClassName">UINavigationItem</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="nextButton">
 							<string key="name">nextButton</string>

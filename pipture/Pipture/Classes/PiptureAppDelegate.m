@@ -435,6 +435,10 @@ NSInteger networkActivityIndecatorCount;
             [libraryButton setBackgroundImage:nil forState:UIControlStateNormal];
             [libraryButton setImage:[UIImage imageNamed:@"nav-button-library-inactive.png"] forState:UIControlStateNormal];
             [libraryButton setTitleColor:[UIColor colorWithRed:.75 green:.75 blue:.75 alpha:1] forState:UIControlStateNormal];
+            
+            [libraryButton setBackgroundImage:[UIImage imageNamed:@"nav-button-active-background.png"] forState:UIControlStateHighlighted];
+            [libraryButton setImage:[UIImage imageNamed:@"nav-button-library-active.png"] forState:UIControlStateHighlighted];
+            [libraryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
             break;
         case TABBARITEM_LIBRARY:
             [libraryButton setBackgroundImage:[UIImage imageNamed:@"nav-button-active-background.png"] forState:UIControlStateNormal];
@@ -444,6 +448,10 @@ NSInteger networkActivityIndecatorCount;
             [channelButton setBackgroundImage:nil forState:UIControlStateNormal];
             [channelButton setImage:[UIImage imageNamed:@"nav-button-channel-inactive.png"] forState:UIControlStateNormal];
             [channelButton setTitleColor:[UIColor colorWithRed:.75 green:.75 blue:.75 alpha:1] forState:UIControlStateNormal];
+            
+            [channelButton setBackgroundImage:[UIImage imageNamed:@"nav-button-active-background.png"] forState:UIControlStateHighlighted];
+            [channelButton setImage:[UIImage imageNamed:@"nav-button-channel-active.png"] forState:UIControlStateHighlighted];
+            [channelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
             break;
     }
 }
