@@ -15,16 +15,18 @@
     NSURLConnection* connection;
     NSMutableData* data;
     UIImage * defImage;
-    BOOL fromFile;
     BOOL useStorage;
     BOOL asButton;
-    NSString * imageFile;
     id actionTarget;
     SEL actionSelector;
 }
+
+
+
 +(UIImage *)makeRoundCornerImage : (UIImage*) img : (int) cornerWidth : (int) cornerHeight;
 - (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image localStore:(BOOL)store asButton:(BOOL)button target:(id)target selector:(SEL)action ;
 - (void)connectionDidFinishLoading:(NSURLConnection*)theConnection;
 @property (nonatomic, assign) BOOL roundCorner;
+@property(retain, nonatomic) NSString * imageFile;
 
 @end
