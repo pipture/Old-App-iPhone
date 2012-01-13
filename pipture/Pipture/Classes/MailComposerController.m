@@ -68,10 +68,13 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     CGRect rect = picturePlaceholder.frame;
     
+
     lastScreenshotView  = [[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)];
     [picturePlaceholder addSubview:lastScreenshotView];
-    
+
+
     [lastScreenshotView loadImageFromURL:[NSURL URLWithString:url] withDefImage:[UIImage imageNamed:@"ThumbnailBack.png"] localStore:YES asButton:NO target:nil selector:nil];
+
     
 }
 
@@ -278,8 +281,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     
-    [self displayScreenshot];
-    [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:self.playlistItem receiver:self];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -289,6 +291,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
     
     self.navigationItem.hidesBackButton = YES;
+    
+    [self displayScreenshot];
+    [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:self.playlistItem receiver:self];    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
