@@ -57,9 +57,10 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     }
     else
     {
-        screenshotName.text = @"Default";
-        url = self.playlistItem.emailScreenshot;        
+        screenshotName.text = @"";
+        url = @"";        
     }
+    
     if (lastScreenshotView)
     {
         [lastScreenshotView removeFromSuperview];
@@ -113,9 +114,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     screenshotCell.accessoryType = UITableViewCellAccessoryNone;
     
-    screenshotImage_ = nil;
     lastScreenshotView = nil;
-    screenshotImages_ = nil;
     
     nameTextField.text = [[PiptureAppDelegate instance] getUserName];  
 }
@@ -161,21 +160,33 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 {
     PlaylistItem*it = playlistItem_;
     playlistItem_ = [playlistItem retain];
+    if (it != playlistItem)
+    {
+        [defaultScreenshotImage_ release];
+        defaultScreenshotImage_ = [[ScreenshotImage alloc] init];
+        defaultScreenshotImage_.imageDescription = @"Default";
+        defaultScreenshotImage_.imageURL = playlistItem.emailScreenshot;
+
+        if (screenshotImages_)
+        {
+            [screenshotImages_ release];
+            screenshotImages_ = nil;        
+        }
+        [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];
+        
+        if (screenshotImages_)
+        {
+            [screenshotImage_ release];
+        }                        
+        screenshotImage_ = [defaultScreenshotImage_ retain];    
+    }
+
     [it release];
     if (messageEdit)
     {
          messageEdit.text = @"";   
     }
-    if (screenshotImage_)
-    {
-        [screenshotImage_ release];
-        screenshotImage_ = nil;
-    }
-    if (screenshotImages_)
-    {
-        [screenshotImages_ release];
-        screenshotImages_ = nil;        
-    }
+
 }
 
 
@@ -293,7 +304,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     self.navigationItem.hidesBackButton = YES;
     
     [self displayScreenshot];
-    [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:self.playlistItem receiver:self];    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -315,6 +325,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [screenshotName release];
     [lastScreenshotView release];
     [screenshotImages_ release];
+    [defaultScreenshotImage_ release];
     [fromCell release];
     [nameTextField release];
     [cancelButton release];
@@ -470,8 +481,10 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 {
     if ([self calcCellRow:indexPath] == SCREENSHOT_CELL_ROW && screenshotImages_) {
         
-        AlbumScreenshotsController* asctrl = [[AlbumScreenshotsController alloc] initWithNibName:@"AlbumScreenshots" bundle:nil mailComposerController:self];             
+        AlbumScreenshotsController* asctrl = [[AlbumScreenshotsController alloc] initWithNibName:@"AlbumScreenshots" bundle:nil mailComposerController:self];
+        asctrl.defaultImage = defaultScreenshotImage_;
         asctrl.screenshotImages = screenshotImages_;
+        asctrl.selectedImage = screenshotImage_; 
 
         [self.navigationController pushViewController:asctrl animated:YES];
     }    
