@@ -203,10 +203,9 @@ static PiptureAppDelegate *instance;
     [self.window setRootViewController:homeNavigationController];
     [self.window bringSubviewToFront:tabView];
     
-    tabView.hidden = NO;
-    [self.window makeKeyAndVisible];    
-    
+    [self.window makeKeyAndVisible];
     [self getHomeView];
+    //tabView.hidden = NO;
 }
 
 -(void)loginFailed
@@ -479,6 +478,11 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (void)tabbarVisible:(BOOL)visible slide:(BOOL)slide {
+    if (!slide) {
+        tabView.hidden = !visible;
+        return;
+    }
+    
     CGRect rect = tabView.frame;
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.3];
@@ -488,6 +492,8 @@ NSInteger networkActivityIndecatorCount;
         else
             tabView.frame = CGRectMake(0, self.window.frame.size.height - tabView.frame.size.height, rect.size.width, tabView.frame.size.height);
     } else {
+        tabView.hidden = !visible;
+        return;
         if (visible) tabView.hidden = NO;
         tabView.alpha = visible?1:0;
         [UIView setAnimationDelegate:self];

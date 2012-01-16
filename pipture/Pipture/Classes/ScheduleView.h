@@ -19,7 +19,6 @@ enum TimeslotsMode{
 
 @interface ScheduleView : UIView<UIScrollViewDelegate>
 {
-    enum TimeslotsMode timeslotsMode;
     NSMutableArray * timelineArray;
     NSMutableArray * coverItems;
 }
@@ -38,9 +37,9 @@ enum TimeslotsMode{
 - (void)setTimeslotsMode:(enum TimeslotsMode)mode;
 - (BOOL)pageInRange:(int)page;
 
-- (void)navPanelVisible:(BOOL)visible;
-- (void)pnPanelVisible:(BOOL)visible;
-- (void)psPanelVisible:(BOOL)visible;
+- (void)navPanelVisible:(BOOL)visible animation:(BOOL)anim;
+- (void)pnPanelVisible:(BOOL)visible animation:(BOOL)anim;
+- (void)psPanelVisible:(BOOL)visible animation:(BOOL)anim;
 
 - (IBAction)showDetail:(id)sender;
 - (IBAction)prevAction:(id)sender;
@@ -54,4 +53,6 @@ enum TimeslotsMode{
 @property (retain, nonatomic) IBOutlet UIView *pnPanel;
 @property (retain, nonatomic) IBOutlet UIView *psPanel;
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (readonly, nonatomic) enum TimeslotsMode timeslotsMode;
+
 @end

@@ -11,6 +11,7 @@
 #import "ScheduleView.h"
 #import "HomeScreenDelegate.h"
 #import "AlbumsView.h"
+#import "DetailsNavigationController.h"
 
 @interface HomeViewController : UIViewController <TimeslotsReceiver, PlaylistReceiver, AlbumsReceiver, AlbumDetailsReceiver, UIAlertViewDelegate, UITabBarDelegate, HomeScreenDelegate, WelcomeScreenProtocol>
 {
@@ -35,5 +36,6 @@
 @property (retain, nonatomic) IBOutlet ScheduleView *scheduleView;
 @property (retain, nonatomic) IBOutlet CoverView *coverView;
 @property (retain, nonatomic) IBOutlet AlbumsView *albumsView;
+@property (retain, nonatomic) IBOutlet DetailsNavigationController *detailsNavigationController;
 
 @end

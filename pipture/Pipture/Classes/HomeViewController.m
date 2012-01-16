@@ -27,6 +27,7 @@
 @synthesize scheduleView;
 @synthesize coverView;
 @synthesize albumsView;
+@synthesize detailsNavigationController;
 
 #pragma mark - View lifecycle
 
@@ -112,6 +113,7 @@
     [self setFlipButton:nil];
     [self setScheduleButton:nil];
     [self setAlbumsView:nil];
+    [self setDetailsNavigationController:nil];
     [super viewDidUnload];
 }
 
@@ -134,6 +136,20 @@
     
     [self updateTimeslots:nil];
     [self startTimer:TIMESLOT_REGULAR_POLL_INTERVAL];
+    
+    switch (homeScreenMode) {
+        case HomeScreenMode_Albums:
+            [self setNavBarMode];
+            break;
+        case HomeScreenMode_PlayingNow:
+        case HomeScreenMode_Cover:
+            [self setFullScreenMode];
+            break;
+        case HomeScreenMode_Schedule:
+            [self setFullScreenMode];
+            break;
+        default:break;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -143,18 +159,18 @@
     
     switch (homeScreenMode) {
         case HomeScreenMode_Albums:
-            [self setNavBarMode];
+            //[self setNavBarMode];
             [self updateAlbums];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
-            [self setFullScreenMode];
+            //[self setFullScreenMode];
             [self updateTimeslots:nil];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
         case HomeScreenMode_Schedule:
-            [self setFullScreenMode];
+            //[self setFullScreenMode];
             [self updateTimeslots:nil];
             [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
             break;
@@ -177,6 +193,7 @@
     [flipButton release];
     [scheduleButton release];
     [albumsView release];
+    [detailsNavigationController release];
     [super dealloc];
 }
 
@@ -289,13 +306,19 @@
                     if (flipAction) [UIView commitAnimations];
                 }
                 
-                [scheduleView setTimeslotsMode:TimeslotsMode_Schedule];
                 [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
                 flipButton.hidden = YES;
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule-done.png"] forState:UIControlStateNormal];
                 scheduleButton.hidden = NO;
                 [scheduleButton setTitle:@"Done" forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
+                
+                switch (scheduleView.timeslotsMode) {
+                    case TimeslotsMode_PlayingNow: [scheduleView setTimeslotsMode:TimeslotsMode_Schedule]; break;
+                    case TimeslotsMode_PlayingNow_Fullscreen: [scheduleView setTimeslotsMode:TimeslotsMode_Schedule_Fullscreen]; break;
+                    default:break;    
+                }
+
                 break;
             case HomeScreenMode_Albums:
                 [[PiptureAppDelegate instance] 
@@ -416,17 +439,20 @@
 
 #pragma mark AlbumsDetailsDelegate
 -(void)albumDetailsReceived:(Album*)album {
+    
+    
+    
     self.navigationItem.title = @"Back";
     NSLog(@"%@", self.navigationController.visibleViewController.class);
     if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
         AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
-        [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
         
         Timeslot * slot = [self getTimeslot];
         [[PiptureAppDelegate instance] powerButtonEnable:(slot && slot.timeslotStatus == TimeslotStatus_Current)];
         adic.album = album;
         NSLog(@"Album episodes: %@", album.episodes);
         [self.navigationController pushViewController:adic animated:YES];
+        [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
         [adic release];
     }
 }
