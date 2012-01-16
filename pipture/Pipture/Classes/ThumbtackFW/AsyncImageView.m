@@ -10,13 +10,14 @@
 
 @implementation AsyncImageView
 @synthesize roundCorner;
+@synthesize imageFile;
+@synthesize lastUrl = lastUrl_;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         defImage = nil;
-        fromFile = NO;
         roundCorner = NO;
     }
     return self;
@@ -66,12 +67,42 @@
     [self setNeedsLayout];
 }
 
+
+- (BOOL)tryLoadImage:(NSData*)ldata saveToCache:(BOOL)saveToCache
+{
+    UIImage *image = [UIImage imageWithData:ldata];
+    if (image)
+    {        
+        if (saveToCache)
+        {
+            [ldata writeToFile:imageFile atomically:YES];   
+        }
+        
+        if ([[self subviews] count]>0) {
+            [[[self subviews] objectAtIndex:0] removeFromSuperview];
+        }
+        
+        [self updateViewWith:image];
+        
+        return YES;
+    }
+    return NO;
+}
+
 - (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image localStore:(BOOL)store asButton:(BOOL)button target:(id)target selector:(SEL)action{
-    if (url == nil) 
+    [self loadImageFromURL:url withDefImage:image localStore:store force:YES asButton:button target:target selector:action];
+}
+
+- (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image localStore:(BOOL)store force:(BOOL)force asButton:(BOOL)button target:(id)target selector:(SEL)action{
+    if (url == nil || connection!=nil) 
         return;
     
-    if (connection!=nil) { [connection release]; }
-    if (data!=nil) { [data release]; }
+    if ([lastUrl_ isEqual:url] && !force)
+    {
+        return;
+    }
+    
+    
     if (defImage != nil) { [defImage release]; }
     
     defImage = [image retain];
@@ -79,20 +110,33 @@
     asButton = button;
     actionTarget = target;
     actionSelector = action;
-    data = nil;
+
+    BOOL imageLoaded = NO;
     if (useStorage) {
-        imageFile = [[NSString alloc] initWithString:[self storageFile:[NSString stringWithFormat:@"%d",[url.description hash]]]];
-        data = [[NSMutableData alloc] initWithContentsOfFile:imageFile];
+        NSString* imgFile = [[NSString alloc] initWithString:[self storageFile:[NSString stringWithFormat:@"%d",[url.description hash]]]];
+        self.imageFile = imgFile;
+        [imgFile release];
+        NSMutableData* ldata = [[NSMutableData alloc] initWithContentsOfFile:imageFile];
+        if (ldata)
+        {
+            imageLoaded = [self tryLoadImage:ldata saveToCache:NO];
+            self.lastUrl = url;
+            [ldata release];            
+        }
     }
-    if (data) {
-        fromFile = YES;
-        [self connectionDidFinishLoading:nil];
-    } else {
-        fromFile = NO;
+
+    if (!imageLoaded)
+    {
+        [data release];
+        data = nil;
+
+        currentUrl = [url retain];
         NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:6.0];
         connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        
         [self updateViewWith:defImage];
     }
+
 }
 
 - (void)connection:(NSURLConnection *)theConnection didReceiveData:(NSData *)incrementalData {
@@ -102,25 +146,37 @@
     [data appendData:incrementalData];
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection*)theConnection {
+- (void)clear
+{
+    [data release];
+    data = nil;
+    
+    [currentUrl release];
+    currentUrl = nil;
     
     [connection release];
-    connection=nil;
+    connection=nil;    
     
-    if ([[self subviews] count]>0) {
-        [[[self subviews] objectAtIndex:0] removeFromSuperview];
-    }
-    
-    if (useStorage && !fromFile) {
-        [data writeToFile:imageFile atomically:YES];
-    }
-    
-    UIImage *image = [UIImage imageWithData:data];
-    NSLog(@"image: %@", image);
-    [self updateViewWith:image];
-    [data release];
-    data=nil;
 }
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    [self clear];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection*)theConnection {
+
+    if ([self tryLoadImage:data saveToCache:useStorage])
+    {
+        self.lastUrl = currentUrl;
+    }
+    else
+    {
+        NSLog(@"image has not been loaded by some reason");
+    }
+    [self clear];    
+}
+
 
 - (UIImage*) image {
     UIImageView* iv = (UIImageView *)[self viewWithTag:12321];
@@ -132,16 +188,10 @@
     [connection cancel];
     [connection release];
     [data release];
-    data = nil;
-    if (defImage) {
-        [defImage release];
-        defImage = nil;
-    }
-
-    if (imageFile) {
-        [imageFile release];
-        imageFile = nil;
-    }
+    [defImage release];    
+    [imageFile release];
+    [lastUrl_ release];  
+    [currentUrl release];
     [super dealloc];
 }
 

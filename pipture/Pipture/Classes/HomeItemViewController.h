@@ -13,6 +13,8 @@
 
 - (void) updateImageView:(NSURL*)url;
 
+
+
 @property (retain, nonatomic) IBOutlet UIView *coverPlaceholder;
 
 @end

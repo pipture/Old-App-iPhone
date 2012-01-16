@@ -17,6 +17,7 @@
 
     @private
     ScreenshotImage* screenshotImage_;
+    ScreenshotImage* defaultScreenshotImage_;
     PlaylistItem* playlistItem_;
     AsyncImageView * lastScreenshotView;
     NSArray* screenshotImages_;    

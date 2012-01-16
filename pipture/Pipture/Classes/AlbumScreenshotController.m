@@ -56,6 +56,7 @@ id<AlbumScreenshotControllerDelegate> myDelegate = nil;
     
     [imageView loadImageFromURL:[NSURL URLWithString:screenshotImage_.imageURL] withDefImage:[UIImage imageNamed:@"ThumbnailBack.png"] localStore:YES asButton:YES target:self selector:@selector(imagePressed:)];
     
+    
 }
 
 - (void)imagePressed:(id)sender

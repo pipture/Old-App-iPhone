@@ -12,6 +12,9 @@
 @implementation AlbumScreenshotsController
 @synthesize imagesScrollView;
 @synthesize screenshotImages = screenshotImages_;
+@synthesize defaultImage = defaultImage_;
+@synthesize selectedImage = selectedImage_;
+
 
 MailComposerController* mailComposerController_; 
 NSArray* screenshotContollers;
@@ -67,7 +70,7 @@ ScreenshotImage* curScreenshotImage;
     imagesScrollView.contentSize = CGSizeMake(rect.size.width, h * rows);
     
     int i = 0;
-    
+    BOOL selectionWasSet = NO;
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < 3; x++) {
             if (i >= [screenshotContollers count])
@@ -75,6 +78,15 @@ ScreenshotImage* curScreenshotImage;
             AlbumScreenshotController * item = [screenshotContollers objectAtIndex:i++];
             item.view.frame = CGRectMake(6+ (x * w), 5 + y * h, w, h);
             [imagesScrollView addSubview:item.view];
+            if (!selectionWasSet && item.screenshotImage == curScreenshotImage)
+            {
+                [item setSelectedState:YES];                
+                selectionWasSet = YES;
+            }
+            else
+            {
+                [item setSelectedState:NO];                                
+            }                
         }
     }
 }
@@ -99,12 +111,19 @@ ScreenshotImage* curScreenshotImage;
     }
     NSMutableArray *mscreenshotContollers = [[NSMutableArray alloc] initWithCapacity:[screenshotImages_ count]];
     
+    curScreenshotImage = selectedImage_;    
+    if (defaultImage_)
+    {
+        AlbumScreenshotController * asctrl = [[AlbumScreenshotController alloc] initWithScreenshotImage:defaultImage_ delegate:self NibName:@"AlbumScreenshot" bundle:nil];
+        [mscreenshotContollers addObject:asctrl];                                  
+        [asctrl release];        
+    }
+    
     for (ScreenshotImage *im in screenshotImages_) {
         
         
         AlbumScreenshotController * asctrl = [[AlbumScreenshotController alloc] initWithScreenshotImage:im delegate:self NibName:@"AlbumScreenshot" bundle:nil];
-//        [asctrl loadView];
-        
+
         [mscreenshotContollers addObject:asctrl];                                    
         [asctrl release];
     }
@@ -136,7 +155,10 @@ ScreenshotImage* curScreenshotImage;
     [imagesScrollView release];
     [mailComposerController_ release];
     [screenshotContollers release];
-    [screenshotImages_ release];
+    [screenshotImages_ release];    
+    [defaultImage_ release];
+    [selectedImage_ release];
+    
     [super dealloc];
     
 }
