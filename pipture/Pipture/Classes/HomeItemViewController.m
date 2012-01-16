@@ -10,7 +10,7 @@
 
 @implementation HomeItemViewController
 @synthesize coverPlaceholder;
-@synthesize url = url_;
+
 
 /*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -30,17 +30,10 @@
 
 - (void)dealloc {
     [coverPlaceholder release];
-    [url_ release];
     [super dealloc];
 }
 
-- (void) updateImageView:(NSURL*)url {
-    if ([url_ isEqual:url])
-    {
-        return;
-    }
-    self.url = url;
-    
+- (void) updateImageView:(NSURL*)url {    
     AsyncImageView * imageView = (AsyncImageView*)[coverPlaceholder viewWithTag:1212];
     
     if (!imageView) {

@@ -11,6 +11,7 @@
 @implementation AsyncImageView
 @synthesize roundCorner;
 @synthesize imageFile;
+@synthesize lastUrl = lastUrl_;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -89,8 +90,17 @@
 }
 
 - (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image localStore:(BOOL)store asButton:(BOOL)button target:(id)target selector:(SEL)action{
+    [self loadImageFromURL:url withDefImage:image localStore:store force:YES asButton:button target:target selector:action];
+}
+
+- (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image localStore:(BOOL)store force:(BOOL)force asButton:(BOOL)button target:(id)target selector:(SEL)action{
     if (url == nil || connection!=nil) 
         return;
+    
+    if ([lastUrl_ isEqual:url] && !force)
+    {
+        return;
+    }
     
     
     if (defImage != nil) { [defImage release]; }
@@ -110,6 +120,7 @@
         if (ldata)
         {
             imageLoaded = [self tryLoadImage:ldata saveToCache:NO];
+            self.lastUrl = url;
             [ldata release];            
         }
     }
@@ -119,8 +130,10 @@
         [data release];
         data = nil;
 
+        currentUrl = [url retain];
         NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:6.0];
         connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        
         [self updateViewWith:defImage];
     }
 
@@ -133,18 +146,37 @@
     [data appendData:incrementalData];
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection*)theConnection {
-
-    if (![self tryLoadImage:data saveToCache:useStorage])
-    {
-        NSLog(@"image has not been loaded by some reason");
-    }    
+- (void)clear
+{
     [data release];
     data = nil;
     
+    [currentUrl release];
+    currentUrl = nil;
+    
     [connection release];
     connection=nil;    
+    
 }
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    [self clear];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection*)theConnection {
+
+    if ([self tryLoadImage:data saveToCache:useStorage])
+    {
+        self.lastUrl = currentUrl;
+    }
+    else
+    {
+        NSLog(@"image has not been loaded by some reason");
+    }
+    [self clear];    
+}
+
 
 - (UIImage*) image {
     UIImageView* iv = (UIImageView *)[self viewWithTag:12321];
@@ -158,7 +190,8 @@
     [data release];
     [defImage release];    
     [imageFile release];
-    
+    [lastUrl_ release];  
+    [currentUrl release];
     [super dealloc];
 }
 
