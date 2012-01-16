@@ -20,12 +20,14 @@ enum DetailAlbumViewType {
 {
     enum DetailAlbumViewType viewType;
 }
+- (IBAction)backAction:(id)sender;
 - (IBAction)tabChanged:(id)sender;
 - (IBAction)trailerShow:(id)sender;
-
+@property (assign, nonatomic) BOOL withNavigationBar;
 @property (retain, nonatomic) Album * album;
 
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;
+@property (retain, nonatomic) IBOutlet UIView *buttonsPanel;
 @property (retain, nonatomic) IBOutlet AlbumDetailPage *detailPage;
 @property (retain, nonatomic) IBOutlet UITableView *videosTable;
 @property (retain, nonatomic) IBOutlet UITableViewCell *videoTableCell;
@@ -36,5 +38,7 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) IBOutlet UIView *detailsButtonEnhancer;
 @property (retain, nonatomic) IBOutlet UIView *videosButtonEnhancer;
 @property (retain, nonatomic) IBOutlet UIView *trailerButtonEnhancer;
+@property (retain, nonatomic) IBOutlet UINavigationBar *navigationFake;
+@property (retain, nonatomic) IBOutlet UINavigationItem *navigationItemFake;
 
 @end

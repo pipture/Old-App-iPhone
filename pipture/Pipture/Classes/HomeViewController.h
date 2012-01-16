@@ -11,7 +11,6 @@
 #import "ScheduleView.h"
 #import "HomeScreenDelegate.h"
 #import "AlbumsView.h"
-#import "DetailsNavigationController.h"
 
 @interface HomeViewController : UIViewController <TimeslotsReceiver, PlaylistReceiver, AlbumsReceiver, AlbumDetailsReceiver, UIAlertViewDelegate, UITabBarDelegate, HomeScreenDelegate, WelcomeScreenProtocol>
 {
@@ -23,6 +22,8 @@
     
     //container for timeslots
     NSInteger reqTimeslotId;
+    
+    BOOL withNavigation;
 }
 
 //returns current visible page in scrollview
@@ -36,6 +37,5 @@
 @property (retain, nonatomic) IBOutlet ScheduleView *scheduleView;
 @property (retain, nonatomic) IBOutlet CoverView *coverView;
 @property (retain, nonatomic) IBOutlet AlbumsView *albumsView;
-@property (retain, nonatomic) IBOutlet DetailsNavigationController *detailsNavigationController;
 
 @end
