@@ -35,78 +35,45 @@
     [UIView commitAnimations];
 }
 
-- (Timeslot*)getTimeslot {
-    if (currentTimeslot.timeslotStatus != TimeslotStatus_Current) {
-        return nil;
-    }
-    
-    return currentTimeslot;
-}
-
-
 - (void)updateTimeSlotInfo:(Timeslot*)timeslot {
     self.currentTimeslot = timeslot;    
-    if (timeslot && allowBubble) {
+    BOOL coverPanelVisible = NO;    
+    if (timeslot) {
         UILabel * title = (UILabel*)[coverPanel viewWithTag:1];
         UILabel * status = (UILabel*)[coverPanel viewWithTag:2];
         
         if (title) title.text = timeslot.title;
         if (status)status.text= timeslot.timeDescription;
         
+
         switch (timeslot.timeslotStatus) {
             case TimeslotStatus_Current:
-                [self panel:coverPanel visible:YES];
+                coverPanelVisible = YES;
                 [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable.png"] forState:UIControlStateNormal];
                 [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable-down.png"] forState:UIControlStateHighlighted];
                 [[PiptureAppDelegate instance] powerButtonEnable:YES];
                 break;
             case TimeslotStatus_Next:
-                [self panel:coverPanel visible:YES];
+                coverPanelVisible = YES;
                 [[PiptureAppDelegate instance] powerButtonEnable:NO];
                 [coverButton setImage:[UIImage imageNamed:@"case-schedule-noshow-clickable.png"] forState:UIControlStateNormal];
                 [coverButton setImage:[UIImage imageNamed:@"case-schedule-noshow-clickable-down.png"] forState:UIControlStateHighlighted];
                 break;
             default:
-                [self panel:coverPanel visible:NO];
+                coverPanelVisible = NO;
                 [[PiptureAppDelegate instance] powerButtonEnable:NO];
                 break;    
         }
     } else {
-        [self panel:coverPanel visible:NO];
+        coverPanelVisible = NO;
+        [[PiptureAppDelegate instance] powerButtonEnable:NO];
     }
-
+    [self panel:coverPanel visible:(allowBubble && coverPanelVisible)];
 }
 
 - (void)allowShowBubble:(BOOL)allow {
     allowBubble = allow;
     [self updateTimeSlotInfo:currentTimeslot];
-}
-
-- (void)updateTimeslots:(NSArray*) timeslots {
-        
-    int page = -1;
-    for (int i = 0; i < timeslots.count; i++) {
-        if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Current) {
-            page = i;
-            break;
-        }
-    }
-    //current did not founded, find next
-    if (page == -1) {
-        for (int i = 0; i < timeslots.count; i++) {
-            if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Next) {
-                page = i;
-                break;
-            }
-        }
-    }
-
-    if (page != -1) {
-        Timeslot * slot = [timeslots objectAtIndex:page];
-        [self updateTimeSlotInfo:slot];
-    } else {
-        [self updateTimeSlotInfo:nil];
-    }
 }
 
 - (IBAction)coverClick:(id)sender {

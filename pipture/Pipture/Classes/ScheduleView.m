@@ -67,14 +67,14 @@
 - (IBAction)showDetail:(id)sender {
     int page = [self getPageNumber];
     
-    if (![self pageInRange:page]) return;
+    if (![scheduleModel_ pageInRange:page]) return;
     
     if (timeslotsMode == TimeslotsMode_PlayingNow_Fullscreen)
         [self setTimeslotsMode:TimeslotsMode_PlayingNow];
     else if (timeslotsMode == TimeslotsMode_Schedule_Fullscreen)
         [self setTimeslotsMode:TimeslotsMode_Schedule];
     
-    Timeslot * slot = [timelineArray objectAtIndex:page];
+    Timeslot * slot = [scheduleModel_ timeslotForPage:page];
     [delegate showAlbumDetailsForTimeslot:slot.timeslotId];
     
 }
@@ -104,22 +104,21 @@
     [hivc updateImageView:url];
 }
 
-- (void) prepareImageFor: (int) timeslot {
-    if (timeslot >= 0 && timeslot < timelineArray.count) {
+- (void) prepareImageFor: (int) page {
+    if ([scheduleModel_ pageInRange:page])
+    {
         
-        Timeslot * slot = [timelineArray objectAtIndex:timeslot];
+        Timeslot * slot = [scheduleModel_ timeslotForPage:page];
         //+1 for skip first fake image at begin
-        [self imagePlace:slot rect:[self rectImageForIdx:timeslot + 1] idx:timeslot + 1];
+        [self imagePlace:slot rect:[self rectImageForIdx:page + 1] idx:page + 1];
         
         //for first create fake image at the end
-        if (timeslot == 0) {
-            Timeslot * slot = [timelineArray objectAtIndex:0];
+        if (page == 0) {
             [self imagePlace:slot rect:[self rectImageForIdx:coverItems.count-1] idx:coverItems.count-1];
         }
         
         //for last create fake page at the begin
-        if (timeslot == timelineArray.count - 1) {
-            Timeslot * slot = [timelineArray lastObject];
+        if (page == [scheduleModel_ timeslotsCount] - 1) {
             [self imagePlace:slot rect:[self rectImageForIdx:0] idx:0];
         }
     }    
@@ -171,10 +170,17 @@
     }
 }
 
-- (void)prepareWith:(id<HomeScreenDelegate>)parent {
+- (void)prepareWith:(id<HomeScreenDelegate>)parent scheduleModel:(ScheduleModel*)scheduleModel {
     //prepare scrollView
     self.delegate = parent;
-    timelineArray = [[NSMutableArray alloc] initWithCapacity:20];
+    
+    navPanel.alpha = 0.0;
+    pnPanel.alpha = 0.0;
+    psPanel.alpha = 0.0;
+    
+    ScheduleModel* oldMod = scheduleModel_;
+    scheduleModel_ = [scheduleModel retain];    
+    [oldMod release];
     
     scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
     scrollView.showsHorizontalScrollIndicator = NO;
@@ -188,103 +194,59 @@
     [singleFingerTap release];
 }
 
-- (void)updateTimeslots:(NSArray*) timeslots {
+- (void)updateTimeslots{
     @synchronized(self) {
-        NSLog(@"Timeslots: %@", timeslots);
-        NSLog(@"was size = %d", timelineArray.count);
-        NSLog(@"new size = %d", timeslots.count);
-        int lastTimeSlotId = -1;
-        if (timelineArray.count > 0) {
-            int page = [self getPageNumber];
-            if ([self pageInRange:page]) {
-                lastTimeSlotId = ((Timeslot*)[timelineArray objectAtIndex:page]).timeslotId;
-            }
-        }
-         
+        //TODO Refactor this method: clear code to be in one section for both cases (timeslotsCount=0 and !=0)
+        
         //if TV is switched off
-        if (timeslots.count == 0) {
-            [timelineArray removeAllObjects];
+        if ([scheduleModel_ timeslotsCount] == 0) {
             scrollView.contentSize = CGSizeMake(0, scrollView.frame.size.height);
             while (scrollView.subviews.count > 0) {
                 [[scrollView.subviews lastObject] removeFromSuperview];
-            }
-             
-            [delegate resetScheduleTimer];
-            [self updateNotify];
-         
+            }             
+            [self updateNotify];         
             return;
         }
-         
-        //find new current timeslot
-        int newCurrentTimeslotPage = -1;
-        for (int i = 0; i < timeslots.count; i++) {
-            if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Current) {
-                newCurrentTimeslotPage = i;
-                break;
-            }
-        }
-        //current did not founded, find next
-        if (newCurrentTimeslotPage == -1) {
-            for (int i = 0; i < timeslots.count; i++) {
-                if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Next) {
-                    newCurrentTimeslotPage = i;
-                    break;
+             
+        int newCurrentTimeslotPage = [scheduleModel_ currentOrNextOrLastTimeslotIndex];
+        
+        int page = [self getPageNumber];
+      
+        if (coverItems) {
+            for (int i = 0; i < coverItems.count; i++) {
+                id obj = [coverItems objectAtIndex:i];
+                if ([NSNull null] != obj) {
+                    [((UIViewController*)obj).view removeFromSuperview];
                 }
             }
+            [coverItems release];
+            coverItems = nil;
         }
         
-        //next did not founded, get last
-        if (newCurrentTimeslotPage == -1) {
-            newCurrentTimeslotPage = timeslots.count - 1;
+        NSInteger timeslotsCount = [scheduleModel_ timeslotsCount];
+        //prepare lazy array
+        //+2 for fakes items at begin and end of list (for wrapping)
+        coverItems = [[NSMutableArray alloc] initWithCapacity:timeslotsCount + 2];
+        for (int i = 0; i < timeslotsCount + 2; i++) {
+            [coverItems addObject:[NSNull null]];
         }
-
-        int page = [self getPageNumber];
-        Timeslot * slot = nil;
-        if (timeslots != nil && timeslots.count > 0 && page >= 0 && page < timeslots.count)
-            slot = [timeslots objectAtIndex:page];
-        if ((slot && lastTimeSlotId != slot.timeslotId) || timeslots.count != timelineArray.count ||
-            (timeslots.count == timelineArray.count && 
-             [[timeslots objectAtIndex:newCurrentTimeslotPage] timeslotStatus] != [[timelineArray objectAtIndex:newCurrentTimeslotPage] timeslotStatus])) {
-            [timelineArray removeAllObjects];
-            [timelineArray addObjectsFromArray:timeslots];
-            
-            if (coverItems) {
-                for (int i = 0; i < coverItems.count; i++) {
-                    id obj = [coverItems objectAtIndex:i];
-                    if ([NSNull null] != obj) {
-                        [((UIViewController*)obj).view removeFromSuperview];
-                    }
-                }
-                [coverItems release];
-                coverItems = nil;
-            }
-            
-            //prepare lazy array
-            //+2 for fakes items at begin and end of list (for wrapping)
-            coverItems = [[NSMutableArray alloc] initWithCapacity:timeslots.count + 2];
-            for (int i = 0; i < timeslots.count + 2; i++) {
-                [coverItems addObject:[NSNull null]];
-            }
-            
-            scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * coverItems.count, scrollView.frame.size.height);
-            //remove deprecated data
-            while (timelineArray.count < scrollView.subviews.count) {
-                [[scrollView.subviews lastObject] removeFromSuperview];
-            }
-         
-            page = newCurrentTimeslotPage;
-            [self scrollToPage:page animated:NO];
-            [self prepareImageFor: page - 1];
-            [self prepareImageFor: page];
-            [self prepareImageFor: page + 1];
-            
-            [self prepareImageFor: 0];
-            [self prepareImageFor: timeslots.count - 1];
-            
-            [self updateNotify];
-      
-            [delegate scheduleTimeslotChange:timeslots];
+        
+        scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * coverItems.count, scrollView.frame.size.height);
+        //remove deprecated data
+        while (timeslotsCount < scrollView.subviews.count) {
+            [[scrollView.subviews lastObject] removeFromSuperview];
         }
+     
+        page = newCurrentTimeslotPage;
+        [self scrollToPage:page animated:NO];
+        [self prepareImageFor: page - 1];
+        [self prepareImageFor: page];
+        [self prepareImageFor: page + 1];
+        
+        [self prepareImageFor: 0];
+        [self prepareImageFor: timeslotsCount - 1];
+        
+        [self updateNotify];      
     }
 }
 
@@ -343,33 +305,8 @@
     [self updateNotify];
 }
 
-- (BOOL)pageInRange:(int)page {
-    return (timelineArray != nil && timelineArray.count > 0 && page >= 0 && page < timelineArray.count);
-}
-
 - (void)scrollToCurrentTimeslot {
-    int page = -1;
-    for (int i = 0; i < timelineArray.count; i++) {
-        if ([[timelineArray objectAtIndex:i] timeslotStatus] == TimeslotStatus_Current) {
-            page = i;
-            break;
-        }
-    }
-    //current did not founded, find next
-    if (page == -1) {
-        for (int i = 0; i < timelineArray.count; i++) {
-            if ([[timelineArray objectAtIndex:i] timeslotStatus] == TimeslotStatus_Next) {
-                page = i;
-                break;
-            }
-        }
-    }
-    
-    //next did not founded, get last
-    if (page == -1) {
-        page = timelineArray.count - 1;
-    }
-
+    NSInteger page = [scheduleModel_ currentOrNextOrLastTimeslotIndex];
     if (page != -1) {
         [self scrollToPage:page animated:NO];
         [self prepareImageFor: page - 1];
@@ -388,26 +325,14 @@
     [self updateNotify];
 }
 
-- (Timeslot*)getTimeslot {
-    int page = [self getPageNumber];
-    if (![self pageInRange:page]) return nil;
-    
-    Timeslot * slot = [timelineArray objectAtIndex:page];
-    if (slot.timeslotStatus != TimeslotStatus_Current) {
-        return nil;
-    }
-    
-    return slot;
-}
-
 - (void)updateNotify {
     NSLog(@"updateNotify called");
     
     int page = [self getPageNumber];
     
-    if (![self pageInRange:page]) return;
+    if (![scheduleModel_ pageInRange:page]) return;
     
-    Timeslot * slot = [timelineArray objectAtIndex:page];
+    Timeslot * slot = [scheduleModel_ timeslotForPage:page];
     
     switch (timeslotsMode) {
         case TimeslotsMode_PlayingNow:
@@ -464,7 +389,7 @@
 
 - (void)dealloc {
     [coverItems release];
-    [timelineArray release];
+    [scheduleModel_ release];
     [navPanel release];
     [prevBtn release];
     [nextBtn release];

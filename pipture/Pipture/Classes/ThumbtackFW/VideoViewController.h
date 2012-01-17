@@ -13,7 +13,7 @@
 #import "PiptureModel.h"
 #import "MailComposerNavigationController.h"
 
-@interface VideoViewController : UIViewController<VideoURLReceiver>
+@interface VideoViewController : UIViewController<VideoURLReceiver, PlaylistReceiver>
 {
     NSTimer *progressUpdateTimer;
     NSTimer *controlsHideTimer;

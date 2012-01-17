@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Timeslot.h"
 #import "HomeScreenDelegate.h"
+#import "ScheduleModel.h"
 
 enum TimeslotsMode{
     TimeslotsMode_PlayingNow,
@@ -19,23 +20,20 @@ enum TimeslotsMode{
 
 @interface ScheduleView : UIView<UIScrollViewDelegate>
 {
-    NSMutableArray * timelineArray;
     NSMutableArray * coverItems;
+    ScheduleModel* scheduleModel_;
 }
 
-- (void)prepareWith:(id<HomeScreenDelegate>)parent;
+- (void)prepareWith:(id<HomeScreenDelegate>)parent scheduleModel:(ScheduleModel*)scheduleModel;
 
 - (void)updateNotify;
 - (void)scrollToPage:(int) page animated:(BOOL)animated;
 - (int)getPageNumber;
-- (void)prepareImageFor:(int)timeslot;
-- (void)updateTimeslots:(NSArray*) timeslots;
+- (void)prepareImageFor:(int)page;
+- (void)updateTimeslots;
 - (void)scrollToCurPage;
 
-- (Timeslot*)getTimeslot;
-
 - (void)setTimeslotsMode:(enum TimeslotsMode)mode;
-- (BOOL)pageInRange:(int)page;
 
 - (void)navPanelVisible:(BOOL)visible animation:(BOOL)anim;
 - (void)pnPanelVisible:(BOOL)visible animation:(BOOL)anim;

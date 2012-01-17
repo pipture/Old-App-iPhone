@@ -285,9 +285,13 @@ static PiptureAppDelegate *instance;
     videoViewController.simpleMode = noNavi;
     
     [self.window setRootViewController:videoViewController];
-    [videoViewController initVideo];
-    
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+    
+    if (playlist.count == 0) {
+        [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:timeslotId receiver:videoViewController];
+    } else {
+        [videoViewController initVideo];
+    }
     
     TRACK_EVENT(@"Open Activity", @"Video player");
 }

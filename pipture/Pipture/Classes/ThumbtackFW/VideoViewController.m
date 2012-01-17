@@ -62,6 +62,7 @@
         float duration = CMTimeGetSeconds(player.currentItem.asset.duration);
         float position = CMTimeGetSeconds(player.currentItem.currentTime);
         
+
         NSLog(@"Pos: %f, len: %f", position, duration);
         if (duration > 0 && duration - position < 30 && nextPlayerItem == nil && !precacheBegin && playlist && pos + 1 < [playlist count]) {
             NSLog(@"Precaching");
@@ -297,8 +298,6 @@
             }
         }
     }
-     
-    
 }
 
 - (void)initVideo {
@@ -334,7 +333,7 @@
     videoTitleView.view.frame = CGRectMake(0, 0, 170,44);
     self.navigationItem.titleView = videoTitleView.view;
     
-    [self initVideo];
+    //[self initVideo];
     
     NSError *activationError  = nil;    
     if ([[AVAudioSession sharedInstance]
@@ -552,11 +551,38 @@
 
 -(void)dataRequestFailed:(DataRequestError*)error
 {
+    NSLog(@"req failed");
+    //TODO: show error message?
     if (error.errorCode != DRErrorNoInternet) {
         [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
     }
     [self goBack];
 }
 
+#pragma mark PlaylistReceiver methods
+
+-(void)playlistReceived:(NSArray*)playlistItems {
+    NSLog(@"Playlist: %@", playlistItems);
+    if (playlistItems && playlistItems.count > 0) {
+        self.playlist = playlistItems;
+        
+        [self initVideo];
+    }
+}
+
+-(void)playlistCantBeReceivedForUnknownTimeslot:(NSNumber*)timeslotId {
+    NSLog(@"Unknown timeslot");
+    [self goBack];
+}
+
+-(void)playlistCantBeReceivedForExpiredTimeslot:(NSNumber*)timeslotId {
+    NSLog(@"Expired timeslot");
+    [self goBack];
+}
+
+-(void)playlistCantBeReceivedForFutureTimeslot:(NSNumber*)timeslotId {
+    NSLog(@"Future timeslot");
+    [self goBack];
+}
 
 @end

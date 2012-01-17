@@ -21,13 +21,17 @@ enum TimeslotStatus{
 @property(assign, nonatomic) NSInteger timeslotId;
 @property(retain, nonatomic) NSDate* startTime;
 @property(retain, nonatomic) NSDate* endTime;
+@property(retain, nonatomic) NSDate* startLocalTime;
+@property(retain, nonatomic) NSDate* endLocalTime;
 @property(retain, nonatomic) NSString* title;
 @property(retain, nonatomic) NSString* closupBackground;
 @property(retain, nonatomic) NSString* scheduleDescription;
 @property(assign, nonatomic) enum TimeslotStatus timeslotStatus;
 @property(readonly, nonatomic) NSString* timeDescription; //TODO to be moved to controller layer because it is presentation
 
--(id)initWithJSON:(NSDictionary*)jsonData;
+-(id)initWithJSON:(NSDictionary*)jsonData serverTimeDelta:(NSTimeInterval)serverTimeDelta;
+
+- (BOOL)isEqualToTimeslot:(Timeslot*)timeslot;
 
 @property(retain, nonatomic) UIImage* image;
 

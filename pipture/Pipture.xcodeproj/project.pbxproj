@@ -169,6 +169,7 @@
 		8805614014A46A79004A445C /* checked-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 8805613E14A46A79004A445C /* checked-selected.png */; };
 		8805614114A46A79004A445C /* checked-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8805613F14A46A79004A445C /* checked-selected@2x.png */; };
 		8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8811ED94147B6FC5008CC877 /* HomeView.xib */; };
+		88606F1B14C415F9009FB5FD /* ScheduleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88606F1A14C415F9009FB5FD /* ScheduleModel.m */; };
 		88751791148CAD3B00AFFFAC /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */; };
 		88751792148CAD3B00AFFFAC /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875177C148CAD3B00AFFFAC /* SBJsonParser.m */; };
 		88751793148CAD3B00AFFFAC /* SBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875177E148CAD3B00AFFFAC /* SBJsonStreamParser.m */; };
@@ -400,6 +401,8 @@
 		8805613E14A46A79004A445C /* checked-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checked-selected.png"; sourceTree = "<group>"; };
 		8805613F14A46A79004A445C /* checked-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checked-selected@2x.png"; sourceTree = "<group>"; };
 		8811ED94147B6FC5008CC877 /* HomeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeView.xib; sourceTree = "<group>"; };
+		88606F1914C415F9009FB5FD /* ScheduleModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScheduleModel.h; path = Classes/ScheduleModel.h; sourceTree = "<group>"; };
+		88606F1A14C415F9009FB5FD /* ScheduleModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScheduleModel.m; path = Classes/ScheduleModel.m; sourceTree = "<group>"; };
 		88751777148CAD3B00AFFFAC /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		88751778148CAD3B00AFFFAC /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJson.h"; sourceTree = "<group>"; };
 		88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJson.m"; sourceTree = "<group>"; };
@@ -699,6 +702,7 @@
 				384A1FA11491C240007D5E0B /* ThumbtackFW */,
 				384A1F871491C21C007D5E0B /* PiptureAPI */,
 				382D9C28148E032300005F16 /* Utility */,
+				88606F1814C41595009FB5FD /* Model */,
 				38441FD9147FA5AD009B9D4E /* HomeScreen */,
 				38D74559147F701200062441 /* Library */,
 			);
@@ -841,6 +845,16 @@
 				38D7455B147F728200062441 /* AlbumDetailPage.m */,
 			);
 			name = Library;
+			sourceTree = "<group>";
+		};
+		88606F1814C41595009FB5FD /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				88606F1914C415F9009FB5FD /* ScheduleModel.h */,
+				88606F1A14C415F9009FB5FD /* ScheduleModel.m */,
+			);
+			name = Model;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		88751776148CAD3B00AFFFAC /* SBJSON */ = {
@@ -1155,6 +1169,7 @@
 				3881FBE814A9C227008DC616 /* WelcomeScreenManager.m in Sources */,
 				3829907514AB06330003A202 /* HomeItemViewController.m in Sources */,
 				3829907A14AB33D60003A202 /* MailComposerNavigationController.m in Sources */,
+				88606F1B14C415F9009FB5FD /* ScheduleModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

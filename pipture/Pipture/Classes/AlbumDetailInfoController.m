@@ -29,6 +29,7 @@
 @synthesize navigationItemFake;
 @synthesize album;
 @synthesize withNavigationBar;
+@synthesize timeslotId;
 
 #pragma mark - View lifecycle
 
@@ -99,8 +100,14 @@
     UITapGestureRecognizer * tapTRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     [trailerButtonEnhancer addGestureRecognizer:tapTRec];
     [tapTRec release];
-      
+
     [self tabChanged:detailsButton];
+    
+    if (self.album) {
+        [[[PiptureAppDelegate instance] model] getDetailsForAlbum:self.album receiver:self];
+    } else {
+        [[[PiptureAppDelegate instance] model] getAlbumDetailsForTimeslotId:self.timeslotId receiver:self];
+    }
 }
 
 - (void)viewDidUnload
@@ -301,6 +308,22 @@
     NSLog(@"Trailer Show");
     NSArray * playlist = [NSArray arrayWithObject:album.trailer];
     [[PiptureAppDelegate instance] showVideo:playlist noNavi:YES timeslotId:nil];    
+}
+
+#pragma mark AlbumsDetailsDelegate
+-(void)albumDetailsReceived:(Album*)album_ {
+    //power button enabler
+    //Timeslot * slot = [self getCurrentTimeslot];
+    //[[PiptureAppDelegate instance] powerButtonEnable:(slot != nil)];
+       
+    self.album = album_;
+    [self tabChanged:detailsButton];
+    NSLog(@"Album episodes: %@", self.album.episodes);
+}
+
+-(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album {
+    //TODO nothing to do?
+    NSLog(@"Details for unknown album");
 }
 
 @end

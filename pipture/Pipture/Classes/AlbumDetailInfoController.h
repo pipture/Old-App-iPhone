@@ -16,15 +16,17 @@ enum DetailAlbumViewType {
     DetailAlbumViewType_Credits = 10,
 };
 
-@interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource, VideoURLReceiver>
+@interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource, VideoURLReceiver, AlbumDetailsReceiver>
 {
     enum DetailAlbumViewType viewType;
 }
 - (IBAction)backAction:(id)sender;
 - (IBAction)tabChanged:(id)sender;
 - (IBAction)trailerShow:(id)sender;
+
 @property (assign, nonatomic) BOOL withNavigationBar;
 @property (retain, nonatomic) Album * album;
+@property (assign, nonatomic) NSInteger timeslotId;
 
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;
 @property (retain, nonatomic) IBOutlet UIView *buttonsPanel;
