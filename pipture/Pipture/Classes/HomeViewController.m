@@ -27,7 +27,6 @@
 @synthesize scheduleView;
 @synthesize coverView;
 @synthesize albumsView;
-@synthesize detailsNavigationController;
 
 #pragma mark - View lifecycle
 
@@ -110,7 +109,6 @@
     [self setFlipButton:nil];
     [self setScheduleButton:nil];
     [self setAlbumsView:nil];
-    [self setDetailsNavigationController:nil];
     [super viewDidUnload];
 }
 
@@ -192,8 +190,8 @@
     [flipButton release];
     [scheduleButton release];
     [albumsView release];
-    [detailsNavigationController release];
     [scheduleModel release];
+
     [super dealloc];
 }
 
@@ -376,12 +374,14 @@
     }
 }
 
-- (void)showAlbumDetails:(Album*)album {
+- (void)showAlbumDetails:(Album*)album{
+    withNavigation = YES;
     [[[PiptureAppDelegate instance] model] getDetailsForAlbum:album receiver:self];
 }
 
 - (void)showAlbumDetailsForTimeslot:(NSInteger)timeslotId
 {    
+    withNavigation = NO;
     [[[PiptureAppDelegate instance] model] getAlbumDetailsForTimeslotId:timeslotId receiver:self];
 }
 
@@ -450,15 +450,15 @@
 #pragma mark AlbumsDetailsDelegate
 -(void)albumDetailsReceived:(Album*)album {
     
-    
-    
     self.navigationItem.title = @"Back";
     NSLog(@"%@", self.navigationController.visibleViewController.class);
     if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
         AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
         
+
         Timeslot * slot = [self getCurrentTimeslot];
         [[PiptureAppDelegate instance] powerButtonEnable:(slot != nil)];
+        adic.withNavigationBar = withNavigation;
         adic.album = album;
         NSLog(@"Album episodes: %@", album.episodes);
         [self.navigationController pushViewController:adic animated:YES];

@@ -14,6 +14,7 @@
 
 @implementation AlbumDetailInfoController
 @synthesize subViewContainer;
+@synthesize buttonsPanel;
 @synthesize detailPage;
 @synthesize videosTable;
 @synthesize videoTableCell;
@@ -24,7 +25,10 @@
 @synthesize detailsButtonEnhancer;
 @synthesize videosButtonEnhancer;
 @synthesize trailerButtonEnhancer;
+@synthesize navigationFake;
+@synthesize navigationItemFake;
 @synthesize album;
+@synthesize withNavigationBar;
 
 #pragma mark - View lifecycle
 
@@ -32,10 +36,33 @@
     [super viewWillAppear:animated];
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     [UIApplication sharedApplication].statusBarHidden = NO;
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
-    
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    int heightOffset = 0;
+    if (withNavigationBar) {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+        self.navigationFake.hidden = YES;
+        heightOffset = buttonsPanel.frame.size.height;
+        buttonsPanel.frame = CGRectMake(0, 0, buttonsPanel.frame.size.width, buttonsPanel.frame.size.height);
+        subViewContainer.frame = CGRectMake(0, buttonsPanel.frame.size.height, buttonsPanel.frame.size.width, self.view.frame.size.height-buttonsPanel.frame.size.height);
+    } else {
+        [self.navigationController setNavigationBarHidden:YES animated:NO];
+        self.navigationFake.hidden = NO;
+        heightOffset = self.navigationFake.frame.size.height + buttonsPanel.frame.size.height;
+        buttonsPanel.frame = CGRectMake(0, self.navigationFake.frame.size.height, buttonsPanel.frame.size.width, buttonsPanel.frame.size.height);
+
+        UIButton * backButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 50, 29)];
+        [backButton setBackgroundImage:[UIImage imageNamed:@"back-button-up.png"] forState:UIControlStateNormal];
+        [backButton setTitle:@" Back" forState:UIControlStateNormal];
+        [backButton addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
+        [[backButton titleLabel] setFont:[UIFont boldSystemFontOfSize:13]];
+        UIBarButtonItem * back = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+        self.navigationItemFake.leftBarButtonItem = back;
+        [back release];
+        [backButton release];
+        
+    }
+    subViewContainer.frame = CGRectMake(0, heightOffset, buttonsPanel.frame.size.width, self.view.frame.size.height-heightOffset);
     [titleView composeTitle:album];
 }
 
@@ -54,9 +81,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     titleView.view.frame = CGRectMake(0, 0, 170,44);
-    self.navigationItem.titleView = titleView.view;
+    if (withNavigationBar) {
+        self.navigationItem.titleView = titleView.view;
+    } else {
+        self.navigationItemFake.titleView = titleView.view;
+    }
     
     UITapGestureRecognizer * tapVRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     [videosButtonEnhancer addGestureRecognizer:tapVRec];
@@ -86,6 +116,9 @@
     [self setDetailsButtonEnhancer:nil];
     [self setVideosButtonEnhancer:nil];
     [self setTrailerButtonEnhancer:nil];
+    [self setNavigationFake:nil];
+    [self setButtonsPanel:nil];
+    [self setNavigationItemFake:nil];
     [super viewDidUnload];
 }
 
@@ -102,6 +135,9 @@
     [detailsButtonEnhancer release];
     [videosButtonEnhancer release];
     [trailerButtonEnhancer release];
+    [navigationFake release];
+    [buttonsPanel release];
+    [navigationItemFake release];
     [super dealloc];
 }
 
@@ -219,6 +255,10 @@
 }
 
 
+- (IBAction)backAction:(id)sender {
+    [[self navigationController] popViewControllerAnimated:YES];
+}
+
 - (IBAction)tabChanged:(id)sender {
     if (!sender) return;
     viewType = [sender tag];
@@ -226,7 +266,7 @@
     if ([[subViewContainer subviews] count] > 0) {
         [[[subViewContainer subviews] objectAtIndex:0] removeFromSuperview];
     }
-    CGRect rect = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height - [PiptureAppDelegate instance].tabViewBaseHeight);
+    CGRect rect = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height - [PiptureAppDelegate instance].tabViewBaseHeight + 8);
     switch (viewType) {
         case DetailAlbumViewType_Credits:
             detailPage.frame = rect;
