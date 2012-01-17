@@ -44,7 +44,6 @@
         
         if (title) title.text = timeslot.title;
         if (status)status.text= timeslot.timeDescription;
-        
 
         switch (timeslot.timeslotStatus) {
             case TimeslotStatus_Current:

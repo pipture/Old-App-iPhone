@@ -421,8 +421,6 @@
     [[PiptureAppDelegate instance] updateBalance];
 }
 
-
-
 #pragma mark WelcomeScreenProtocol Methods
 
 -(void)weclomeScreenDidDissmis:(int)tag {

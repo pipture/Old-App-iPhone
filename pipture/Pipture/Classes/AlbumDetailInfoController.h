@@ -23,7 +23,6 @@ enum DetailAlbumViewType {
 - (IBAction)backAction:(id)sender;
 - (IBAction)tabChanged:(id)sender;
 - (IBAction)trailerShow:(id)sender;
-
 @property (assign, nonatomic) BOOL withNavigationBar;
 @property (retain, nonatomic) Album * album;
 @property (assign, nonatomic) NSInteger timeslotId;
