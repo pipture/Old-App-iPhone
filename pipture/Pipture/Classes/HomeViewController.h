@@ -12,8 +12,8 @@
 #import "HomeScreenDelegate.h"
 #import "AlbumsView.h"
 #import "DetailsNavigationController.h"
-
-@interface HomeViewController : UIViewController <TimeslotsReceiver, PlaylistReceiver, AlbumsReceiver, AlbumDetailsReceiver, UIAlertViewDelegate, UITabBarDelegate, HomeScreenDelegate, WelcomeScreenProtocol>
+#import "ScheduleModel.h"
+@interface HomeViewController : UIViewController <PlaylistReceiver, AlbumsReceiver, AlbumDetailsReceiver, UIAlertViewDelegate, UITabBarDelegate, HomeScreenDelegate, WelcomeScreenProtocol>
 {
     enum HomeScreenMode homeScreenMode;
     
@@ -23,6 +23,8 @@
     
     //container for timeslots
     NSInteger reqTimeslotId;
+    ScheduleModel* scheduleModel;
+
 }
 
 //returns current visible page in scrollview

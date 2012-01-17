@@ -17,10 +17,10 @@
 @synthesize closupBackground;
 @synthesize scheduleDescription;
 @synthesize timeslotStatus;
+@synthesize startLocalTime;
+@synthesize endLocalTime;
 
 @synthesize image;
-
-
 
 static NSString* const JSON_PARAM_TIMESLOT_ID = @"TimeSlotId";
 static NSString* const JSON_PARAM_START_TIME = @"StartTime";
@@ -30,7 +30,7 @@ static NSString* const JSON_PARAM_CLOSEUP_BACKGROUND = @"CloseupBackground";
 static NSString* const JSON_PARAM_SCHEDULE_DESCRIPTION = @"ScheduleDescription";
 static NSString* const JSON_PARAM_TIMESLOT_STATUS = @"TimeslotStatus";
 
--(id)initWithJSON:(NSDictionary*)jsonData
+-(id)initWithJSON:(NSDictionary*)jsonData serverTimeDelta:(NSTimeInterval)serverTimeDelta;
 {
     self = [super init];
     if (self) {        
@@ -39,6 +39,10 @@ static NSString* const JSON_PARAM_TIMESLOT_STATUS = @"TimeslotStatus";
         self.startTime = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]] ;
         millisecs = [jsonData objectForKey:JSON_PARAM_END_TIME];
         self.endTime = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]];
+        
+        self.startLocalTime = [self.startTime dateByAddingTimeInterval:-serverTimeDelta];
+        self.endLocalTime = [self.endTime dateByAddingTimeInterval:-serverTimeDelta];
+        
         self.title = [jsonData objectForKey:JSON_PARAM_TIMESLOT_TITLE];
         self.closupBackground = [jsonData objectForKey:JSON_PARAM_CLOSEUP_BACKGROUND];                
         self.timeslotStatus = [(NSNumber*)[jsonData objectForKey:JSON_PARAM_TIMESLOT_STATUS] intValue];                
@@ -76,6 +80,13 @@ static NSString* const JSON_PARAM_TIMESLOT_STATUS = @"TimeslotStatus";
     }
 }
 
+- (BOOL)isEqualToTimeslot:(Timeslot*)timeslot
+{
+    return timeslotId == timeslot.timeslotId && timeslotStatus == timeslot.timeslotStatus 
+        && [startTime isEqualToDate:timeslot.startTime] && [endTime isEqualToDate:timeslot.endTime]
+        && [closupBackground isEqualToString:timeslot.closupBackground];//last field is added because we don't have albumid on client. 
+}
+
 - (id)initWith:(NSString*)_title desc:(NSString*)_desc image:(UIImage*)_image {
     self = [self init];
     if (self) {
@@ -91,6 +102,8 @@ static NSString* const JSON_PARAM_TIMESLOT_STATUS = @"TimeslotStatus";
     [scheduleDescription release];
     [startTime release];
     [endTime release];
+    [startLocalTime release];
+    [endLocalTime release];
     [title release];
     [closupBackground release];
     [image release];

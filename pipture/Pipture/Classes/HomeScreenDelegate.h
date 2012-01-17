@@ -22,8 +22,6 @@ enum HomeScreenMode {
 
 @protocol HomeScreenDelegate <NSObject>
 
-- (void)resetScheduleTimer;
-- (void)scheduleTimeslotChange:(NSArray *)timeslots;
 - (void)setHomeScreenMode:(enum HomeScreenMode)mode;
 - (void)doFlip;
 - (void)doPower;

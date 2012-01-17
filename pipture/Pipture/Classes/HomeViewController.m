@@ -43,11 +43,6 @@
     [[[PiptureAppDelegate instance] model] getAlbumsForReciever:self];
 }
 
-- (void)updateTimeslots:(NSTimer*)timer {
-    NSLog(@"timeslots updating by timer: %@", timer);
-    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
-}
-
 - (void)resetScheduleTimer {
     if (changeTimer != nil) {
         [changeTimer invalidate];
@@ -64,27 +59,23 @@
 
 - (void)startTimer:(float)interval {
     [self stopTimer];
-    updateTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(updateTimeslots:) userInfo:nil repeats:YES];
+    updateTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:scheduleModel selector:@selector(updateTimeslots) userInfo:nil repeats:YES];
 }
 
-- (void)scheduleTimeslotChange:(NSArray *)timeslots {
+- (void)scheduleTimeslotChange {
     [self resetScheduleTimer];
-    
-    NSDate * date = [NSDate dateWithTimeIntervalSinceNow:0];
-    for (int i = 0; i < timeslots.count; i++) {
-        Timeslot * slot = [timeslots objectAtIndex:i];
-        NSDate * early = [date laterDate:slot.startTime];
-        NSDate * later = [date laterDate:slot.endTime];
-        NSDate * scheduleTime = [early laterDate:later];
-        if (![date isEqualToDate:scheduleTime] && [[scheduleTime earlierDate:date] isEqualToDate:date]) {
-            changeTimer = [[[NSTimer alloc] initWithFireDate:scheduleTime interval:TIMESLOT_CHANGE_POLL_INTERVAL target:self selector:@selector(updateTimeslots:) userInfo:nil repeats:YES] autorelease];
-            [[NSRunLoop currentRunLoop] addTimer:changeTimer forMode:NSDefaultRunLoopMode];
-            NSLog(@"Scheduled to: %@", scheduleTime);
-            
-            return;
-        }
+             
+    NSDate * scheduleTime = [scheduleModel nextTimeslotChange]; 
+    if (scheduleTime)
+    {
+        changeTimer = [[[NSTimer alloc] initWithFireDate:scheduleTime interval:TIMESLOT_CHANGE_POLL_INTERVAL target:scheduleModel selector:@selector(updateTimeslots) userInfo:nil repeats:YES] autorelease];
+        [[NSRunLoop currentRunLoop] addTimer:changeTimer forMode:NSDefaultRunLoopMode];
+        NSLog(@"Scheduled to: %@", scheduleTime);        
     }
-    NSLog(@"Timer not scheduled");
+    else
+    {        
+        NSLog(@"Timer not scheduled");
+    }
 }
 
 
@@ -94,13 +85,19 @@
     
     homeScreenMode = HomeScreenMode_Unknown;
     
-    [scheduleView prepareWith:self];
+    scheduleModel = [[ScheduleModel alloc] init];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(newTimeslotsReceived:) 
+                                                 name:NEW_TIMESLOTS_NOTIFICATION
+                                               object:scheduleModel];
+
+    
+    [scheduleView prepareWith:self scheduleModel:scheduleModel];
     [coverView prepareWith:self];
     [albumsView prepareWith:self];
-    
+
     [self setHomeScreenMode:[[PiptureAppDelegate instance] getHomescreenState]];
     
-    [self updateTimeslots:nil];
 }
 
 
@@ -134,8 +131,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
     
-    [self updateTimeslots:nil];
-    [self startTimer:TIMESLOT_REGULAR_POLL_INTERVAL];
+    [self startTimer:TIMESLOT_REGULAR_POLL_INTERVAL]; 
     
     switch (homeScreenMode) {
         case HomeScreenMode_Albums:
@@ -166,12 +162,12 @@
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
             //[self setFullScreenMode];
-            [self updateTimeslots:nil];
+            [scheduleModel updateTimeslots];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
         case HomeScreenMode_Schedule:
             //[self setFullScreenMode];
-            [self updateTimeslots:nil];
+            [scheduleModel updateTimeslots];
             [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
             break;
         default:break;
@@ -187,6 +183,9 @@
 
 
 - (void)dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [scheduleView release];
     [coverView release];
     [tabbarContainer release];
@@ -194,6 +193,7 @@
     [scheduleButton release];
     [albumsView release];
     [detailsNavigationController release];
+    [scheduleModel release];
     [super dealloc];
 }
 
@@ -273,14 +273,18 @@
                 [scheduleButton setTitle:@"Schedule" forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
 
-                [self updateTimeslots:nil];
+                [scheduleModel updateTimeslots];
                 
                 [[PiptureAppDelegate instance] putHomescreenState:mode];
                 
                 break;
-            case HomeScreenMode_PlayingNow: 
-                [tabbarContainer addSubview:scheduleView];
-                if (flipAction) [UIView commitAnimations];
+            case HomeScreenMode_PlayingNow:
+//                if (homeScreenMode == HomeScreenMode_Cover)
+//                {                
+                    [tabbarContainer addSubview:scheduleView];
+                    if (flipAction) [UIView commitAnimations];
+                    [scheduleModel updateTimeslots];
+//                }
                 
                 [self setFullScreenMode];
                 
@@ -294,17 +298,18 @@
                 [scheduleButton setTitle:@"Schedule" forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
                 
-                [self updateTimeslots:nil];
+                
                 
                 [[PiptureAppDelegate instance] putHomescreenState:mode];
                 
                 break;
             case HomeScreenMode_Schedule: 
-                if (homeScreenMode == HomeScreenMode_Cover)
-                {
+//                if (homeScreenMode == HomeScreenMode_Cover)
+//                {
                     [tabbarContainer addSubview:scheduleView];
                     if (flipAction) [UIView commitAnimations];
-                }
+                    [scheduleModel updateTimeslots];
+//                }
                 
                 [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
                 flipButton.hidden = YES;
@@ -348,25 +353,22 @@
     [self flipAction:nil];
 }
 
-- (Timeslot*)getTimeslot {
+- (Timeslot*)getCurrentTimeslot {
     Timeslot * slot = nil;
     switch (homeScreenMode) {
-        case HomeScreenMode_Cover:
-            slot = [coverView getTimeslot];
-            break;
+        case HomeScreenMode_Cover:  
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Schedule:
         {
-            slot = [scheduleView getTimeslot];
+            slot = [scheduleModel currentTimeslot];
         } break;
         default: break;
-    }
-    
+    }    
     return slot;
 }
 
 - (void)doPower {
-    Timeslot * slot = [self getTimeslot];
+    Timeslot * slot = [self getCurrentTimeslot];
     
     if (slot) {
         reqTimeslotId = slot.timeslotId;
@@ -391,12 +393,20 @@
     [[PiptureAppDelegate instance] processDataRequestError:error delegate:self cancelTitle:@"OK" alertId:0];
 }
 
-#pragma mark TimeslotsReceiver methods
+#pragma mark ScheduleModel observer methods
 
--(void)timeslotsReceived:(NSArray *)timeslots {
-    [scheduleView updateTimeslots:timeslots];
-    [coverView updateTimeslots:timeslots];
+- (void) newTimeslotsReceived:(NSNotification *) notification
+{
+    [self resetScheduleTimer];
+
+    if ([scheduleModel timeslotsCount] > 0)
+    {
+        [self scheduleTimeslotChange];
+    }
+    [scheduleView updateTimeslots];        
+    [coverView updateTimeSlotInfo:[scheduleModel currentOrNextTimeslot]];    
 }
+
 
 #pragma mark PlaylistReceiver methods
 
@@ -412,19 +422,19 @@
 -(void)playlistCantBeReceivedForUnknownTimeslot:(NSNumber*)timeslotId {
     NSLog(@"Unknown timeslot: %@", timeslotId);
     reqTimeslotId = -1;
-    [self updateTimeslots:nil];
+    [scheduleModel updateTimeslots];
 }
                                                                        
 -(void)playlistCantBeReceivedForExpiredTimeslot:(NSNumber*)timeslotId {
     NSLog(@"Expired timeslot: %@", timeslotId);
     reqTimeslotId = -1;
-    [self updateTimeslots:nil];
+    [scheduleModel updateTimeslots];
 }
 
 -(void)playlistCantBeReceivedForFutureTimeslot:(NSNumber*)timeslotId {
     NSLog(@"Future timeslot: %@", timeslotId);
     reqTimeslotId = -1;
-    [self updateTimeslots:nil];
+    [scheduleModel updateTimeslots];
 }
 
 #pragma mark AlbumsDelegate methods
@@ -447,8 +457,8 @@
     if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
         AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
         
-        Timeslot * slot = [self getTimeslot];
-        [[PiptureAppDelegate instance] powerButtonEnable:(slot && slot.timeslotStatus == TimeslotStatus_Current)];
+        Timeslot * slot = [self getCurrentTimeslot];
+        [[PiptureAppDelegate instance] powerButtonEnable:(slot != nil)];
         adic.album = album;
         NSLog(@"Album episodes: %@", album.episodes);
         [self.navigationController pushViewController:adic animated:YES];

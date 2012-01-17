@@ -16,8 +16,9 @@
 
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent;
-- (Timeslot*)getTimeslot;
-- (void)updateTimeslots:(NSArray*) timeslots;
+- (void)updateTimeSlotInfo:(Timeslot*)timeslot;
+
+
 - (void)allowShowBubble:(BOOL)allow;
 
 - (IBAction)coverClick:(id)sender;

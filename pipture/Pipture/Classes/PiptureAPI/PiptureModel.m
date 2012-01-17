@@ -59,6 +59,7 @@ static NSString* const REST_PARAM_TIMESLOT_ID = @"TimeslotId";
 static NSString* const REST_PARAM_SCREENSHOT_IMAGE = @"ScreenshotURL";
 static NSString* const REST_PARAM_USER_NAME = @"UserName";
 
+static NSString* const JSON_PARAM_CURRENT_TIME = @"CurrentTime";
 static NSString* const JSON_PARAM_TIMESLOTS = @"Timeslots";
 static NSString* const JSON_PARAM_VIDEOS = @"Videos";
 static NSString* const JSON_PARAM_ERROR = @"Error";
@@ -285,11 +286,22 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         else
         {
             //NSArray* timeslots = [PiptureModel parseTimeslotList: jsonResult];                        
+            NSTimeInterval serverTimeDelta = 0; 
+            NSNumber* millisecs = [jsonResult objectForKey:JSON_PARAM_CURRENT_TIME];            
+            if (millisecs)
+            {            
+                // Time is taken for delivering this message so real server time is later. But it's ok for our purpose of 
+                // scheduling next timeslot updates
+                NSDate* serverTime = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]];
+                serverTimeDelta = [serverTime timeIntervalSinceDate:[NSDate dateWithTimeIntervalSinceNow:0]];
+            }
+            
             NSArray* timeslots = [PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_TIMESLOTS itemCreator:^(NSDictionary*jsonIT)
                                   {
-                                      return  [[Timeslot alloc] initWithJSON:jsonIT];
+                                      return  [[Timeslot alloc] initWithJSON:jsonIT serverTimeDelta:serverTimeDelta];
                                       
                                   } itemName:@"Timeslot"];
+
             [receiver performSelectorOnMainThread:@selector(timeslotsReceived:) withObject:timeslots waitUntilDone:YES];
             if (timeslots)
             {

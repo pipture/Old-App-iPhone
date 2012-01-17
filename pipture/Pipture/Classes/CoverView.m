@@ -35,14 +35,6 @@
     [UIView commitAnimations];
 }
 
-- (Timeslot*)getTimeslot {
-    if (currentTimeslot.timeslotStatus != TimeslotStatus_Current) {
-        return nil;
-    }
-    
-    return currentTimeslot;
-}
-
 
 - (void)updateTimeSlotInfo:(Timeslot*)timeslot {
     self.currentTimeslot = timeslot;    
@@ -73,6 +65,7 @@
         }
     } else {
         [self panel:coverPanel visible:NO];
+        [[PiptureAppDelegate instance] powerButtonEnable:NO];
     }
 
 }
@@ -80,33 +73,6 @@
 - (void)allowShowBubble:(BOOL)allow {
     allowBubble = allow;
     [self updateTimeSlotInfo:currentTimeslot];
-}
-
-- (void)updateTimeslots:(NSArray*) timeslots {
-        
-    int page = -1;
-    for (int i = 0; i < timeslots.count; i++) {
-        if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Current) {
-            page = i;
-            break;
-        }
-    }
-    //current did not founded, find next
-    if (page == -1) {
-        for (int i = 0; i < timeslots.count; i++) {
-            if ([[timeslots objectAtIndex:i] timeslotStatus] == TimeslotStatus_Next) {
-                page = i;
-                break;
-            }
-        }
-    }
-
-    if (page != -1) {
-        Timeslot * slot = [timeslots objectAtIndex:page];
-        [self updateTimeSlotInfo:slot];
-    } else {
-        [self updateTimeSlotInfo:nil];
-    }
 }
 
 - (IBAction)coverClick:(id)sender {
