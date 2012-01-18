@@ -52,15 +52,15 @@
     }
 }
 
-- (void)navPanelVisible:(BOOL)visible animation:(BOOL)anim{
+- (void)navigationPanelVisible:(BOOL)visible animation:(BOOL)anim{
     [self panel:navPanel visible:visible animation:anim];
 }
 
-- (void)pnPanelVisible:(BOOL)visible animation:(BOOL)anim{
+- (void)playingNowPanelVisible:(BOOL)visible animation:(BOOL)anim{
     [self panel:pnPanel visible:visible animation:anim];
 }
 
-- (void)psPanelVisible:(BOOL)visible animation:(BOOL)anim{
+- (void)playingSoonPanelVisible:(BOOL)visible animation:(BOOL)anim{
     [self panel:psPanel visible:visible animation:anim];
 }
 
@@ -326,6 +326,7 @@
 }
 
 - (void)updateNotify {
+    //TODO: Part of 9151 refactor
     NSLog(@"updateNotify called");
     
     int page = [self getPageNumber];
@@ -333,6 +334,8 @@
     if (![scheduleModel_ pageInRange:page]) return;
     
     Timeslot * slot = [scheduleModel_ timeslotForPage:page];
+    
+
     
     switch (timeslotsMode) {
         case TimeslotsMode_PlayingNow:
@@ -346,45 +349,45 @@
             [[PiptureAppDelegate instance] tabbarVisible:visibleInfoPanel slide:NO];
             switch (slot.timeslotStatus) {
                 case TimeslotStatus_Current:
-                    [self psPanelVisible:NO animation:visibleInfoPanel];
-                    [self pnPanelVisible:visibleInfoPanel animation:visibleInfoPanel];
-                    [self navPanelVisible:NO animation:visibleInfoPanel];
-                    [[PiptureAppDelegate instance] powerButtonEnable:YES];
+                    [self playingSoonPanelVisible:NO animation:visibleInfoPanel];
+                    [self playingNowPanelVisible:visibleInfoPanel animation:visibleInfoPanel];
+                    [self navigationPanelVisible:NO animation:visibleInfoPanel];
                     [self updateTimeSlotInfo:slot panel:pnPanel];
                     break;
                 case TimeslotStatus_Next:
-                    [self pnPanelVisible:NO animation:visibleInfoPanel];
-                    [self psPanelVisible:visibleInfoPanel animation:visibleInfoPanel];
-                    [self navPanelVisible:NO animation:visibleInfoPanel];
-                    [[PiptureAppDelegate instance] powerButtonEnable:NO];
+                    [self playingNowPanelVisible:NO animation:visibleInfoPanel];
+                    [self playingSoonPanelVisible:visibleInfoPanel animation:visibleInfoPanel];
+                    [self navigationPanelVisible:NO animation:visibleInfoPanel];
                     [self updateTimeSlotInfo:slot panel:psPanel];
                     break;    
                 default:
-                    [self pnPanelVisible:NO animation:visibleInfoPanel];
-                    [self psPanelVisible:NO animation:visibleInfoPanel];
-                    [self navPanelVisible:NO animation:visibleInfoPanel];
-                    [[PiptureAppDelegate instance] powerButtonEnable:NO];
+                    [self playingNowPanelVisible:NO animation:visibleInfoPanel];
+                    [self playingSoonPanelVisible:NO animation:visibleInfoPanel];
+                    [self navigationPanelVisible:NO animation:visibleInfoPanel];
                     break;
             }
         }
             break;
         case TimeslotsMode_Schedule:
-            [self psPanelVisible:NO animation:NO];
-            [self pnPanelVisible:NO animation:NO];
-            [self navPanelVisible:YES animation:NO];
+            [delegate flipButtonHidden:YES];
+            [self playingSoonPanelVisible:NO animation:NO];
+            [self playingNowPanelVisible:NO animation:NO];
+            [self navigationPanelVisible:YES animation:NO];
             [UIApplication sharedApplication].statusBarHidden = NO;
-            [delegate scheduleButtonHidden:NO];
+            [delegate scheduleButtonHidden:NO];                        
             [self updateTimeSlotInfo:slot panel:navPanel];
             break;
         case TimeslotsMode_Schedule_Fullscreen:
-            [self psPanelVisible:NO animation:NO];
-            [self pnPanelVisible:NO animation:NO];
-            [self navPanelVisible:NO animation:NO];
+            [delegate flipButtonHidden:YES];            
+            [self playingSoonPanelVisible:NO animation:NO];
+            [self playingNowPanelVisible:NO animation:NO];
+            [self navigationPanelVisible:NO animation:NO];
             [UIApplication sharedApplication].statusBarHidden = YES;
             [delegate scheduleButtonHidden:YES];
             [self updateTimeSlotInfo:slot panel:navPanel];
             break;
     }
+    [[PiptureAppDelegate instance] powerButtonEnable:(slot.timeslotStatus == TimeslotStatus_Current)];
 }
 
 - (void)dealloc {

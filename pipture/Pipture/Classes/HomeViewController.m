@@ -31,11 +31,52 @@
 #pragma mark - View lifecycle
 
 - (void)scheduleButtonHidden:(BOOL)hidden {
-    scheduleButton.hidden = hidden;
+    //TODO: Part of 9151 refactor
+    switch (homeScreenMode) {
+        case HomeScreenMode_Cover:
+        case HomeScreenMode_PlayingNow:
+        case HomeScreenMode_Schedule:            
+            scheduleButton.hidden = hidden;
+            break;            
+        default:
+            break;            
+    }
 }
 
 - (void)flipButtonHidden:(BOOL)hidden {
-    flipButton.hidden = hidden;
+    //TODO: Part of 9151 refactor
+    switch (homeScreenMode) {
+        case HomeScreenMode_Cover:
+        case HomeScreenMode_PlayingNow:
+        case HomeScreenMode_Schedule:            
+            flipButton.hidden = hidden;
+            break;            
+        default:
+            break;            
+    }    
+}
+
+- (Timeslot*)getCurrentTimeslot {
+    Timeslot * slot = nil;
+    switch (homeScreenMode) {
+        case HomeScreenMode_Cover:  
+        case HomeScreenMode_PlayingNow:        
+            slot = [scheduleModel currentTimeslot];
+            break;
+        case HomeScreenMode_Schedule:
+        {
+            NSInteger page = [scheduleView getPageNumber];
+            slot = [scheduleModel currentTimeslotForPage:page];            
+        }   break;
+        default: break;
+    }    
+    return slot;
+}
+
+
+- (void)powerButtonEnable
+{
+    [[PiptureAppDelegate instance] powerButtonEnable:([self getCurrentTimeslot] != nil)];
 }
 
 - (void)updateAlbums {
@@ -167,9 +208,11 @@
             //[self setFullScreenMode];
             [scheduleModel updateTimeslots];
             [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
-            break;
+            break;            
         default:break;
     } 
+    [self powerButtonEnable];
+    
 }
 - (void)viewDidDisappear:(BOOL)animated {
     [self resetScheduleTimer];
@@ -228,6 +271,7 @@
 }
 
 - (void)setHomeScreenMode:(enum HomeScreenMode)mode {
+    //TODO: Part of 9151 refactor
     if (mode != homeScreenMode) {
         //flip to cover or back to PN
         
@@ -326,14 +370,13 @@
                 
                 [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_LIBRARY];
                 [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
-                [[PiptureAppDelegate instance] powerButtonEnable:NO];
                 flipButton.hidden = YES;
                 scheduleButton.hidden = YES;
                 break;
             default: break;
-        }
-                
+        }        
         homeScreenMode = mode;
+        [self powerButtonEnable];        
     }
 }
 
@@ -341,22 +384,11 @@
     [self flipAction:nil];
 }
 
-- (Timeslot*)getCurrentTimeslot {
-    Timeslot * slot = nil;
-    switch (homeScreenMode) {
-        case HomeScreenMode_Cover:  
-        case HomeScreenMode_PlayingNow:
-        case HomeScreenMode_Schedule:
-        {
-            slot = [scheduleModel currentTimeslot];
-        } break;
-        default: break;
-    }    
-    return slot;
-}
 
+
+                                                     
 - (void)doPower {
-    Timeslot * slot = [self getCurrentTimeslot];
+    Timeslot * slot = [scheduleModel currentTimeslot];
     
     if (slot) {
         [scheduleView scrollToCurPage];
@@ -374,6 +406,7 @@
         adic.withNavigationBar = withNavigation;
         adic.album = album;
         adic.timeslotId = timeslotId;
+        adic.scheduleModel = scheduleModel;
         [self.navigationController pushViewController:adic animated:YES];
         [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
         [adic release];
@@ -408,7 +441,8 @@
         [self scheduleTimeslotChange];
     }
     [scheduleView updateTimeslots];        
-    [coverView updateTimeSlotInfo:[scheduleModel currentOrNextTimeslot]];    
+    [coverView updateTimeSlotInfo:[scheduleModel currentOrNextTimeslot]];
+    [self powerButtonEnable];
 }
 
 #pragma mark AlbumsDelegate methods

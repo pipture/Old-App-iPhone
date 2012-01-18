@@ -133,6 +133,28 @@
     return page < 0 ? nil : [self timeslotForPage:page];    
 }
 
+- (BOOL) albumIsPlayingNow:(NSInteger)albumId
+{
+    for (Timeslot*t in timeslots_) {
+        if (t.albumId == albumId && t.timeslotStatus == TimeslotStatus_Current)
+        {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (Timeslot*) currentTimeslotForPage:(NSInteger)page
+{
+    if ([self pageInRange:page])
+    {
+        Timeslot*t = [self timeslotForPage:page];
+        if (t.timeslotStatus == TimeslotStatus_Current)
+            return t;    
+    }
+    return nil;
+}
+
 - (Timeslot*) currentOrNextTimeslot
 {
     NSInteger page = [self currentOrNextTimeslotIndex];

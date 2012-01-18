@@ -19,6 +19,7 @@ enum TimeslotStatus{
 - (id)initWith:(NSString*)_title desc:(NSString*)_desc image:(UIImage*)_image;
 
 @property(assign, nonatomic) NSInteger timeslotId;
+@property(assign, nonatomic) NSInteger albumId;
 @property(retain, nonatomic) NSDate* startTime;
 @property(retain, nonatomic) NSDate* endTime;
 @property(retain, nonatomic) NSDate* startLocalTime;
