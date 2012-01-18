@@ -25,18 +25,26 @@
     NSMutableData* data;
     UIImage * defImage;
     NSURL* currentUrl;
+    UIActivityIndicatorView * activityView;
     BOOL useStorage;
     BOOL asButton;
     id actionTarget;
     SEL actionSelector;
 }
 
+enum AsyncImageSpinnerType
+{
+    AsyncImageSpinnerType_None,
+    AsyncImageSpinnerType_Small,
+    AsyncImageSpinnerType_Big
+};
+
 
 @property (retain, nonatomic) NSURL* lastUrl;
 
 +(UIImage *)makeRoundCornerImage : (UIImage*) img : (int) cornerWidth : (int) cornerHeight;
-- (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image localStore:(BOOL)store asButton:(BOOL)button target:(id)target selector:(SEL)action ;
-- (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image localStore:(BOOL)store force:(BOOL)force asButton:(BOOL)button target:(id)target selector:(SEL)action ;
+- (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image spinner:(enum AsyncImageSpinnerType)spinner localStore:(BOOL)store asButton:(BOOL)button target:(id)target selector:(SEL)action ;
+- (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image spinner:(enum AsyncImageSpinnerType)spinner localStore:(BOOL)store force:(BOOL)force asButton:(BOOL)button target:(id)target selector:(SEL)action ;
 
 @property (nonatomic, assign) BOOL roundCorner;
 @property(retain, nonatomic) NSString * imageFile;

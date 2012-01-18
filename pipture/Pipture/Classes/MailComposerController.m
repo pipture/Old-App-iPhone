@@ -74,7 +74,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [picturePlaceholder addSubview:lastScreenshotView];
 
 
-    [lastScreenshotView loadImageFromURL:[NSURL URLWithString:url] withDefImage:[UIImage imageNamed:@"ThumbnailBack.png"] localStore:YES asButton:NO target:nil selector:nil];
+    [lastScreenshotView loadImageFromURL:[NSURL URLWithString:url] withDefImage:[UIImage imageNamed:@"ThumbnailBack.png"] spinner:AsyncImageSpinnerType_Small localStore:YES asButton:NO target:nil selector:nil];
 
     
 }

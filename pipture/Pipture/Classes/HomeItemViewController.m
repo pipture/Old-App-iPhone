@@ -44,9 +44,7 @@
         [coverPlaceholder addSubview:imageView];
     }
 
-    [imageView loadImageFromURL:url withDefImage:nil localStore:YES asButton:NO target:nil selector:nil];        
-
-
+    [imageView loadImageFromURL:url withDefImage:nil spinner:AsyncImageSpinnerType_Big localStore:YES force:NO asButton:NO target:nil selector:nil];
 }
 
 @end
