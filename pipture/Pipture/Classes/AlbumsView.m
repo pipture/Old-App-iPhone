@@ -13,8 +13,8 @@
 #import "UILabel+ResizeForVerticalAlign.h"
 
 //TODO: maybe not hardcode?
-#define ITEM_HEIGHT 205
-#define ITEM_WIDTH 106
+#define ITEM_HEIGHT 197
+#define ITEM_WIDTH 97
 
 @implementation AlbumsView
 @synthesize scrollView;
@@ -66,9 +66,13 @@
         AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
         [item.thumbnailButton addSubview:imageView];
         
-        [imageView loadImageFromURL:[NSURL URLWithString:album.thumbnail] withDefImage:nil localStore:YES asButton:YES target:self selector:@selector(showDetails:)];
+        [imageView loadImageFromURL:[NSURL URLWithString:album.thumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small localStore:YES asButton:YES target:self selector:@selector(showDetails:)];
         
         [item.titleLabel setTextWithVerticalResize:album.series.title];
+        
+        CGRect labelRect = item.titleLabel.frame;
+        CGRect tagRect = item.tagLabel.frame;
+        item.tagLabel.frame = CGRectMake(tagRect.origin.x, labelRect.origin.y + labelRect.size.height + 1, tagRect.size.width, tagRect.size.height);
         item.tagLabel.text = @"";
         switch (album.status) {
             case AlbumStatus_Normal:        item.tagLabel.text = @""; break;
@@ -93,7 +97,7 @@
             if (i >= [albumsItemsArray count])
                 break;
             AlbumItemViewController * item = [albumsItemsArray objectAtIndex:i++];
-            item.view.frame = CGRectMake(1 + (x * ITEM_WIDTH), 5 + (y * ITEM_HEIGHT), ITEM_WIDTH, ITEM_HEIGHT);
+            item.view.frame = CGRectMake(15 + (x * ITEM_WIDTH), 15 + (y * ITEM_HEIGHT), ITEM_WIDTH, ITEM_HEIGHT);
             [scrollView addSubview:item.view];
         }
     }

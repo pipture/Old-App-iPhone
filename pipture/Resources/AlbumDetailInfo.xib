@@ -68,7 +68,7 @@
 						<string key="NSReuseIdentifierKey">_NS:260</string>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIBarStyle">1</int>
-						<array class="NSMutableArray" key="IBUIItems">
+						<array key="IBUIItems">
 							<object class="IBUINavigationItem" id="247190903">
 								<reference key="IBUINavigationBar" ref="237770894"/>
 								<string key="IBUITitle">Title</string>
@@ -87,7 +87,6 @@
 						<string key="NSFrame">{{0, 85}, {320, 395}}</string>
 						<reference key="NSSuperview" ref="621270554"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:196</string>
 						<object class="NSColor" key="IBUIBackgroundColor" id="582805439">
 							<int key="NSColorSpace">3</int>
@@ -295,7 +294,6 @@
 						<string key="NSFrameSize">{320, 165}</string>
 						<reference key="NSSuperview" ref="991280464"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:196</string>
 						<reference key="IBUIBackgroundColor" ref="582805439"/>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -317,7 +315,6 @@
 				<string key="NSFrameSize">{320, 460}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
-				<reference key="NSNextKeyView"/>
 				<string key="NSReuseIdentifierKey">_NS:418</string>
 				<reference key="IBUIBackgroundColor" ref="582805439"/>
 				<bool key="IBUIClipsSubviews">YES</bool>
@@ -630,6 +627,7 @@
 					<object class="IBObjectRecord">
 						<int key="objectID">5</int>
 						<reference key="object" ref="308373110"/>
+						<array class="NSMutableArray" key="children"/>
 						<reference key="parent" ref="621270554"/>
 						<string key="objectName">containerView</string>
 					</object>
@@ -682,7 +680,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">57</int>
+			<int key="maxID">58</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -715,6 +713,7 @@
 						<string key="detailsButtonEnhancer">UIView</string>
 						<string key="dividerTableCell">UITableViewCell</string>
 						<string key="navigationFake">UINavigationBar</string>
+						<string key="navigationItemFake">UINavigationItem</string>
 						<string key="subViewContainer">UIView</string>
 						<string key="titleView">DetailsTitleViewController</string>
 						<string key="trailerButtonEnhancer">UIView</string>
@@ -747,6 +746,10 @@
 						<object class="IBToOneOutletInfo" key="navigationFake">
 							<string key="name">navigationFake</string>
 							<string key="candidateClassName">UINavigationBar</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="navigationItemFake">
+							<string key="name">navigationItemFake</string>
+							<string key="candidateClassName">UINavigationItem</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="subViewContainer">
 							<string key="name">subViewContainer</string>

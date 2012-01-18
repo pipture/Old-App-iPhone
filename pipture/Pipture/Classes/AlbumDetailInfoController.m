@@ -176,7 +176,7 @@
         if (!imageView) {
             imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, placeholder.frame.size.width, placeholder.frame.size.height)] autorelease];
             [placeholder addSubview:imageView];
-            [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:nil localStore:YES asButton:NO target:nil selector:nil];
+            [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small localStore:YES asButton:NO target:nil selector:nil];
         }
         
         counter.text = [NSString stringWithFormat:@"%d.", row/2 + 1];

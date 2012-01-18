@@ -65,21 +65,22 @@
         [imageView setNeedsLayout];
     }
     [self setNeedsLayout];
+    
+    [activityView removeFromSuperview];
+    [activityView release];
+    activityView = nil;
 }
 
 
 - (BOOL)tryLoadImage:(NSData*)ldata saveToCache:(BOOL)saveToCache
 {
+
     UIImage *image = [UIImage imageWithData:ldata];
     if (image)
     {        
         if (saveToCache)
         {
             [ldata writeToFile:imageFile atomically:YES];   
-        }
-        
-        if ([[self subviews] count]>0) {
-            [[[self subviews] objectAtIndex:0] removeFromSuperview];
         }
         
         [self updateViewWith:image];
@@ -89,11 +90,63 @@
     return NO;
 }
 
-- (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image localStore:(BOOL)store asButton:(BOOL)button target:(id)target selector:(SEL)action{
-    [self loadImageFromURL:url withDefImage:image localStore:store force:YES asButton:button target:target selector:action];
+- (void)createSpinner:(enum AsyncImageSpinnerType)spinner {
+    [activityView removeFromSuperview];
+    [activityView release];
+    activityView = nil;
+    
+    if (spinner != AsyncImageSpinnerType_None) {
+        
+        switch (spinner) {
+            case AsyncImageSpinnerType_Big:
+                activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+                break;
+            case AsyncImageSpinnerType_Small:
+                activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+                break;    
+            default: break;
+        }
+        CGRect frame = activityView.frame;
+        frame.origin = CGPointMake(self.frame.size.width/2 - activityView.frame.size.width/2, self.frame.size.height/2 - activityView.frame.size.height/2);
+        activityView.frame = frame;
+        
+        if (!activityView.isAnimating) {
+            [activityView startAnimating];
+        }
+        activityView.hidden = NO;
+        [self addSubview:activityView];
+        [self bringSubviewToFront:activityView];
+    }
 }
 
-- (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image localStore:(BOOL)store force:(BOOL)force asButton:(BOOL)button target:(id)target selector:(SEL)action{
+- (void)asyncURLLoader {
+    [data release];
+    data = nil;
+    
+    NSURLRequest* request = [NSURLRequest requestWithURL:currentUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:6.0];
+    connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+}
+
+- (void)reloadData:(id)data_ {
+    NSData * ldata = data_;
+    if (ldata && [self tryLoadImage:ldata saveToCache:NO]) {
+        self.lastUrl = currentUrl;
+        [ldata release];
+    } else {
+        [self asyncURLLoader];
+    }
+}
+
+- (void)asyncLocalLoader {
+    NSMutableData* ldata = [[NSMutableData alloc] initWithContentsOfFile:imageFile];
+    [self performSelectorOnMainThread:@selector(reloadData:) withObject:ldata waitUntilDone:NO];
+}
+
+- (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image spinner:(enum AsyncImageSpinnerType)spinner localStore:(BOOL)store asButton:(BOOL)button target:(id)target selector:(SEL)action{
+    [self loadImageFromURL:url withDefImage:image spinner:spinner localStore:store force:YES asButton:button target:target selector:action];
+}
+
+- (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image spinner:(enum AsyncImageSpinnerType)spinner localStore:(BOOL)store force:(BOOL)force asButton:(BOOL)button target:(id)target selector:(SEL)action{
     if (url == nil || connection!=nil) 
         return;
     
@@ -101,8 +154,7 @@
     {
         return;
     }
-    
-    
+
     if (defImage != nil) { [defImage release]; }
     
     defImage = [image retain];
@@ -111,32 +163,19 @@
     actionTarget = target;
     actionSelector = action;
 
-    BOOL imageLoaded = NO;
+    [self updateViewWith:defImage];
+    [self createSpinner:spinner];
+    currentUrl = [url retain];
     if (useStorage) {
         NSString* imgFile = [[NSString alloc] initWithString:[self storageFile:[NSString stringWithFormat:@"%d",[url.description hash]]]];
         self.imageFile = imgFile;
         [imgFile release];
-        NSMutableData* ldata = [[NSMutableData alloc] initWithContentsOfFile:imageFile];
-        if (ldata)
-        {
-            imageLoaded = [self tryLoadImage:ldata saveToCache:NO];
-            self.lastUrl = url;
-            [ldata release];            
-        }
-    }
-
-    if (!imageLoaded)
-    {
-        [data release];
-        data = nil;
-
-        currentUrl = [url retain];
-        NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:6.0];
-        connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
         
-        [self updateViewWith:defImage];
+        NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+        [queue addOperation:[[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(asyncLocalLoader) object:nil] autorelease]];
+    } else {
+        [self asyncURLLoader];
     }
-
 }
 
 - (void)connection:(NSURLConnection *)theConnection didReceiveData:(NSData *)incrementalData {
@@ -188,7 +227,8 @@
     [connection cancel];
     [connection release];
     [data release];
-    [defImage release];    
+    [defImage release];  
+    [activityView release];
     [imageFile release];
     [lastUrl_ release];  
     [currentUrl release];
