@@ -99,6 +99,11 @@ ScreenshotImage* curScreenshotImage;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self prepareLayout];
+}
 
 -(void) viewDidLoad
 {
@@ -128,12 +133,7 @@ ScreenshotImage* curScreenshotImage;
         [asctrl release];
     }
     screenshotContollers = mscreenshotContollers;
-    [self prepareLayout];
-
 }
-
-
-
 
 -(void)imagePressed:(id)albumScreenshotController
 {

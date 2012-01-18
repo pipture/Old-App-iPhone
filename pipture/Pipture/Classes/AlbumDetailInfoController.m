@@ -317,6 +317,7 @@
     //[[PiptureAppDelegate instance] powerButtonEnable:(slot != nil)];
        
     self.album = album_;
+    [titleView composeTitle:album];
     [self tabChanged:detailsButton];
     NSLog(@"Album episodes: %@", self.album.episodes);
 }

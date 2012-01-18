@@ -12,6 +12,7 @@
 @synthesize roundCorner;
 @synthesize imageFile;
 @synthesize lastUrl = lastUrl_;
+@synthesize loading;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -83,6 +84,10 @@
             [ldata writeToFile:imageFile atomically:YES];   
         }
         
+        while ([[self subviews] count] > 0) {
+            [[[self subviews] objectAtIndex:0] removeFromSuperview];
+        }
+        
         [self updateViewWith:image];
         
         return YES;
@@ -119,6 +124,20 @@
     }
 }
 
+- (void)clear
+{
+    [data release];
+    data = nil;
+    
+    [currentUrl release];
+    currentUrl = nil;
+    
+    [connection release];
+    connection=nil;    
+    
+    self.loading = NO;
+}
+
 - (void)asyncURLLoader {
     [data release];
     data = nil;
@@ -129,9 +148,16 @@
 
 - (void)reloadData:(id)data_ {
     NSData * ldata = data_;
-    if (ldata && [self tryLoadImage:ldata saveToCache:NO]) {
-        self.lastUrl = currentUrl;
+    BOOL imageLoaded = NO;
+    if (ldata) {
+        imageLoaded = [self tryLoadImage:ldata saveToCache:NO];
         [ldata release];
+        if (imageLoaded)
+            self.lastUrl = currentUrl;
+    }
+    
+    if (imageLoaded){
+        [self clear];        
     } else {
         [self asyncURLLoader];
     }
@@ -147,13 +173,17 @@
 }
 
 - (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image spinner:(enum AsyncImageSpinnerType)spinner localStore:(BOOL)store force:(BOOL)force asButton:(BOOL)button target:(id)target selector:(SEL)action{
-    if (url == nil || connection!=nil) 
+    
+    
+    if (url == nil || self.loading) 
         return;
     
     if ([lastUrl_ isEqual:url] && !force)
     {
         return;
     }
+    
+    self.loading = YES;
 
     if (defImage != nil) { [defImage release]; }
     
@@ -185,19 +215,6 @@
     [data appendData:incrementalData];
 }
 
-- (void)clear
-{
-    [data release];
-    data = nil;
-    
-    [currentUrl release];
-    currentUrl = nil;
-    
-    [connection release];
-    connection=nil;    
-    
-}
-
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     [self clear];
@@ -211,7 +228,7 @@
     }
     else
     {
-        NSLog(@"image has not been loaded by some reason");
+        NSLog(@"image has not been loaded by some reason, %@", imageFile);
     }
     [self clear];    
 }

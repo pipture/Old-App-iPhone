@@ -95,7 +95,7 @@
     AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
     [posterPlaceholder addSubview:imageView];
     
-    [imageView loadImageFromURL:[NSURL URLWithString:album.cover] withDefImage:nil spinner:AsyncImageSpinnerType_Small localStore:NO asButton:NO target:nil selector:nil];
+    [imageView loadImageFromURL:[NSURL URLWithString:album.cover] withDefImage:nil spinner:AsyncImageSpinnerType_Small localStore:YES asButton:NO target:nil selector:nil];
     
     credits = [[NSMutableArray alloc] initWithCapacity:20];
     
