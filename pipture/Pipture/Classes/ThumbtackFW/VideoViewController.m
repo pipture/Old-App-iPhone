@@ -28,17 +28,27 @@
 @synthesize navigationItem;
 @synthesize timeslotId;
 
--(void)goBack {
-    self.busyContainer.hidden = YES;
-    [[PiptureAppDelegate instance] openHome];
-}
-
 - (void)destroyNextItem {
     if ((nextPlayerItem != nil) && ((player && player.currentItem != nextPlayerItem) || !player)) {
         NSLog(@"Destroyed next item");
         [nextPlayerItem release];
         nextPlayerItem = nil;
     }
+}
+
+-(void)goBack {
+    self.busyContainer.hidden = YES;
+    
+    [self destroyNextItem];
+    
+    if (player != nil) {
+        [videoContainer setPlayer:nil];
+        [player release];
+        player = nil;
+    }
+    
+    
+    [[PiptureAppDelegate instance] openHome];
 }
 
 - (void)enableControls:(BOOL)enabled {
@@ -306,7 +316,6 @@
     precacheBegin = NO;
     pausedStatus = NO;
     [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
-    nextPlayerItem = nil;
     
     [self destroyNextItem];
     
