@@ -35,9 +35,9 @@ enum TimeslotsMode{
 
 - (void)setTimeslotsMode:(enum TimeslotsMode)mode;
 
-- (void)navPanelVisible:(BOOL)visible animation:(BOOL)anim;
-- (void)pnPanelVisible:(BOOL)visible animation:(BOOL)anim;
-- (void)psPanelVisible:(BOOL)visible animation:(BOOL)anim;
+- (void)navigationPanelVisible:(BOOL)visible animation:(BOOL)anim;
+- (void)playingNowPanelVisible:(BOOL)visible animation:(BOOL)anim;
+- (void)playingSoonPanelVisible:(BOOL)visible animation:(BOOL)anim;
 
 - (IBAction)showDetail:(id)sender;
 - (IBAction)prevAction:(id)sender;

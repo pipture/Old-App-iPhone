@@ -11,6 +11,7 @@
 @implementation Timeslot
 
 @synthesize timeslotId;
+@synthesize albumId;
 @synthesize startTime;
 @synthesize endTime;
 @synthesize title;
@@ -23,6 +24,7 @@
 @synthesize image;
 
 static NSString* const JSON_PARAM_TIMESLOT_ID = @"TimeSlotId";
+static NSString* const JSON_PARAM_ALBUM_ID = @"AlbumId";
 static NSString* const JSON_PARAM_START_TIME = @"StartTime";
 static NSString* const JSON_PARAM_END_TIME = @"EndTime";
 static NSString* const JSON_PARAM_TIMESLOT_TITLE = @"Title";
@@ -35,6 +37,7 @@ static NSString* const JSON_PARAM_TIMESLOT_STATUS = @"TimeslotStatus";
     self = [super init];
     if (self) {        
         self.timeslotId = [(NSNumber*)[jsonData objectForKey:JSON_PARAM_TIMESLOT_ID] integerValue];
+        self.albumId = [(NSNumber*)[jsonData objectForKey:JSON_PARAM_ALBUM_ID] integerValue];
         NSNumber*millisecs = [jsonData objectForKey:JSON_PARAM_START_TIME];
         self.startTime = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]] ;
         millisecs = [jsonData objectForKey:JSON_PARAM_END_TIME];

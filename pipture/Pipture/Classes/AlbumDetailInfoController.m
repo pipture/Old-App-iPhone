@@ -30,6 +30,7 @@
 @synthesize album;
 @synthesize withNavigationBar;
 @synthesize timeslotId;
+@synthesize scheduleModel;
 
 #pragma mark - View lifecycle
 
@@ -63,6 +64,7 @@
         [backButton release];
         
     }
+    
     subViewContainer.frame = CGRectMake(0, heightOffset, buttonsPanel.frame.size.width, self.view.frame.size.height-heightOffset);
     [titleView composeTitle:album];
 }
@@ -131,6 +133,7 @@
 
 - (void)dealloc {
     [album release];
+    [scheduleModel release];
     [subViewContainer release];
     [detailPage release];
     [videosTable release];
@@ -314,12 +317,13 @@
 -(void)albumDetailsReceived:(Album*)album_ {
     //power button enabler
     //Timeslot * slot = [self getCurrentTimeslot];
-    //[[PiptureAppDelegate instance] powerButtonEnable:(slot != nil)];
+
        
     self.album = album_;
     [titleView composeTitle:album];
     [self tabChanged:detailsButton];
-    NSLog(@"Album episodes: %@", self.album.episodes);
+    [[PiptureAppDelegate instance] powerButtonEnable:([scheduleModel albumIsPlayingNow:album.albumId])];        
+
 }
 
 -(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album {

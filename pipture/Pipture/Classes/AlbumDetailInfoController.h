@@ -10,6 +10,7 @@
 #import "Album.h"
 #import "PiptureModel.h"
 #import "DetailsTitleViewController.h"
+#import "ScheduleModel.h"
 
 enum DetailAlbumViewType {
     DetailAlbumViewType_Videos = 20,
@@ -23,8 +24,10 @@ enum DetailAlbumViewType {
 - (IBAction)backAction:(id)sender;
 - (IBAction)tabChanged:(id)sender;
 - (IBAction)trailerShow:(id)sender;
+
 @property (assign, nonatomic) BOOL withNavigationBar;
 @property (retain, nonatomic) Album * album;
+@property (retain, nonatomic) ScheduleModel* scheduleModel;
 @property (assign, nonatomic) NSInteger timeslotId;
 
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;

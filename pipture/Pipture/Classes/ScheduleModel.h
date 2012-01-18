@@ -24,6 +24,12 @@
 
 - (Timeslot*) timeslotForPage:(NSInteger)page;
 - (Timeslot*) currentTimeslot;
+/*
+ if timeslot at page is current then return it. otherwise - nil is returned
+ */
+
+- (BOOL) albumIsPlayingNow:(NSInteger)albumId;
+- (Timeslot*) currentTimeslotForPage:(NSInteger)page;
 - (Timeslot*) currentOrNextTimeslot;
 - (NSInteger) currentOrNextTimeslotIndex;
 - (NSInteger) currentOrNextOrLastTimeslotIndex;
