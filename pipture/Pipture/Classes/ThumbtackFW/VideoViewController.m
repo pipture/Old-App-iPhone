@@ -29,7 +29,7 @@
 @synthesize timeslotId;
 
 - (void)destroyNextItem {
-    if ((nextPlayerItem != nil) && ((player && player.currentItem != nextPlayerItem) || !player)) {
+    if ((player.currentItem != nextPlayerItem) || (player != nil)) {
         NSLog(@"Destroyed next item");
         [nextPlayerItem release];
         nextPlayerItem = nil;
@@ -74,7 +74,7 @@
         
 
         NSLog(@"Pos: %f, len: %f", position, duration);
-        if (duration > 0 && duration - position < 30 && nextPlayerItem == nil && !precacheBegin && playlist && pos + 1 < [playlist count]) {
+        if (duration > 0 && duration - position < 10 && nextPlayerItem == nil && !precacheBegin && playlist && pos + 1 < [playlist count]) {
             NSLog(@"Precaching");
             
             PlaylistItem * item = [playlist objectAtIndex:pos + 1];
@@ -152,7 +152,7 @@
 }
 
 - (AVPlayerItem *)createItem:(PlaylistItem*)plitem {
-    AVPlayerItem * item = [[AVPlayerItem alloc] initWithURL:[NSURL URLWithString:plitem.videoUrl]];
+    AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:plitem.videoUrl]];
     static const NSString *ItemStatusContext;
     
     [item addObserver:self forKeyPath:@"status" options:0 context:&ItemStatusContext];
@@ -177,6 +177,8 @@
         }
         pos++;
         [self customNavBarTitle];
+        
+        [nextPlayerItem release];
         nextPlayerItem = nil;
         precacheBegin = NO;
         
@@ -235,7 +237,6 @@
 }
 
 - (void) movieFinishedCallback:(NSNotification*) aNotification {
-    //AVPlayerItem * item = [aNotification object];
     NSDictionary * error = [aNotification.userInfo objectForKey:@"error"];
     
     if (error != nil) { //error happened
@@ -511,7 +512,7 @@
     
     [self destroyNextItem];
     
-    nextPlayerItem = [self createItem:playlistItem];
+    nextPlayerItem = [[self createItem:playlistItem] retain];
     if (waitForNext) {
         TRACK_EVENT(@"Start Video", playlistItem.videoName);
         
@@ -519,8 +520,10 @@
         if (player == nil) {
             [self createHandlers];
             player = [[AVPlayer alloc] initWithPlayerItem:nextPlayerItem];
-            videoContainer.player = player;
+            [nextPlayerItem release];
             nextPlayerItem = nil;
+            videoContainer.player = player;
+
             pos++;
             [self customNavBarTitle];
         } else {
