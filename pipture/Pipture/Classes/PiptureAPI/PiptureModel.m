@@ -795,7 +795,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
     NSArray* jsonItems = [jsonResult objectForKey:paramName];            
     if (jsonItems)
     {
-        items = [[[NSMutableArray alloc] initWithCapacity:[jsonItems count]] autorelease];
+        items = [NSMutableArray arrayWithCapacity:[jsonItems count]];
         for (NSDictionary*jsonIT in jsonItems) {            
             id it = createItem(jsonIT);
             if (it)
