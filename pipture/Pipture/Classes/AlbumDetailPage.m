@@ -18,11 +18,23 @@
 
 #pragma mark - View lifecycle
 
+- (void)clearDetailsView {
+    if (credits != nil) {
+        for (int i = 0; i < [credits count]; i++) {
+            [[credits objectAtIndex:i] removeFromSuperview];
+        }
+        
+        [credits release];
+    }
+    
+    if (posterPlaceholder.subviews.count > 0) {
+        [[posterPlaceholder.subviews objectAtIndex:0] removeFromSuperview];
+    }
+}
 
 - (void)dealloc {
     [album release];
-    [credits release];
-    credits = nil;
+    [self clearDetailsView];
     [posterPlaceholder release];
     [super dealloc];
 }
@@ -77,17 +89,7 @@
 }
 
 - (void)prepareLayout:(Album*)album_ {
-    if (credits != nil) {
-        for (int i = 0; i < [credits count]; i++) {
-            [[credits objectAtIndex:i]removeFromSuperview];
-        }
-        
-        [credits release];
-    }
-    
-    if (posterPlaceholder.subviews.count > 0) {
-        [[posterPlaceholder.subviews objectAtIndex:0] removeFromSuperview];
-    }
+    [self clearDetailsView];
     
     self.album = album_;
     
