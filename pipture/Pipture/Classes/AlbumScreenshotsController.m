@@ -16,9 +16,7 @@
 @synthesize selectedImage = selectedImage_;
 
 
-MailComposerController* mailComposerController_; 
-NSArray* screenshotContollers;
-ScreenshotImage* curScreenshotImage;
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil mailComposerController: (MailComposerController*)mailComposerController
 {
@@ -110,10 +108,7 @@ ScreenshotImage* curScreenshotImage;
     [super viewDidLoad];
     if (!screenshotImages_)
         return;
-    //create albums
-    if (screenshotContollers) {
-        [screenshotContollers release];
-    }
+
     NSMutableArray *mscreenshotContollers = [[NSMutableArray alloc] initWithCapacity:[screenshotImages_ count]];
     
     curScreenshotImage = selectedImage_;    

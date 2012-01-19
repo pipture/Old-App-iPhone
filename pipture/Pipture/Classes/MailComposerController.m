@@ -112,7 +112,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 -(void)onCancel
 {
+    [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
     [self dismissModalViewControllerAnimated:YES];
+    
     //[self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -153,17 +155,15 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         defaultScreenshotImage_.imageDescription = @"Default";
         defaultScreenshotImage_.imageURL = playlistItem.emailScreenshot;
 
-        if (screenshotImages_)
-        {
-            [screenshotImages_ release];
-            screenshotImages_ = nil;        
-        }
+
+        [screenshotImages_ release];
+        screenshotImages_ = nil;        
+        
         [[[PiptureAppDelegate instance] model] getScreenshotCollectionFor:playlistItem receiver:self];
         
-        if (screenshotImages_)
-        {
-            [screenshotImage_ release];
-        }                        
+
+        [screenshotImage_ release];
+        
         screenshotImage_ = [defaultScreenshotImage_ retain];    
     }
 

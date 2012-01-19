@@ -11,7 +11,10 @@
 #import "Album.h"
 
 @interface Episode : PlaylistItem
-
+{
+    Album* internalAlbum;//Retain
+    Album* externalAlbum;//Assign
+}
 @property(assign, nonatomic) NSInteger episodeId; 
 @property(retain, nonatomic) NSString *title;
 @property(retain, nonatomic) NSString *closeUp;
@@ -23,9 +26,9 @@
 @property(retain, nonatomic) NSString *episodeNo;
 @property(retain, nonatomic) NSString *episodeEmailScreenshot;
 
-@property(retain, nonatomic) Album* album;
+@property(readonly, nonatomic) Album* album;
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
-
+- (void)setExternalAlbum:(Album*)album;
 
 @end

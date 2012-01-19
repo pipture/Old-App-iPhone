@@ -281,7 +281,6 @@
         case DetailAlbumViewType_Credits:
             detailPage.frame = rect;
             [detailPage prepareLayout:album];
-            [album release];
             [subViewContainer addSubview:detailPage];
             
             [detailsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];

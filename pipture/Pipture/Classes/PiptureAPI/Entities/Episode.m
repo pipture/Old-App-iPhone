@@ -20,7 +20,6 @@
 @synthesize senderToReceiver;
 @synthesize episodeNo;
 @synthesize episodeEmailScreenshot;
-@synthesize album;
 
 static NSString* const JSON_PARAM_EPISODE_ID = @"EpisodeId";
 static NSString* const JSON_PARAM_EPISODE_TITLE = @"Title";
@@ -42,45 +41,17 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
 
 
 - (void)dealloc {
-    if (title) {
-        [title release]; 
-    }
-    if (closeUp)
-    {
-        [closeUp release];
-    }
-    if (closeUpThumbnail)
-    {
-        [closeUpThumbnail release];        
-    }
-    if (script)
-    {
-        [script release];
-    }
-    if (dateReleased)
-    {
-        [dateReleased release];
-    }
-    if (subject)
-    {
-        [subject release];
-    }
-    if (senderToReceiver)
-    {
-        [senderToReceiver release];
-    }
-    if (episodeNo)
-    {
-        [episodeNo release];
-    }    
-    if (episodeEmailScreenshot)
-    {
-        [episodeEmailScreenshot release];
-    }    
-    if (album)
-    {
-        [album release];
-    }        
+
+    [title release]; 
+    [closeUp release];
+    [closeUpThumbnail release];        
+    [script release];
+    [dateReleased release];
+    [subject release];
+    [senderToReceiver release];
+    [episodeNo release];
+    [episodeEmailScreenshot release];
+    [internalAlbum release];
     [super dealloc];
 }
 
@@ -89,6 +60,7 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
     self = [super init];
     if (self)
     {        
+        externalAlbum = nil;
         self.episodeId = [(NSNumber*)[jsonData objectForKey:JSON_PARAM_EPISODE_ID] integerValue];
         self.title = [jsonData objectForKey:JSON_PARAM_EPISODE_TITLE];
         self.closeUp = [jsonData objectForKey:JSON_PARAM_CLOSEUP];
@@ -108,18 +80,26 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
         
         if (seriesTitle || albumTitle || albumSeason || albumEmailScreenshot)
         {
-            Album *tmp = [[Album alloc] init];
-            self.album = tmp;//retain
-            album.series.title = seriesTitle;
-            album.title = albumTitle;
-            album.season = albumSeason;
-            album.emailScreenshot = albumEmailScreenshot;
-            [tmp release];
+            internalAlbum = [[Album alloc] init];
+            internalAlbum.series.title = seriesTitle;
+            internalAlbum.title = albumTitle;
+            internalAlbum.season = albumSeason;
+            internalAlbum.emailScreenshot = albumEmailScreenshot;
         }                        
     }
     return self;
 }
 
+
+- (Album*)album
+{
+    return internalAlbum ? internalAlbum : externalAlbum;
+}
+
+- (void)setExternalAlbum:(Album*)lalbum
+{
+    externalAlbum = lalbum;
+}
 
 
 -(NSString*) videoName 
@@ -129,9 +109,9 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
 
 -(NSString*) videoContainerName 
 {
-    if (album && album.series)
+    if (self.album && self.album.series)
     {
-        return album.series.title;
+        return self.album.series.title;
     } 
     else
     {
@@ -141,9 +121,9 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
 
 -(NSString*) videoPath 
 {
-    if (album)
+    if (self.album)
     {
-        return [NSString stringWithFormat:@"Season %@, Album %@, Video %@", album.season, album.title, episodeNo];
+        return [NSString stringWithFormat:@"Season %@, Album %@, Video %@", self.album.season, self.album.title, episodeNo];
     }
     else
     {
@@ -168,9 +148,9 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
     {
         return episodeEmailScreenshot;
     }
-    else if (album && [album emailScreenshot].length >0)
+    else if (self.album && [self.album emailScreenshot].length >0)
     {
-        return [album emailScreenshot];
+        return [self.album emailScreenshot];
     }
     else
     {

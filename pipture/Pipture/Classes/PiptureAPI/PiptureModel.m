@@ -298,7 +298,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             
             NSArray* timeslots = [[PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_TIMESLOTS itemCreator:^(NSDictionary*jsonIT)
                                   {
-                                      return  [[Timeslot alloc] initWithJSON:jsonIT serverTimeDelta:serverTimeDelta];
+                                      return  [[[Timeslot alloc] initWithJSON:jsonIT serverTimeDelta:serverTimeDelta] autorelease];
                                       
                                   } itemName:@"Timeslot"] retain];
             [receiver performSelectorOnMainThread:@selector(timeslotsReceived:) withObject:timeslots waitUntilDone:YES];
@@ -455,7 +455,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         {
             NSArray* albums = [[PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_ALBUMS itemCreator:^(NSDictionary*jsonIT)
                                {
-                                   return [[Album alloc] initWithJSON:jsonIT];
+                                   return [[[Album alloc] initWithJSON:jsonIT] autorelease];
                                } itemName:@"Album"] retain];              
             
             [receiver performSelectorOnMainThread:@selector(albumsReceived:) withObject:albums waitUntilDone:YES];
@@ -492,7 +492,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             [album updateWithDetails:jsonAlbumDetails episodes:episodes trailer:trailer];
             
             for (Episode* ep in episodes) {
-                ep.album = album;
+                [ep setExternalAlbum:album];
             }
             
             [episodes release];
@@ -709,7 +709,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                 {
                     NSArray* screenshotImages = [[PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_SCREENSHOTS itemCreator:^(NSDictionary*jsonIT)
                                               {
-                                                  return [[ScreenshotImage alloc] initWithJSON:jsonIT];
+                                                  return [[[ScreenshotImage alloc] initWithJSON:jsonIT] autorelease];
                                                   
                                               } itemName:@"Album screenshot image"] retain]; 
                                                                                                 

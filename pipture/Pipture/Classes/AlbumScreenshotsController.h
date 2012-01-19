@@ -11,6 +11,11 @@
 #import "MailComposerController.h"
 
 @interface AlbumScreenshotsController : UIViewController<AlbumScreenshotControllerDelegate>
+{    
+    MailComposerController* mailComposerController_; 
+    NSArray* screenshotContollers;
+    ScreenshotImage* curScreenshotImage;
+}
 @property (retain, nonatomic) IBOutlet UIScrollView *imagesScrollView;
 @property (retain, nonatomic) NSArray* screenshotImages;
 @property (retain, nonatomic) ScreenshotImage* defaultImage;
