@@ -68,50 +68,20 @@ static NSString* const CREDITS_ITEM_TAB = @",";
 
 
 - (void)dealloc {
-    if (title)
-    {
-        [title release];
-    }
-    if (albumDescription)
-    {
-        [albumDescription release];    
-    }
-    if (season)
-    {
-        [season release];
-    }
-    if (rating)
-    {
-        [rating release];
-    }
-    if (cover)
-    {
-        [cover release];
-    }
-    if (releaseDate)
-    {
-        [releaseDate release];
-    }
-    if (thumbnail)
-    {
-        [thumbnail release];
-    }
-    if (closeupBackground)
-    {
-        [closeupBackground release];
-    }
-    if (emailScreenshot)
-    {
-        [emailScreenshot release];
-    }
-    if (credits_)
-    {
-        [credits_ release];
-    }    
-    if (series)
-    {
-        [series release];
-    }    
+    [title release];
+    [albumDescription release];    
+    [season release];
+    [rating release];
+    [cover release];
+    [releaseDate release];
+    [thumbnail release];
+    [closeupBackground release];
+    [emailScreenshot release];
+    [credits_ release];
+    [series release];
+    [episodes_ release];
+    [trailer_ release];
+
     [super dealloc];
 }
 

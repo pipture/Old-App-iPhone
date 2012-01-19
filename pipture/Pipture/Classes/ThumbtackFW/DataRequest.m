@@ -94,19 +94,9 @@ id<DataRequestManager> requestManager_;
         [receivedData release];
     }
     
-    if (url_) {
-        [url_ release];
-    }
-
-    if (postParams_)
-    {
-        [postParams_ release];
-    }
-    
-    if (requestManager_)
-    {
-        [requestManager_ release];
-    }
+    [url_ release];
+    [postParams_ release];
+    [requestManager_ release];
     
     [callback_ release];
     
