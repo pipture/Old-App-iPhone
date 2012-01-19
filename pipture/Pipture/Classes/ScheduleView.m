@@ -87,7 +87,7 @@
 - (void) imagePlace:(Timeslot *) slot rect:(CGRect) frame idx:(int)idx{
     NSURL * url = [NSURL URLWithString:[slot closupBackground]];
 
-    HomeItemViewController * hivc;
+    HomeItemViewController * hivc = nil;
     id obj = [coverItems objectAtIndex:idx];
     if (obj != [NSNull null]) {
         hivc = obj;
@@ -99,6 +99,7 @@
         
         [scrollView addSubview:hivc.view];
         [coverItems replaceObjectAtIndex:idx withObject:hivc];
+        [hivc release];
     }
     NSLog(@"Update image url %@", url);
     [hivc updateImageView:url];
@@ -208,9 +209,7 @@
             return;
         }
              
-        int newCurrentTimeslotPage = [scheduleModel_ currentOrNextOrLastTimeslotIndex];
-        
-        int page = [self getPageNumber];
+        int newCurrentTimeslotPage = [scheduleModel_ currentOrNextOrLastTimeslotIndex];        
       
         if (coverItems) {
             for (int i = 0; i < coverItems.count; i++) {
@@ -237,7 +236,7 @@
             [[scrollView.subviews lastObject] removeFromSuperview];
         }
      
-        page = newCurrentTimeslotPage;
+        int page = newCurrentTimeslotPage;
         [self scrollToPage:page animated:NO];
         [self prepareImageFor: page - 1];
         [self prepareImageFor: page];

@@ -46,7 +46,6 @@ enum AsyncImageSpinnerType
 - (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image spinner:(enum AsyncImageSpinnerType)spinner localStore:(BOOL)store asButton:(BOOL)button target:(id)target selector:(SEL)action ;
 - (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image spinner:(enum AsyncImageSpinnerType)spinner localStore:(BOOL)store force:(BOOL)force asButton:(BOOL)button target:(id)target selector:(SEL)action ;
 
-@property (nonatomic, assign) BOOL roundCorner;
 @property(retain, nonatomic) NSString * imageFile;
 @property(assign, atomic) BOOL loading;
 

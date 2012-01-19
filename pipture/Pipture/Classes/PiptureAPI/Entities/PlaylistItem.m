@@ -10,15 +10,14 @@
 
 @implementation PlaylistItem
 
+@synthesize videoUrl;
+
 - (void)dealloc {
-    if (self.videoUrl)
-    {
-        [self.videoUrl release];
-    }
+    [videoUrl release];
     [super dealloc];
 }
 
-@synthesize videoUrl;
+
 
 
 -(NSString*) videoName 

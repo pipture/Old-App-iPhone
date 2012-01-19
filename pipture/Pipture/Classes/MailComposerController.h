@@ -30,10 +30,9 @@
 @property (retain, nonatomic) IBOutlet UITableView *layoutTableView;
 @property (retain, nonatomic) IBOutlet UILabel *screenshotName;
 @property (retain, nonatomic) IBOutlet UITextField *nameTextField;
-@property (retain, nonatomic) UIBarButtonItem* cancelButton;
 @property (retain, nonatomic) MFMailComposeViewController* mailComposer;
 
-@property (retain, nonatomic) UIBarButtonItem * nextButton;
+
 @property (retain, nonatomic) PlaylistItem * playlistItem;
 @property (assign, nonatomic) NSNumber * timeslotId;
 

@@ -9,7 +9,6 @@
 #import "AsyncImageView.h"
 
 @implementation AsyncImageView
-@synthesize roundCorner;
 @synthesize imageFile;
 @synthesize lastUrl = lastUrl_;
 @synthesize loading;
@@ -19,7 +18,6 @@
     self = [super initWithFrame:frame];
     if (self) {
         defImage = nil;
-        roundCorner = NO;
     }
     return self;
 }
@@ -37,11 +35,7 @@
         [view removeFromSuperview];
     }
     
-    if (roundCorner) {
-        UIImage * rounded = [AsyncImageView makeRoundCornerImage:image :5 :5];
-        [image release];
-        image = [rounded retain];
-    }
+
     
     if (asButton) {
         UIButton* imageBtn = [[[UIButton alloc] initWithFrame:self.bounds] autorelease];
@@ -100,8 +94,6 @@
     [activityView release];
     activityView = nil;
     
-    if (spinner != AsyncImageSpinnerType_None) {
-        
         switch (spinner) {
             case AsyncImageSpinnerType_Big:
                 activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
@@ -109,7 +101,7 @@
             case AsyncImageSpinnerType_Small:
                 activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
                 break;    
-            default: break;
+            default: return;
         }
         CGRect frame = activityView.frame;
         frame.origin = CGPointMake(self.frame.size.width/2 - activityView.frame.size.width/2, self.frame.size.height/2 - activityView.frame.size.height/2);
@@ -121,7 +113,6 @@
         activityView.hidden = NO;
         [self addSubview:activityView];
         [self bringSubviewToFront:activityView];
-    }
 }
 
 - (void)clear
@@ -151,7 +142,6 @@
     BOOL imageLoaded = NO;
     if (ldata) {
         imageLoaded = [self tryLoadImage:ldata saveToCache:NO];
-        [ldata release];
         if (imageLoaded)
             self.lastUrl = currentUrl;
     }
@@ -165,7 +155,8 @@
 
 - (void)asyncLocalLoader {
     NSMutableData* ldata = [[NSMutableData alloc] initWithContentsOfFile:imageFile];
-    [self performSelectorOnMainThread:@selector(reloadData:) withObject:ldata waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(reloadData:) withObject:ldata waitUntilDone:YES];
+    [ldata release];
 }
 
 - (void)loadImageFromURL:(NSURL*)url withDefImage:(UIImage *)image spinner:(enum AsyncImageSpinnerType)spinner localStore:(BOOL)store asButton:(BOOL)button target:(id)target selector:(SEL)action{

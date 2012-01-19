@@ -20,9 +20,7 @@
 @synthesize layoutTableView;
 @synthesize screenshotName;
 @synthesize nameTextField;
-@synthesize nextButton;
 @synthesize timeslotId;
-@synthesize cancelButton;
 @synthesize mailComposer;
 
 
@@ -32,19 +30,6 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
 static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
-
-
-- (void) hideCancelButton:(BOOL)hide
-{
-    if (hide)
-    {
-        self.navigationItem.leftBarButtonItem = nil;
-    }
-    else
-    {
-        self.navigationItem.leftBarButtonItem = cancelButton;        
-    }
-}
 
 
 - (void) displayScreenshot
@@ -87,11 +72,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 {
     [super viewDidLoad];
         
-    self.cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];        
+    UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];        
     self.navigationItem.leftBarButtonItem = cancelButton;
+    [cancelButton release];
     
 
-    nextButton = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(nextButton:)];
+    UIBarButtonItem* nextButton = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(nextButton:)];
     self.navigationItem.rightBarButtonItem = nextButton;
     [nextButton release];
     
@@ -328,7 +314,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [defaultScreenshotImage_ release];
     [fromCell release];
     [nameTextField release];
-    [cancelButton release];
     [mailComposer release];
     [super dealloc];
 }
@@ -487,6 +472,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         asctrl.selectedImage = screenshotImage_; 
 
         [self.navigationController pushViewController:asctrl animated:YES];
+        [asctrl release];
     }    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

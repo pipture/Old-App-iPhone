@@ -133,7 +133,8 @@ id<DataRequestManager> requestManager_;
         [parser release];
     }
     [self finish];
-    callback_(dctData, err);               
+    callback_(dctData, err);  
+    [err release];
 }
 
 - (void)connection:(NSURLConnection *)lconnection didFailWithError:(NSError *)error {
