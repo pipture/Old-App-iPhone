@@ -23,11 +23,11 @@
 {
     if ([PLAYLIST_ITEM_TYPE_EPISODE isEqualToString:itemType])
     {
-        return [[Episode alloc]initWithJSON:jsonItem];
+        return [[[Episode alloc]initWithJSON:jsonItem] autorelease];
     }
     if ([PLAYLIST_ITEM_TYPE_TRAILER isEqualToString:itemType])
     {
-        return [[Trailer alloc]initWithJSON:jsonItem];
+        return [[[Trailer alloc]initWithJSON:jsonItem] autorelease];
     }
     return nil;
 }

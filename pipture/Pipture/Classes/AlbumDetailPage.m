@@ -154,6 +154,7 @@
         UIImageView * cs = [[UIImageView alloc] initWithFrame:CGRectMake(size.width, size.height, image.size.width, image.size.height)];
         [cs setImage:image];
         [credits addObject:cs];
+        [cs release];
     }
     
     top += height + 10;

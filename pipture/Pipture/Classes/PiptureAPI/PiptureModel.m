@@ -296,16 +296,13 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                 serverTimeDelta = [serverTime timeIntervalSinceDate:[NSDate dateWithTimeIntervalSinceNow:0]];
             }
             
-            NSArray* timeslots = [PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_TIMESLOTS itemCreator:^(NSDictionary*jsonIT)
+            NSArray* timeslots = [[PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_TIMESLOTS itemCreator:^(NSDictionary*jsonIT)
                                   {
                                       return  [[Timeslot alloc] initWithJSON:jsonIT serverTimeDelta:serverTimeDelta];
                                       
-                                  } itemName:@"Timeslot"];
+                                  } itemName:@"Timeslot"] retain];
             [receiver performSelectorOnMainThread:@selector(timeslotsReceived:) withObject:timeslots waitUntilDone:YES];
-            if (timeslots)
-            {
-                [timeslots release];
-            }
+            [timeslots release];            
         }
         
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
@@ -335,16 +332,13 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                 {
                     //NSArray *playlistItems = [PiptureModel parsePlaylistItems:jsonResult];
                     
-                    NSArray* playlistItems = [PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_VIDEOS itemCreator:^(NSDictionary*jsonIT)
+                    NSArray* playlistItems = [[PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_VIDEOS itemCreator:^(NSDictionary*jsonIT)
                                               {
                                                   return [PlaylistItemFactory createItem:jsonIT];
                                                   
-                                              } itemName:@"Playlist item"]; 
+                                              } itemName:@"Playlist item"] retain]; 
                     [receiver performSelectorOnMainThread:@selector(playlistReceived:) withObject:playlistItems waitUntilDone:YES];
-                    if (playlistItems)
-                    {
-                        [playlistItems release];
-                    }                
+                    [playlistItems release];
                     break;
                 }
                 case 1:
@@ -459,16 +453,13 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         } 
         else
         {
-            NSArray* albums = [PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_ALBUMS itemCreator:^(NSDictionary*jsonIT)
+            NSArray* albums = [[PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_ALBUMS itemCreator:^(NSDictionary*jsonIT)
                                {
                                    return [[Album alloc] initWithJSON:jsonIT];
-                               } itemName:@"Album"];              
+                               } itemName:@"Album"] retain];              
             
             [receiver performSelectorOnMainThread:@selector(albumsReceived:) withObject:albums waitUntilDone:YES];
-            if (albums)
-            {
-                [albums release];
-            }
+            [albums release];
         }
         
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
@@ -489,10 +480,10 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         else
         {
             
-            NSArray* episodes = [PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_EPISODES itemCreator:^(NSDictionary*jsonIT)
+            NSArray* episodes = [[PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_EPISODES itemCreator:^(NSDictionary*jsonIT)
                                  {               
                                      return [PlaylistItemFactory createItem:jsonIT ofType:PLAYLIST_ITEM_TYPE_EPISODE]; 
-                                 } itemName:@"Episode"];              
+                                 } itemName:@"Episode"] retain];              
             
             NSDictionary* jsonAlbumDetails = [jsonResult objectForKey:JSON_PARAM_ALBUM];
             
@@ -716,11 +707,11 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             switch (errCode) { 
                 case 0:   
                 {
-                    NSArray* screenshotImages = [PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_SCREENSHOTS itemCreator:^(NSDictionary*jsonIT)
+                    NSArray* screenshotImages = [[PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_SCREENSHOTS itemCreator:^(NSDictionary*jsonIT)
                                               {
                                                   return [[ScreenshotImage alloc] initWithJSON:jsonIT];
                                                   
-                                              } itemName:@"Album screenshot image"]; 
+                                              } itemName:@"Album screenshot image"] retain]; 
                                                                                                 
                     if (screenshotImages)
                     {
@@ -729,7 +720,8 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                     else
                     {
                         NSLog(@"Screenshots were not sent from server"); 
-                    }                    
+                    }      
+                    [screenshotImages release];
                     break;
                 }                                                                                                                   
                 default:
@@ -785,8 +777,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
     NSDictionary* dct = [jsonResponse objectForKey:JSON_PARAM_ERROR];
     
     NSNumber* code = [dct objectForKey:JSON_PARAM_ERRORCODE];
-    NSString* desc = [[dct objectForKey:JSON_PARAM_ERROR_DESCRIPTION] retain];    
-    
+    NSString* desc = [dct objectForKey:JSON_PARAM_ERROR_DESCRIPTION];        
     if (code)
     {
         [description setString:desc];
@@ -804,13 +795,12 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
     NSArray* jsonItems = [jsonResult objectForKey:paramName];            
     if (jsonItems)
     {
-        items = [[NSMutableArray alloc] initWithCapacity:[jsonItems count]];
+        items = [[[NSMutableArray alloc] initWithCapacity:[jsonItems count]] autorelease];
         for (NSDictionary*jsonIT in jsonItems) {            
             id it = createItem(jsonIT);
             if (it)
             {
                 [items addObject:it];
-                [it release];
             }
             else
             {
