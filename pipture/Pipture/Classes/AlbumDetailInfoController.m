@@ -320,6 +320,7 @@
 
        
     self.album = album_;
+    [titleView composeTitle:album];
     [self tabChanged:detailsButton];
     [[PiptureAppDelegate instance] powerButtonEnable:([scheduleModel albumIsPlayingNow:album.albumId])];        
 

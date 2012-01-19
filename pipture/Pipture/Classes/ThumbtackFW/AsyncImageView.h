@@ -48,5 +48,6 @@ enum AsyncImageSpinnerType
 
 @property (nonatomic, assign) BOOL roundCorner;
 @property(retain, nonatomic) NSString * imageFile;
+@property(assign, atomic) BOOL loading;
 
 @end
