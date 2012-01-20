@@ -12,7 +12,7 @@
 
 @synthesize episodeId; 
 @synthesize title;
-@synthesize closeUp;
+//@synthesize closeUp;
 @synthesize closeUpThumbnail;
 @synthesize script;
 @synthesize dateReleased;
@@ -43,7 +43,7 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
 - (void)dealloc {
 
     [title release]; 
-    [closeUp release];
+    //[closeUp release];
     [closeUpThumbnail release];        
     [script release];
     [dateReleased release];
@@ -63,7 +63,7 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
         externalAlbum = nil;
         self.episodeId = [(NSNumber*)[jsonData objectForKey:JSON_PARAM_EPISODE_ID] integerValue];
         self.title = [jsonData objectForKey:JSON_PARAM_EPISODE_TITLE];
-        self.closeUp = [jsonData objectForKey:JSON_PARAM_CLOSEUP];
+        //self.closeUp = [jsonData objectForKey:JSON_PARAM_CLOSEUP];
         self.closeUpThumbnail = [jsonData objectForKey:JSON_PARAM_CLOSEUP_THUMBNAIL];
         self.script = [jsonData objectForKey:JSON_PARAM_SCRIPT];
         self.dateReleased = [jsonData objectForKey:JSON_PARAM_DATE_RELEASED];

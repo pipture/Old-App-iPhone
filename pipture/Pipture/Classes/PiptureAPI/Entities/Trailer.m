@@ -14,7 +14,7 @@
 @synthesize title;
 @synthesize line1;
 @synthesize line2;
-@synthesize line3;
+//@synthesize line3;
 @synthesize thumbnail;
 @synthesize trailerEmailScreenshot;
 
@@ -41,9 +41,9 @@ static NSString* const VIDEO_KEY_NAME = @"TrailerId";
     {
         [line2 release];
     }
-    if (line3)
+   // if (line3)
     {
-        [line3 release];
+   //     [line3 release];
     }
     if (thumbnail)
     {
@@ -65,7 +65,7 @@ static NSString* const VIDEO_KEY_NAME = @"TrailerId";
         self.title = [jsonData objectForKey:JSON_PARAM_TRAILER_TITLE];
         self.line1 = [jsonData objectForKey:JSON_PARAM_LINE_1];
         self.line2 = [jsonData objectForKey:JSON_PARAM_LINE_2];
-        self.line3 = [jsonData objectForKey:JSON_PARAM_LINE_3];
+  //      self.line3 = [jsonData objectForKey:JSON_PARAM_LINE_3];
         self.thumbnail = [jsonData objectForKey:JSON_PARAM_THUMBNAIL];                    
         self.trailerEmailScreenshot = [jsonData objectForKey:JSON_PARAM_EMAIL_SCREENSHOT];                    
     }

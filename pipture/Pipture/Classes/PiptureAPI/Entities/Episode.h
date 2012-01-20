@@ -17,7 +17,7 @@
 }
 @property(assign, nonatomic) NSInteger episodeId; 
 @property(retain, nonatomic) NSString *title;
-@property(retain, nonatomic) NSString *closeUp;
+//@property(retain, nonatomic) NSString *closeUp;
 @property(retain, nonatomic) NSString *closeUpThumbnail;
 @property(retain, nonatomic) NSString *script;
 @property(retain, nonatomic) NSString *dateReleased;
