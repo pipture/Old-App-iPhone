@@ -28,6 +28,13 @@
 @synthesize navigationItem;
 @synthesize timeslotId;
 
+- (void)resetControlHider {
+    if (controlsHideTimer != nil) {
+        [controlsHideTimer invalidate];
+        controlsHideTimer = nil;
+    }
+}
+
 - (void)destroyNextItem {
     if ((player.currentItem != nextPlayerItem) || (player != nil)) {
         NSLog(@"Destroyed next item");
@@ -37,6 +44,7 @@
 }
 
 -(void)goBack {
+    [self resetControlHider];
     self.busyContainer.hidden = YES;
     
     [self destroyNextItem];
@@ -96,15 +104,8 @@
     progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(updateProgress:) userInfo:nil repeats:YES];
 }
 
-- (void)resetControlHider {
-    if (controlsHideTimer != nil) {
-        [controlsHideTimer invalidate];
-        controlsHideTimer = nil;
-    }
-}
-
 - (void)hideControlsByTimer:(NSTimer*)timer {
-    if (!controlsHidded) {
+    if (!controlsHidded && !suspended) {
         NSLog(@"controls hide by timer: %@", timer);
         controlsHidded = YES;
         [self updateControlsAnimated:YES];

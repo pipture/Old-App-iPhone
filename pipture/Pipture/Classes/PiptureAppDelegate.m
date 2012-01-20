@@ -218,6 +218,9 @@ static PiptureAppDelegate *instance;
     [self saveUUID:uuid];
 }
 
+- (void)applicationWillResignActive:(UIApplication *)application {
+    [self dismissModalBusy];
+}
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
@@ -454,6 +457,8 @@ NSInteger networkActivityIndecatorCount;
             [channelButton setBackgroundImage:[UIImage imageNamed:@"nav-button-active-background.png"] forState:UIControlStateHighlighted];
             [channelButton setImage:[UIImage imageNamed:@"nav-button-channel-active.png"] forState:UIControlStateHighlighted];
             [channelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+            
+            [self tabbarVisible:YES slide:NO];
             break;
     }
 }
@@ -481,29 +486,21 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (void)tabbarVisible:(BOOL)visible slide:(BOOL)slide {
-    if (!slide) {
-        tabView.hidden = !visible;
-        return;
-    }
-    
     CGRect rect = tabView.frame;
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0.3];
     if (slide) {
-        if (!visible)
-            tabView.frame = CGRectMake(0, self.window.frame.size.height, rect.size.width, tabView.frame.size.height);
-        else
-            tabView.frame = CGRectMake(0, self.window.frame.size.height - tabView.frame.size.height, rect.size.width, tabView.frame.size.height);
-    } else {
-        tabView.hidden = !visible;
-        return;
-        if (visible) tabView.hidden = NO;
-        tabView.alpha = visible?1:0;
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:0.3];
+    }
+    if (!visible)
+        tabView.frame = CGRectMake(0, self.window.frame.size.height, rect.size.width, tabView.frame.size.height);
+    else
+        tabView.frame = CGRectMake(0, self.window.frame.size.height - tabView.frame.size.height, rect.size.width, tabView.frame.size.height);
+    
+    if (slide) {
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+        [UIView commitAnimations]; 
     }
-    
-    [UIView commitAnimations]; 
 }
 
 -(NSInteger)tabViewBaseHeight

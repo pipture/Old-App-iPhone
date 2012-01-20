@@ -59,6 +59,7 @@
         SKPayment *payment = [SKPayment paymentWithProductIdentifier:productId];
         [[SKPaymentQueue defaultQueue] addPayment:payment];
     }];
+    
 } 
 
 #pragma mark -
@@ -150,6 +151,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }
     else
     {
+        NSLog(@"transaction failed");
         [[PiptureAppDelegate instance] dismissModalBusy];
         // this is fine, the user just cancelled, so don’t notify
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];

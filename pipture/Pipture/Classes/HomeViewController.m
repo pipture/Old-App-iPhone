@@ -169,7 +169,10 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
 
-    [[PiptureAppDelegate instance] tabbarVisible:YES slide:NO];
+    if (homeScreenMode != HomeScreenMode_Schedule) {
+        [[PiptureAppDelegate instance] tabbarVisible:YES slide:NO];
+    }
+    
     [self startTimer:TIMESLOT_REGULAR_POLL_INTERVAL]; 
     
     switch (homeScreenMode) {
@@ -402,6 +405,9 @@
     self.navigationItem.title = @"Back";
     NSLog(@"%@", self.navigationController.visibleViewController.class);
     if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
+        [scheduleView scrollToCurPage];
+        [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+        
         AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
         adic.withNavigationBar = withNavigation;
         adic.album = album;
