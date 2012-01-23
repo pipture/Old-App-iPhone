@@ -105,15 +105,15 @@
 }
 
 - (void)hideControlsByTimer:(NSTimer*)timer {
-    if (!controlsHidded && !suspended) {
+    if (!controlsHidden && !suspended) {
         NSLog(@"controls hide by timer: %@", timer);
-        controlsHidded = YES;
+        controlsHidden = YES;
         [self updateControlsAnimated:YES];
     }
 }
 
 - (void)startControlHider {
-    if (!controlsHidded) {
+    if (!controlsHidden) {
         NSLog(@"start controls hider");
         //[self resetControlHider];
         NSDate * date = [NSDate dateWithTimeIntervalSinceNow:5];//now + 5 sec
@@ -140,11 +140,11 @@
         pausedStatus = NO;
         self.busyContainer.hidden = YES;
         
-        if (!controlsHidded)
+        if (!controlsHidden)
         {
             if (controlsShouldBeHiddenOnPlay) {
                 controlsShouldBeHiddenOnPlay = NO;
-                controlsHidded = YES;
+                controlsHidden = YES;
                 [self updateControlsAnimated:YES];
             } else {
                 [self startControlHider];
@@ -245,7 +245,7 @@
         //error happened
         //TODO: show error
         self.busyContainer.hidden = YES;
-        controlsHidded = NO;
+        controlsHidden = NO;
         
         [self updateControlsAnimated:YES];
     } else {
@@ -393,7 +393,7 @@
     
     [super viewWillAppear:animated];
 
-    controlsHidded = NO;
+    controlsHidden = NO;
     controlsShouldBeHiddenOnPlay = YES;
     self.busyContainer.hidden = YES;
     
@@ -415,12 +415,12 @@
 }
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    controlsPanel.hidden = controlsHidded;
-    navigationBar.hidden = controlsHidded;
+    controlsPanel.hidden = controlsHidden;
+    navigationBar.hidden = controlsHidden;
 }
 
 - (void)updateControlsAnimated:(BOOL)animated {
-    if (!controlsHidded) {
+    if (!controlsHidden) {
         controlsPanel.hidden = NO;
         navigationBar.hidden = NO;
     }
@@ -430,21 +430,21 @@
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 
-        [UIApplication sharedApplication].statusBarHidden = controlsHidded;
-        controlsPanel.alpha = (controlsHidded) ? 0 : 0.8;
-        navigationBar.alpha = (controlsHidded) ? 0 : 1;
+        [UIApplication sharedApplication].statusBarHidden = controlsHidden;
+        controlsPanel.alpha = (controlsHidden) ? 0 : 0.8;
+        navigationBar.alpha = (controlsHidden) ? 0 : 1;
         
         [UIView commitAnimations];        
     } else {
-        [UIApplication sharedApplication].statusBarHidden = controlsHidded;
-        controlsPanel.hidden = controlsHidded;
-        navigationBar.hidden = controlsHidded;
+        [UIApplication sharedApplication].statusBarHidden = controlsHidden;
+        controlsPanel.hidden = controlsHidden;
+        navigationBar.hidden = controlsHidden;
     }
 }
 
 //The event handling method
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer {
-    controlsHidded = !controlsHidded;
+    controlsHidden = !controlsHidden;
     [self updateControlsAnimated:YES];
 }
 

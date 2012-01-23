@@ -27,7 +27,7 @@
 
     AVPlayerItem * nextPlayerItem;
     
-    BOOL controlsHidded;
+    BOOL controlsHidden;
     BOOL pausedStatus;
     BOOL controlsShouldBeHiddenOnPlay;
 }
