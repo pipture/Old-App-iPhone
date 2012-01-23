@@ -142,7 +142,7 @@
     int top = page*scrollView.frame.size.width;
     if (scrollView.contentOffset.x != top) {
         [scrollView scrollRectToVisible:CGRectMake(top, 0, scrollView.frame.size.width, 10) animated:NO];
-        [self updateNotify];
+        [self redraw];
     }
 }
 
@@ -205,7 +205,7 @@
             while (scrollView.subviews.count > 0) {
                 [[scrollView.subviews lastObject] removeFromSuperview];
             }             
-            [self updateNotify];         
+            [self redraw];         
             return;
         }
              
@@ -245,7 +245,7 @@
         [self prepareImageFor: 0];
         [self prepareImageFor: timeslotsCount - 1];
         
-        [self updateNotify];      
+        [self redraw];      
     }
 }
 
@@ -289,7 +289,7 @@
     [delegate setHomeScreenMode:HomeScreenMode_Schedule];
     
     //redraw controls
-    [self updateNotify];
+    [self redraw];
 }
 
 
@@ -301,7 +301,7 @@
     
     
     //redraw controls
-    [self updateNotify];
+    [self redraw];
 }
 
 - (void)scrollToCurrentTimeslot {
@@ -311,7 +311,7 @@
         [self prepareImageFor: page - 1];
         [self prepareImageFor: page];
         [self prepareImageFor: page + 1];
-        [self updateNotify];
+        [self redraw];
     }
 }
 
@@ -321,18 +321,16 @@
     }
     timeslotsMode = mode;
     
-    [self updateNotify];
+    [self redraw];
 }
 
-- (void)updateNotify {
+- (void)redraw {
     //TODO: Part of 9151 refactor
-    NSLog(@"updateNotify called");
+    NSLog(@"redraw called");
     
     int page = [self getPageNumber];
     
-    if (![scheduleModel_ pageInRange:page]) return;
-    
-    Timeslot * slot = [scheduleModel_ timeslotForPage:page];
+    Timeslot * slot = [scheduleModel_ pageInRange:page] ? [scheduleModel_ timeslotForPage:page] : nil;
     
 
     
@@ -371,7 +369,7 @@
             [delegate flipButtonHidden:YES];
             [self playingSoonPanelVisible:NO animation:NO];
             [self playingNowPanelVisible:NO animation:NO];
-            [self navigationPanelVisible:YES animation:NO];
+            [self navigationPanelVisible:(slot != nil) animation:NO];
             [UIApplication sharedApplication].statusBarHidden = NO;
             [delegate scheduleButtonHidden:NO];                        
             [self updateTimeSlotInfo:slot panel:navPanel];
@@ -385,6 +383,7 @@
             [delegate scheduleButtonHidden:YES];
             [self updateTimeSlotInfo:slot panel:navPanel];
             break;
+            
     }
     [[PiptureAppDelegate instance] powerButtonEnable:(slot.timeslotStatus == TimeslotStatus_Current)];
 }
