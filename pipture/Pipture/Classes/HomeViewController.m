@@ -90,31 +90,36 @@
 
 -(void) defineBarsVisibility
 {
-    BOOL visible = YES;
     switch (homeScreenMode) {
         case HomeScreenMode_Cover:
-            visible = YES;
+            [UIApplication sharedApplication].statusBarHidden = NO;
+            [[PiptureAppDelegate instance] tabbarVisible:YES slide:NO];         
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Schedule:            
             switch (scheduleView.timeslotsMode) {
                 case TimeslotsMode_Schedule_Fullscreen:
                 case TimeslotsMode_PlayingNow_Fullscreen:
-                    visible = NO; 
+                    [UIApplication sharedApplication].statusBarHidden = YES;
+                    [[PiptureAppDelegate instance] tabbarVisible:NO slide:NO];         
+                    break;
+                case TimeslotsMode_Schedule:
+                    [UIApplication sharedApplication].statusBarHidden = NO;
+                    [[PiptureAppDelegate instance] tabbarVisible:NO slide:NO];         
                     break;                    
                 default:
-                    visible = YES;
+                    [UIApplication sharedApplication].statusBarHidden = NO;
+                    [[PiptureAppDelegate instance] tabbarVisible:YES slide:NO];         
                     break;                    
             }                
             break;            
         case HomeScreenMode_Albums:
-            visible = YES;
+            [UIApplication sharedApplication].statusBarHidden = NO;
+            [[PiptureAppDelegate instance] tabbarVisible:YES slide:NO];         
         default:
             NSLog(@"Unexpected homescreen mode");
             break;            
     }
-    [UIApplication sharedApplication].statusBarHidden = !visible;
-    [[PiptureAppDelegate instance] tabbarVisible:visible slide:NO];         
 }
 
 

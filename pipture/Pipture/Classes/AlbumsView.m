@@ -66,7 +66,7 @@
         AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
         [item.thumbnailButton addSubview:imageView];
         
-        [imageView loadImageFromURL:[NSURL URLWithString:album.thumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small localStore:YES asButton:YES target:self selector:@selector(showDetails:)];
+        [imageView loadImageFromURL:[NSURL URLWithString:album.thumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small  localStore:YES force:NO asButton:YES target:self selector:@selector(showDetails:)];
         
         [item.titleLabel setTextWithVerticalResize:album.series.title];
         

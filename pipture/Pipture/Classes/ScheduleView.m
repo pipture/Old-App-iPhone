@@ -150,7 +150,9 @@
 {
     // Switch the indicator when more than 50% of the previous/next page is visible
     CGFloat pageW = scrollView.frame.size.width;
-    return floor((scrollView.contentOffset.x - pageW / 2) / pageW);
+    CGFloat offset = scrollView.contentOffset.x; 
+    NSLog(@"Page Offset %f, page width %f", offset, pageW);
+    return floor((offset - pageW / 2) / pageW);
 }
 
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer {
