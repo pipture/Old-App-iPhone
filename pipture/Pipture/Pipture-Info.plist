@@ -41,7 +41,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>11</string>
+	<string>12</string>
 	<key>CreditesProductId</key>
 	<string>com.pipture.Pipture.credits</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -79,9 +79,11 @@
 	<key>Rest Send message</key>
 	<string>sendMessage</string>
 	<key>Rest end point</key>
-	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
+	<string>http://ec2-67-202-31-72.compute-1.amazonaws.com/</string>
 	<key>Rest end point m</key>
 	<string>http://192.168.9.131:8000/</string>
+	<key>Rest end point our</key>
+	<string>http://ec2-107-22-56-225.compute-1.amazonaws.com/</string>
 	<key>UIPrerenderedIcon</key>
 	<true/>
 	<key>UIRequiredDeviceCapabilities</key>

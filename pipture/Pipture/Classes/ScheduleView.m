@@ -342,13 +342,13 @@
             switch (slot.timeslotStatus) {
                 case TimeslotStatus_Current:
                     [self playingSoonPanelVisible:NO animation:visibleInfoPanel];
-                    [self playingNowPanelVisible:visibleInfoPanel animation:visibleInfoPanel];
+                    [self playingNowPanelVisible:visibleInfoPanel animation:NO];
                     [self navigationPanelVisible:NO animation:visibleInfoPanel];
                     [self updateTimeSlotInfo:slot panel:pnPanel];
                     break;
                 case TimeslotStatus_Next:
                     [self playingNowPanelVisible:NO animation:visibleInfoPanel];
-                    [self playingSoonPanelVisible:visibleInfoPanel animation:visibleInfoPanel];
+                    [self playingSoonPanelVisible:visibleInfoPanel animation:NO];
                     [self navigationPanelVisible:NO animation:visibleInfoPanel];
                     [self updateTimeSlotInfo:slot panel:psPanel];
                     break;    

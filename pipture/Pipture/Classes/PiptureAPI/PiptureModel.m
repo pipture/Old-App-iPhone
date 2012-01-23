@@ -856,6 +856,8 @@ BOOL needInvokeCallback;
     @synchronized(self)
     {
         needInvokeCallback = NO;
+        [current setCanceled];
+        current = nil;
     }
 }
 
@@ -868,7 +870,10 @@ BOOL needInvokeCallback;
                                  if (needInvokeCallback)
                                  {
                                      needInvokeCallback = NO;
+                                     NSLog(@"callback perform: %@", url);
                                      callback(jsonResult, error);
+                                 } else {
+                                     NSLog(@"callback cant to perform: %@", url);
                                  }
                              }
                          }]autorelease];
@@ -883,10 +888,12 @@ BOOL needInvokeCallback;
     {
         if (current)
         {
+            NSLog(@"Request manager busy. Skip launching");                    
             return NO;
         }
         else
         {
+            NSLog(@"Request manager launching with: %@", request.url.description);
             current = request;
             needInvokeCallback = YES;
             return YES;

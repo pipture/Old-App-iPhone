@@ -26,11 +26,18 @@ NSURLConnection* connection;
 
 id<DataRequestManager> requestManager_;
 
+- (void)tryCallbackWithData:(NSDictionary*)dctData error:(DataRequestError *)err {
+    if (!canceled) {
+        callback_(dctData, err);
+    }
+}
+
 - (id)initWithURL:(NSURL*)url postParams:(NSString*)params requestManager:(id<DataRequestManager>)requestManager callback:(DataRequestCallback)callback
 {
     self = [super init];
     if (self)
     {
+        canceled = NO;
         callback_ = [callback copy];
         url_ = [url retain];
         requestManager_ = [requestManager retain];
@@ -46,7 +53,7 @@ id<DataRequestManager> requestManager_;
 
 - (BOOL)startExecute 
 {
-        
+    canceled = NO;
     if (requestManager_)
     {
         if (![requestManager_ addRequest:self])
@@ -70,7 +77,7 @@ id<DataRequestManager> requestManager_;
     connection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self startImmediately:YES];
     if (!connection)
     {
-        callback_(nil, [[[DataRequestError alloc] initWithNSError:nil] autorelease]);//TODO analyze errors   
+        [self tryCallbackWithData:nil error:[[[DataRequestError alloc] initWithNSError:nil] autorelease]];
         NSLog(@"Could not create NSURLconnection");
         if (requestManager_)
         {
@@ -114,6 +121,7 @@ id<DataRequestManager> requestManager_;
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)lconnection {
+    NSLog(@"request finished: %@", self.url);
     NSDictionary* dctData = nil;
     DataRequestError* err = nil;
     if (receivedData) {
@@ -133,7 +141,7 @@ id<DataRequestManager> requestManager_;
         [parser release];
     }
     [self finish];
-    callback_(dctData, err);  
+    [self tryCallbackWithData:dctData error:err];
     [err release];
 }
 
@@ -143,12 +151,12 @@ id<DataRequestManager> requestManager_;
     }
     NSLog(@"Error while executing request: %@",error);
     [self finish];
-    callback_(nil, [[[DataRequestError alloc] initWithNSError:error] autorelease]);
+    [self tryCallbackWithData:nil error:[[[DataRequestError alloc] initWithNSError:error] autorelease]];
 }
 
 -(void)finish
 {
-    if (requestManager_)
+    if (requestManager_ && canceled == NO)
     {
         [requestManager_ completeRequest:self];
     }    
@@ -159,6 +167,10 @@ id<DataRequestManager> requestManager_;
     {
         [progress hideRequestProgress];
     }    
+}
+
+- (void)setCanceled {
+    canceled = YES;
 }
 
 @end
