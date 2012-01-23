@@ -25,8 +25,11 @@ enum HomeScreenMode {
 - (void)setHomeScreenMode:(enum HomeScreenMode)mode;
 - (void)doFlip;
 - (void)doPower;
-- (void)scheduleButtonHidden:(BOOL)hidden;
-- (void)flipButtonHidden:(BOOL)hidden;
+
+- (void)defineScheduleButtonVisibility;
+- (void)defineFlipButtonVisibility;
+- (void)defineBarsVisibility;
+- (void)powerButtonEnable;
 - (void)showAlbumDetails:(Album*)album;
 - (void)showAlbumDetailsForTimeslot:(NSInteger)timeslotId;
 

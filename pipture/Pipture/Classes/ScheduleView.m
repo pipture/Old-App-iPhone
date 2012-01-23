@@ -339,11 +339,6 @@
         case TimeslotsMode_PlayingNow_Fullscreen:
         {
             BOOL visibleInfoPanel = (timeslotsMode != TimeslotsMode_PlayingNow_Fullscreen);
-
-            [UIApplication sharedApplication].statusBarHidden = !visibleInfoPanel;
-            [delegate scheduleButtonHidden:!visibleInfoPanel];
-            [delegate flipButtonHidden:!visibleInfoPanel];
-            [[PiptureAppDelegate instance] tabbarVisible:visibleInfoPanel slide:NO];
             switch (slot.timeslotStatus) {
                 case TimeslotStatus_Current:
                     [self playingSoonPanelVisible:NO animation:visibleInfoPanel];
@@ -366,26 +361,23 @@
         }
             break;
         case TimeslotsMode_Schedule:
-            [delegate flipButtonHidden:YES];
             [self playingSoonPanelVisible:NO animation:NO];
             [self playingNowPanelVisible:NO animation:NO];
             [self navigationPanelVisible:(slot != nil) animation:NO];
-            [UIApplication sharedApplication].statusBarHidden = NO;
-            [delegate scheduleButtonHidden:NO];                        
             [self updateTimeSlotInfo:slot panel:navPanel];
             break;
         case TimeslotsMode_Schedule_Fullscreen:
-            [delegate flipButtonHidden:YES];            
             [self playingSoonPanelVisible:NO animation:NO];
             [self playingNowPanelVisible:NO animation:NO];
             [self navigationPanelVisible:NO animation:NO];
-            [UIApplication sharedApplication].statusBarHidden = YES;
-            [delegate scheduleButtonHidden:YES];
             [self updateTimeSlotInfo:slot panel:navPanel];
             break;
-            
+                        
     }
-    [[PiptureAppDelegate instance] powerButtonEnable:(slot.timeslotStatus == TimeslotStatus_Current)];
+    [delegate defineScheduleButtonVisibility];
+    [delegate defineFlipButtonVisibility];    
+    [delegate defineBarsVisibility];
+    [delegate powerButtonEnable];
 }
 
 - (void)dealloc {

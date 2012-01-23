@@ -50,24 +50,21 @@
                 coverPanelVisible = YES;
                 [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable.png"] forState:UIControlStateNormal];
                 [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable-down.png"] forState:UIControlStateHighlighted];
-                [[PiptureAppDelegate instance] powerButtonEnable:YES];
                 break;
             case TimeslotStatus_Next:
                 coverPanelVisible = YES;
-                [[PiptureAppDelegate instance] powerButtonEnable:NO];
                 [coverButton setImage:[UIImage imageNamed:@"case-schedule-noshow-clickable.png"] forState:UIControlStateNormal];
                 [coverButton setImage:[UIImage imageNamed:@"case-schedule-noshow-clickable-down.png"] forState:UIControlStateHighlighted];
                 break;
             default:
                 coverPanelVisible = NO;
-                [[PiptureAppDelegate instance] powerButtonEnable:NO];
                 break;    
         }
     } else {
         coverPanelVisible = NO;
-        [[PiptureAppDelegate instance] powerButtonEnable:NO];
     }
     [self panel:coverPanel visible:(allowBubble && coverPanelVisible)];
+    [delegate powerButtonEnable];
 }
 
 - (void)allowShowBubble:(BOOL)allow {

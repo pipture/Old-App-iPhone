@@ -30,31 +30,93 @@
 
 #pragma mark - View lifecycle
 
-- (void)scheduleButtonHidden:(BOOL)hidden {
-    //TODO: Part of 9151 refactor
+- (void)defineScheduleButtonVisibility
+{
+    BOOL visible = YES;
     switch (homeScreenMode) {
         case HomeScreenMode_Cover:
+            visible = YES;
+            break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Schedule:            
-            scheduleButton.hidden = hidden;
+            switch (scheduleView.timeslotsMode) {
+                case TimeslotsMode_Schedule_Fullscreen:
+                case TimeslotsMode_PlayingNow_Fullscreen:
+                    visible = NO;
+                    break;                    
+                default:
+                    visible = YES;
+                    break;                    
+            }                
             break;            
+        case HomeScreenMode_Albums:
+            visible = NO;
+            break;
         default:
+            NSLog(@"Unexpected homescreen mode");
             break;            
     }
+    scheduleButton.hidden = !visible;
+    
 }
 
-- (void)flipButtonHidden:(BOOL)hidden {
-    //TODO: Part of 9151 refactor
+- (void)defineFlipButtonVisibility
+{
+    BOOL visible = YES;    
     switch (homeScreenMode) {
         case HomeScreenMode_Cover:
+            visible = YES;
+            break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Schedule:            
-            flipButton.hidden = hidden;
+            switch (scheduleView.timeslotsMode) {
+                case TimeslotsMode_PlayingNow:
+                    visible = YES;
+                    break;                    
+                default:
+                    visible = NO;
+                    break;                    
+            }                
             break;            
+        case HomeScreenMode_Albums:
+            visible = NO;
         default:
+            NSLog(@"Unexpected homescreen mode");
             break;            
-    }    
+    }
+    flipButton.hidden = !visible;
+    
 }
+
+-(void) defineBarsVisibility
+{
+    BOOL visible = YES;
+    switch (homeScreenMode) {
+        case HomeScreenMode_Cover:
+            visible = YES;
+            break;
+        case HomeScreenMode_PlayingNow:
+        case HomeScreenMode_Schedule:            
+            switch (scheduleView.timeslotsMode) {
+                case TimeslotsMode_Schedule_Fullscreen:
+                case TimeslotsMode_PlayingNow_Fullscreen:
+                    visible = NO; 
+                    break;                    
+                default:
+                    visible = YES;
+                    break;                    
+            }                
+            break;            
+        case HomeScreenMode_Albums:
+            visible = YES;
+        default:
+            NSLog(@"Unexpected homescreen mode");
+            break;            
+    }
+    [UIApplication sharedApplication].statusBarHidden = !visible;
+    [[PiptureAppDelegate instance] tabbarVisible:visible slide:NO];         
+}
+
 
 - (Timeslot*)getCurrentTimeslot {
     Timeslot * slot = nil;
@@ -194,18 +256,15 @@
     
     switch (homeScreenMode) {
         case HomeScreenMode_Albums:
-            //[self setNavBarMode];
             [self updateAlbums];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
-            //[self setFullScreenMode];
             [scheduleModel updateTimeslots];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
         case HomeScreenMode_Schedule:
-            //[self setFullScreenMode];
             [scheduleModel updateTimeslots];
             [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
             break;            
@@ -306,9 +365,7 @@
                 
                 [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
                 [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_CHANNEL];
-                flipButton.hidden = NO;
                 [flipButton setImage:[UIImage imageNamed:@"button-flip.png"] forState:UIControlStateNormal];
-                scheduleButton.hidden = NO;
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] forState:UIControlStateNormal];
                 [scheduleButton setTitle:@"Schedule" forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
@@ -328,10 +385,8 @@
                 [scheduleView setTimeslotsMode:TimeslotsMode_PlayingNow];
                 [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
                 [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_CHANNEL];
-                flipButton.hidden = NO;
                 [flipButton setImage:[UIImage imageNamed:@"button-flip-back.png"] forState:UIControlStateNormal];
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] forState:UIControlStateNormal];
-                scheduleButton.hidden = NO;
                 [scheduleButton setTitle:@"Schedule" forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
                 
@@ -344,9 +399,7 @@
                     [scheduleModel updateTimeslots];
                 
                 [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
-                flipButton.hidden = YES;
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule-done.png"] forState:UIControlStateNormal];
-                scheduleButton.hidden = NO;
                 [scheduleButton setTitle:@"Done" forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
                 
@@ -370,14 +423,14 @@
                 
                 [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_LIBRARY];
                 [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
-                flipButton.hidden = YES;
-                scheduleButton.hidden = YES;
                 break;
             default: break;
         }        
         homeScreenMode = mode;
         [self powerButtonEnable];        
     }
+    [self defineScheduleButtonVisibility];
+    [self defineFlipButtonVisibility];    
 }
 
 - (void)doFlip {
