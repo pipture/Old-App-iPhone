@@ -3,7 +3,7 @@
 //  Pipture
 //
 //  Created by Vladimir Kubyshev on 23.11.11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2011 Thumbtack Inc. All rights reserved.
 //
 
 #import "VideoViewController.h"
@@ -44,7 +44,7 @@
 }
 
 -(void)goBack {
-    [self resetControlHider];
+    //[self resetControlHider];
     self.busyContainer.hidden = YES;
     
     [self destroyNextItem];
@@ -123,6 +123,7 @@
 }
 
 - (void)setPause {
+    NSLog(@"pause called");
     if (player != nil) {
         [self stopTimer];
         [pauseButton setImage:[UIImage imageNamed:@"playBtn.png"] forState:UIControlStateNormal];
@@ -169,11 +170,11 @@
 
 - (BOOL)playNextItem {
     if (nextPlayerItem != nil) {
+        [player pause];
+        [self createHandlers];
         [player replaceCurrentItemWithPlayerItem:nextPlayerItem];
         
-        [self createHandlers];
-        
-        if (nextPlayerItem.status == AVPlayerStatusReadyToPlay) {
+        if (nextPlayerItem.playbackLikelyToKeepUp) {
             [self setPlay];
         }
         pos++;
@@ -283,10 +284,10 @@
                     if (!suspended) {
                         [self enableControls:YES];
                     }
-                    if (item.playbackLikelyToKeepUp)
+                    if (currentPlayerItem && item.playbackLikelyToKeepUp)
                     {
                         self.busyContainer.hidden = YES;
-                        if (!suspended) {
+                        if (!suspended && !pausedStatus) {
                             [self setPlay];
                         }
                     }
@@ -377,12 +378,19 @@
     [super viewDidUnload];
 }
 
+- (void)setSuspended:(BOOL)suspend {
+    suspended = suspend;
+    if (suspend) [self setPause];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];    
     suspended = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    NSLog(@"apearing");
+    
     [super viewWillAppear:animated];
 
     controlsHidded = NO;
@@ -399,8 +407,9 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    suspended = YES;
-    [self setPause];
+    NSLog(@"disappearing");
+    
+    [self setSuspended:YES];
     
     [super viewWillDisappear:animated];
 }

@@ -18,6 +18,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @implementation PiptureAppDelegate
 @synthesize busyView;
 @synthesize tabView;
+@synthesize backgroundImage;
 @synthesize channelButton;
 @synthesize libraryButton;
 @synthesize tabbarView;
@@ -63,6 +64,7 @@ static PiptureAppDelegate *instance;
     [channelButton release];
     [libraryButton release];
     [videoViewController release];
+    [backgroundImage release];
     [super dealloc];
 }
 
@@ -170,10 +172,18 @@ static PiptureAppDelegate *instance;
     return [[NSUserDefaults standardUserDefaults] stringForKey:USERNAME_KEY];
 }
 
+-(void)unsuspendPlayer {
+    if (self.window.rootViewController == videoViewController) {
+        [videoViewController setSuspended:NO];
+    }
+}
+
 -(void) processAuthentication
 {
     if (loggedIn)
     {
+        [self unsuspendPlayer];
+        
         return;
     }
     if (registrationRequired)
@@ -204,6 +214,7 @@ static PiptureAppDelegate *instance;
     [self.window bringSubviewToFront:tabView];
     
     [self.window makeKeyAndVisible];
+    self.backgroundImage.hidden = YES;
     [self getHomeView];
 }
 
@@ -220,13 +231,15 @@ static PiptureAppDelegate *instance;
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     [self dismissModalBusy];
+    
+    [videoViewController setSuspended:YES];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     //Every time app become active we need to check if authentification is passed. If not - login or register.
     //It is needed for case when connection were missed on first try.
-    [self processAuthentication];    
+    [self processAuthentication];
 }
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions

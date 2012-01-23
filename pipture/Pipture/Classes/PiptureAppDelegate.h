@@ -36,6 +36,7 @@
 }
 
 @property (retain, nonatomic) IBOutlet UIView *tabView;
+@property (retain, nonatomic) IBOutlet UIImageView *backgroundImage;
 @property (retain, nonatomic) IBOutlet UIButton *channelButton;
 @property (retain, nonatomic) IBOutlet UIButton *libraryButton;
 @property (retain, nonatomic) IBOutlet UIView *tabbarView;
