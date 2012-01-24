@@ -126,7 +126,8 @@
     NSLog(@"pause called");
     if (player != nil) {
         [self stopTimer];
-        [pauseButton setImage:[UIImage imageNamed:@"playBtn.png"] forState:UIControlStateNormal];
+        [pauseButton setImage:[UIImage imageNamed:@"Button-Play.png"] forState:UIControlStateNormal];
+        [pauseButton setImage:[UIImage imageNamed:@"Button-Play-Press.png"] forState:UIControlStateHighlighted];
         [player pause];
         pausedStatus = YES;
     }
@@ -136,7 +137,8 @@
     if (player != nil && !suspended) {
         
         [self startTimer];
-        [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
+        [pauseButton setImage:[UIImage imageNamed:@"Button-Pause.png"] forState:UIControlStateNormal];
+        [pauseButton setImage:[UIImage imageNamed:@"Button-Pause-press.png"] forState:UIControlStateHighlighted];
         [player play];
         pausedStatus = NO;
         self.busyContainer.hidden = YES;
@@ -325,7 +327,8 @@
     waitForNext = NO;
     precacheBegin = NO;
     pausedStatus = NO;
-    [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
+    [pauseButton setImage:[UIImage imageNamed:@"Button-Pause.png"] forState:UIControlStateNormal];
+    [pauseButton setImage:[UIImage imageNamed:@"Button-Pause-press.png"] forState:UIControlStateHighlighted];
     
     [self destroyNextItem];
     
@@ -387,7 +390,11 @@
 
 - (void)setSuspended:(BOOL)suspend {
     suspended = suspend;
-    if (suspend) [self setPause];
+    if (suspend) {
+        [self setPause];
+        controlsHidden = NO;
+        [self updateControlsAnimated:NO];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -444,6 +451,8 @@
         [UIView commitAnimations];        
     } else {
         [UIApplication sharedApplication].statusBarHidden = controlsHidden;
+        controlsPanel.alpha = 0.8;
+        navigationBar.alpha = 1;
         controlsPanel.hidden = controlsHidden;
         navigationBar.hidden = controlsHidden;
     }
