@@ -393,9 +393,11 @@
                     [scheduleModel updateTimeslots];
                 
                 [self setFullScreenMode];
+                homeScreenMode = mode;
+                [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
                 
                 [scheduleView setTimeslotsMode:TimeslotsMode_PlayingNow];
-                [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
+
                 [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_CHANNEL];
                 [flipButton setImage:[UIImage imageNamed:@"button-flip-back.png"] forState:UIControlStateNormal];
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] forState:UIControlStateNormal];
@@ -410,10 +412,12 @@
                     if (flipAction) [UIView commitAnimations];
                     [scheduleModel updateTimeslots];
                 
-                [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule-done.png"] forState:UIControlStateNormal];
                 [scheduleButton setTitle:@"Done" forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
+                [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
+                
+                homeScreenMode = mode;
                 
                 switch (scheduleView.timeslotsMode) {
                     case TimeslotsMode_PlayingNow: [scheduleView setTimeslotsMode:TimeslotsMode_Schedule]; break;
@@ -421,6 +425,7 @@
                     default:break;    
                 }
 
+                
                 break;
             case HomeScreenMode_Albums:
                 [[PiptureAppDelegate instance] 
