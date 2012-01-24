@@ -48,14 +48,15 @@
     UILabel * messageLabel = (UILabel*)[self.view viewWithTag:2];
     UIButton * okButton = (UIButton*)[self.view viewWithTag:3];
     
+    
     if (logo) {
         logoImage.hidden = NO;
-        titleLabel.frame = CGRectMake(20, 184, 280, 21);
-        messageLabel.frame = CGRectMake(20, 213, 280, 21);
+        titleLabel.frame = CGRectMake(20, 169, 280, 21);
+        messageLabel.frame = CGRectMake(20, 191, 280, 21);
     } else {
         logoImage.hidden = YES;
-        titleLabel.frame = CGRectMake(20, 95, 280, 21);
-        messageLabel.frame = CGRectMake(20, 124, 280, 21);
+        titleLabel.frame = CGRectMake(20, 75, 280, 21);
+        messageLabel.frame = CGRectMake(20, 104, 280, 21);
     }
     
     titleLabel.text = title;

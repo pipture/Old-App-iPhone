@@ -51,8 +51,8 @@
     albumsItemsArray = [[NSMutableArray alloc] initWithCapacity:20];
     
     //clear scroll view
-    for (int i = 0; i < [scrollView.subviews count]; i++) {
-        [[[scrollView subviews] objectAtIndex:i] removeFromSuperview];
+    while ([scrollView.subviews count]) {
+        [[[scrollView subviews] lastObject] removeFromSuperview];
     }
     
     for (int i = 0; i < albums.count; i++) {

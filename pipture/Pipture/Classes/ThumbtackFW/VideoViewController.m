@@ -10,7 +10,6 @@
 #import "MailComposerController.h"
 #import "PlaylistItem.h"
 #import "PiptureAppDelegate.h"
-#import "MediaPlayer/MPVolumeView.h"
 
 @implementation VideoViewController
 @synthesize controlsPanel;
@@ -20,6 +19,7 @@
 @synthesize nextButton;
 @synthesize pauseButton;
 @synthesize prevButton;
+@synthesize volumeView;
 @synthesize mailComposerNavigationController;
 @synthesize simpleMode;
 @synthesize playlist;
@@ -385,6 +385,7 @@
     [self setMailComposerNavigationController:nil];
     [self setNavigationItem:nil];
     [self setNavigationBar:nil];
+    [self setVolumeView:nil];
     [super viewDidUnload];
 }
 
@@ -431,12 +432,14 @@
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     controlsPanel.hidden = controlsHidden;
     navigationBar.hidden = controlsHidden;
+    volumeView.hidden = controlsHidden;
 }
 
 - (void)updateControlsAnimated:(BOOL)animated {
     if (!controlsHidden) {
         controlsPanel.hidden = NO;
         navigationBar.hidden = NO;
+        volumeView.hidden = NO;
     }
     if (animated) {
         [UIView beginAnimations:nil context:NULL];
@@ -455,6 +458,7 @@
         navigationBar.alpha = 1;
         controlsPanel.hidden = controlsHidden;
         navigationBar.hidden = controlsHidden;
+        volumeView.hidden = controlsHidden;
     }
 }
 
@@ -528,6 +532,7 @@
     [mailComposerNavigationController release];
     [navigationItem release];
     [navigationBar release];
+    [volumeView release];
     [super dealloc];
 }
 

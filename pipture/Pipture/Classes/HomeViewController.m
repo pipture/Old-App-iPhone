@@ -367,7 +367,7 @@
             case HomeScreenMode_Cover:
                 [[PiptureAppDelegate instance] 
                  showWelcomeScreenWithTitle:@"Welcome to Pipture."
-                 message:@"Enjoy watching scheduled video programs shot specifically for smartphones users and send hilarious video messages performed by great talents." 
+                 message:@"Enjoy watching scheduled video programs\nshot specifically for smartphones users\nand send hilarious video messages\nperformed by great talents." 
                  storeKey:@"AppWelcomeShown" image:YES tag:WELCOMESCREEN_COVER delegate:self];
                 
                 [tabbarContainer addSubview:coverView];
