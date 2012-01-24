@@ -32,6 +32,15 @@ static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 
+- (void)setEmptyMessagePlaceholderIfNeeded
+{
+    if ([messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {        
+        messageEdit.text = MESSAGE_PLACEHOLDER;
+        messageEdit.textColor = [UIColor grayColor];    
+    }
+}
+
+
 - (void) displayScreenshot
 {
     NSString*url;
@@ -101,7 +110,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     screenshotCell.accessoryType = UITableViewCellAccessoryNone;
     
     lastScreenshotView = nil;
-    
+
     nameTextField.text = [[PiptureAppDelegate instance] getUserName];  
 }
 
@@ -264,13 +273,10 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     return YES;    
 }
 
+
 - (void)keyboardWillHide:(NSNotification *)notif
 {
-    if ([messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
-        messageEdit.text = MESSAGE_PLACEHOLDER;
-        messageEdit.textColor = [UIColor grayColor];
-    }
-    
+    [self setEmptyMessagePlaceholderIfNeeded];
     [self moveView:NO];
 }
 
@@ -290,6 +296,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     self.navigationItem.hidesBackButton = YES;
     
     [self displayScreenshot];
+    [self setEmptyMessagePlaceholderIfNeeded]; 
 }
 
 - (void)viewWillDisappear:(BOOL)animated
