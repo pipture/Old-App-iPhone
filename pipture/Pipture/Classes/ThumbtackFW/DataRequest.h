@@ -21,6 +21,9 @@ typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
 
 @interface DataRequest : NSObject<NSURLConnectionDataDelegate> {
 @private
+    NSMutableData* receivedData;
+    NSURLConnection* connection;
+    
     DataRequestCallback callback_;
 }
 

@@ -20,9 +20,6 @@
 @synthesize progress;
 @synthesize postParams = postParams_;
 
-NSMutableData* receivedData;
-NSURLConnection* connection;
-
 
 id<DataRequestManager> requestManager_;
 
