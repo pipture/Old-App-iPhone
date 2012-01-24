@@ -235,7 +235,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
-
+    
     if (homeScreenMode != HomeScreenMode_Schedule) {
         [[PiptureAppDelegate instance] tabbarVisible:YES slide:NO];
     }
@@ -255,11 +255,14 @@
             break;
         default:break;
     }
+    
+    [self defineBarsVisibility];
+    [self defineScheduleButtonVisibility];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
+    redrawDiscarding = NO;
     self.navigationItem.title = @"Library";
     
     switch (homeScreenMode) {
@@ -279,7 +282,8 @@
         default:break;
     } 
     [self powerButtonEnable];
-    
+    [scheduleView scrollToCurPage];
+    [scheduleView redraw];
 }
 - (void)viewDidDisappear:(BOOL)animated {
     [self resetScheduleTimer];
@@ -459,10 +463,16 @@
     }
 }
 
+- (BOOL)redrawDiscarding {
+    return redrawDiscarding;
+}
+
 - (void)openDetails:(BOOL)withNavigation album:(Album*)album timeslotId:(NSInteger)timeslotId {
+    NSLog(@"details open");
     self.navigationItem.title = @"Back";
     NSLog(@"%@", self.navigationController.visibleViewController.class);
     if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
+        redrawDiscarding = YES;
         [scheduleView scrollToCurPage];
         [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
         

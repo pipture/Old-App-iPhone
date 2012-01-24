@@ -21,6 +21,8 @@
     NSTimer *updateTimer;
     
     ScheduleModel* scheduleModel;
+    
+    BOOL redrawDiscarding;
 }
 
 //returns current visible page in scrollview

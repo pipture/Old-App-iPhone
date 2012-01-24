@@ -32,6 +32,16 @@ id<DataRequestManager> requestManager_;
     }
 }
 
+- (void)cleanReceivedData {
+    if (receivedData) {
+        int rc = [receivedData retainCount];
+        [receivedData release];
+        if (rc == 1) {
+            receivedData = nil;
+        }
+    }
+}
+
 - (id)initWithURL:(NSURL*)url postParams:(NSString*)params requestManager:(id<DataRequestManager>)requestManager callback:(DataRequestCallback)callback
 {
     self = [super init];
@@ -97,9 +107,7 @@ id<DataRequestManager> requestManager_;
 
 - (void)dealloc {
     
-    if (receivedData) {
-        [receivedData release];
-    }
+    [self cleanReceivedData];
     
     [url_ release];
     [postParams_ release];
@@ -126,8 +134,7 @@ id<DataRequestManager> requestManager_;
     DataRequestError* err = nil;
     if (receivedData) {
         NSString * strData = [[NSString alloc] initWithData:receivedData encoding:NSUTF8StringEncoding];
-        [receivedData release];
-        receivedData = nil;
+        [self cleanReceivedData];
         SBJsonParser *parser = [[SBJsonParser alloc] init];
         parser.maxDepth = 512;
         NSError *error;
@@ -146,9 +153,7 @@ id<DataRequestManager> requestManager_;
 }
 
 - (void)connection:(NSURLConnection *)lconnection didFailWithError:(NSError *)error {
-    if (receivedData) {
-        [receivedData release];
-    }
+    [self cleanReceivedData];
     NSLog(@"Error while executing request: %@",error);
     [self finish];
     [self tryCallbackWithData:nil error:[[[DataRequestError alloc] initWithNSError:error] autorelease]];

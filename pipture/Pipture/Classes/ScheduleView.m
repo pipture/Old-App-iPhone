@@ -136,13 +136,21 @@
     }
 }
 
+- (void)killScroll 
+{
+    CGPoint offset = scrollView.contentOffset;
+    [scrollView setContentOffset:offset animated:NO];
+}
+
 - (void)scrollToCurPage {
     //scroll to top
     int page = [self getPageNumber] + 1;
     int top = page*scrollView.frame.size.width;
     if (scrollView.contentOffset.x != top) {
-        [scrollView scrollRectToVisible:CGRectMake(top, 0, scrollView.frame.size.width, 10) animated:NO];
-        [self redraw];
+        NSLog(@"scroll to curpage with offset: %d", top);
+        [self killScroll];
+        [scrollView setContentOffset:CGPointMake(top, 0) animated:NO];
+        //[self redraw];
     }
 }
 
@@ -152,7 +160,10 @@
     CGFloat pageW = scrollView.frame.size.width;
     CGFloat offset = scrollView.contentOffset.x; 
     NSLog(@"Page Offset %f, page width %f", offset, pageW);
-    return floor((offset - pageW / 2) / pageW);
+    CGFloat page = floor((offset - pageW / 2) / pageW);
+    if (page < -1) return -1;
+    if (page > coverItems.count - 2) return coverItems.count - 2;
+    return page;
 }
 
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer {
@@ -327,9 +338,11 @@
 }
 
 - (void)redraw {
+    if ([delegate redrawDiscarding]) return;
+    
     //TODO: Part of 9151 refactor
     NSLog(@"redraw called");
-    
+    //[self processWrap];
     int page = [self getPageNumber];
     
     Timeslot * slot = [scheduleModel_ pageInRange:page] ? [scheduleModel_ timeslotForPage:page] : nil;
