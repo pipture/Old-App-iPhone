@@ -10,7 +10,6 @@
 #import "MailComposerController.h"
 #import "PlaylistItem.h"
 #import "PiptureAppDelegate.h"
-#import "MediaPlayer/MPVolumeView.h"
 
 @implementation VideoViewController
 @synthesize controlsPanel;
@@ -20,6 +19,7 @@
 @synthesize nextButton;
 @synthesize pauseButton;
 @synthesize prevButton;
+@synthesize volumeView;
 @synthesize mailComposerNavigationController;
 @synthesize simpleMode;
 @synthesize playlist;
@@ -126,7 +126,8 @@
     NSLog(@"pause called");
     if (player != nil) {
         [self stopTimer];
-        [pauseButton setImage:[UIImage imageNamed:@"playBtn.png"] forState:UIControlStateNormal];
+        [pauseButton setImage:[UIImage imageNamed:@"Button-Play.png"] forState:UIControlStateNormal];
+        [pauseButton setImage:[UIImage imageNamed:@"Button-Play-Press.png"] forState:UIControlStateHighlighted];
         [player pause];
         pausedStatus = YES;
     }
@@ -136,7 +137,8 @@
     if (player != nil && !suspended) {
         
         [self startTimer];
-        [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
+        [pauseButton setImage:[UIImage imageNamed:@"Button-Pause.png"] forState:UIControlStateNormal];
+        [pauseButton setImage:[UIImage imageNamed:@"Button-Pause-press.png"] forState:UIControlStateHighlighted];
         [player play];
         pausedStatus = NO;
         self.busyContainer.hidden = YES;
@@ -325,7 +327,8 @@
     waitForNext = NO;
     precacheBegin = NO;
     pausedStatus = NO;
-    [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
+    [pauseButton setImage:[UIImage imageNamed:@"Button-Pause.png"] forState:UIControlStateNormal];
+    [pauseButton setImage:[UIImage imageNamed:@"Button-Pause-press.png"] forState:UIControlStateHighlighted];
     
     [self destroyNextItem];
     
@@ -382,12 +385,17 @@
     [self setMailComposerNavigationController:nil];
     [self setNavigationItem:nil];
     [self setNavigationBar:nil];
+    [self setVolumeView:nil];
     [super viewDidUnload];
 }
 
 - (void)setSuspended:(BOOL)suspend {
     suspended = suspend;
-    if (suspend) [self setPause];
+    if (suspend) {
+        [self setPause];
+        controlsHidden = NO;
+        [self updateControlsAnimated:NO];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -424,12 +432,14 @@
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     controlsPanel.hidden = controlsHidden;
     navigationBar.hidden = controlsHidden;
+    volumeView.hidden = controlsHidden;
 }
 
 - (void)updateControlsAnimated:(BOOL)animated {
     if (!controlsHidden) {
         controlsPanel.hidden = NO;
         navigationBar.hidden = NO;
+        volumeView.hidden = NO;
     }
     if (animated) {
         [UIView beginAnimations:nil context:NULL];
@@ -444,8 +454,11 @@
         [UIView commitAnimations];        
     } else {
         [UIApplication sharedApplication].statusBarHidden = controlsHidden;
+        controlsPanel.alpha = 0.8;
+        navigationBar.alpha = 1;
         controlsPanel.hidden = controlsHidden;
         navigationBar.hidden = controlsHidden;
+        volumeView.hidden = controlsHidden;
     }
 }
 
@@ -519,6 +532,7 @@
     [mailComposerNavigationController release];
     [navigationItem release];
     [navigationBar release];
+    [volumeView release];
     [super dealloc];
 }
 
