@@ -36,8 +36,11 @@ static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
 static NSString* const HOMESCREENSTATE_KEY = @"HSState";
 
-static NSInteger const INSUFFICIENT_FUND_ALERT = 1;
-static NSInteger const GENERAL_ALERT = 42;
+enum {
+    INSUFFICIENT_FUND_ALERT = 1,
+    GENERAL_ALERT = 42,
+};
+
 
 UIAlertView * alert;
 BOOL registrationRequired = NO;
