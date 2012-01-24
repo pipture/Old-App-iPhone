@@ -439,6 +439,16 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     return 3;
 }
 
+//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    switch ([self calcCellRow:indexPath]) {
+//        case MESSAGE_CELL_ROW:
+//            messageEdit.backgroundColor = messageCell.backgroundColor;
+//        case FROM_CELL_ROW:
+//            nameTextField.backgroundColor = fromCell.backgroundColor;
+//    }        
+//}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     switch ([self calcCellRow:indexPath]) {
