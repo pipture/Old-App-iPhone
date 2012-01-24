@@ -136,13 +136,21 @@
     }
 }
 
+- (void)killScroll 
+{
+    CGPoint offset = scrollView.contentOffset;
+    [scrollView setContentOffset:offset animated:NO];
+}
+
 - (void)scrollToCurPage {
     //scroll to top
     int page = [self getPageNumber] + 1;
     int top = page*scrollView.frame.size.width;
     if (scrollView.contentOffset.x != top) {
-        [scrollView scrollRectToVisible:CGRectMake(top, 0, scrollView.frame.size.width, 10) animated:NO];
-        [self updateNotify];
+        NSLog(@"scroll to curpage with offset: %d", top);
+        [self killScroll];
+        [scrollView setContentOffset:CGPointMake(top, 0) animated:NO];
+        //[self redraw];
     }
 }
 
@@ -150,7 +158,12 @@
 {
     // Switch the indicator when more than 50% of the previous/next page is visible
     CGFloat pageW = scrollView.frame.size.width;
-    return floor((scrollView.contentOffset.x - pageW / 2) / pageW);
+    CGFloat offset = scrollView.contentOffset.x; 
+    NSLog(@"Page Offset %f, page width %f", offset, pageW);
+    CGFloat page = floor((offset - pageW / 2) / pageW);
+    if (page < -1) return -1;
+    if (page > coverItems.count - 2) return coverItems.count - 2;
+    return page;
 }
 
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer {
@@ -205,7 +218,7 @@
             while (scrollView.subviews.count > 0) {
                 [[scrollView.subviews lastObject] removeFromSuperview];
             }             
-            [self updateNotify];         
+            [self redraw];         
             return;
         }
              
@@ -245,7 +258,7 @@
         [self prepareImageFor: 0];
         [self prepareImageFor: timeslotsCount - 1];
         
-        [self updateNotify];      
+        [self redraw];      
     }
 }
 
@@ -289,7 +302,7 @@
     [delegate setHomeScreenMode:HomeScreenMode_Schedule];
     
     //redraw controls
-    [self updateNotify];
+    [self redraw];
 }
 
 
@@ -301,7 +314,7 @@
     
     
     //redraw controls
-    [self updateNotify];
+    [self redraw];
 }
 
 - (void)scrollToCurrentTimeslot {
@@ -311,7 +324,7 @@
         [self prepareImageFor: page - 1];
         [self prepareImageFor: page];
         [self prepareImageFor: page + 1];
-        [self updateNotify];
+        [self redraw];
     }
 }
 
@@ -321,18 +334,18 @@
     }
     timeslotsMode = mode;
     
-    [self updateNotify];
+    [self redraw];
 }
 
-- (void)updateNotify {
-    //TODO: Part of 9151 refactor
-    NSLog(@"updateNotify called");
+- (void)redraw {
+    if ([delegate redrawDiscarding]) return;
     
+    //TODO: Part of 9151 refactor
+    NSLog(@"redraw called");
+    //[self processWrap];
     int page = [self getPageNumber];
     
-    if (![scheduleModel_ pageInRange:page]) return;
-    
-    Timeslot * slot = [scheduleModel_ timeslotForPage:page];
+    Timeslot * slot = [scheduleModel_ pageInRange:page] ? [scheduleModel_ timeslotForPage:page] : nil;
     
 
     
@@ -341,21 +354,16 @@
         case TimeslotsMode_PlayingNow_Fullscreen:
         {
             BOOL visibleInfoPanel = (timeslotsMode != TimeslotsMode_PlayingNow_Fullscreen);
-
-            [UIApplication sharedApplication].statusBarHidden = !visibleInfoPanel;
-            [delegate scheduleButtonHidden:!visibleInfoPanel];
-            [delegate flipButtonHidden:!visibleInfoPanel];
-            [[PiptureAppDelegate instance] tabbarVisible:visibleInfoPanel slide:NO];
             switch (slot.timeslotStatus) {
                 case TimeslotStatus_Current:
                     [self playingSoonPanelVisible:NO animation:visibleInfoPanel];
-                    [self playingNowPanelVisible:visibleInfoPanel animation:visibleInfoPanel];
+                    [self playingNowPanelVisible:visibleInfoPanel animation:NO];
                     [self navigationPanelVisible:NO animation:visibleInfoPanel];
                     [self updateTimeSlotInfo:slot panel:pnPanel];
                     break;
                 case TimeslotStatus_Next:
                     [self playingNowPanelVisible:NO animation:visibleInfoPanel];
-                    [self playingSoonPanelVisible:visibleInfoPanel animation:visibleInfoPanel];
+                    [self playingSoonPanelVisible:visibleInfoPanel animation:NO];
                     [self navigationPanelVisible:NO animation:visibleInfoPanel];
                     [self updateTimeSlotInfo:slot panel:psPanel];
                     break;    
@@ -368,25 +376,23 @@
         }
             break;
         case TimeslotsMode_Schedule:
-            [delegate flipButtonHidden:YES];
             [self playingSoonPanelVisible:NO animation:NO];
             [self playingNowPanelVisible:NO animation:NO];
-            [self navigationPanelVisible:YES animation:NO];
-            [UIApplication sharedApplication].statusBarHidden = NO;
-            [delegate scheduleButtonHidden:NO];                        
+            [self navigationPanelVisible:(slot != nil) animation:NO];
             [self updateTimeSlotInfo:slot panel:navPanel];
             break;
         case TimeslotsMode_Schedule_Fullscreen:
-            [delegate flipButtonHidden:YES];            
             [self playingSoonPanelVisible:NO animation:NO];
             [self playingNowPanelVisible:NO animation:NO];
             [self navigationPanelVisible:NO animation:NO];
-            [UIApplication sharedApplication].statusBarHidden = YES;
-            [delegate scheduleButtonHidden:YES];
             [self updateTimeSlotInfo:slot panel:navPanel];
             break;
+                        
     }
-    [[PiptureAppDelegate instance] powerButtonEnable:(slot.timeslotStatus == TimeslotStatus_Current)];
+    [delegate defineScheduleButtonVisibility];
+    [delegate defineFlipButtonVisibility];    
+    [delegate defineBarsVisibility];
+    [delegate powerButtonEnable];
 }
 
 - (void)dealloc {

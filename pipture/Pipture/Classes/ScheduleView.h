@@ -26,11 +26,12 @@ enum TimeslotsMode{
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent scheduleModel:(ScheduleModel*)scheduleModel;
 
-- (void)updateNotify;
+- (void)redraw;
 - (void)scrollToPage:(int) page animated:(BOOL)animated;
 - (int)getPageNumber;
 - (void)prepareImageFor:(int)page;
 - (void)updateTimeslots;
+- (void)redraw;
 - (void)scrollToCurPage;
 
 - (void)setTimeslotsMode:(enum TimeslotsMode)mode;

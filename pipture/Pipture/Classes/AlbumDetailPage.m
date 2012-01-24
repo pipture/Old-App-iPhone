@@ -91,6 +91,8 @@
 - (void)prepareLayout:(Album*)album_ {
     [self clearDetailsView];
     
+    if (!album_.credits || !album_.season) return;
+    
     self.album = album_;
     
     CGRect rect = posterPlaceholder.frame;

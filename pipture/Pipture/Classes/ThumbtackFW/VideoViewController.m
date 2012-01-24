@@ -3,7 +3,7 @@
 //  Pipture
 //
 //  Created by Vladimir Kubyshev on 23.11.11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2011 Thumbtack Inc. All rights reserved.
 //
 
 #import "VideoViewController.h"
@@ -28,6 +28,13 @@
 @synthesize navigationItem;
 @synthesize timeslotId;
 
+- (void)resetControlHider {
+    if (controlsHideTimer != nil) {
+        [controlsHideTimer invalidate];
+        controlsHideTimer = nil;
+    }
+}
+
 - (void)destroyNextItem {
     if ((player.currentItem != nextPlayerItem) || (player != nil)) {
         NSLog(@"Destroyed next item");
@@ -37,6 +44,7 @@
 }
 
 -(void)goBack {
+    //[self resetControlHider];
     self.busyContainer.hidden = YES;
     
     [self destroyNextItem];
@@ -96,23 +104,16 @@
     progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(updateProgress:) userInfo:nil repeats:YES];
 }
 
-- (void)resetControlHider {
-    if (controlsHideTimer != nil) {
-        [controlsHideTimer invalidate];
-        controlsHideTimer = nil;
-    }
-}
-
 - (void)hideControlsByTimer:(NSTimer*)timer {
-    if (!controlsHidded) {
+    if (!controlsHidden && !suspended) {
         NSLog(@"controls hide by timer: %@", timer);
-        controlsHidded = YES;
+        controlsHidden = YES;
         [self updateControlsAnimated:YES];
     }
 }
 
 - (void)startControlHider {
-    if (!controlsHidded) {
+    if (!controlsHidden) {
         NSLog(@"start controls hider");
         //[self resetControlHider];
         NSDate * date = [NSDate dateWithTimeIntervalSinceNow:5];//now + 5 sec
@@ -122,6 +123,7 @@
 }
 
 - (void)setPause {
+    NSLog(@"pause called");
     if (player != nil) {
         [self stopTimer];
         [pauseButton setImage:[UIImage imageNamed:@"playBtn.png"] forState:UIControlStateNormal];
@@ -132,17 +134,18 @@
 
 - (void)setPlay {
     if (player != nil && !suspended) {
+        
         [self startTimer];
         [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
         [player play];
         pausedStatus = NO;
         self.busyContainer.hidden = YES;
         
-        if (!controlsHidded)
+        if (!controlsHidden)
         {
             if (controlsShouldBeHiddenOnPlay) {
                 controlsShouldBeHiddenOnPlay = NO;
-                controlsHidded = YES;
+                controlsHidden = YES;
                 [self updateControlsAnimated:YES];
             } else {
                 [self startControlHider];
@@ -168,11 +171,17 @@
 
 - (BOOL)playNextItem {
     if (nextPlayerItem != nil) {
+        [player pause];
+        
+        [videoContainer setPlayer:nil];
+        
         [player replaceCurrentItemWithPlayerItem:nextPlayerItem];
+        
+        [videoContainer setPlayer:player];
         
         [self createHandlers];
         
-        if (nextPlayerItem.status == AVPlayerStatusReadyToPlay) {
+        if (nextPlayerItem.playbackLikelyToKeepUp) {
             [self setPlay];
         }
         pos++;
@@ -243,7 +252,7 @@
         //error happened
         //TODO: show error
         self.busyContainer.hidden = YES;
-        controlsHidded = NO;
+        controlsHidden = NO;
         
         [self updateControlsAnimated:YES];
     } else {
@@ -282,10 +291,10 @@
                     if (!suspended) {
                         [self enableControls:YES];
                     }
-                    if (item.playbackLikelyToKeepUp)
+                    if (currentPlayerItem && item.playbackLikelyToKeepUp)
                     {
                         self.busyContainer.hidden = YES;
-                        if (!suspended) {
+                        if (!suspended && !pausedStatus) {
                             [self setPlay];
                         }
                     }
@@ -376,15 +385,22 @@
     [super viewDidUnload];
 }
 
+- (void)setSuspended:(BOOL)suspend {
+    suspended = suspend;
+    if (suspend) [self setPause];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];    
     suspended = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    NSLog(@"apearing");
+    
     [super viewWillAppear:animated];
 
-    controlsHidded = NO;
+    controlsHidden = NO;
     controlsShouldBeHiddenOnPlay = YES;
     self.busyContainer.hidden = YES;
     
@@ -398,19 +414,20 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    suspended = YES;
-    [self setPause];
+    NSLog(@"disappearing");
+    
+    [self setSuspended:YES];
     
     [super viewWillDisappear:animated];
 }
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    controlsPanel.hidden = controlsHidded;
-    navigationBar.hidden = controlsHidded;
+    controlsPanel.hidden = controlsHidden;
+    navigationBar.hidden = controlsHidden;
 }
 
 - (void)updateControlsAnimated:(BOOL)animated {
-    if (!controlsHidded) {
+    if (!controlsHidden) {
         controlsPanel.hidden = NO;
         navigationBar.hidden = NO;
     }
@@ -420,21 +437,21 @@
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 
-        [UIApplication sharedApplication].statusBarHidden = controlsHidded;
-        controlsPanel.alpha = (controlsHidded) ? 0 : 0.8;
-        navigationBar.alpha = (controlsHidded) ? 0 : 1;
+        [UIApplication sharedApplication].statusBarHidden = controlsHidden;
+        controlsPanel.alpha = (controlsHidden) ? 0 : 0.8;
+        navigationBar.alpha = (controlsHidden) ? 0 : 1;
         
         [UIView commitAnimations];        
     } else {
-        [UIApplication sharedApplication].statusBarHidden = controlsHidded;
-        controlsPanel.hidden = controlsHidded;
-        navigationBar.hidden = controlsHidded;
+        [UIApplication sharedApplication].statusBarHidden = controlsHidden;
+        controlsPanel.hidden = controlsHidden;
+        navigationBar.hidden = controlsHidden;
     }
 }
 
 //The event handling method
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer {
-    controlsHidded = !controlsHidded;
+    controlsHidden = !controlsHidden;
     [self updateControlsAnimated:YES];
 }
 

@@ -18,6 +18,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @implementation PiptureAppDelegate
 @synthesize busyView;
 @synthesize tabView;
+@synthesize backgroundImage;
 @synthesize channelButton;
 @synthesize libraryButton;
 @synthesize tabbarView;
@@ -35,8 +36,11 @@ static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
 static NSString* const HOMESCREENSTATE_KEY = @"HSState";
 
-static NSInteger const INSUFFICIENT_FUND_ALERT = 1;
-static NSInteger const GENERAL_ALERT = 42;
+enum {
+    INSUFFICIENT_FUND_ALERT = 1,
+    GENERAL_ALERT = 42,
+};
+
 
 UIAlertView * alert;
 BOOL registrationRequired = NO;
@@ -63,6 +67,7 @@ static PiptureAppDelegate *instance;
     [channelButton release];
     [libraryButton release];
     [videoViewController release];
+    [backgroundImage release];
     [super dealloc];
 }
 
@@ -170,10 +175,18 @@ static PiptureAppDelegate *instance;
     return [[NSUserDefaults standardUserDefaults] stringForKey:USERNAME_KEY];
 }
 
+-(void)unsuspendPlayer {
+    if (self.window.rootViewController == videoViewController) {
+        [videoViewController setSuspended:NO];
+    }
+}
+
 -(void) processAuthentication
 {
     if (loggedIn)
     {
+        [self unsuspendPlayer];
+        
         return;
     }
     if (registrationRequired)
@@ -204,6 +217,7 @@ static PiptureAppDelegate *instance;
     [self.window bringSubviewToFront:tabView];
     
     [self.window makeKeyAndVisible];
+    self.backgroundImage.hidden = YES;
     [self getHomeView];
 }
 
@@ -218,12 +232,17 @@ static PiptureAppDelegate *instance;
     [self saveUUID:uuid];
 }
 
+- (void)applicationWillResignActive:(UIApplication *)application {
+    [self dismissModalBusy];
+    
+    [videoViewController setSuspended:YES];
+}
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     //Every time app become active we need to check if authentification is passed. If not - login or register.
     //It is needed for case when connection were missed on first try.
-    [self processAuthentication];    
+    [self processAuthentication];
 }
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -454,6 +473,8 @@ NSInteger networkActivityIndecatorCount;
             [channelButton setBackgroundImage:[UIImage imageNamed:@"nav-button-active-background.png"] forState:UIControlStateHighlighted];
             [channelButton setImage:[UIImage imageNamed:@"nav-button-channel-active.png"] forState:UIControlStateHighlighted];
             [channelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+            
+            [self tabbarVisible:YES slide:NO];
             break;
     }
 }
@@ -481,29 +502,21 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (void)tabbarVisible:(BOOL)visible slide:(BOOL)slide {
-    if (!slide) {
-        tabView.hidden = !visible;
-        return;
-    }
-    
     CGRect rect = tabView.frame;
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0.3];
     if (slide) {
-        if (!visible)
-            tabView.frame = CGRectMake(0, self.window.frame.size.height, rect.size.width, tabView.frame.size.height);
-        else
-            tabView.frame = CGRectMake(0, self.window.frame.size.height - tabView.frame.size.height, rect.size.width, tabView.frame.size.height);
-    } else {
-        tabView.hidden = !visible;
-        return;
-        if (visible) tabView.hidden = NO;
-        tabView.alpha = visible?1:0;
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:0.3];
+    }
+    if (!visible)
+        tabView.frame = CGRectMake(0, self.window.frame.size.height, rect.size.width, tabView.frame.size.height);
+    else
+        tabView.frame = CGRectMake(0, self.window.frame.size.height - tabView.frame.size.height, rect.size.width, tabView.frame.size.height);
+    
+    if (slide) {
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+        [UIView commitAnimations]; 
     }
-    
-    [UIView commitAnimations]; 
 }
 
 -(NSInteger)tabViewBaseHeight

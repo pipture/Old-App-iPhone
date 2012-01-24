@@ -25,6 +25,7 @@ typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
     NSURLConnection* connection;
     
     DataRequestCallback callback_;
+    BOOL canceled;
 }
 
 @property(readonly, nonatomic) NSURL* url;
@@ -36,7 +37,7 @@ typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
 - (id)initWithURL:(NSURL*)url requestManager:(id)requestManager callback:(DataRequestCallback)callback;
 - (id)initWithURL:(NSURL*)url postParams:(NSString*)params requestManager:(id)requestManager callback:(DataRequestCallback)callback;
 - (BOOL)startExecute;
-
+- (void)setCanceled;
 @end
 
 @protocol DataRequestManager <NSObject>

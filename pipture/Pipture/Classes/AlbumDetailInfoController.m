@@ -34,6 +34,22 @@
 
 #pragma mark - View lifecycle
 
+- (void)updateDetails {
+    if (self.album) {
+        NSLog(@"Details update by Album, %@", self.album);
+        [[[PiptureAppDelegate instance] model] getDetailsForAlbum:self.album receiver:self];
+    } else {
+        NSLog(@"Details update by TimeslotId");
+        [[[PiptureAppDelegate instance] model] getAlbumDetailsForTimeslotId:self.timeslotId receiver:self];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
@@ -66,7 +82,9 @@
     }
     
     subViewContainer.frame = CGRectMake(0, heightOffset, buttonsPanel.frame.size.width, self.view.frame.size.height-heightOffset);
-    [titleView composeTitle:album];
+    
+    
+    [self updateDetails];
 }
 
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer {
@@ -104,12 +122,6 @@
     [tapTRec release];
 
     [self tabChanged:detailsButton];
-    
-    if (self.album) {
-        [[[PiptureAppDelegate instance] model] getDetailsForAlbum:self.album receiver:self];
-    } else {
-        [[[PiptureAppDelegate instance] model] getAlbumDetailsForTimeslotId:self.timeslotId receiver:self];
-    }
 }
 
 - (void)viewDidUnload
@@ -182,7 +194,7 @@
             [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small localStore:YES asButton:NO target:nil selector:nil];
         }
         
-        counter.text = [NSString stringWithFormat:@"%d.", row/2 + 1];
+        counter.text = [NSString stringWithFormat:@"%@.", slot.episodeNo];
         [series setTextWithVerticalResize:slot.title];
         title.text  = slot.script;
         fromto.text = slot.senderToReceiver;
@@ -259,6 +271,7 @@
 
 -(void)dataRequestFailed:(DataRequestError*)error
 {
+    NSLog(@"Details failed");
     if (error.errorCode != DRErrorNoInternet) {
         [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
     }
@@ -308,20 +321,31 @@
 }
 
 - (IBAction)trailerShow:(id)sender {
-    NSLog(@"Trailer Show");
-    NSArray * playlist = [NSArray arrayWithObject:album.trailer];
-    [[PiptureAppDelegate instance] showVideo:playlist noNavi:YES timeslotId:nil];    
+    if (album && album.trailer) {
+        NSLog(@"Trailer Show");
+        NSArray * playlist = [NSArray arrayWithObject:album.trailer];
+        [[PiptureAppDelegate instance] showVideo:playlist noNavi:YES timeslotId:nil];
+    }
 }
 
 #pragma mark AlbumsDetailsDelegate
 -(void)albumDetailsReceived:(Album*)album_ {
+    NSLog(@"Details received");
     //power button enabler
     //Timeslot * slot = [self getCurrentTimeslot];
 
        
     self.album = album_;
     [titleView composeTitle:album];
-    [self tabChanged:detailsButton];
+    switch (viewType) {
+        case DetailAlbumViewType_Credits:
+            [self tabChanged:detailsButton];
+            break;
+        case DetailAlbumViewType_Videos:
+            [self tabChanged:videosButton];
+            break;
+    }
+    
     [[PiptureAppDelegate instance] powerButtonEnable:([scheduleModel albumIsPlayingNow:album.albumId])];        
 
 }

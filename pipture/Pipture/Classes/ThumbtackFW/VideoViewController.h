@@ -3,7 +3,7 @@
 //  Pipture
 //
 //  Created by Vladimir Kubyshev on 23.11.11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2011 Thumbtack Inc. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -27,11 +27,13 @@
 
     AVPlayerItem * nextPlayerItem;
     
-    BOOL controlsHidded;
+    BOOL controlsHidden;
     BOOL pausedStatus;
     BOOL controlsShouldBeHiddenOnPlay;
 }
 - (AVPlayerItem *)createItem:(PlaylistItem*)item;
+
+- (void)setSuspended:(BOOL)suspend;
 
 - (void)setPause;
 - (void)setPlay;
@@ -43,7 +45,7 @@
 - (IBAction)nextAction:(id)sender;
 - (IBAction)doneAction:(id)sender;
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer;
-- (void) movieFinishedCallback:(NSNotification*) aNotification;
+- (void)movieFinishedCallback:(NSNotification*) aNotification;
 
 @property (retain, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (retain, nonatomic) IBOutlet UINavigationItem *navigationItem;
