@@ -134,6 +134,7 @@
 
 - (void)setPlay {
     if (player != nil && !suspended) {
+        
         [self startTimer];
         [pauseButton setImage:[UIImage imageNamed:@"pauseBtn.png"] forState:UIControlStateNormal];
         [player play];
@@ -171,8 +172,14 @@
 - (BOOL)playNextItem {
     if (nextPlayerItem != nil) {
         [player pause];
-        [self createHandlers];
+        
+        [videoContainer setPlayer:nil];
+        
         [player replaceCurrentItemWithPlayerItem:nextPlayerItem];
+        
+        [videoContainer setPlayer:player];
+        
+        [self createHandlers];
         
         if (nextPlayerItem.playbackLikelyToKeepUp) {
             [self setPlay];

@@ -194,7 +194,7 @@
             [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small localStore:YES asButton:NO target:nil selector:nil];
         }
         
-        counter.text = [NSString stringWithFormat:@"%d.", row/2 + 1];
+        counter.text = [NSString stringWithFormat:@"%@.", slot.episodeNo];
         [series setTextWithVerticalResize:slot.title];
         title.text  = slot.script;
         fromto.text = slot.senderToReceiver;
