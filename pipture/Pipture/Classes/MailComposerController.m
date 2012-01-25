@@ -31,10 +31,18 @@ static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
+- (BOOL)isPlaceholderInMessage
+{
+    return [messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER];
+}
 
+- (BOOL)isMessageEmpty
+{
+    return[messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0;
+}
 - (void)setEmptyMessagePlaceholderIfNeeded
 {
-    if ([messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {        
+    if ([self isMessageEmpty]) {        
         messageEdit.text = MESSAGE_PLACEHOLDER;
         messageEdit.textColor = [UIColor grayColor];    
     }
@@ -186,8 +194,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 
 - (void)nextButton:(id)sender {
-    if ([messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER] == YES || 
-        [messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
+    if ([self isPlaceholderInMessage] || 
+        [self isMessageEmpty])
     {
         [messageEdit becomeFirstResponder];
         return;
@@ -240,7 +248,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     if ([sender isEqual:messageEdit])
     {
         [self moveView:NO];
-        if ([messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER]) {
+        if ([self isPlaceholderInMessage]) {
             messageEdit.text = @"";
             messageEdit.textColor = [UIColor darkTextColor];
         }
@@ -296,13 +304,18 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     self.navigationItem.hidesBackButton = YES;
     
     [self displayScreenshot];
-    [self setEmptyMessagePlaceholderIfNeeded]; 
+    [self setEmptyMessagePlaceholderIfNeeded];
+    if ([self isPlaceholderInMessage])
+    {
+        self.layoutTableView.contentOffset = CGPointMake(0, 0);
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
     
+    [self moveView:NO];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil]; 
     
     [super viewWillDisappear:animated];
