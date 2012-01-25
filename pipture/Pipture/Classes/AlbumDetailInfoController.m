@@ -289,7 +289,7 @@
     if ([[subViewContainer subviews] count] > 0) {
         [[[subViewContainer subviews] objectAtIndex:0] removeFromSuperview];
     }
-    CGRect rect = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height - [PiptureAppDelegate instance].tabViewBaseHeight + 8);
+    CGRect rect = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height - [PiptureAppDelegate instance].tabViewBaseHeight);
     switch (viewType) {
         case DetailAlbumViewType_Credits:
             detailPage.frame = rect;

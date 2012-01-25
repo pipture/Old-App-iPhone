@@ -486,7 +486,7 @@ NSInteger networkActivityIndecatorCount;
     if (vc) {
         switch ([sender tag]) {
             case TABBARITEM_CHANNEL: [vc setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
-            case TABBARITEM_LIBRARY: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
+            case TABBARITEM_LIBRARY: {[vc setHomeScreenMode:HomeScreenMode_Albums]; break;}
         }
         
         [self tabbarSelect:[sender tag]];
@@ -521,7 +521,7 @@ NSInteger networkActivityIndecatorCount;
 
 -(NSInteger)tabViewBaseHeight
 {
-    return tabbarView.frame.size.height;  
+    return tabbarView.frame.size.height - 8;  
 }
 
 - (void)showModalBusy:(void (^)(void))completion {

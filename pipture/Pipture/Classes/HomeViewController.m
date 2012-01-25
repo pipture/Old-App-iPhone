@@ -80,6 +80,7 @@
             break;            
         case HomeScreenMode_Albums:
             visible = NO;
+            break;
         default:
             NSLog(@"Unexpected homescreen mode");
             break;            
@@ -115,7 +116,8 @@
             break;            
         case HomeScreenMode_Albums:
             [UIApplication sharedApplication].statusBarHidden = NO;
-            [[PiptureAppDelegate instance] tabbarVisible:YES slide:NO];         
+            [[PiptureAppDelegate instance] tabbarVisible:YES slide:NO];      
+            break;
         default:
             NSLog(@"Unexpected homescreen mode");
             break;            

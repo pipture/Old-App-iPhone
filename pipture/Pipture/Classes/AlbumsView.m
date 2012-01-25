@@ -11,8 +11,10 @@
 #import "Album.h"
 #import "AsyncImageView.h"
 #import "UILabel+ResizeForVerticalAlign.h"
+#import "PiptureAppDelegate.h"
 
-//TODO: maybe not hardcode?
+//TODO: maybe not hardcode? .... 1 month later: YES, DEFINATELY THIS MUST BE REFACTORED!!! ALL MAGIC NUMBERS TO BE REPLACED WITH SOMETHING MEANINGFULL
+
 #define ITEM_HEIGHT 197
 #define ITEM_WIDTH 97
 
@@ -25,8 +27,8 @@
     //prepare scrollView
     self.delegate = parent;
     
+    self.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - [PiptureAppDelegate instance].tabViewBaseHeight);
     scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
-    scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
@@ -88,7 +90,7 @@
     CGRect rect = self.frame;
     
     int rows = ([albumsItemsArray count] + (3 - 1)) / 3;
-    scrollView.contentSize = CGSizeMake(rect.size.width, ITEM_HEIGHT * rows);
+    scrollView.contentSize = CGSizeMake(rect.size.width, ITEM_HEIGHT * rows + 15 + 8); // 15 for top margin. 8 for middle button
     
     int i = 0;
     
