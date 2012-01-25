@@ -666,6 +666,11 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                     {
                         NSLog(@"URL was not sent from server");
                     }
+                    id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
+                    if (bal)
+                    {
+                        [receiver performSelectorOnMainThread:@selector(balanceReceived:) withObject:(NSDecimalNumber*)bal waitUntilDone:YES];                                                        
+                    }                    
                     break;
                 }
                 case 3:
