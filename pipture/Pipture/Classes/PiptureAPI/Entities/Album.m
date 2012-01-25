@@ -141,14 +141,8 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     self.rating = [jsonData strValueForKey:JSON_PARAM_RATING defaultIfEmpty:self.rating];
     self.cover = [jsonData strValueForKey:JSON_PARAM_COVER defaultIfEmpty:self.cover];
 
-    NSString* releaseDateStr = [jsonData objectForKey:JSON_PARAM_RELEASE_DATE];
-    if (releaseDateStr)
-    {
-        NSDateFormatter *df = [[NSDateFormatter alloc] init];
-        [df setDateFormat:@"yyyy-MM-dd"];
-        self.releaseDate = [df dateFromString:releaseDateStr];
-        [df release];
-    }
+    NSNumber*millisecs = [jsonData objectForKey:JSON_PARAM_RELEASE_DATE];
+    self.releaseDate = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]];
 
     self.thumbnail = [jsonData strValueForKey:JSON_PARAM_THUMBNAIL defaultIfEmpty:self.thumbnail];
     self.closeupBackground = [jsonData strValueForKey:JSON_PARAM_CLOSEUP defaultIfEmpty:self.closeupBackground];    

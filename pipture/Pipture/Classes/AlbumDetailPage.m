@@ -130,7 +130,6 @@
             if (album.releaseDate) {
                 NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
                 [dateFormatter setDateFormat:@"MMM yyyy"];
-                [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
                 [dateFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease]];
                 relDate = [dateFormatter stringFromDate:album.releaseDate];
                 [dateFormatter release];

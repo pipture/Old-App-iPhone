@@ -66,7 +66,10 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
         //self.closeUp = [jsonData objectForKey:JSON_PARAM_CLOSEUP];
         self.closeUpThumbnail = [jsonData objectForKey:JSON_PARAM_CLOSEUP_THUMBNAIL];
         self.script = [jsonData objectForKey:JSON_PARAM_SCRIPT];
-        self.dateReleased = [jsonData objectForKey:JSON_PARAM_DATE_RELEASED];
+        
+        NSNumber*millisecs = [jsonData objectForKey:JSON_PARAM_DATE_RELEASED];
+        self.dateReleased = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]];
+        
         self.subject = [jsonData objectForKey:JSON_PARAM_SUBJECT];
         self.senderToReceiver = [jsonData objectForKey:JSON_PARAM_SENDER_TO_RECEIVER];
         
