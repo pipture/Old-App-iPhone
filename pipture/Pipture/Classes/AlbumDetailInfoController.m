@@ -121,6 +121,7 @@
     [trailerButtonEnhancer addGestureRecognizer:tapTRec];
     [tapTRec release];
 
+    detailsReceived = NO;
     [self tabChanged:detailsButton];
 }
 
@@ -284,17 +285,22 @@
 
 - (IBAction)tabChanged:(id)sender {
     if (!sender) return;
-    viewType = [sender tag];
-    
-    if ([[subViewContainer subviews] count] > 0) {
-        [[[subViewContainer subviews] objectAtIndex:0] removeFromSuperview];
+
+    if (detailsReceived || viewType != [sender tag]) {
+        if ([[subViewContainer subviews] count] > 0) {
+            [[[subViewContainer subviews] objectAtIndex:0] removeFromSuperview];
+        }
     }
+    
     CGRect rect = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height - [PiptureAppDelegate instance].tabViewBaseHeight);
-    switch (viewType) {
+    switch ([sender tag]) {
         case DetailAlbumViewType_Credits:
             detailPage.frame = rect;
-            [detailPage prepareLayout:album];
-            [subViewContainer addSubview:detailPage];
+            if (detailsReceived || viewType != [sender tag]) {
+                [detailPage prepareLayout:album];
+                [subViewContainer addSubview:detailPage];
+                detailsReceived = NO;
+            }
             
             [detailsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             [detailsButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];
@@ -318,6 +324,7 @@
             [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-active.png"] forState:UIControlStateHighlighted];
             break;
     }
+    viewType = [sender tag];
 }
 
 - (IBAction)trailerShow:(id)sender {
@@ -331,9 +338,7 @@
 #pragma mark AlbumsDetailsDelegate
 -(void)albumDetailsReceived:(Album*)album_ {
     NSLog(@"Details received");
-    //power button enabler
-    //Timeslot * slot = [self getCurrentTimeslot];
-
+    detailsReceived = YES;
        
     self.album = album_;
     [titleView composeTitle:album];

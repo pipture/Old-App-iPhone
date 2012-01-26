@@ -91,7 +91,7 @@
 - (void)prepareLayout:(Album*)album_ {
     [self clearDetailsView];
     
-    if (!album_.credits || !album_.season) return;
+    if (!album_ || !album_.credits || !album_.season) return;
     
     self.album = album_;
     

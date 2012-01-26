@@ -307,6 +307,7 @@ static PiptureAppDelegate *instance;
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
     
     if (playlist.count == 0) {
+        [model_ cancelCurrentRequest];
         [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:timeslotId receiver:videoViewController];
     } else {
         [videoViewController initVideo];

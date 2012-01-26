@@ -44,7 +44,7 @@
 }
 
 -(void)goBack {
-    //[self resetControlHider];
+    [self resetControlHider];
     self.busyContainer.hidden = YES;
     
     [self destroyNextItem];
@@ -105,7 +105,7 @@
 }
 
 - (void)hideControlsByTimer:(NSTimer*)timer {
-    if (!controlsHidden && !suspended) {
+    if (!controlsHidden && !suspended && !pausedStatus) {
         NSLog(@"controls hide by timer: %@", timer);
         controlsHidden = YES;
         [self updateControlsAnimated:YES];
@@ -113,11 +113,11 @@
 }
 
 - (void)startControlHider {
+    [self resetControlHider];
     if (!controlsHidden) {
         NSLog(@"start controls hider");
-        //[self resetControlHider];
         NSDate * date = [NSDate dateWithTimeIntervalSinceNow:5];//now + 5 sec
-        controlsHideTimer = [[[NSTimer alloc] initWithFireDate:date interval:0.5 target:self selector:@selector(hideControlsByTimer:) userInfo:nil repeats:NO] autorelease];
+        controlsHideTimer = [[NSTimer alloc] initWithFireDate:date interval:0.5 target:self selector:@selector(hideControlsByTimer:) userInfo:nil repeats:NO];
         [[NSRunLoop currentRunLoop] addTimer:controlsHideTimer forMode:NSDefaultRunLoopMode];
     }
 }
@@ -126,7 +126,8 @@
     NSLog(@"pause called");
     if (player != nil) {
         [self stopTimer];
-        [pauseButton setImage:[UIImage imageNamed:@"Button-Play.png"] forState:UIControlStateNormal];
+        [self resetControlHider];
+        [pauseButton setImage:[UIImage imageNamed:@"Button-Play2.png"] forState:UIControlStateNormal];
         [pauseButton setImage:[UIImage imageNamed:@"Button-Play-Press.png"] forState:UIControlStateHighlighted];
         [player pause];
         pausedStatus = YES;
@@ -395,12 +396,14 @@
         [self setPause];
         controlsHidden = NO;
         [self updateControlsAnimated:NO];
+    } else {
+        [volumeView setShowsRouteButton:NO];
     }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];    
-    suspended = NO;
+    [self setSuspended:NO];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -440,6 +443,8 @@
         controlsPanel.hidden = NO;
         navigationBar.hidden = NO;
         volumeView.hidden = NO;
+    } else {
+        [self resetControlHider];
     }
     if (animated) {
         [UIView beginAnimations:nil context:NULL];

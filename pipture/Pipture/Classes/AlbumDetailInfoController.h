@@ -20,6 +20,7 @@ enum DetailAlbumViewType {
 @interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource, VideoURLReceiver, AlbumDetailsReceiver>
 {
     enum DetailAlbumViewType viewType;
+    BOOL detailsReceived;
 }
 - (IBAction)backAction:(id)sender;
 - (IBAction)tabChanged:(id)sender;
