@@ -352,6 +352,7 @@
         if ((mode == HomeScreenMode_Cover && homeScreenMode == HomeScreenMode_PlayingNow)||
             ((mode == HomeScreenMode_PlayingNow || mode == HomeScreenMode_Schedule) && homeScreenMode == HomeScreenMode_Cover)) {
             [self createFlipAnimation];
+            [scheduleView scrollToCurPage];
             flipAction = YES;
         }
         
@@ -390,9 +391,10 @@
                 
                 break;
             case HomeScreenMode_PlayingNow:
-                    [tabbarContainer addSubview:scheduleView];
-                    if (flipAction) [UIView commitAnimations];
-                    [scheduleModel updateTimeslots];
+                [tabbarContainer addSubview:scheduleView];
+                if (flipAction) [UIView commitAnimations];
+                [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+                [scheduleModel updateTimeslots];
                 
                 [self setFullScreenMode];
                 homeScreenMode = mode;
@@ -405,6 +407,8 @@
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] forState:UIControlStateNormal];
                 [scheduleButton setTitle:@"Schedule" forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
+
+                [scheduleView scrollToPlayingNow];
                 
                 [[PiptureAppDelegate instance] putHomescreenState:mode];
                 
@@ -449,14 +453,16 @@
         [self powerButtonEnable];        
     }
     [self defineScheduleButtonVisibility];
-    [self defineFlipButtonVisibility];    
+    [self defineFlipButtonVisibility];
 }
 
 - (void)doFlip {
     [self flipAction:nil];
 }
 
-
+- (enum HomeScreenMode)homescreenMode {
+    return homeScreenMode;
+}
 
                                                      
 - (void)doPower {

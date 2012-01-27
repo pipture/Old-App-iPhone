@@ -291,9 +291,7 @@
             case AVPlayerStatusReadyToPlay:
                 NSLog(@"ready to play current: %d, suspended: %d", currentPlayerItem, suspended);
                 if (currentPlayerItem) {
-                    if (!suspended) {
-                        [self enableControls:YES];
-                    }
+                    [self enableControls:YES];
                     if (currentPlayerItem && item.playbackLikelyToKeepUp)
                     {
                         self.busyContainer.hidden = YES;
@@ -314,8 +312,8 @@
         {
             NSLog(@"keep up for play current: %d, suspended: %d", currentPlayerItem, suspended);
             self.busyContainer.hidden = YES;
+            [self enableControls:YES];
             if (!suspended) {
-                [self enableControls:YES];
                 if (!pausedStatus)
                     [self setPlay];
             }
@@ -343,6 +341,14 @@
     
     [self nextVideo];
 }
+/*
+- (void)panelHideDisable:(UITapGestureRecognizer *)recognizer {
+    NSLog(@"toucher");
+    if (controlsHideTimer) {
+        [self startControlHider];
+    }
+}
+*/
 
 - (void)viewDidLoad
 {
@@ -351,7 +357,12 @@
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     [videoContainer addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];
-    
+/*    
+    UITapGestureRecognizer * panelHideDisabler = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(panelHideDisable:)];
+    panelHideDisabler.cancelsTouchesInView = NO;
+    [controlsPanel addGestureRecognizer:panelHideDisabler];
+    [panelHideDisabler release];
+*/    
     //install out titleview to navigation controller
     videoTitleView.view.frame = CGRectMake(0, 0, 170,44);
     self.navigationItem.titleView = videoTitleView.view;

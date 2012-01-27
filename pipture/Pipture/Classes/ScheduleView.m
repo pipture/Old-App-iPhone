@@ -154,6 +154,12 @@
     }
 }
 
+- (void)scrollToPlayingNow {
+    int newCurrentTimeslotPage = [scheduleModel_ currentOrNextOrLastTimeslotIndex];
+    [self scrollToPage:newCurrentTimeslotPage animated:NO];
+}
+
+
 - (int)getPageNumber
 {
     // Switch the indicator when more than 50% of the previous/next page is visible
@@ -222,7 +228,7 @@
             return;
         }
              
-        int newCurrentTimeslotPage = [scheduleModel_ currentOrNextOrLastTimeslotIndex];        
+        int newCurrentTimeslotPage = [scheduleModel_ currentOrNextOrLastTimeslotIndex];
       
         if (coverItems) {
             for (int i = 0; i < coverItems.count; i++) {
@@ -339,10 +345,15 @@
 
 - (void)redraw {
     if ([delegate redrawDiscarding]) return;
-    
     //TODO: Part of 9151 refactor
     NSLog(@"redraw called");
     //[self processWrap];
+    
+    if ([delegate homescreenMode] == HomeScreenMode_PlayingNow)
+        [self scrollToPlayingNow];
+    else
+        [self scrollToCurPage];
+    
     int page = [self getPageNumber];
     
     Timeslot * slot = [scheduleModel_ pageInRange:page] ? [scheduleModel_ timeslotForPage:page] : nil;

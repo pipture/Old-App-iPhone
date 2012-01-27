@@ -90,6 +90,14 @@ static PiptureAppDelegate *instance;
     return visible.class == [HomeViewController class];
 }
 
+- (BOOL)videoViewVisible {
+    UIViewController * visible = self.window.rootViewController;
+    BOOL vis = visible.class == [VideoViewController class];
+    NSLog(@"video visible: %d", vis);
+    return vis;
+}
+
+
 - (HomeViewController*)getHomeView {
     if (!homeViewController)
     {    
@@ -291,6 +299,8 @@ static PiptureAppDelegate *instance;
 }
 
 - (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId{
+    
+    if ([self videoViewVisible]) return;
     
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.5];

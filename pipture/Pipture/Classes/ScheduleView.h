@@ -33,6 +33,7 @@ enum TimeslotsMode{
 - (void)updateTimeslots;
 - (void)redraw;
 - (void)scrollToCurPage;
+- (void)scrollToPlayingNow;
 
 - (void)setTimeslotsMode:(enum TimeslotsMode)mode;
 

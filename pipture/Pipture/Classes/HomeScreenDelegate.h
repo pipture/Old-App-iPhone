@@ -23,6 +23,8 @@ enum HomeScreenMode {
 @protocol HomeScreenDelegate <NSObject>
 
 - (void)setHomeScreenMode:(enum HomeScreenMode)mode;
+- (enum HomeScreenMode)homescreenMode;
+
 - (void)doFlip;
 - (void)doPower;
 
