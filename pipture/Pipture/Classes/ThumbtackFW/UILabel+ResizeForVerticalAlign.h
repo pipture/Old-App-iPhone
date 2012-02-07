@@ -11,5 +11,6 @@
 @interface UILabel (ResizeForVerticalAlign)
 
 - (void)setTextWithVerticalResize:(NSString*)text;
+- (void)setTextWithVerticalResize:(NSString*)text lineBreakMode:(UILineBreakMode)lineBreakMode;
 
 @end
