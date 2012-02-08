@@ -31,6 +31,7 @@
     BOOL controlsHidden;
     BOOL pausedStatus;
     BOOL controlsShouldBeHiddenOnPlay;
+    BOOL fingerOnControls;
 }
 - (AVPlayerItem *)createItem:(PlaylistItem*)item;
 
@@ -53,6 +54,8 @@
 @property (retain, nonatomic) NSNumber * timeslotId;
 @property (retain, nonatomic) NSArray * playlist;
 @property (retain, nonatomic) IBOutlet VideoTitleViewController *videoTitleView;
+
+
 @property (retain, nonatomic) IBOutlet UIView *controlsPanel;
 @property (retain, nonatomic) IBOutlet PlayerView *videoContainer;
 @property (retain, nonatomic) IBOutlet UIView *busyContainer;

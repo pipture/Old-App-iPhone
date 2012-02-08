@@ -33,6 +33,7 @@
         [controlsHideTimer invalidate];
         controlsHideTimer = nil;
     }
+
 }
 
 - (void)destroyNextItem {
@@ -42,6 +43,17 @@
         nextPlayerItem = nil;
     }
 }
+
+- (void)setFingerOnControls:(BOOL)val {
+    @synchronized(self) {
+        fingerOnControls = val;
+    }
+}
+
+- (BOOL)fingerOnControls {
+    return fingerOnControls;
+}
+
 
 -(void)goBack {
     [self resetControlHider];
@@ -92,6 +104,7 @@
     }
 }
 
+
 - (void)stopTimer {
     if (progressUpdateTimer != nil) {
         [progressUpdateTimer invalidate];
@@ -104,23 +117,24 @@
     progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(updateProgress:) userInfo:nil repeats:YES];
 }
 
-- (void)hideControlsByTimer:(NSTimer*)timer {
-    if (!controlsHidden && !suspended && !pausedStatus) {
-        NSLog(@"controls hide by timer: %@", timer);
-        controlsHidden = YES;
-        [self updateControlsAnimated:YES];
-    }
-}
-
 - (void)startControlHider {
     [self resetControlHider];
     if (!controlsHidden) {
-        NSLog(@"start controls hider");
         NSDate * date = [NSDate dateWithTimeIntervalSinceNow:5];//now + 5 sec
         controlsHideTimer = [[NSTimer alloc] initWithFireDate:date interval:0.5 target:self selector:@selector(hideControlsByTimer:) userInfo:nil repeats:NO];
         [[NSRunLoop currentRunLoop] addTimer:controlsHideTimer forMode:NSDefaultRunLoopMode];
     }
 }
+
+- (void)hideControlsByTimer:(NSTimer*)timer {
+    if ([self fingerOnControls]) {
+        [self startControlHider];
+    } else if (!controlsHidden && !suspended && !pausedStatus) {
+        controlsHidden = YES;
+        [self updateControlsAnimated:YES];
+    }
+}
+
 
 - (void)setPause {
     NSLog(@"pause called");
@@ -146,7 +160,7 @@
         
         if (!controlsHidden)
         {
-            if (controlsShouldBeHiddenOnPlay) {
+            if (controlsShouldBeHiddenOnPlay && ![self fingerOnControls]) {
                 controlsShouldBeHiddenOnPlay = NO;
                 controlsHidden = YES;
                 [self updateControlsAnimated:YES];
@@ -354,6 +368,7 @@
 {
     [super viewDidLoad];
     
+    
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     [videoContainer addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];
@@ -369,6 +384,19 @@
     
     //[self initVideo];
     
+    
+    UIPanGestureRecognizer* panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleControlsPan:)];
+    panGestureRecognizer.cancelsTouchesInView = NO;
+    [controlsPanel addGestureRecognizer:panGestureRecognizer];
+    [panGestureRecognizer release];
+    [self setFingerOnControls:NO];
+    
+    UITapGestureRecognizer* tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleControlsTap:)];
+    tapGestureRecognizer.cancelsTouchesInView = NO;
+    [controlsPanel addGestureRecognizer:tapGestureRecognizer];
+    [tapGestureRecognizer release];    
+
+    
     NSError *activationError  = nil;    
     if ([[AVAudioSession sharedInstance]
                                  setActive: YES 
@@ -381,6 +409,27 @@
     }
     
     NSLog(@"video player loaded");
+}
+
+- (void)handleControlsPan:(UIPanGestureRecognizer *)sender {     
+    switch (sender.state) {
+        case UIGestureRecognizerStateBegan:
+        case UIGestureRecognizerStateChanged:      
+            [self setFingerOnControls:YES];
+            break;            
+        case UIGestureRecognizerStateEnded:            
+        case UIGestureRecognizerStateCancelled: 
+            [self setFingerOnControls:NO];                
+            [self startControlHider]; //To delay instant hiding by rescheduling when pan ended just before timer.
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)handleControlsTap:(UITapGestureRecognizer *)sender {     
+    [self startControlHider];
+    controlsShouldBeHiddenOnPlay = NO;
 }
 
 - (void)viewDidUnload
