@@ -79,9 +79,9 @@
 	<key>Rest Send message</key>
 	<string>sendMessage</string>
 	<key>Rest end point</key>
-	<string>http://ec2-23-20-20-219.compute-1.amazonaws.com/</string>
-	<key>Rest end point martin</key>
 	<string>http://ec2-67-202-31-72.compute-1.amazonaws.com/</string>
+	<key>Rest end point debian</key>
+	<string>http://ec2-23-20-20-219.compute-1.amazonaws.com/</string>
 	<key>Rest end point test</key>
 	<string>http://localhost:8001/</string>
 	<key>UIPrerenderedIcon</key>
