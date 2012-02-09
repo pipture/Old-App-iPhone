@@ -9,6 +9,12 @@
 #import "DataRequest.h"
 #import "SBJson.h"
 
+#ifdef DEBUG
+#define TIMEOUT_INTERVAL 30
+#else
+#define TIMEOUT_INTERVAL 5
+#endif
+
 @interface DataRequest(Private)
 -(void)finish;
 
@@ -70,7 +76,7 @@ id<DataRequestManager> requestManager_;
     }      
 	NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url_
                                                 cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                            timeoutInterval:5];
+                                            timeoutInterval:TIMEOUT_INTERVAL];
 
     if (postParams_)
     {
