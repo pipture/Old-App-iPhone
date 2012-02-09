@@ -21,6 +21,7 @@ enum DetailAlbumViewType {
 {
     enum DetailAlbumViewType viewType;
     BOOL detailsReceived;
+    NSMutableDictionary* asyncImageViews;
 }
 - (IBAction)backAction:(id)sender;
 - (IBAction)tabChanged:(id)sender;

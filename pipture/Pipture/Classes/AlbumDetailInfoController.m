@@ -122,6 +122,8 @@
     [tapTRec release];
 
     detailsReceived = NO;
+    
+    asyncImageViews = [[NSMutableDictionary alloc] init];    
     [self tabChanged:detailsButton];
 }
 
@@ -161,6 +163,7 @@
     [navigationFake release];
     [buttonsPanel release];
     [navigationItemFake release];
+    [asyncImageViews release];
     [super dealloc];
 }
 
@@ -185,14 +188,18 @@
         UILabel * fromto = (UILabel*)[cell viewWithTag:4];
         UILabel * counter = (UILabel*)[cell viewWithTag:5];
         
-        AsyncImageView* imageView = nil;
-        if (placeholder.subviews.count > 0) {
-            imageView = [placeholder.subviews objectAtIndex:0];
-        }
-        if (!imageView) {
-            imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, placeholder.frame.size.width, placeholder.frame.size.height)] autorelease];
-            [placeholder addSubview:imageView];
+        
+        AsyncImageView* imageView = [asyncImageViews objectForKey:slot.closeUpThumbnail];
+        if (imageView == nil) {
+            imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, placeholder.frame.size.width, placeholder.frame.size.height)] autorelease];            
             [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small localStore:YES asButton:NO target:nil selector:nil];
+            [asyncImageViews setObject:imageView forKey:slot.closeUpThumbnail];            
+        }
+
+        UIView* cur = placeholder.subviews.count ? [placeholder.subviews objectAtIndex:0] : nil;
+        if (imageView != cur) {
+            [cur removeFromSuperview];
+            [placeholder addSubview:imageView];
         }
         
         counter.text = [NSString stringWithFormat:@"%@.", slot.episodeNo];

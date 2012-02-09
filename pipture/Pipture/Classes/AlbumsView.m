@@ -70,7 +70,8 @@
         
         [imageView loadImageFromURL:[NSURL URLWithString:album.thumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small  localStore:YES force:NO asButton:YES target:self selector:@selector(showDetails:)];
         
-        [item.titleLabel setTextWithVerticalResize:album.series.title];
+        
+        [item.titleLabel setTextWithVerticalResize:album.series.title lineBreakMode:UILineBreakModeTailTruncation];
         
         CGRect labelRect = item.titleLabel.frame;
         CGRect tagRect = item.tagLabel.frame;

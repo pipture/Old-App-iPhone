@@ -155,7 +155,7 @@
 								<string key="NSFrame">{{0, 20}, {312, 90}}</string>
 								<reference key="NSSuperview" ref="631362972"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="301893400"/>
+								<reference key="NSNextKeyView" ref="266934403"/>
 								<string key="NSReuseIdentifierKey">_NS:567</string>
 								<int key="IBUIContentMode">5</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
@@ -268,7 +268,7 @@
 								<string key="NSFrame">{{240, 8}, {76, 76}}</string>
 								<reference key="NSSuperview" ref="631362972"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="266934403"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:225</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -297,7 +297,7 @@
 								<string key="NSFrame">{{12, 70}, {288, 20}}</string>
 								<reference key="NSSuperview" ref="631362972"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
+								<reference key="NSNextKeyView" ref="301893400"/>
 								<string key="NSReuseIdentifierKey">_NS:196</string>
 								<reference key="IBUIBackgroundColor" ref="383764776"/>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -309,6 +309,7 @@
 						<reference key="NSNextKeyView" ref="74299195"/>
 						<string key="NSReuseIdentifierKey">_NS:196</string>
 						<reference key="IBUIBackgroundColor" ref="383764776"/>
+						<bool key="IBUIMultipleTouchEnabled">YES</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
 				</array>
@@ -357,7 +358,6 @@
 				<array class="NSMutableArray" key="IBUIViewControllers">
 					<object class="IBUIViewController" id="953994497">
 						<object class="IBUINavigationItem" key="IBUINavigationItem" id="990916517">
-							<reference key="IBUINavigationBar"/>
 							<string key="IBUITitle">Root View Controller</string>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						</object>
@@ -733,7 +733,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">73</int>
+			<int key="maxID">77</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -896,6 +896,7 @@
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="busyContainer">UIView</string>
+						<string key="controlTouchesPanel">UIView</string>
 						<string key="controlsPanel">UIView</string>
 						<string key="mailComposerNavigationController">MailComposerNavigationController</string>
 						<string key="navigationBar">UINavigationBar</string>
@@ -911,6 +912,10 @@
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="busyContainer">
 							<string key="name">busyContainer</string>
+							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="controlTouchesPanel">
+							<string key="name">controlTouchesPanel</string>
 							<string key="candidateClassName">UIView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="controlsPanel">

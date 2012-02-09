@@ -47,6 +47,7 @@
     int top = topPos;
     int height = 18;
     UILabel * text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
+
     text.font = [UIFont systemFontOfSize:15];
     text.text = name;
     text.backgroundColor = [UIColor clearColor];
@@ -108,14 +109,15 @@
     
     int height = 20;
     UILabel * text;
-    text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, 20)];
+    text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, 22)];
     text.font = [UIFont boldSystemFontOfSize:20];
-    text.text = album.series.title;
+    text.numberOfLines = 2;
+    [text setTextWithVerticalResize:album.series.title lineBreakMode:UILineBreakModeTailTruncation];
     text.backgroundColor = [UIColor clearColor];
     text.textColor = [UIColor whiteColor];
     [credits addObject:text];
     [text release];
-    top += height + 10;
+    top += text.frame.size.height + 10;
     
     text = [[UILabel alloc] initWithFrame:CGRectMake(20, top, width, height)];
     text.font = [UIFont systemFontOfSize:11];
