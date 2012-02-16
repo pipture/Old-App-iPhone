@@ -241,7 +241,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row %2 == 0) {
         Episode * episode = [album.episodes objectAtIndex:indexPath.row / 2];
-        [[[PiptureAppDelegate instance] model] getVideoURL:episode forceBuy:YES forTimeslotId:nil receiver:self];
+        [[PiptureAppDelegate instance] getVideoURL:episode forTimeslotId:nil receiver:self];
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
 
     }

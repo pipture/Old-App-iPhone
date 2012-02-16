@@ -13,6 +13,7 @@
 #import "DataRequest.h"
 #import "InAppPurchaseManager.h"
 #import "WelcomeScreenManager.h"
+#import "NetworkConnectionInformer.h"
 
 #define PLACEHOLDER1 @"default.png"
 
@@ -33,6 +34,8 @@
 {
     float balance;
     InAppPurchaseManager * purchases;
+    NetworkConnection curConnection;
+    NetworkConnectionInformer * wifiConnection;
 }
 
 @property (retain, nonatomic) IBOutlet UIView *tabView;
@@ -85,4 +88,8 @@
 - (void)processDataRequestError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate cancelTitle:(NSString*)title alertId:(int)alertId;
 - (void)showError:(NSString*)title message:(NSString*)message;
 - (void)showInsufficientFunds;
+
+- (NetworkConnection)networkConnection;
+
+- (BOOL)getVideoURL:(PlaylistItem*)item forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
 @end

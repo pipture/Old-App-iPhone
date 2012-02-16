@@ -50,6 +50,7 @@ static PiptureAppDelegate *instance;
 
 - (void)dealloc
 {
+    [wifiConnection release];
     [welcomeScreen release];
     [homeViewController release];
     [busyView release];
@@ -253,6 +254,14 @@ static PiptureAppDelegate *instance;
     [self processAuthentication];
 }
 
+//Called by Reachability whenever status changes.
+- (void) connectionChanged: (NSNotification* )note
+{
+	NetworkConnectionInformer* curReach = [note object];
+	curConnection = [curReach currentReachabilityStatus];
+    NSLog(@"Connection type: %d", curConnection);
+}
+
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self cleanDocDir:200000000];//200Mb limit
@@ -275,6 +284,15 @@ static PiptureAppDelegate *instance;
                                          withError:&error]) {
         NSLog(@"error in trackPageview");
     }        
+    
+    // Observe the kNetworkReachabilityChangedNotification. When that notification is posted, the
+    // method "reachabilityChanged" will be called. 
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(connectionChanged:) name:kReachabilityChangedNotification object: nil];
+    
+    wifiConnection = [[NetworkConnectionInformer testWiFi] retain];
+	[wifiConnection startNotifier];
+	curConnection = [wifiConnection currentReachabilityStatus];
+
     return YES;
 }
 
@@ -324,6 +342,12 @@ static PiptureAppDelegate *instance;
     }
     
     TRACK_EVENT(@"Open Activity", @"Video player");
+}
+
+- (BOOL)getVideoURL:(PlaylistItem*)item forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver {
+    NSNumber * quality = [NSNumber numberWithInt:(curConnection == NetworkConnection_Cellular)?1:0];
+        
+    return [model_ getVideoURL:item forceBuy:YES forTimeslotId:timeslotId withQuality:quality receiver:receiver];
 }
 
 NSInteger networkActivityIndecatorCount;
@@ -553,6 +577,10 @@ NSInteger networkActivityIndecatorCount;
 - (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo tag:(int)screenId delegate:(id<WelcomeScreenProtocol>)delegate{
     
     [welcomeScreen showWelcomeScreenWithTitle:title message:message storeKey:key image:logo parent:self.window tag:screenId delegate:delegate];    
+}
+
+- (NetworkConnection)networkConnection {
+    return curConnection;
 }
 
 #pragma mark -

@@ -145,6 +145,8 @@
 		38A0F09A149851B5003C5678 /* default.png in Resources */ = {isa = PBXBuildFile; fileRef = 38A0F097149851B5003C5678 /* default.png */; };
 		38A0F09B149851B5003C5678 /* background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38A0F098149851B5003C5678 /* background@2x.png */; };
 		38A0F09C149851B5003C5678 /* default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38A0F099149851B5003C5678 /* default@2x.png */; };
+		38A82D6114ED0AF700F86809 /* NetworkConnectionInformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 38A82D6014ED0AF700F86809 /* NetworkConnectionInformer.m */; };
+		38A82D6414ED1D1800F86809 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38A82D6314ED1D1800F86809 /* SystemConfiguration.framework */; };
 		38BC27C01498707D002B938F /* PurchaseBusyView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38BC27BF1498707D002B938F /* PurchaseBusyView.xib */; };
 		38BC27C4149870E6002B938F /* BusyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38BC27C3149870E6002B938F /* BusyViewController.m */; };
 		38BEF95F14CEA6AD00113992 /* nav-button-power-press.png in Resources */ = {isa = PBXBuildFile; fileRef = 38BEF94614CEA6AD00113992 /* nav-button-power-press.png */; };
@@ -394,6 +396,9 @@
 		38A0F097149851B5003C5678 /* default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = default.png; path = Resources/default.png; sourceTree = "<group>"; };
 		38A0F098149851B5003C5678 /* background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background@2x.png"; sourceTree = "<group>"; };
 		38A0F099149851B5003C5678 /* default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "default@2x.png"; path = "Resources/default@2x.png"; sourceTree = "<group>"; };
+		38A82D5F14ED0AF700F86809 /* NetworkConnectionInformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkConnectionInformer.h; sourceTree = "<group>"; };
+		38A82D6014ED0AF700F86809 /* NetworkConnectionInformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkConnectionInformer.m; sourceTree = "<group>"; };
+		38A82D6314ED1D1800F86809 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		38BC27BF1498707D002B938F /* PurchaseBusyView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PurchaseBusyView.xib; sourceTree = "<group>"; };
 		38BC27C2149870E6002B938F /* BusyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BusyViewController.h; sourceTree = "<group>"; };
 		38BC27C3149870E6002B938F /* BusyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BusyViewController.m; sourceTree = "<group>"; };
@@ -506,6 +511,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38A82D6414ED1D1800F86809 /* SystemConfiguration.framework in Frameworks */,
 				38318D761499A8F10060D0FE /* MediaPlayer.framework in Frameworks */,
 				38D51006149741C6009BF5E9 /* StoreKit.framework in Frameworks */,
 				38D5100114964123009BF5E9 /* libsqlite3.0.dylib in Frameworks */,
@@ -537,6 +543,8 @@
 		382D9C28148E032300005F16 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				38A82D5F14ED0AF700F86809 /* NetworkConnectionInformer.h */,
+				38A82D6014ED0AF700F86809 /* NetworkConnectionInformer.m */,
 				38A0B98F148F8DA50060420F /* VideoTitleViewController.h */,
 				38A0B990148F8DA50060420F /* VideoTitleViewController.m */,
 				382D9C29148E034600005F16 /* MailComposerController.h */,
@@ -628,6 +636,7 @@
 		38989CD3147A631E004DE1E0 = {
 			isa = PBXGroup;
 			children = (
+				38A82D6314ED1D1800F86809 /* SystemConfiguration.framework */,
 				3881FBE114A9AF5E008DC616 /* icon.png */,
 				3881FBE214A9AF5E008DC616 /* icon@2x.png */,
 				38A0F097149851B5003C5678 /* default.png */,
@@ -1254,6 +1263,7 @@
 				3829907514AB06330003A202 /* HomeItemViewController.m in Sources */,
 				3829907A14AB33D60003A202 /* MailComposerNavigationController.m in Sources */,
 				88606F1B14C415F9009FB5FD /* ScheduleModel.m in Sources */,
+				38A82D6114ED0AF700F86809 /* NetworkConnectionInformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

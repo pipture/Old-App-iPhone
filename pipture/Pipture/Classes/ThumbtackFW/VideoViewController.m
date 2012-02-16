@@ -98,7 +98,7 @@
             NSLog(@"Precaching");
             
             PlaylistItem * item = [playlist objectAtIndex:pos + 1];
-            [[[PiptureAppDelegate instance] model] getVideoURL:item forceBuy:YES forTimeslotId:timeslotId receiver:self];
+            [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId receiver:self];
             precacheBegin = YES;
         }
     }
@@ -239,7 +239,7 @@
         PlaylistItem * item = [playlist objectAtIndex:pos];
         //because in nextvideo it will be incremented
         pos--;
-        [[[PiptureAppDelegate instance] model] getVideoURL:item forceBuy:YES forTimeslotId:[NSNumber numberWithInt:0] receiver:self];
+        [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId receiver:self];
     }
 }
 
@@ -254,7 +254,7 @@
                 PlaylistItem * item = [playlist objectAtIndex:pos + 1];
                 waitForNext = YES;
                 [self enableControls:NO];
-                [[[PiptureAppDelegate instance] model] getVideoURL:item forceBuy:YES forTimeslotId:timeslotId receiver:self];
+                [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId receiver:self];
             }
         } else {
             [self goBack];
