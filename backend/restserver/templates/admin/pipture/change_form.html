@@ -1,0 +1,29 @@
+{%extends "admin/change_form.html" %}
+
+{% load i18n admin_modify adminmedia %}
+
+<!-- Object-Tools -->
+{% block object-tools %}
+{% if change %}
+{% if not is_popup %}
+<ul class="object-tools">
+    {% for button in buttons %}
+          <li><a href="{{ button.0 }}/">{{ button.1 }}</a></li>
+    {% endfor %}
+    
+    <li><a href="history/">{% trans "History" %}</a></li>
+    {% if has_absolute_url %}
+        <li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="focus" target="_blank">{% trans "View on site" %}</a></li>   
+    {% endif%}
+</ul>
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{% block after_related_objects %}
+    <div class="submit-row">
+    {% for button in buttons %}
+          <li><a href="{{ button.0 }}/">{{ button.1 }}</a></li>
+    {% endfor %}
+    </div>
+{% endblock %}
