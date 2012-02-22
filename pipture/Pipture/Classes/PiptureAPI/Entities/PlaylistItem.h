@@ -19,9 +19,11 @@
 @property(readonly,nonatomic) NSString *emailSubject;
 
 @property(retain,nonatomic) NSString *videoUrl;
+@property(retain,nonatomic) NSString *videoUrlLQ;
 
 
 -(BOOL)isVideoUrlLoaded;
+-(BOOL)isVideoUrlLQLoaded;
 -(const NSString*)videoKeyName;
 -(NSInteger)videoKeyValue;
 

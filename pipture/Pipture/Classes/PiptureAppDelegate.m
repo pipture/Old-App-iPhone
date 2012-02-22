@@ -289,7 +289,7 @@ static PiptureAppDelegate *instance;
     // method "reachabilityChanged" will be called. 
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(connectionChanged:) name:kReachabilityChangedNotification object: nil];
     
-    wifiConnection = [[NetworkConnectionInformer testWiFi] retain];
+    wifiConnection = [[NetworkConnectionInformer testConnection] retain];
 	[wifiConnection startNotifier];
 	curConnection = [wifiConnection currentReachabilityStatus];
 

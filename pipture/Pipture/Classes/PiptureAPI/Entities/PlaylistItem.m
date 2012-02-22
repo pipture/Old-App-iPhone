@@ -11,9 +11,11 @@
 @implementation PlaylistItem
 
 @synthesize videoUrl;
+@synthesize videoUrlLQ;
 
 - (void)dealloc {
     [videoUrl release];
+    [videoUrlLQ release];
     [super dealloc];
 }
 
@@ -48,6 +50,12 @@
 {
     return [self.videoUrl length] != 0;
 }
+
+-(BOOL)isVideoUrlLQLoaded
+{
+    return [self.videoUrlLQ length] != 0;
+}
+
 
 -(const NSString*)videoKeyName
 {

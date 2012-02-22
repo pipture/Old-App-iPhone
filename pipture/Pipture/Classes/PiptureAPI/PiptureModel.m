@@ -374,7 +374,12 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
 
 -(BOOL)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId withQuality:(NSNumber*)videoQuality receiver:(NSObject<VideoURLReceiver>*)receiver
 {
-    if ([playListItem isVideoUrlLoaded])
+    if (videoQuality.intValue == 0 && [playListItem isVideoUrlLoaded])
+    {
+        [receiver videoURLReceived:playListItem];
+        return YES;
+    } 
+    else if (videoQuality.intValue == 1 && [playListItem isVideoUrlLQLoaded])
     {
         [receiver videoURLReceived:playListItem];
         return YES;
@@ -400,7 +405,10 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
                         NSString *videoUrl = [jsonResult objectForKey:JSON_PARAM_VIDEO_URL];
                         if ([videoUrl length] > 0)
                         {
-                            playListItem.videoUrl = videoUrl;
+                            if (videoQuality.intValue == 0)
+                                playListItem.videoUrl = videoUrl;
+                            else
+                                playListItem.videoUrlLQ = videoUrl;
                             [receiver performSelectorOnMainThread:@selector(videoURLReceived:) withObject:playListItem waitUntilDone:NO];
                         }
                         else

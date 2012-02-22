@@ -172,7 +172,12 @@
 }
 
 - (AVPlayerItem *)createItem:(PlaylistItem*)plitem {
-    AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:plitem.videoUrl]];
+    AVPlayerItem * item = nil;
+    if ([[PiptureAppDelegate instance] networkConnection] == NetworkConnection_Cellular)
+        item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:plitem.videoUrlLQ]];
+    else
+        item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:plitem.videoUrl]];
+    
     static const NSString *ItemStatusContext;
     
     [item addObserver:self forKeyPath:@"status" options:0 context:&ItemStatusContext];
