@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "DataRequestError.h"
+#import "DataRequestRetryStrategy.h"
 
 typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
 
@@ -32,6 +33,7 @@ typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
 @property(readonly, nonatomic) NSString* postParams;
 
 @property(assign, nonatomic) id<DataRequestProgress> progress;
+@property(retain, nonatomic) DataRequestRetryStrategy* retryStrategy;
 
 
 - (id)initWithURL:(NSURL*)url requestManager:(id)requestManager callback:(DataRequestCallback)callback;

@@ -25,12 +25,29 @@
 @synthesize url = url_;
 @synthesize progress;
 @synthesize postParams = postParams_;
+@synthesize retryStrategy = retryStrategy_;
 
 
 id<DataRequestManager> requestManager_;
 
+
 - (void)tryCallbackWithData:(NSDictionary*)dctData error:(DataRequestError *)err {
     if (!canceled) {
+        if (retryStrategy_ && err) {
+            NSInteger delay = [retryStrategy_ calcDelayAfterError:err];
+            if (delay >= 0) {
+                NSLog(@"Next attempt in %d seconds", delay);
+                if (delay > 0) 
+                {
+                    [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(startExecute) userInfo:nil repeats:NO];
+                } else
+                {
+                    [self startExecute];
+                }
+                
+                return;
+            }
+        }             
         callback_(dctData, err);
     }
 }
@@ -115,7 +132,7 @@ id<DataRequestManager> requestManager_;
     [url_ release];
     [postParams_ release];
     [requestManager_ release];
-    
+    [retryStrategy_ release];
     [callback_ release];
     
     [super dealloc];
