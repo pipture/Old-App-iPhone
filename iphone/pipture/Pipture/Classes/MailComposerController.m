@@ -213,7 +213,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
         [[PiptureAppDelegate instance] putUserName:nameTextField.text];
         
-        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:self.playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot userName:nameTextField.text viewsCount:10 receiver:self];
+        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:self.playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot userName:nameTextField.text viewsCount:[NSNumber numberWithInt:10] receiver:self];
     }
 }
 

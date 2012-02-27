@@ -246,10 +246,6 @@
     text-transform: none;
 }
 .style_SkipStroke_1 {
-    background: transparent url(backgroundimage_2.jpg) no-repeat scroll center center;
-    opacity: 1.00;
-}
-.style_SkipStroke_2 {
     background: transparent;
     opacity: 1.00;
 }
@@ -257,19 +253,11 @@
     background: transparent url(backgroundimage_1.jpg) no-repeat scroll center center;
     opacity: 1.00;
 }
-.style_SkipStroke_3 {
+.style_SkipStroke_2 {
     background: transparent;
     opacity: 1.00;
 }
-.style_SkipStroke_31 {
-    background: rgb(0, 0, 0);
-    opacity: 1.00;
-}
-.style_SkipStroke_4 {
-    background: transparent url(backgroundimage_3.jpg) no-repeat scroll center center;
-    opacity: 1.00;
-}
-.style_SkipStroke_5 {
+.style_SkipStroke_3 {
     background: rgb(0, 0, 0);
     opacity: 1.00;
 }
@@ -307,17 +295,8 @@
 .graphic_shape_layout_style_default_External_520_600 {
     position: relative;
 }
-.graphic_shape_layout_style_default_External_37_8 {
-    position: relative;
-}
-.graphic_shape_layout_style_default_External_400_10 {
-    position: relative;
-}
 .graphic_shape_layout_style_default {
     padding: 4px;
-}
-.graphic_shape_layout_style_default_External_400_30 {
-    position: relative;
 }
 .graphic_shape_style_default_SkipStroke {
     background: rgb(255, 255, 255);
@@ -335,19 +314,19 @@
 .graphic_textbox_layout_style_default_External_249_95 {
     position: relative;
 }
-.graphic_textbox_layout_style_default_External_447_48 {
+.graphic_textbox_layout_style_default_External_486_27 {
     position: relative;
 }
 .graphic_textbox_layout_style_default_External_205_108 {
     position: relative;
 }
-.graphic_textbox_layout_style_default_External_486_27 {
-    position: relative;
-}
 .graphic_textbox_layout_style_default_External_439_24 {
     position: relative;
 }
-.graphic_textbox_layout_style_default_External_121_54 {
+.graphic_textbox_layout_style_default_External_121_45 {
+    position: relative;
+}
+.graphic_textbox_layout_style_default_External_383_44 {
     position: relative;
 }
 .graphic_textbox_style_default_SkipStroke {

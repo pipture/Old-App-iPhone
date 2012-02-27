@@ -48,30 +48,36 @@ def index(request, u_url):
         response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Url not found"}
         return HttpResponse (json.dumps(response))
  
-    video_instance, error = get_video_url_from_episode_or_trailer (id=urs_instance.LinkId, type_r=urs_instance.LinkType, is_url=False)
+    video_instance, error = get_video_url_from_episode_or_trailer (id=urs_instance.LinkId, type_r=urs_instance.LinkType, video_q=0, is_url=False)
     if error:
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
         return HttpResponse (json.dumps(response))
 
     video_url = ''
+    message_blocked = True
 
     #TODO: check session id
-    if urs_instance.ViewsCount > 0 or urs_instance.ViewsCount == -2:
+    if urs_instance.ViewsCount < urs_instance.ViewsLimit or urs_instance.ViewsLimit == -1:
         video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
-        urs_instance.ViewsCount = urs_instance.ViewsCount - 1 
+        message_blocked = False
+        urs_instance.ViewsCount = urs_instance.ViewsCount + 1
+        urs_instance.save() 
     
     if mobileBrowser(request):
         template_h = 'video_mobile.html'
     else:
         #template_h = 'video_mobile.html'
         #template_h = 'video_desktop.html'
-        template_h = 'webpage.html'
+        template_h = 'webpage2.html'
  
     text_m = urs_instance.Text 
     data = {'video_url': video_url,
             'image_url': urs_instance.ScreenshotURL,
             'text_1': "%s..." % (text_m[0:int(len(text_m)/3)]),
             'text_2': text_m,
+            'views_limit': urs_instance.ViewsLimit,
+            'views_count': urs_instance.ViewsCount,
+            'message_blocked':message_blocked,
             'from': "%s" % (urs_instance.UserName)}
     return render_to_response(template_h, data,
                                        context_instance=RequestContext(request))

@@ -97,7 +97,7 @@ def getTimeslots (request):
     response['CurrentTime'] = sec_utc_now
     return HttpResponse (json.dumps(response))
         
-def get_video_url_from_episode_or_trailer (video_id, type_r, video_q, is_url = True):
+def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
     
     from restserver.pipture.models import Trailers
     from restserver.pipture.models import Episodes
@@ -105,14 +105,15 @@ def get_video_url_from_episode_or_trailer (video_id, type_r, video_q, is_url = T
     
     """is_url - needs to return url or video instance"""
     try:
-        video_id = int (video_id)
+        id = int (id)
     except ValueError as e:
         return None, "There is internal error - %s (%s)." % (e, type (e))
     if type_r not in ['E', 'T']:
         return None, "There is unknown type %s" % (type_r)
     if type_r == "E":
         try:
-            video = Episodes.objects.select_related(depth=1).get(EpisodeId=id)
+            #video = Episodes.objects.select_related(depth=1).get(EpisodeId=id)
+            video = Episodes.objects.get(EpisodeId=id)
         except Episodes.DoesNotExist as e:
             return None, "There is no episode with id %s" % (id)
     else:
@@ -131,11 +132,15 @@ def get_video_url_from_episode_or_trailer (video_id, type_r, video_q, is_url = T
         video_url= (video_url_i._get_url()).split('?')[0]
         return video_url, None
     else:
-        video_instance = video.VideoId
+        video_instance = 0
+        if video_q == 0:
+            video_instance = video.VideoId
+        else:
+            try:
+                video_instance = video.LQVideoId
+            except Exception, e:
+                video_instance = video.VideoId
         return video_instance, None
-        
-                
-
 
 def getVideo (request):
     keys = request.GET.keys()

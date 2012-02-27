@@ -490,6 +490,7 @@ class SendMessage(models.Model):
     UserName = models.CharField (max_length=200)
     ScreenshotURL = models.CharField (blank=True, null=True,  max_length=200)
     ViewsCount = models.IntegerField()
+    ViewsLimit = models.IntegerField()
     AllowRemove = models.IntegerField(max_length=1)
     AutoLock = models.IntegerField(max_length=1)
 
