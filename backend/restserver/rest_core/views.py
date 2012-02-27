@@ -733,10 +733,10 @@ def getBalance (request):
     response["Balance"] = "%s" % (purchaser.Balance)
     return HttpResponse (json.dumps(response))
 
-def new_send_message (user, video_id, message, video_type, user_name, screenshot_url = ''):
+def new_send_message (user, video_id, message, video_type, user_name, views_count, screenshot_url = ''):
     from restserver.pipture.models import SendMessage
     try:
-        s = SendMessage (UserId=user,Text=message,LinkId= video_id,LinkType=video_type, UserName=user_name, ScreenshotURL=screenshot_url)
+        s = SendMessage (UserId=user,Text=message,LinkId= video_id,LinkType=video_type, UserName=user_name, ScreenshotURL=screenshot_url, ViewsCount=views_count, AllowRemove=False, AutoLock=False)
         s.save()
     except Exception as e:
         print "%s" % (e)
@@ -765,9 +765,10 @@ def sendMessage (request):
     episode_id = request.POST.get('EpisodeId', None)
     trailer_id = request.POST.get('TrailerId', None)
     message = request.POST.get('Message', None)
-    timeslot_id = request.POST.get('TimeslotId', None)
+    #timeslot_id = request.POST.get('TimeslotId', None)
     screenshot_url = request.POST.get('ScreenshotURL', None)
     user_name = request.POST.get('UserName', None)
+    views_count = request.POST.get('ViewsCount', None)
 
     if episode_id and trailer_id:
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There are EpisodeId and TrailerId. Should be only one param."}
@@ -802,8 +803,8 @@ def sendMessage (request):
         return HttpResponse (json.dumps(response))
     
 
-    from restserver.pipture.models import PurchaseItems
-    SEND_EP = PurchaseItems.objects.get(Description="SendEpisode")
+    #from restserver.pipture.models import PurchaseItems
+    #SEND_EP = PurchaseItems.objects.get(Description="SendEpisode")
         
     if trailer_id:
         video_url, error = get_video_url_from_episode_or_trailer (id=trailer_id, type_r="T", video_q=0)
@@ -811,37 +812,37 @@ def sendMessage (request):
             response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
             return HttpResponse (json.dumps(response))
         else:
-            u_url = new_send_message (user=purchaser, video_id=trailer_id, message=message, video_type="T", user_name=user_name, screenshot_url=(screenshot_url or ''))
+            u_url = new_send_message (user=purchaser, video_id=trailer_id, message=message, video_type="T", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
             response['MessageURL'] = "/videos/%s/" % (u_url)
             response['Balance'] = "%s" % (purchaser.Balance)
             return HttpResponse (json.dumps(response))
     
-    from restserver.pipture.models import TimeSlots
+    '''from restserver.pipture.models import TimeSlots
     from restserver.pipture.models import TimeSlotVideos
    
     if timeslot_id and TimeSlots.timeslot_is_current(timeslot_id) and TimeSlotVideos.is_contain_id (timeslot_id, episode_id, "E"):
-        u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, screenshot_url=(screenshot_url or ''))
+        u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
         response['MessageURL'] = "/videos/%s/" % (u_url)
         response['Balance'] = "%s" % (purchaser.Balance)
         return HttpResponse (json.dumps(response))
 
     from restserver.pipture.models import UserPurchasedItems
-
+    '''
     video_url, error = get_video_url_from_episode_or_trailer (id=episode_id, type_r="E", video_q=0)
     if error:
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
         return HttpResponse (json.dumps(response))
 
 
-    is_purchased = UserPurchasedItems.objects.filter(UserId=purchaser, ItemId=episode_id, PurchaseItemId = SEND_EP).count()
+    #is_purchased = UserPurchasedItems.objects.filter(UserId=purchaser, ItemId=episode_id, PurchaseItemId = SEND_EP).count()
         
-    if is_purchased:
-        u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, screenshot_url=(screenshot_url or ''))
-        response['MessageURL'] = "/videos/%s/" % (u_url)
-        response['Balance'] = "%s" % (purchaser.Balance)
-        return HttpResponse (json.dumps(response))
+    #if is_purchased:'''
+    u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, screenshot_url=(screenshot_url or ''))
+    response['MessageURL'] = "/videos/%s/" % (u_url)
+    response['Balance'] = "%s" % (purchaser.Balance)
+    return HttpResponse (json.dumps(response))
 
-    else:
+    '''else:
         if (purchaser.Balance - SEND_EP.Price) >= 0:
             new_p = UserPurchasedItems(UserId=purchaser, ItemId=episode_id, PurchaseItemId = SEND_EP, ItemCost=SEND_EP.Price)
             new_p.save()
@@ -854,7 +855,7 @@ def sendMessage (request):
         else:
             response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
             return HttpResponse (json.dumps(response))
-
+    '''
 
 def getAlbumScreenshotByEpisodeId (EpisodeId):
     from restserver.pipture.models import AlbumScreenshotGallery

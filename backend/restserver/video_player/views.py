@@ -53,7 +53,13 @@ def index(request, u_url):
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
         return HttpResponse (json.dumps(response))
 
+    video_url = ''
 
+    #TODO: check session id
+    if urs_instance.ViewsCount > 0 or urs_instance.ViewsCount == -2:
+        video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
+        urs_instance.ViewsCount = urs_instance.ViewsCount - 1 
+    
     if mobileBrowser(request):
         template_h = 'video_mobile.html'
     else:
@@ -62,7 +68,7 @@ def index(request, u_url):
         template_h = 'webpage.html'
  
     text_m = urs_instance.Text 
-    data = {'video_url': (video_instance.VideoUrl._get_url()).split('?')[0],
+    data = {'video_url': video_url,
             'image_url': urs_instance.ScreenshotURL,
             'text_1': "%s..." % (text_m[0:int(len(text_m)/3)]),
             'text_2': text_m,
