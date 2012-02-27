@@ -140,7 +140,7 @@
 
 -(BOOL)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver;
 
--(BOOL)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId screenshotImage:(NSString*)screenshotImage userName:(NSString*)userName receiver:(NSObject<SendMessageDelegate>*)receiver;
+-(BOOL)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId screenshotImage:(NSString*)screenshotImage userName:(NSString*)userName viewsCount:(NSNumber*)viewsCount receiver:(NSObject<SendMessageDelegate>*)receiver;
 
 -(BOOL)getScreenshotCollectionFor:(PlaylistItem*)playlistItem receiver:(NSObject<ScreenshotCollectionReceiver>*)receiver;
 
