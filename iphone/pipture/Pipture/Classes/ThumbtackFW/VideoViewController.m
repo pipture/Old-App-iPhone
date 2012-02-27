@@ -503,7 +503,7 @@
     NSLog(@"disappearing");
     
     [self setSuspended:YES];
-    
+    [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
     [super viewWillDisappear:animated];
 }
 
@@ -675,10 +675,7 @@
 -(void)dataRequestFailed:(DataRequestError*)error
 {
     NSLog(@"req failed");
-    //TODO: show error message?
-    if (error.errorCode != DRErrorNoInternet) {
-        [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
-    }
+    [[[PiptureAppDelegate instance] networkErrorAlerter] showStandardAlertForError:error];
     [self goBack];
 }
 

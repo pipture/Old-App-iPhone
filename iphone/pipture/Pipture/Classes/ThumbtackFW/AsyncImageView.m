@@ -7,6 +7,7 @@
 //
 
 #import "AsyncImageView.h"
+#import "DataRequestRetryStrategyFactory.h"
 
 @implementation AsyncImageView
 @synthesize imageFile;
@@ -18,8 +19,28 @@
     self = [super initWithFrame:frame];
     if (self) {
         defImage = nil;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppSuspend:) name:UIApplicationWillResignActiveNotification object:nil];
     }
     return self;
+}
+
+
+- (DataRequestRetryStrategy*) retryStrategy {
+    @synchronized(self) {
+        return retryStrategy;
+    }
+}
+
+- (void) setRetryStrategy:(DataRequestRetryStrategy*)strategy {
+    @synchronized(self) {
+        DataRequestRetryStrategy*prev = retryStrategy;
+        retryStrategy = [strategy retain];
+        [prev release];
+    }
+}
+
+- (void) onAppSuspend:(NSNotification*)notification {
+    [self setRetryStrategy:nil];
 }
 
 //get storage filename
@@ -125,17 +146,28 @@
     
     [connection release];
     connection=nil;    
+
+    [self setRetryStrategy:nil];
     
     self.loading = NO;
 }
 
-- (void)asyncURLLoader {
+- (void)startNetworkLoading {
     [data release];
     data = nil;
     
+    [connection release];
+    connection=nil;
+    
     NSURLRequest* request = [NSURLRequest requestWithURL:currentUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:6.0];
-    connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];        
 }
+
+- (void)asyncURLLoader {
+    [self setRetryStrategy:[DataRequestRetryStrategyFactory createEasyStrategy]];
+    [self startNetworkLoading];
+}
+
 
 - (void)reloadData:(id)data_ {
     NSData * ldata = data_;
@@ -206,8 +238,30 @@
     [data appendData:incrementalData];
 }
 
+
+
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
+    DataRequestError* dre = [[[DataRequestError alloc] initWithNSError:error] autorelease];
+    DataRequestRetryStrategy* rs = [[self retryStrategy] retain];
+    if (rs) {
+        NSInteger delay = [retryStrategy calcDelayAfterError:dre];
+        if (delay >= 0) {
+            NSLog(@"Next attempt in %d seconds", delay);
+            if (delay > 0) 
+            {
+                [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(startNetworkLoading) userInfo:nil repeats:NO];
+            } else
+            {
+                [self startNetworkLoading];
+            }
+            [rs release];
+            return;
+        }
+        else {
+            [rs release];
+        }
+    }                     
     [self clear];
 }
 
@@ -240,6 +294,7 @@
     [imageFile release];
     [lastUrl_ release];  
     [currentUrl release];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];    
     [super dealloc];
 }
 

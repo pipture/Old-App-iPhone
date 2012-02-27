@@ -14,6 +14,7 @@
 #import "InAppPurchaseManager.h"
 #import "WelcomeScreenManager.h"
 #import "NetworkConnectionInformer.h"
+#import "NetworkErrorAlerter.h"
 
 #define PLACEHOLDER1 @"default.png"
 
@@ -54,6 +55,7 @@
 @property (retain, nonatomic) UIViewController * homeViewController;
 @property (retain, nonatomic) IBOutlet WelcomeScreenManager *welcomeScreen;
 @property (readonly, nonatomic) NSInteger tabViewBaseHeight;
+@property (readonly, nonatomic) NetworkErrorAlerter* networkErrorAlerter;
 
 +(PiptureAppDelegate*) instance;
 
@@ -85,7 +87,6 @@
 - (void)showModalBusy:(void (^)(void))completion;
 - (void)dismissModalBusy;
 
-- (void)processDataRequestError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate cancelTitle:(NSString*)title alertId:(int)alertId;
 - (void)showError:(NSString*)title message:(NSString*)message;
 - (void)showInsufficientFunds;
 

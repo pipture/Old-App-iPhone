@@ -13,7 +13,7 @@
 #import "PlaylistItem.h"
 #import "SBJson.h"
 #import "ScreenshotImage.h"
-
+#import "DataRequestRetryStrategyFactory.h"
 @interface DefaultDataRequestFactory : NSObject<DataRequestManager>
 
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
@@ -104,7 +104,7 @@
 @end
 
 
-@interface PiptureModel : NSObject
+@interface PiptureModel : NSObject     
 {
 //@private
 //    NSMutableDictionary* currentRequests;

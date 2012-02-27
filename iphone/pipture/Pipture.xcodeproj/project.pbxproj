@@ -192,6 +192,9 @@
 		8805614014A46A79004A445C /* checked-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 8805613E14A46A79004A445C /* checked-selected.png */; };
 		8805614114A46A79004A445C /* checked-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8805613F14A46A79004A445C /* checked-selected@2x.png */; };
 		8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8811ED94147B6FC5008CC877 /* HomeView.xib */; };
+		8812B9D014F7956E0089A905 /* DataRequestRetryStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8812B9CF14F7956E0089A905 /* DataRequestRetryStrategy.m */; };
+		8812B9D414F7A97B0089A905 /* DataRequestRetryStrategyFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 8812B9D314F7A97B0089A905 /* DataRequestRetryStrategyFactory.m */; };
+		8812B9D714FB4DBE0089A905 /* NetworkErrorAlerter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8812B9D614FB4DBB0089A905 /* NetworkErrorAlerter.m */; };
 		88606F1B14C415F9009FB5FD /* ScheduleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88606F1A14C415F9009FB5FD /* ScheduleModel.m */; };
 		88751791148CAD3B00AFFFAC /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */; };
 		88751792148CAD3B00AFFFAC /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875177C148CAD3B00AFFFAC /* SBJsonParser.m */; };
@@ -448,6 +451,12 @@
 		8805613E14A46A79004A445C /* checked-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checked-selected.png"; sourceTree = "<group>"; };
 		8805613F14A46A79004A445C /* checked-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checked-selected@2x.png"; sourceTree = "<group>"; };
 		8811ED94147B6FC5008CC877 /* HomeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeView.xib; sourceTree = "<group>"; };
+		8812B9CE14F7956E0089A905 /* DataRequestRetryStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequestRetryStrategy.h; sourceTree = "<group>"; };
+		8812B9CF14F7956E0089A905 /* DataRequestRetryStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequestRetryStrategy.m; sourceTree = "<group>"; };
+		8812B9D214F7A97B0089A905 /* DataRequestRetryStrategyFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataRequestRetryStrategyFactory.h; path = ../PiptureAPI/DataRequestRetryStrategyFactory.h; sourceTree = "<group>"; };
+		8812B9D314F7A97B0089A905 /* DataRequestRetryStrategyFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataRequestRetryStrategyFactory.m; path = ../PiptureAPI/DataRequestRetryStrategyFactory.m; sourceTree = "<group>"; };
+		8812B9D514FB4DB80089A905 /* NetworkErrorAlerter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkErrorAlerter.h; sourceTree = "<group>"; };
+		8812B9D614FB4DBB0089A905 /* NetworkErrorAlerter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkErrorAlerter.m; sourceTree = "<group>"; };
 		88606F1914C415F9009FB5FD /* ScheduleModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScheduleModel.h; path = Classes/ScheduleModel.h; sourceTree = "<group>"; };
 		88606F1A14C415F9009FB5FD /* ScheduleModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScheduleModel.m; path = Classes/ScheduleModel.m; sourceTree = "<group>"; };
 		88751777148CAD3B00AFFFAC /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
@@ -615,6 +624,8 @@
 		384A1FA11491C240007D5E0B /* ThumbtackFW */ = {
 			isa = PBXGroup;
 			children = (
+				8812B9D214F7A97B0089A905 /* DataRequestRetryStrategyFactory.h */,
+				8812B9D314F7A97B0089A905 /* DataRequestRetryStrategyFactory.m */,
 				88982B8414923FBD0012BEC2 /* DataRequest.h */,
 				88982B8514923FBD0012BEC2 /* DataRequest.m */,
 				88982B8614923FBD0012BEC2 /* DataRequestError.h */,
@@ -629,6 +640,8 @@
 				384A1FA31491C240007D5E0B /* AsyncImageView.m */,
 				889B379414A441CE000B03D2 /* UILabel+ResizeForVerticalAlign.h */,
 				889B379514A441CE000B03D2 /* UILabel+ResizeForVerticalAlign.m */,
+				8812B9CE14F7956E0089A905 /* DataRequestRetryStrategy.h */,
+				8812B9CF14F7956E0089A905 /* DataRequestRetryStrategy.m */,
 			);
 			path = ThumbtackFW;
 			sourceTree = "<group>";
@@ -750,6 +763,8 @@
 				38BC27C3149870E6002B938F /* BusyViewController.m */,
 				887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */,
 				887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */,
+				8812B9D514FB4DB80089A905 /* NetworkErrorAlerter.h */,
+				8812B9D614FB4DBB0089A905 /* NetworkErrorAlerter.m */,
 				384A1FA11491C240007D5E0B /* ThumbtackFW */,
 				384A1F871491C21C007D5E0B /* PiptureAPI */,
 				382D9C28148E032300005F16 /* Utility */,
@@ -1264,6 +1279,9 @@
 				3829907A14AB33D60003A202 /* MailComposerNavigationController.m in Sources */,
 				88606F1B14C415F9009FB5FD /* ScheduleModel.m in Sources */,
 				38A82D6114ED0AF700F86809 /* NetworkConnectionInformer.m in Sources */,
+				8812B9D014F7956E0089A905 /* DataRequestRetryStrategy.m in Sources */,
+				8812B9D414F7A97B0089A905 /* DataRequestRetryStrategyFactory.m in Sources */,
+				8812B9D714FB4DBE0089A905 /* NetworkErrorAlerter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

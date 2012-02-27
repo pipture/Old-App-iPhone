@@ -208,6 +208,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
     [request startExecute];
 
 }
@@ -256,6 +257,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
     [request startExecute];
        
 }
@@ -308,7 +310,8 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];    
     return [request startExecute];
 }
 
@@ -368,7 +371,8 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy]; 
     return [request startExecute];
 }
 
@@ -443,7 +447,11 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             
             [PiptureModel setModelRequestingState:NO receiver:receiver];        
         }];
-        [PiptureModel setModelRequestingState:YES receiver:receiver];    
+        [PiptureModel setModelRequestingState:YES receiver:receiver];
+        if (timeslotId) //For timeslot it is called inside player. Can do retries unless player is closed. For other cases retries inappropriate 
+        {
+                request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy]; 
+        }
         return [request startExecute];
 
     }    
@@ -474,6 +482,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];    
     return [request startExecute];
  
 }
@@ -514,6 +523,8 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
     return [request startExecute];        
 }
 
@@ -635,7 +646,8 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
     return [request startExecute];
     
     

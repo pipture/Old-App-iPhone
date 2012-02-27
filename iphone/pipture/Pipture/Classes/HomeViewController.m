@@ -295,6 +295,10 @@
     [super viewDidDisappear:animated];
 }
 
+-(void)viewWillDisappear:(BOOL)animated {
+    [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+}
+
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -514,7 +518,7 @@
 
 -(void)dataRequestFailed:(DataRequestError*)error
 {
-    [[PiptureAppDelegate instance] processDataRequestError:error delegate:self cancelTitle:@"OK" alertId:0];
+    [[[PiptureAppDelegate instance] networkErrorAlerter] showStandardAlertForError:error];
 }
 
 #pragma mark ScheduleModel observer methods

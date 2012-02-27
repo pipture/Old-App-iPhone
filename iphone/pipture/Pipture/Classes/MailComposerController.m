@@ -400,7 +400,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 -(void)dataRequestFailed:(DataRequestError*)error
 {
-    [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
+    [[[PiptureAppDelegate instance] networkErrorAlerter] showStandardAlertForError:error];
 }
 
 #pragma mark Table delegates
