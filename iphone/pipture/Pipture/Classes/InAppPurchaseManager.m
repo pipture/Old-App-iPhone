@@ -9,6 +9,103 @@
 #import "InAppPurchaseManager.h"
 #import "PiptureAppDelegate.h"
 
+@interface PurchaseSession : NSObject<PurchaseDelegate, UIAlertViewDelegate> {
+    NSString*receipt_;
+}    
+
+-(id)initWithReceipt:(NSString*)receipt;
+-(void)run;
+
+@end
+
+@implementation PurchaseSession
+    
+
+-(id)initWithReceipt:(NSString*)receipt {
+    self = [super init];
+    if (self) {
+        receipt_ = [receipt retain];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [receipt_ release];
+    [super dealloc];
+}
+
+-(void)runRaw {
+    [[[PiptureAppDelegate instance] model] buyCredits:receipt_ receiver:self];    
+}
+
+-(void)run {
+    [self retain];
+    [self runRaw];
+}
+
+#pragma mark AlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        [self runRaw];
+    } else {
+        [[PiptureAppDelegate instance] dismissModalBusy];        
+        [self release];        
+    }
+}
+
+#pragma mark PurchaseReceiver methods
+
+
+-(void)dataRequestFailed:(DataRequestError*)error {    
+    [[[PiptureAppDelegate instance] networkErrorAlerter] showAlertForError:error delegate:self tag:0 cancelButtonTitle:@"Cancel" otherButtonTitles:@"Retry",nil];
+}
+
+-(void)purchased:(NSDecimalNumber*)newBalance {
+    SET_BALANCE(newBalance);
+    [[PiptureAppDelegate instance] dismissModalBusy];
+    TRACK_EVENT(@"Purchase", @"Credits purchased");
+    [self release];    
+}
+
+-(void)authenticationFailed {
+    [[PiptureAppDelegate instance] dismissModalBusy];
+    NSLog(@"authenticationFailed");
+    [self release];    
+}
+
+-(void)purchaseNotConfirmed {
+    SHOW_ERROR(@"Purchase failed", @"Purchase verification failed!");
+    
+    [[PiptureAppDelegate instance] dismissModalBusy];
+    NSLog(@"purchaseNotConfirmed");
+    
+    TRACK_EVENT(@"Purchase", @"Not confirmed");
+    [self release];    
+}
+
+-(void)unknownProductPurchased {
+    SHOW_ERROR(@"Purchase failed", @"Unknown product purchased!");
+    
+    [[PiptureAppDelegate instance] dismissModalBusy];
+    NSLog(@"unknownProductPurchased");
+    
+    TRACK_EVENT(@"Purchase", @"Unknown product");
+    [self release];    
+}
+
+-(void)duplicateTransactionId {
+    SHOW_ERROR(@"Purchase failed", @"Transaction already performed!");
+    
+    [[PiptureAppDelegate instance] dismissModalBusy];
+    NSLog(@"duplicateTransactionId");
+    
+    TRACK_EVENT(@"Purchase", @"Duplicate transaction");
+    [self release];    
+}
+
+@end
+
 @implementation InAppPurchaseManager
 
 - (void)dealloc {
@@ -109,7 +206,9 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     if (wasSuccessful)
     {
         NSString * base64 = [self base64Encoding:transaction.transactionReceipt];
-        [[[PiptureAppDelegate instance] model] buyCredits:base64 receiver:self];
+        PurchaseSession* purchase = [[PurchaseSession alloc] initWithReceipt:base64];
+        [purchase run];
+        [purchase release];
         NSLog(@"InApp transaction OK!");
     }
     else
@@ -209,49 +308,5 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [productsRequest release];
 }
 
-#pragma mark PurchaseReceiver methods
-
--(void)dataRequestFailed:(DataRequestError*)error {
-    [[PiptureAppDelegate instance] dismissModalBusy];
-    [[PiptureAppDelegate instance] processDataRequestError:error delegate:self cancelTitle:@"OK" alertId:0];
-}
-
--(void)purchased:(NSDecimalNumber*)newBalance {
-    SET_BALANCE(newBalance);
-    [[PiptureAppDelegate instance] dismissModalBusy];
-    TRACK_EVENT(@"Purchase", @"Credits purchased");
-}
-
--(void)authenticationFailed {
-    [[PiptureAppDelegate instance] dismissModalBusy];
-    NSLog(@"authenticationFailed");
-}
-
--(void)purchaseNotConfirmed {
-    SHOW_ERROR(@"Purchase failed", @"Purchase verification failed!");
-
-    [[PiptureAppDelegate instance] dismissModalBusy];
-    NSLog(@"purchaseNotConfirmed");
-    
-    TRACK_EVENT(@"Purchase", @"Not confirmed");
-}
-
--(void)unknownProductPurchased {
-    SHOW_ERROR(@"Purchase failed", @"Unknown product purchased!");
-   
-    [[PiptureAppDelegate instance] dismissModalBusy];
-    NSLog(@"unknownProductPurchased");
-   
-    TRACK_EVENT(@"Purchase", @"Unknown product");
-}
-
--(void)duplicateTransactionId {
-    SHOW_ERROR(@"Purchase failed", @"Transaction already performed!");
-    
-    [[PiptureAppDelegate instance] dismissModalBusy];
-    NSLog(@"duplicateTransactionId");
-    
-    TRACK_EVENT(@"Purchase", @"Duplicate transaction");
-}
 
 @end

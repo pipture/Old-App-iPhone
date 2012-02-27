@@ -80,7 +80,6 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
 {
     self = [super init];
     if (self) {
-        retryStrategyFactory = [[DataRequestRetryStrategyFactory alloc] init];
         END_POINT_URL = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest end point"] retain];
         API_VERSION = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest API version"] retain];
         LOGIN_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Login"] retain];
@@ -106,7 +105,6 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
 }
 
 - (void)dealloc {
-    [retryStrategyFactory release];
     [dataRequestFactory_ release];
     [END_POINT_URL release];
     [API_VERSION release];
@@ -209,7 +207,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
-    //request.retryStrategy = [retryStrategyFactory createStandardStrategy];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
     [request startExecute];
 
 }
@@ -258,6 +256,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
     [request startExecute];
        
 }
@@ -310,7 +309,8 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];    
     return [request startExecute];
 }
 
@@ -370,7 +370,8 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy]; 
     return [request startExecute];
 }
 
@@ -445,7 +446,11 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
             
             [PiptureModel setModelRequestingState:NO receiver:receiver];        
         }];
-        [PiptureModel setModelRequestingState:YES receiver:receiver];    
+        [PiptureModel setModelRequestingState:YES receiver:receiver];
+        if (timeslotId) //For timeslot it is called inside player. Can do retries unless player is closed. For other cases retries inappropriate 
+        {
+                request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy]; 
+        }
         return [request startExecute];
 
     }    
@@ -476,6 +481,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];    
     return [request startExecute];
  
 }
@@ -516,6 +522,8 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
     return [request startExecute];        
 }
 
@@ -637,7 +645,8 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
     return [request startExecute];
     
     

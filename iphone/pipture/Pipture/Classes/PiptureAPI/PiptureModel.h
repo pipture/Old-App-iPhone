@@ -106,7 +106,6 @@
 
 @interface PiptureModel : NSObject     
 {
-    DataRequestRetryStrategyFactory*retryStrategyFactory;
 //@private
 //    NSMutableDictionary* currentRequests;
 }

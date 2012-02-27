@@ -13,7 +13,7 @@
 #define DRErrorTimeout -3
 #define DRErrorOther -4
 #define DRErrorInvalidResponse -5
-#define DRErrorUnknown -100;
+#define DRErrorUnknown -100
 
 
 @interface DataRequestError : NSObject

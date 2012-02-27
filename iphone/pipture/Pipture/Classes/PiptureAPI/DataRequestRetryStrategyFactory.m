@@ -11,17 +11,21 @@
 
 @implementation DataRequestRetryStrategyFactory
 
--(DataRequestRetryStrategy*)createStandardStrategy 
-{
-    if (!standardStrategy) {
-    
-        standardStrategy = [[DataRequestRetryStrategy alloc] initWithIntervals:[NSArray arrayWithObjects:NSNum(0), NSNum(10), NSNum(15), nil] infinite:YES fatalErrorCodes:[NSArray arrayWithObjects:NSNum(DRErrorInvalidResponse), nil]];
-    }
-    return standardStrategy;
++(DataRequestRetryStrategy*)createStandardStrategy 
+{        
+    return [[[DataRequestRetryStrategy alloc] initWithIntervals:[NSArray arrayWithObjects:NSNum(0), NSNum(10), NSNum(20), NSNum(40), NSNum(80), nil] infinite:YES fatalErrorCodes:[NSArray arrayWithObjects:NSNum(DRErrorNoInternet), NSNum(DRErrorCouldNotConnectToServer),NSNum(DRErrorUnknown),nil]] autorelease];
 }
 
-- (void)dealloc {
-    [standardStrategy release];
-    [super dealloc];
++(DataRequestRetryStrategy*)createEasyStrategy 
+{        
+    return [[[DataRequestRetryStrategy alloc] initWithIntervals:[NSArray arrayWithObjects:NSNum(0), NSNum(10), NSNum(20), nil] infinite:NO fatalErrorCodes:[NSArray arrayWithObjects:NSNum(DRErrorNoInternet), NSNum(DRErrorCouldNotConnectToServer),NSNum(DRErrorUnknown),nil]] autorelease];
 }
+
+
++(DataRequestRetryStrategy*)createRetryForAllErrorsStrategy 
+{                
+    return [[[DataRequestRetryStrategy alloc] initWithIntervals:[NSArray arrayWithObjects:NSNum(0), NSNum(10), NSNum(20), NSNum(40), NSNum(80), nil] infinite:YES fatalErrorCodes:[NSArray arrayWithObjects:nil]] autorelease];    
+}
+
+
 @end

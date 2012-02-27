@@ -108,7 +108,7 @@
 
 -(void)dataRequestFailed:(DataRequestError*)error
 {    
-    [[PiptureAppDelegate instance] processDataRequestError:error delegate:nil cancelTitle:@"OK" alertId:0];
+    [[[PiptureAppDelegate instance] networkErrorAlerter] showStandardAlertForError:error];
 }
 
 - (BOOL)pageInRange:(int)page {

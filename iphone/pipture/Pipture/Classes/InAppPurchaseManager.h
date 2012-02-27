@@ -10,7 +10,7 @@
 #import "PiptureModel.h"
 #import "BusyViewController.h"
 
-@interface InAppPurchaseManager : NSObject <SKProductsRequestDelegate, SKPaymentTransactionObserver, PurchaseDelegate, UIAlertViewDelegate>
+@interface InAppPurchaseManager : NSObject <SKProductsRequestDelegate, SKPaymentTransactionObserver, UIAlertViewDelegate>
 {
     SKProduct *creditsProduct;
     SKProductsRequest *productsRequest;

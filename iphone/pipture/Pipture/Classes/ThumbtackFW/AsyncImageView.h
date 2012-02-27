@@ -9,6 +9,7 @@
 //acync image loader
 
 #import <UIKit/UIKit.h>
+#import "DataRequestRetryStrategy.h"
 
 /*
  Loads image from url. If cache is used then it first tries to use cache. If cache is broken by some reason (image has not been loaded), or
@@ -30,6 +31,7 @@
     BOOL asButton;
     id actionTarget;
     SEL actionSelector;
+    DataRequestRetryStrategy* retryStrategy;
 }
 
 enum AsyncImageSpinnerType

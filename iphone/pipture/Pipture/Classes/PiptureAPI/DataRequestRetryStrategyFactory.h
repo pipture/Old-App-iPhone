@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "DataRequestRetryStrategy.h"
 
-@interface DataRequestRetryStrategyFactory : NSObject {
-    DataRequestRetryStrategy* standardStrategy;
-}
+@interface DataRequestRetryStrategyFactory : NSObject
 
++(DataRequestRetryStrategy*)createStandardStrategy;
++(DataRequestRetryStrategy*)createEasyStrategy;
 
--(DataRequestRetryStrategy*)createStandardStrategy;
-
+//Disabled for now
+//+(DataRequestRetryStrategy*)createRetryForAllErrorsStrategy;
 @end

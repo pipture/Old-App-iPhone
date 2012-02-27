@@ -31,6 +31,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize model = model_;
 @synthesize homeViewController;
 @synthesize welcomeScreen;
+@synthesize networkErrorAlerter = networkErrorAlerter_;
 
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
@@ -50,6 +51,7 @@ static PiptureAppDelegate *instance;
 
 - (void)dealloc
 {
+    [networkErrorAlerter_ release];
     [wifiConnection release];
     [welcomeScreen release];
     [homeViewController release];
@@ -81,7 +83,8 @@ static PiptureAppDelegate *instance;
         model_ = [[PiptureModel alloc] init];
         busyView = [[BusyViewController alloc] initWithNibName:@"PurchaseBusyView" bundle:nil];
         purchases = [[InAppPurchaseManager alloc] init];
-        [purchases loadStore];
+        networkErrorAlerter_ = [[NetworkErrorAlerter alloc] init];
+        [purchases loadStore];        
     }
     return self;
 }
@@ -388,44 +391,6 @@ NSInteger networkActivityIndecatorCount;
     return YES;
 }
 
-- (void)processDataRequestError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate cancelTitle:(NSString*)btnTitle alertId:(int)alertId{
-
-    NSString * title = nil;
-    NSString * message = nil;
-    switch (error.errorCode)
-    {
-        case DRErrorNoInternet:
-            title = @"No Internet Connection";
-            message = @"Check your Internet connection!";
-            break;
-        case DRErrorCouldNotConnectToServer:            
-            title = @"Could not connect to server";
-            message = @"Check your Internet connection!";            
-            break;            
-        case DRErrorInvalidResponse:
-            title = @"Server communication problem";
-            message = @"Invalid response from server!";            
-            NSLog(@"Invalid response!");
-            break;
-        case DRErrorOther:
-            title = @"Server communication problem";
-            message = @"Unknown error!";                        
-            NSLog(@"Other request error!");
-            break;
-        case DRErrorTimeout:
-            title = @"Request timed out";
-            message = @"Check your Internet connection!";
-            break;
-    }
-    NSLog(@"%@", error.internalError);
-    
-    if (title != nil && message != nil) {
-        UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:delegate cancelButtonTitle:btnTitle otherButtonTitles:nil];
-        requestIssuesAlert.tag = alertId;
-        [requestIssuesAlert show];
-        [requestIssuesAlert release];
-    }
-}
 
 - (void)showError:(NSString *)title message:(NSString *)message {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -604,7 +569,7 @@ NSInteger networkActivityIndecatorCount;
 #pragma mark BalanceReceiver methods
 
 -(void)dataRequestFailed:(DataRequestError*)error {
-    [self processDataRequestError:error delegate:self cancelTitle:@"OK" alertId:42];    
+    [networkErrorAlerter_ showAlertForError:error delegate:self tag:GENERAL_ALERT cancelButtonTitle:@"OK" otherButtonTitles:nil]; 
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)newBalance {

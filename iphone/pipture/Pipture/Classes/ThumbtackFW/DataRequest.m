@@ -39,7 +39,11 @@ id<DataRequestManager> requestManager_;
                 NSLog(@"Next attempt in %d seconds", delay);
                 if (delay > 0) 
                 {
-                    [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(startExecute) userInfo:nil repeats:NO];
+                    if (progress) 
+                    {
+                        [progress showRequestProgress];
+                    }                        
+                    [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(startExecuteByTimer) userInfo:nil repeats:NO];
                 } else
                 {
                     [self startExecute];
@@ -79,6 +83,14 @@ id<DataRequestManager> requestManager_;
 - (id)initWithURL:(NSURL*)url requestManager:(id<DataRequestManager>)requestManager callback:(DataRequestCallback)callback
 {
     return [self initWithURL:url postParams:nil requestManager:requestManager callback:callback];
+}
+
+- (BOOL)startExecuteByTimer {
+    if (progress) 
+    {
+        [progress hideRequestProgress];//after timer
+    }        
+    return [self startExecute];
 }
 
 - (BOOL)startExecute 
