@@ -489,6 +489,9 @@ class SendMessage(models.Model):
     LinkType=  models.CharField(db_index=True, max_length=1, choices=LINKTYPE_CHOICES)
     UserName = models.CharField (max_length=200)
     ScreenshotURL = models.CharField (blank=True, null=True,  max_length=200)
+    ViewsCount = models.IntegerField()
+    AllowRemove = models.IntegerField(max_length=1)
+    AutoLock = models.IntegerField(max_length=1)
 
     class Meta:
         verbose_name = "Sent Message"
