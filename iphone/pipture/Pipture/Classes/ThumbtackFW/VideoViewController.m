@@ -191,6 +191,14 @@
     [nextPlayerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:NSKeyValueObservingOptionNew context:nil];
 }
 
+- (void)sendToGA:(NSString*)video {
+    if (self.timeslotId == nil || self.timeslotId.intValue == 0) {
+        TRACK_EVENT(@"Playing video from library", video);
+    } else {
+        TRACK_EVENT(@"Playing video from tv", video);
+    }
+}
+
 - (BOOL)playNextItem {
     if (nextPlayerItem != nil) {
         [player pause];
@@ -204,6 +212,8 @@
         [self createHandlers];
         
         if (nextPlayerItem.playbackLikelyToKeepUp) {
+            PlaylistItem * item = [playlist objectAtIndex:pos + 1];
+            [self sendToGA:item.videoName];
             [self setPlay];
         }
         pos++;
@@ -615,7 +625,7 @@
     
     nextPlayerItem = [[self createItem:playlistItem] retain];
     if (waitForNext) {
-        TRACK_EVENT(@"Start Video", playlistItem.videoName);
+        [self sendToGA:playlistItem.videoName];
         
         [self stopTimer];
         if (player == nil) {
