@@ -372,7 +372,7 @@ class PipUsers(models.Model):
     UserUID= models.CharField (max_length=36, primary_key=True, default=uuid.uuid1)
     Token = models.CharField (unique=True, max_length=36, default=uuid.uuid1)
     RegDate = models.DateField(auto_now_add=True)
-    Balance = models.DecimalField(default=Decimal('0.0000'), max_digits=10, decimal_places=4)
+    Balance = models.DecimalField(default=Decimal('0'), max_digits=10, decimal_places=0)
     
     def __unicode__(self):
         return "%s" % (self.UserUID)
@@ -391,7 +391,7 @@ class PipUsers(models.Model):
 class PurchaseItems(models.Model):
     PurchaseItemId = models.AutoField (primary_key=True)
     Description = models.CharField (max_length=100, editable=False)
-    Price = models.DecimalField( max_digits=7, decimal_places=4)
+    Price = models.DecimalField( max_digits=7, decimal_places=0)
     
     def __unicode__(self):
         return "%s" % (self.Description)
@@ -413,7 +413,7 @@ class UserPurchasedItems(models.Model):
     UserId = models.ForeignKey (PipUsers, editable=False)
     PurchaseItemId = models.ForeignKey (PurchaseItems, editable=False)
     ItemId = models.CharField (editable=False, max_length=100)
-    ItemCost = models.DecimalField(editable=False, max_digits=7, decimal_places=4)
+    ItemCost = models.DecimalField(editable=False, max_digits=7, decimal_places=0)
     
     def __unicode__(self):
         return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemCost)
@@ -433,6 +433,7 @@ class AppleProducts(models.Model):
     ProductId = models.CharField (verbose_name="Apple product Id", help_text='There is the Apple Product Id! Be carefully.',unique=True, max_length=255)
     Description = models.CharField (max_length=100)
     Price = models.DecimalField( max_digits=7, decimal_places=4)
+    ViewsCount = models.IntegerField()
     
     def __unicode__(self):
         return "%s" % (self.Description)
@@ -454,6 +455,7 @@ class Transactions(models.Model):
     AppleTransactionId = models.CharField (unique=True, max_length=36)
     Timestamp = models.DateField(auto_now_add=True)
     Cost = models.DecimalField(editable=False,  max_digits=7, decimal_places=4)
+    ViewsCount = models.IntegerField()
     
     def __unicode__(self):
         return "%s: %s - %s" % (self.Timestamp, self.UserId.UserUID, self.ProductId.Description)
@@ -543,23 +545,23 @@ class UserProfile(User):
     timezone = timezone = models.CharField(max_length=50, default='America/New_York', choices = US_TIMEZONES)
 
     def __str__(self):  
-          return "%s's profile" % self.user
+        return "%s's profile" % self.user
 
 def create_user_profile(sender, instance, created, **kwargs):  
     if created:  
-       profile, created = UserProfile.objects.get_or_create(user=instance)  
+        profile, created = UserProfile.objects.get_or_create(user=instance)  
 
 post_save.connect(create_user_profile, sender=User) 
 
 def install(**kwargs):
     
     if PurchaseItems.objects.count() == 0:
-        PurchaseItems(Description="WatchEpisode", Price=Decimal('0.0099')).save()   
-        PurchaseItems( Description="SendEpisode", Price=Decimal('0.0099')).save()
+        PurchaseItems(Description="WatchEpisode", Price=Decimal('1')).save()   
+        PurchaseItems( Description="SendEpisode", Price=Decimal('1')).save()
     
 
     if AppleProducts.objects.count() == 0:
-        AppleProducts(ProductId="com.pipture.Pipture.credits", Description = "Pipture credits.", Price=Decimal('0.99')).save()   
+        AppleProducts(ProductId="com.pipture.Pipture.credits", Description = "Pipture credits.", Price=Decimal('0.99'), ViewsCount=(100)).save()   
    
     return
 

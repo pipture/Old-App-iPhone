@@ -234,8 +234,9 @@ def getVideo (request):
         #SEND_EP = PurchaseItems.objects.get(Description="SendEpisode")
 
         
-        
-        is_purchased = UserPurchasedItems.objects.filter(UserId=purchaser, ItemId=episode_id, PurchaseItemId = WATCH_EP).count()
+        #remove is_purchased check. always purchase
+        #is_purchased = UserPurchasedItems.objects.filter(UserId=purchaser, ItemId=episode_id, PurchaseItemId = WATCH_EP).count()
+        is_purchased = False
         
         video_url, error = get_video_url_from_episode_or_trailer (id = episode_id, type_r = "E", video_q=video_quality)
         if error:
@@ -693,13 +694,13 @@ def buy (request):
         return HttpResponse (json.dumps(response))
     if apple_product.ProductId == "com.pipture.Pipture.credits":
         try:
-            t = Transactions(UserId=purchaser, ProductId=apple_product, Cost=Decimal(apple_product.Price * apple_product_quantity), AppleTransactionId=apple_transaction_id)
+            t = Transactions(UserId=purchaser, ProductId=apple_product, Cost=Decimal(apple_product.Price * apple_product_quantity), ViewsCount=apple_product.ViewsCount, AppleTransactionId=apple_transaction_id)
             t.save()
         except IntegrityError:
             response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Duplicate transaction Id."}
             return HttpResponse (json.dumps(response))
 
-        purchaser.Balance = Decimal (purchaser.Balance + Decimal(apple_product.Price * apple_product_quantity))
+        purchaser.Balance = Decimal (purchaser.Balance + Decimal(apple_product.ViewsCount * apple_product_quantity))
         purchaser.save()
         response["Balance"] = "%s" % (purchaser.Balance)
         return HttpResponse (json.dumps(response))
@@ -841,7 +842,7 @@ def sendMessage (request):
 
     #is_purchased = UserPurchasedItems.objects.filter(UserId=purchaser, ItemId=episode_id, PurchaseItemId = SEND_EP).count()
         
-    #if is_purchased:'''
+    #if is_purchased:
     u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, screenshot_url=(screenshot_url or ''))
     response['MessageURL'] = "/videos/%s/" % (u_url)
     response['Balance'] = "%s" % (purchaser.Balance)
