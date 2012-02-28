@@ -11,6 +11,7 @@
 #import "InAppPurchaseManager.h"
 #import "HomeViewController.h"
 #import "UILabel+ResizeForVerticalAlign.h"
+#import "MailComposerController.h"
 
 // Dispatch period in seconds
 static const NSInteger kGANDispatchPeriodSec = 10;
@@ -28,6 +29,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize window = _window;
 @synthesize homeNavigationController;
 @synthesize videoViewController;
+@synthesize mailComposerNavigationController;
 @synthesize model = model_;
 @synthesize homeViewController;
 @synthesize welcomeScreen;
@@ -71,6 +73,7 @@ static PiptureAppDelegate *instance;
     [libraryButton release];
     [videoViewController release];
     [backgroundImage release];
+    [mailComposerNavigationController release];
     [super dealloc];
 }
 
@@ -318,6 +321,60 @@ static PiptureAppDelegate *instance;
     
     [self.window bringSubviewToFront:tabView];
 }
+
+-(BOOL)mailComposerVisible {
+    UIViewController * visible = self.window.rootViewController;
+    BOOL vis = visible.class == [MailComposerNavigationController class];
+    NSLog(@"mailComposer visible: %d", vis);
+    return vis;
+}
+
+- (void)openMailComposer:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId fromViewController:(UIViewController*)viewController
+{
+
+    if (![self mailComposerVisible] && [MFMailComposeViewController canSendMail] && playlistItem)
+    {
+        CATransition *animation = [CATransition animation];
+        [animation setDuration:0.5];
+        [animation setType:kCATransitionMoveIn];
+        [animation setSubtype:kCATransitionFromTop];
+        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        
+        [mailComposerNavigationController prepareMailComposer:playlistItem timeslot:timeslotId prevViewController:self.window.rootViewController];
+        [self.window setRootViewController:mailComposerNavigationController];
+        [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+        
+    }
+                    
+//    if ([MFMailComposeViewController canSendMail] && playlistItem) {
+//        [mailComposerNavigationController prepareMailComposer:playlistItem timeslot:timeslotId];
+//        [viewController presentModalViewController:mailComposerNavigationController animated:YES];
+//
+//    } else {
+//        //TODO: can't send message
+//    }    
+}
+
+- (void)closeMailComposer
+{
+    
+    if ([self mailComposerVisible]) {
+        CATransition *animation = [CATransition animation];
+        [animation setDuration:0.5];
+        [animation setType:kCATransitionReveal];
+        [animation setSubtype:kCATransitionFromBottom];
+        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+
+        
+        [self.window setRootViewController:mailComposerNavigationController.prevViewController];
+        if (mailComposerNavigationController.prevViewController == homeNavigationController) {
+            [self.window bringSubviewToFront:tabView];
+        }
+        
+        [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];        
+    }
+}
+
 
 - (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId{
     

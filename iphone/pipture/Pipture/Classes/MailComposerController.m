@@ -130,7 +130,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 -(void)onCancel
 {
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
-    [self dismissModalViewControllerAnimated:YES];
+    //[self dismissModalViewControllerAnimated:YES];
+    [[PiptureAppDelegate instance] closeMailComposer];
     
     //[self.navigationController popViewControllerAnimated:YES];
 }
@@ -342,7 +343,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 {
     //TODO: process result
     [controller dismissModalViewControllerAnimated:NO];//first std mailer
-    [self dismissModalViewControllerAnimated:YES];//second our composer
+//    [self dismissModalViewControllerAnimated:YES];//second our composer
+    [[PiptureAppDelegate instance] closeMailComposer];
 }
 
 -(void)messageSiteURLreceived:(NSString*)url

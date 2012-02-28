@@ -11,7 +11,6 @@
 #import "VideoTitleViewController.h"
 #import "PlayerView.h"
 #import "PiptureModel.h"
-#import "MailComposerNavigationController.h"
 #import "MediaPlayer/MPVolumeView.h"
 
 @interface VideoViewController : UIViewController<VideoURLReceiver, PlaylistReceiver>
@@ -65,7 +64,6 @@
 @property (retain, nonatomic) IBOutlet UIButton *pauseButton;
 @property (retain, nonatomic) IBOutlet UIButton *prevButton;
 @property (retain, nonatomic) IBOutlet MPVolumeView *volumeView;
-@property (retain, nonatomic) IBOutlet MailComposerNavigationController *mailComposerNavigationController;
 
 @property (assign, nonatomic) BOOL simpleMode;
 

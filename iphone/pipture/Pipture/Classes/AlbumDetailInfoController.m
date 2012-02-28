@@ -193,13 +193,24 @@
     [button setImage:[UIImage imageNamed:SEND_VIDEO_PRESSED_ICON] forState:UIControlStateHighlighted];
     UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
     NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];
-    NSInteger row = [indexPath row];
-    Episode * episode = [album.episodes objectAtIndex:row/2];
     [videosTable selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
     
 }
 
-- (void)sendButtonTouchUp:(UIButton*)button withEvent:ev {
+
+- (void)sendButtonTouchUpInside:(UIButton*)button withEvent:(UIEvent*)ev {
+    [button setImage:[UIImage imageNamed:SEND_VIDEO_ICON] forState:UIControlStateHighlighted];    
+    UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
+    NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];        
+    NSInteger row = [indexPath row];
+    Episode * episode = [album.episodes objectAtIndex:row/2];
+    [[PiptureAppDelegate instance] openMailComposer:episode timeslotId:nil fromViewController:self];    
+    [videosTable deselectRowAtIndexPath:indexPath animated:NO];
+
+}
+
+- (void)sendButtonTouchUpOutside:(UIButton*)button withEvent:(UIEvent*)ev {
+
     [button setImage:[UIImage imageNamed:SEND_VIDEO_ICON] forState:UIControlStateHighlighted];    
     UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
     NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];    
@@ -255,8 +266,8 @@
             UIButton * sendButton = (UIButton*) [cell viewWithTag:6];
             
             [sendButton addTarget:self action:@selector(sendButtonTouchDown:withEvent:) forControlEvents:UIControlEventTouchDown];
-            [sendButton addTarget:self action:@selector(sendButtonTouchUp:withEvent:) forControlEvents:UIControlEventTouchUpInside];
-            [sendButton addTarget:self action:@selector(sendButtonTouchUp:withEvent:) forControlEvents:UIControlEventTouchUpOutside];
+            [sendButton addTarget:self action:@selector(sendButtonTouchUpInside:withEvent:) forControlEvents:UIControlEventTouchUpInside];
+            [sendButton addTarget:self action:@selector(sendButtonTouchUpOutside:withEvent:) forControlEvents:UIControlEventTouchUpOutside];
             
         }
         [self fillCell:[indexPath row] cell:cell];

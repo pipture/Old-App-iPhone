@@ -12,8 +12,9 @@
 
 @interface MailComposerNavigationController : UINavigationController
 
-- (void)prepareMailComposer:(PlaylistItem*)item timeslot:(NSNumber*)timeslotId;
+- (void)prepareMailComposer:(PlaylistItem*)item timeslot:(NSNumber*)timeslotId prevViewController:(UIViewController*)viewController;
 
 @property (retain, nonatomic) IBOutlet MailComposerController *mailComposer;
+@property (readonly, nonatomic) UIViewController* prevViewController;
 
 @end

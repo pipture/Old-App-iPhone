@@ -10,6 +10,7 @@
 
 @implementation MailComposerNavigationController
 @synthesize mailComposer;
+@synthesize prevViewController = _prevViewController;
 
 /*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -31,9 +32,10 @@
     [super dealloc];
 }
 
-- (void)prepareMailComposer:(PlaylistItem*)item timeslot:(NSNumber*)timeslotId {
+- (void)prepareMailComposer:(PlaylistItem*)item timeslot:(NSNumber*)timeslotId prevViewController:(UIViewController*)viewController {
     mailComposer.timeslotId = timeslotId;
     mailComposer.playlistItem = item;
+    _prevViewController = viewController;
 }
 
 @end
