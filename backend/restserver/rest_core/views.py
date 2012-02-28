@@ -742,7 +742,7 @@ def getBalance (request):
 def new_send_message (user, video_id, message, video_type, user_name, views_count, screenshot_url = ''):
     from restserver.pipture.models import SendMessage
     try:
-        s = SendMessage (UserId=user,Text=message,LinkId= video_id,LinkType=video_type, UserName=user_name, ScreenshotURL=screenshot_url, ViewsCount=views_count, AllowRemove=False, AutoLock=False)
+        s = SendMessage (UserId=user,Text=message,LinkId= video_id,LinkType=video_type, UserName=user_name, ScreenshotURL=screenshot_url, ViewsCount=0, ViewsLimit=views_count, AllowRemove=0, AutoLock=1)
         s.save()
     except Exception as e:
         print "%s" % (e)
@@ -843,7 +843,7 @@ def sendMessage (request):
     #is_purchased = UserPurchasedItems.objects.filter(UserId=purchaser, ItemId=episode_id, PurchaseItemId = SEND_EP).count()
         
     #if is_purchased:
-    u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, screenshot_url=(screenshot_url or ''))
+    u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
     response['MessageURL'] = "/videos/%s/" % (u_url)
     response['Balance'] = "%s" % (purchaser.Balance)
     return HttpResponse (json.dumps(response))
@@ -854,7 +854,7 @@ def sendMessage (request):
             new_p.save()
             purchaser.Balance = Decimal (purchaser.Balance - SEND_EP.Price)
             purchaser.save()
-            u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, screenshot_url=(screenshot_url or ''))
+            u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
             response['MessageURL'] = "/videos/%s/" % (u_url)
             response['Balance'] = "%s" % (purchaser.Balance)
             return HttpResponse (json.dumps(response))
