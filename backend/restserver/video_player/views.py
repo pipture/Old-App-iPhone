@@ -2,7 +2,6 @@ from django.template.context import RequestContext
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 import json
-from twisted.web.server import Session
 # list of mobile User Agents
 mobile_uas = [
     'w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
