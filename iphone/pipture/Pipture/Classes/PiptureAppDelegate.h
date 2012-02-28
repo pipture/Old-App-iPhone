@@ -34,7 +34,7 @@
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UINavigationControllerDelegate, UIAlertViewDelegate>
 {
-    float balance;
+    int balance;
     InAppPurchaseManager * purchases;
     NetworkConnection curConnection;
     NetworkConnectionInformer * wifiConnection;

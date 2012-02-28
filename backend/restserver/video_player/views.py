@@ -32,7 +32,24 @@ def mobileBrowser(request):
                 mobile_browser = True
  
     return mobile_browser
+
+import datetime
+import time
+from decimal import Decimal
+from base64 import b64encode
+from base64 import b64decode
+
+def restoreDateTime(b64str):
+    stored_datetime = b64decode(b64str)
+    return int(stored_datetime)
+
+def storeDateTime(sec):
+    return b64encode(str(sec))
  
+def todaySeconds():
+    utc_time = datetime.datetime.utcnow()
+    res_date = time.mktime(utc_time.timetuple())
+    return res_date
  
 def index(request, u_url):
     '''Render the index page'''
@@ -41,6 +58,18 @@ def index(request, u_url):
     from restserver.rest_core.views import get_video_url_from_episode_or_trailer
     
     response = {}
+    
+    try:
+        last_visiting = restoreDateTime(request.session["Pipture"+u_url])
+    except KeyError:
+        last_visiting = 0
+    
+    if last_visiting == 0:
+        last_visiting = int(todaySeconds()) 
+        request.session["Pipture"+u_url] = storeDateTime(last_visiting)
+        obsolete_url = True
+    else:
+        obsolete_url = (todaySeconds() - last_visiting) > 5*60 
     
     try:
         urs_instance = SendMessage.objects.get(Url=u_url)
@@ -56,12 +85,39 @@ def index(request, u_url):
     video_url = ''
     message_blocked = True
 
-    #TODO: check session id
-    if urs_instance.ViewsCount < urs_instance.ViewsLimit or urs_instance.ViewsLimit == -1:
+    if not obsolete_url:
         video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
         message_blocked = False
-        urs_instance.ViewsCount = urs_instance.ViewsCount + 1
-        urs_instance.save() 
+    else:
+        if urs_instance.ViewsCount < urs_instance.ViewsLimit or urs_instance.ViewsLimit == -1:
+            video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
+            message_blocked = False
+            from restserver.pipture.models import PipUsers
+    
+            try:
+                purchaser = urs_instance.UserId #PipUsers.objects.get(Token=urs_instance.UserId.)
+            except PipUsers.DoesNotExist:
+                response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+                return HttpResponse (json.dumps(response))
+    
+
+            from restserver.pipture.models import PurchaseItems
+            from restserver.pipture.models import UserPurchasedItems
+            SEND_EP = PurchaseItems.objects.get(Description="SendEpisode")
+            
+            #TODO: show inficcient funds message
+            if (purchaser.Balance - SEND_EP.Price) >= 0:
+                new_p = UserPurchasedItems(UserId=purchaser, ItemId=urs_instance.LinkId, PurchaseItemId = SEND_EP, ItemCost=SEND_EP.Price)
+                new_p.save()
+                purchaser.Balance = Decimal (purchaser.Balance - SEND_EP.Price)
+                purchaser.save()
+            else:
+                response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
+                return HttpResponse (json.dumps(response))
+ 
+            urs_instance.ViewsCount = urs_instance.ViewsCount + 1
+            urs_instance.save()
+            request.session["Pipture"+u_url] = storeDateTime(last_visiting)
     
     if mobileBrowser(request):
         template_h = 'video_mobile.html'

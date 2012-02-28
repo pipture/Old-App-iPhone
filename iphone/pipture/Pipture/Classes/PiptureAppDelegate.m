@@ -457,11 +457,11 @@ NSInteger networkActivityIndecatorCount;
 
 - (void)setBalance:(NSDecimalNumber*)newBalance {
     NSLog(@"New balance: %@", newBalance);
-    balance = [newBalance floatValue];
+    balance = [newBalance intValue];
     if (balance == 0) {
         buyButton.title = @"Buy";
     } else {
-        buyButton.title = [NSString stringWithFormat:@"$%0.4f", balance];
+        buyButton.title = [NSString stringWithFormat:@"%d views", balance];
     }
 }
 
