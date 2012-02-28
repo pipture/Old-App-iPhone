@@ -2,6 +2,7 @@ from django.template.context import RequestContext
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 import json
+from twisted.web.server import Session
 # list of mobile User Agents
 mobile_uas = [
     'w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
@@ -32,7 +33,23 @@ def mobileBrowser(request):
                 mobile_browser = True
  
     return mobile_browser
+
+import datetime
+import time
+from base64 import b64encode
+from base64 import b64decode
+
+def restoreDateTime(b64str):
+    stored_datetime = b64decode(b64str)
+    return int(stored_datetime)
+
+def storeDateTime(sec):
+    return b64encode(str(sec))
  
+def todaySeconds():
+    utc_time = datetime.datetime.utcnow()
+    res_date = time.mktime(utc_time.timetuple())
+    return res_date
  
 def index(request, u_url):
     '''Render the index page'''
@@ -41,6 +58,20 @@ def index(request, u_url):
     from restserver.rest_core.views import get_video_url_from_episode_or_trailer
     
     response = {}
+    
+    obsolete_url = False
+    last_visiting = 0
+    try:
+        last_visiting = restoreDateTime(request.session["Pipture"+u_url])
+    except KeyError:
+        last_visiting = 0
+    
+    if last_visiting == 0:
+        last_visiting = int(todaySeconds()) 
+        request.session["Pipture"+u_url] = storeDateTime(last_visiting)
+        obsolete_url = True
+    else:
+        obsolete_url = (todaySeconds() - last_visiting) > 5*60 
     
     try:
         urs_instance = SendMessage.objects.get(Url=u_url)
@@ -56,12 +87,16 @@ def index(request, u_url):
     video_url = ''
     message_blocked = True
 
-    #TODO: check session id
-    if urs_instance.ViewsCount < urs_instance.ViewsLimit or urs_instance.ViewsLimit == -1:
+    if not obsolete_url:
         video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
         message_blocked = False
-        urs_instance.ViewsCount = urs_instance.ViewsCount + 1
-        urs_instance.save() 
+    else:
+        if urs_instance.ViewsCount < urs_instance.ViewsLimit or urs_instance.ViewsLimit == -1:
+            video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
+            message_blocked = False
+            urs_instance.ViewsCount = urs_instance.ViewsCount + 1
+            urs_instance.save()
+            request.session["Pipture"+u_url] = storeDateTime(last_visiting) 
     
     if mobileBrowser(request):
         template_h = 'video_mobile.html'
