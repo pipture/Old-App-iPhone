@@ -202,7 +202,7 @@ class SpecialOrderingChangeList(ChangeList):
 class EpisodesAdmin(DeleteForbidden):
     
     fieldsets = [
-        ('Related objects:', {'fields': ['VideoId', 'LQVideoId', 'AlbumId']}),
+        ('Related objects:', {'fields': ['VideoId', 'AlbumId']}),
         ('Information:', {'fields': ['Title', 'EpisodeNo', 'Script', 'DateReleased',
                     'Subject', 'Keywords', 'SenderToReceiver']}),
         ('Pictures:', {'fields': ['CloseUpThumbnail', 'SquareThumbnail']}),
