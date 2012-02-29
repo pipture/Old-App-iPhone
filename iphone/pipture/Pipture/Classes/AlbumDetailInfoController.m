@@ -12,6 +12,15 @@
 #import "AsyncImageView.h"
 #import "UILabel+ResizeForVerticalAlign.h"
 
+#define SEND_VIDEO_PRESSED_ICON @"button-send-episode-press.png"
+#define SEND_VIDEO_ICON @"button-send-episode.png"
+
+//@interface EpisodeCell {
+//    Episode* episode;
+//}
+//-(id)initWithEpisode:(Episode*)episode;
+//@end
+
 @implementation AlbumDetailInfoController
 @synthesize subViewContainer;
 @synthesize buttonsPanel;
@@ -31,6 +40,8 @@
 @synthesize withNavigationBar;
 @synthesize timeslotId;
 @synthesize scheduleModel;
+
+
 
 #pragma mark - View lifecycle
 
@@ -178,6 +189,35 @@
         return 0;
 }
 
+- (void)sendButtonTouchDown:(UIButton*)button withEvent:ev {
+    [button setImage:[UIImage imageNamed:SEND_VIDEO_PRESSED_ICON] forState:UIControlStateHighlighted];
+    UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
+    NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];
+    [videosTable selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    
+}
+
+
+- (void)sendButtonTouchUpInside:(UIButton*)button withEvent:(UIEvent*)ev {
+    [button setImage:[UIImage imageNamed:SEND_VIDEO_ICON] forState:UIControlStateHighlighted];    
+    UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
+    NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];        
+    NSInteger row = [indexPath row];
+    Episode * episode = [album.episodes objectAtIndex:row/2];
+    [[PiptureAppDelegate instance] openMailComposer:episode timeslotId:nil fromViewController:self];    
+    [videosTable deselectRowAtIndexPath:indexPath animated:NO];
+
+}
+
+- (void)sendButtonTouchUpOutside:(UIButton*)button withEvent:(UIEvent*)ev {
+
+    [button setImage:[UIImage imageNamed:SEND_VIDEO_ICON] forState:UIControlStateHighlighted];    
+    UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
+    NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];    
+    [videosTable deselectRowAtIndexPath:indexPath animated:NO];
+}
+
+
 - (void)fillCell:(int)row cell:(UITableViewCell *)cell{
     Episode * slot = [album.episodes objectAtIndex:row/2];
     
@@ -188,14 +228,13 @@
         UILabel * fromto = (UILabel*)[cell viewWithTag:4];
         UILabel * counter = (UILabel*)[cell viewWithTag:5];
         
-        
         AsyncImageView* imageView = [asyncImageViews objectForKey:slot.closeUpThumbnail];
         if (imageView == nil) {
             imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, placeholder.frame.size.width, placeholder.frame.size.height)] autorelease];            
             [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small localStore:YES asButton:NO target:nil selector:nil];
             [asyncImageViews setObject:imageView forKey:slot.closeUpThumbnail];            
         }
-
+        
         UIView* cur = placeholder.subviews.count ? [placeholder.subviews objectAtIndex:0] : nil;
         if (imageView != cur) {
             [cur removeFromSuperview];
@@ -223,6 +262,13 @@
             [[NSBundle mainBundle] loadNibNamed:@"DetailTableItemView" owner:self options:nil];
             cell = videoTableCell;
             videoTableCell = nil;
+            
+            UIButton * sendButton = (UIButton*) [cell viewWithTag:6];
+            
+            [sendButton addTarget:self action:@selector(sendButtonTouchDown:withEvent:) forControlEvents:UIControlEventTouchDown];
+            [sendButton addTarget:self action:@selector(sendButtonTouchUpInside:withEvent:) forControlEvents:UIControlEventTouchUpInside];
+            [sendButton addTarget:self action:@selector(sendButtonTouchUpOutside:withEvent:) forControlEvents:UIControlEventTouchUpOutside];
+            
         }
         [self fillCell:[indexPath row] cell:cell];
     } else {

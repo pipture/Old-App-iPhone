@@ -15,6 +15,7 @@
 #import "WelcomeScreenManager.h"
 #import "NetworkConnectionInformer.h"
 #import "NetworkErrorAlerter.h"
+#import "MailComposerNavigationController.h"
 
 #define PLACEHOLDER1 @"default.png"
 
@@ -49,6 +50,8 @@
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
 @property (retain, nonatomic) IBOutlet VideoViewController *videoViewController;
+@property (retain, nonatomic) IBOutlet MailComposerNavigationController *mailComposerNavigationController;
+
 
 @property (readonly, nonatomic) PiptureModel * model;
 @property (retain, nonatomic) BusyViewController * busyView;
@@ -83,6 +86,8 @@
 - (BOOL)trackEvent:(NSString*)event :(NSString*)action;
 - (void)openHome;
 - (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId;//TODO: add video mode, playlist, e .t.c
+- (void)openMailComposer:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId fromViewController:(UIViewController*)viewController;
+- (void)closeMailComposer;
 
 - (void)showModalBusy:(void (^)(void))completion;
 - (void)dismissModalBusy;

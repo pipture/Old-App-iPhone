@@ -7,7 +7,6 @@
 //
 
 #import "VideoViewController.h"
-#import "MailComposerController.h"
 #import "PlaylistItem.h"
 #import "PiptureAppDelegate.h"
 
@@ -20,7 +19,6 @@
 @synthesize pauseButton;
 @synthesize prevButton;
 @synthesize volumeView;
-@synthesize mailComposerNavigationController;
 @synthesize simpleMode;
 @synthesize playlist;
 @synthesize videoTitleView;
@@ -458,7 +456,6 @@
     [self setVideoContainer:nil];
     [self setBusyContainer:nil];
     [self setVideoTitleView:nil];
-    [self setMailComposerNavigationController:nil];
     [self setNavigationItem:nil];
     [self setNavigationBar:nil];
     [self setVolumeView:nil];
@@ -551,11 +548,8 @@
 //The event handling method
 - (IBAction)sendAction:(id)sender{
     
-    if ([MFMailComposeViewController canSendMail] && pos >= 0 && pos < playlist.count) {
-        [mailComposerNavigationController prepareMailComposer:[playlist objectAtIndex:pos] timeslot:timeslotId];
-        [self presentModalViewController:mailComposerNavigationController animated:YES];
-    } else {
-        //TODO: can't send message
+    if (pos >= 0 && pos < playlist.count) {
+        [[PiptureAppDelegate instance] openMailComposer:[playlist objectAtIndex:pos] timeslotId:timeslotId fromViewController:self];
     }
 }
 
@@ -609,7 +603,6 @@
     [videoContainer release];
     [busyContainer release];
     [videoTitleView release];
-    [mailComposerNavigationController release];
     [navigationItem release];
     [navigationBar release];
     [volumeView release];
