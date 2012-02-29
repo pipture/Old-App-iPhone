@@ -340,9 +340,10 @@ static PiptureAppDelegate *instance;
         [animation setSubtype:kCATransitionFromTop];
         [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
         
-        [mailComposerNavigationController prepareMailComposer:playlistItem timeslot:timeslotId prevViewController:self.window.rootViewController];
+        UIViewController* prevViewController = self.window.rootViewController;
         [self.window setRootViewController:mailComposerNavigationController];
         [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+        [mailComposerNavigationController prepareMailComposer:playlistItem timeslot:timeslotId prevViewController:prevViewController];
         
     }
                     

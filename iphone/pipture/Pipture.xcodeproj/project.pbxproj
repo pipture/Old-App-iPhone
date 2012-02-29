@@ -215,6 +215,14 @@
 		8875179B148CAD3B00AFFFAC /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875178E148CAD3B00AFFFAC /* SBJsonUTF8Stream.m */; };
 		8875179C148CAD3B00AFFFAC /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751790148CAD3B00AFFFAC /* SBJsonWriter.m */; };
 		887517A7148CAE3400AFFFAC /* PiptureAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */; };
+		888943B514FDED8C00331008 /* radio-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943B114FDED8C00331008 /* radio-button.png */; };
+		888943B614FDED8C00331008 /* radio-button-pushed.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943B214FDED8C00331008 /* radio-button-pushed.png */; };
+		888943B714FDED8C00331008 /* radio-button-pushed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943B314FDED8C00331008 /* radio-button-pushed@2x.png */; };
+		888943B814FDED8C00331008 /* radio-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943B414FDED8C00331008 /* radio-button@2x.png */; };
+		888943BE14FDF47300331008 /* blue-button-bottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943BA14FDF47200331008 /* blue-button-bottom@2x.png */; };
+		888943BF14FDF47300331008 /* blue-button-bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943BB14FDF47200331008 /* blue-button-bottom.png */; };
+		888943C014FDF47300331008 /* blue-button-bottom-pushed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943BC14FDF47200331008 /* blue-button-bottom-pushed@2x.png */; };
+		888943C114FDF47300331008 /* blue-button-bottom-pushed.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943BD14FDF47200331008 /* blue-button-bottom-pushed.png */; };
 		88982B8814923FBD0012BEC2 /* DataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8514923FBD0012BEC2 /* DataRequest.m */; };
 		88982B8914923FBD0012BEC2 /* DataRequestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8714923FBD0012BEC2 /* DataRequestError.m */; };
 		889B379614A441CE000B03D2 /* UILabel+ResizeForVerticalAlign.m in Sources */ = {isa = PBXBuildFile; fileRef = 889B379514A441CE000B03D2 /* UILabel+ResizeForVerticalAlign.m */; };
@@ -499,6 +507,14 @@
 		88751790148CAD3B00AFFFAC /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureAppDelegate.h; sourceTree = "<group>"; };
 		887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureAppDelegate.m; sourceTree = "<group>"; };
+		888943B114FDED8C00331008 /* radio-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "radio-button.png"; sourceTree = "<group>"; };
+		888943B214FDED8C00331008 /* radio-button-pushed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "radio-button-pushed.png"; sourceTree = "<group>"; };
+		888943B314FDED8C00331008 /* radio-button-pushed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "radio-button-pushed@2x.png"; sourceTree = "<group>"; };
+		888943B414FDED8C00331008 /* radio-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "radio-button@2x.png"; sourceTree = "<group>"; };
+		888943BA14FDF47200331008 /* blue-button-bottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-button-bottom@2x.png"; sourceTree = "<group>"; };
+		888943BB14FDF47200331008 /* blue-button-bottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-button-bottom.png"; sourceTree = "<group>"; };
+		888943BC14FDF47200331008 /* blue-button-bottom-pushed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-button-bottom-pushed@2x.png"; sourceTree = "<group>"; };
+		888943BD14FDF47200331008 /* blue-button-bottom-pushed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-button-bottom-pushed.png"; sourceTree = "<group>"; };
 		88982B8414923FBD0012BEC2 /* DataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequest.h; sourceTree = "<group>"; };
 		88982B8514923FBD0012BEC2 /* DataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequest.m; sourceTree = "<group>"; };
 		88982B8614923FBD0012BEC2 /* DataRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequestError.h; sourceTree = "<group>"; };
@@ -790,6 +806,14 @@
 		38A7EC88148DDC03002120F3 /* png */ = {
 			isa = PBXGroup;
 			children = (
+				888943BA14FDF47200331008 /* blue-button-bottom@2x.png */,
+				888943BB14FDF47200331008 /* blue-button-bottom.png */,
+				888943BC14FDF47200331008 /* blue-button-bottom-pushed@2x.png */,
+				888943BD14FDF47200331008 /* blue-button-bottom-pushed.png */,
+				888943B114FDED8C00331008 /* radio-button.png */,
+				888943B214FDED8C00331008 /* radio-button-pushed.png */,
+				888943B314FDED8C00331008 /* radio-button-pushed@2x.png */,
+				888943B414FDED8C00331008 /* radio-button@2x.png */,
 				8812B9DC14FC890A0089A905 /* play-video@2x.png */,
 				8812B9DD14FC890A0089A905 /* button-send-episode@2x.png */,
 				8812B9DE14FC890A0089A905 /* button-send-episode.png */,
@@ -1220,6 +1244,14 @@
 				8812B9E514FC890A0089A905 /* button-send-episode-press@2x.png in Resources */,
 				8812B9E614FC890A0089A905 /* button-send-episode-press.png in Resources */,
 				8812B9E714FC890A0089A905 /* play-video.png in Resources */,
+				888943B514FDED8C00331008 /* radio-button.png in Resources */,
+				888943B614FDED8C00331008 /* radio-button-pushed.png in Resources */,
+				888943B714FDED8C00331008 /* radio-button-pushed@2x.png in Resources */,
+				888943B814FDED8C00331008 /* radio-button@2x.png in Resources */,
+				888943BE14FDF47300331008 /* blue-button-bottom@2x.png in Resources */,
+				888943BF14FDF47300331008 /* blue-button-bottom.png in Resources */,
+				888943C014FDF47300331008 /* blue-button-bottom-pushed@2x.png in Resources */,
+				888943C114FDF47300331008 /* blue-button-bottom-pushed.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

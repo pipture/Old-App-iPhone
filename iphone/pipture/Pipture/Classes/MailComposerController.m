@@ -10,6 +10,18 @@
 #import "PiptureAppDelegate.h"
 #import "PiptureModel.h"
 #import "AlbumScreenshotsController.h"
+#import "Trailer.h"
+
+#define RADIO_BUTTON_ON_IMAGE @"radio-button-pushed.png"
+#define RADIO_BUTTON_OFF_IMAGE @"radio-button.png"
+
+#define MESSAGE_EDITING_SCROLL_OFFSET 0
+#define FROM_EDITING_SCROLL_OFFSET 325
+#define VIEWS_EDITING_SCROLL_OFFSET 425
+
+#define MAX__NUMBER_OF_VIEWS 100
+#define DEFAULT_NUMBER_OF_VIEWS 10
+#define NOT_CONFIRMABLE_NUMBER_OF_VIEWS 10
 
 @implementation MailComposerController
 @synthesize picturePlaceholder;
@@ -20,8 +32,15 @@
 @synthesize layoutTableView;
 @synthesize screenshotName;
 @synthesize nameTextField;
+@synthesize toSectionView;
+@synthesize emptyCell;
+@synthesize numberOfViewsTextField;
 @synthesize timeslotId;
 @synthesize mailComposer;
+@synthesize restrictedViewsRadioButton;
+@synthesize infiniteViewsRadioButton;
+@synthesize maxViewsLabel;
+@synthesize infiniteRadioButtonsGroupView;
 
 
 
@@ -31,9 +50,19 @@ static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
+
+
 - (BOOL)isPlaceholderInMessage
 {
     return [messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER];
+}
+
+- (void)displayNumberOfViewsTextField {
+    numberOfViewsTextField.text = [NSString stringWithFormat:@"%d", numberOfViews];    
+}
+
+- (void)displayInfiniteViewsRadioButtons {    
+    [self onRadioButtonTap:(infiniteViews ? infiniteViewsRadioButton : restrictedViewsRadioButton)];
 }
 
 - (BOOL)isMessageEmpty
@@ -90,13 +119,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [super viewDidLoad];
         
     UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];        
-    self.navigationItem.leftBarButtonItem = cancelButton;
-    [cancelButton release];
-    
-
-    UIBarButtonItem* nextButton = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(nextButton:)];
-    self.navigationItem.rightBarButtonItem = nextButton;
-    [nextButton release];
+    self.navigationItem.rightBarButtonItem = cancelButton;
+    [cancelButton release];    
     
     self.navigationItem.title = @"New Message";
     
@@ -119,7 +143,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     lastScreenshotView = nil;
 
+    
     nameTextField.text = [[PiptureAppDelegate instance] getUserName];  
+    [numberOfViewsTextField setBorderStyle:UITextBorderStyleRoundedRect];
+    viewsNumberFormatter = [[NSNumberFormatter alloc] init];
+    [viewsNumberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -157,6 +186,93 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     }
 }
 
+- (IBAction)onRadioButtonTap:(id)sender {
+    UIButton *activeBtn, *inactiveBtn;
+    
+    if (sender == infiniteViewsRadioButton) {
+        activeBtn = infiniteViewsRadioButton;
+        inactiveBtn = restrictedViewsRadioButton;
+        infiniteViews = YES;
+        numberOfViewsTextField.hidden = YES;
+        maxViewsLabel.hidden = YES;
+    } else {        
+        activeBtn = restrictedViewsRadioButton;
+        inactiveBtn = infiniteViewsRadioButton;        
+        infiniteViews = NO;        
+        numberOfViewsTextField.hidden = NO;        
+        maxViewsLabel.hidden = NO;        
+    }
+    UIImage*img = [UIImage imageNamed:RADIO_BUTTON_ON_IMAGE];
+    [activeBtn setImage:img  forState:UIControlStateNormal];
+    img = [UIImage imageNamed:RADIO_BUTTON_OFF_IMAGE];
+    [inactiveBtn setImage:img forState:UIControlStateNormal];
+}
+
+-(void)sendMessageURLRequest {
+    [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:self.playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot userName:nameTextField.text viewsCount:[NSNumber numberWithInt:(infiniteViews? -1 : numberOfViews)] receiver:self];
+}
+
+//method to move the view up/down whenever the keyboard is shown/dismissed
+-(void)moveView:(NSInteger)offset
+{
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.2]; // if you want to slide up the view
+    
+    layoutTableView.contentOffset = CGPointMake(0, offset);
+    
+    [UIView commitAnimations];
+}
+
+
+- (IBAction)onConfirmMessageTap:(id)sender {
+    if ([self isPlaceholderInMessage] || 
+        [self isMessageEmpty])
+    {
+        [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
+        [messageEdit becomeFirstResponder];        
+        return;
+    }
+    
+    if ([nameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
+        [self moveView:FROM_EDITING_SCROLL_OFFSET];        
+        [nameTextField becomeFirstResponder];
+        return;
+    }
+    
+    [messageEdit resignFirstResponder];
+    [nameTextField resignFirstResponder];
+    [numberOfViewsTextField resignFirstResponder]; 
+
+    [[PiptureAppDelegate instance] putUserName:nameTextField.text];
+    
+    if (self.playlistItem) {
+        if (playlistItem_.class == [Trailer class] || numberOfViews <= NOT_CONFIRMABLE_NUMBER_OF_VIEWS)
+        {
+            [self sendMessageURLRequest];
+        } else
+        {
+            NSString*alertmessage = [NSString stringWithFormat:@"Debit %d views and open Mail?",numberOfViews,nil ];
+            
+            UIAlertView *alertView =[[UIAlertView alloc] initWithTitle:@"Confirm Message" message:alertmessage delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];  
+            [alertView show];
+            [alertView release];
+            
+        }
+        
+    }
+    
+}
+
+-(void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        [self sendMessageURLRequest];
+    }
+}
+
+-(void)setInfiniteRadiobutonsVisiblity {
+    infiniteRadioButtonsGroupView.hidden = !(playlistItem_.class == [Trailer class]);
+}
+
 -(PlaylistItem*)playlistItem
 {
     return playlistItem_;
@@ -183,6 +299,15 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         [screenshotImage_ release];
         
         screenshotImage_ = [defaultScreenshotImage_ retain];    
+        
+        numberOfViews = DEFAULT_NUMBER_OF_VIEWS;
+        infiniteViews = (playlistItem.class == [Trailer class]);
+        if (self.view) {
+            [self displayNumberOfViewsTextField];
+            [self displayInfiniteViewsRadioButtons];
+            [self setInfiniteRadiobutonsVisiblity];
+        }
+        
     }
 
     [it release];
@@ -194,32 +319,10 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 
-- (void)nextButton:(id)sender {
-    if ([self isPlaceholderInMessage] || 
-        [self isMessageEmpty])
-    {
-        [messageEdit becomeFirstResponder];
-        return;
-    }
-    
-    if ([nameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
-        [nameTextField becomeFirstResponder];
-        return;
-    }
-
-    [messageEdit resignFirstResponder];
-    [nameTextField resignFirstResponder];
-
-    if (self.playlistItem) {
-
-        [[PiptureAppDelegate instance] putUserName:nameTextField.text];
-        
-        [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:self.playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot userName:nameTextField.text viewsCount:[NSNumber numberWithInt:10] receiver:self];
-    }
-}
-
 - (void)viewDidUnload
 {
+    [self setRestrictedViewsRadioButton:nil];            
+    [self setInfiniteViewsRadioButton:nil];    
     [self setMessageEdit:nil];
     [self setPicturePlaceholder:nil];
     [self setScreenshotCell:nil];
@@ -228,27 +331,39 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self setScreenshotName:nil];
     [self setFromCell:nil];
     [self setNameTextField:nil];
+    [self setToSectionView:nil];
+    [self setEmptyCell:nil];
+    [self setNumberOfViewsTextField:nil];
+    [viewsNumberFormatter release];
+    viewsNumberFormatter = nil;
+    [self setMaxViewsLabel:nil];
+    [self setInfiniteRadioButtonsGroupView:nil];
     [super viewDidUnload];
 }
 
-//method to move the view up/down whenever the keyboard is shown/dismissed
--(void)moveView:(BOOL)move
+
+-(void)fixScrollOffsetIfNeeded
 {
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.2]; // if you want to slide up the view
-    
-    CGRect rect = layoutTableView.frame;
-    rect.origin.y = move?-90:0;
-    layoutTableView.frame = rect;
+        
+    NSInteger offset = layoutTableView.contentOffset.y;
+    NSInteger maxOffset = layoutTableView.contentSize.height - layoutTableView.frame.size.height;
+    if (offset > maxOffset) {
+        layoutTableView.contentOffset = CGPointMake(0, maxOffset);
+    }
     
     [UIView commitAnimations];
 }
 
+
+
+
 -(void)textViewDidBeginEditing:(UITextView *)sender
 {
     if ([sender isEqual:messageEdit])
-    {
-        [self moveView:NO];
+    {        
+        [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
         if ([self isPlaceholderInMessage]) {
             messageEdit.text = @"";
             messageEdit.textColor = [UIColor darkTextColor];
@@ -268,14 +383,49 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     if ([textField isEqual:nameTextField])
     {
-        [self moveView:YES];
+        [self moveView:FROM_EDITING_SCROLL_OFFSET];
+    } else if ([textField isEqual:numberOfViewsTextField]) {
+        [self moveView:VIEWS_EDITING_SCROLL_OFFSET];        
+    }
+}
+
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    if (textField == numberOfViewsTextField) {
+        NSString* text = textField.text;
+        NSString* newText = [text stringByReplacingCharactersInRange:range withString:string];
+        if ([newText length]) {
+            NSNumber* num = [viewsNumberFormatter numberFromString:newText];
+            return num && [num integerValue] <= MAX__NUMBER_OF_VIEWS;
+        } else {
+            return YES;
+        }
+    } else {
+        return YES;
+    }
+        
+}
+
+
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    if (textField == numberOfViewsTextField) {
+        if ([textField.text length]) {
+            NSNumber* num = [viewsNumberFormatter numberFromString:textField.text];
+            if (num) {
+                numberOfViews = [num integerValue];    
+                return;
+            }        
+        }
+        [self displayNumberOfViewsTextField]; //Not valid value, restore previous
     }
 }
 
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    if ([textField isEqual:nameTextField])
+    if ([textField isEqual:nameTextField] || [textField isEqual:numberOfViewsTextField])
     {
         [textField resignFirstResponder];
     }
@@ -286,7 +436,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (void)keyboardWillHide:(NSNotification *)notif
 {
     [self setEmptyMessagePlaceholderIfNeeded];
-    [self moveView:NO];
+    [self fixScrollOffsetIfNeeded];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -304,25 +454,31 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     self.navigationItem.hidesBackButton = YES;
     
+    [self displayNumberOfViewsTextField];
+    [self displayInfiniteViewsRadioButtons];
+    [self setInfiniteRadiobutonsVisiblity];
     [self displayScreenshot];
     [self setEmptyMessagePlaceholderIfNeeded];
     if ([self isPlaceholderInMessage])
     {
         self.layoutTableView.contentOffset = CGPointMake(0, 0);
     }
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
     
-    [self moveView:NO];
+    [self moveView:0];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil]; 
     
     [super viewWillDisappear:animated];
 }
 
 - (void)dealloc {
+    [restrictedViewsRadioButton release];            
+    [infiniteViewsRadioButton release];    
     [messageEdit release];
     [picturePlaceholder release];
     [screenshotCell release];
@@ -336,6 +492,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [fromCell release];
     [nameTextField release];
     [mailComposer release];
+    [toSectionView release];
+    [emptyCell release];
+    [numberOfViewsTextField release];
+    [viewsNumberFormatter release];
+    [maxViewsLabel release];
+    [infiniteRadioButtonsGroupView release];
     [super dealloc];
 }
 
@@ -408,8 +570,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 #pragma mark Table delegates
 
 #define MESSAGE_CELL_ROW 1
-#define FROM_CELL_ROW 2
-#define SCREENSHOT_CELL_ROW 3
+#define SCREENSHOT_CELL_ROW 2
+#define FROM_CELL_ROW 3
+
 
 - (NSInteger)calcCellRow:(NSIndexPath*)indexPath
 {
@@ -419,11 +582,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         return MESSAGE_CELL_ROW;
     }
     else if (section == 1 && row == 0) {
+        return SCREENSHOT_CELL_ROW;
+    }        
+    else if (section == 2 && row == 0) {
         return FROM_CELL_ROW;
     }
-    else if (section == 2 && row == 0) {
-        return SCREENSHOT_CELL_ROW;
-    }    
     else
     {
         return 0;
@@ -451,7 +614,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 3;
+    return 4;
 }
 
 //- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -474,7 +637,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         case SCREENSHOT_CELL_ROW:
             return screenshotCell;                    
         default:
-            return nil;
+            return emptyCell;
     }    
 }
 
@@ -486,13 +649,37 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         case 0:
             return nil;
         case 1:
-            return @"From";                                
+            return @"Screenshot selection";                
         case 2:
-            return @"Screenshot selection";                    
+            return @"From";                                                
+        case 3:
+            return @"To (# of viewers)";                                
         default:
             return nil;
     }        
 }
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    switch (section) {
+        case 3:
+            return toSectionView;
+            break;            
+        default:
+            return nil;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    switch (section) {
+        case 3:
+            return toSectionView.frame.size.height;
+            break;            
+        default:
+            return 0;
+    }
+    
+}
+
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -516,11 +703,16 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     {
         [messageEdit resignFirstResponder];
         [nameTextField resignFirstResponder];        
+        [numberOfViewsTextField resignFirstResponder];
     }
 }
 
 - (IBAction)onTableTap:(id)sender {
     [messageEdit resignFirstResponder];
     [nameTextField resignFirstResponder];
+    [numberOfViewsTextField resignFirstResponder];    
 }
+
+
+
 @end

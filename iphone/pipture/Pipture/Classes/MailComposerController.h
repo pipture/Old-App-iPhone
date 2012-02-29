@@ -13,14 +13,18 @@
 #import "VideoTitleViewController.h"
 #import "AsyncImageView.h"
 
-@interface MailComposerController : UIViewController <UITextViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate>{
+@interface MailComposerController : UIViewController <UITextViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate>{
 
     @private
     ScreenshotImage* screenshotImage_;
     ScreenshotImage* defaultScreenshotImage_;
     PlaylistItem* playlistItem_;
     AsyncImageView * lastScreenshotView;
+    BOOL infiniteViews;    
+    NSInteger numberOfViews;
     NSArray* screenshotImages_;    
+    NSNumberFormatter * viewsNumberFormatter;
+    
 }
 @property (retain, nonatomic) IBOutlet UIView *picturePlaceholder;
 @property (retain, nonatomic) IBOutlet UITextView *messageEdit;
@@ -30,8 +34,17 @@
 @property (retain, nonatomic) IBOutlet UITableView *layoutTableView;
 @property (retain, nonatomic) IBOutlet UILabel *screenshotName;
 @property (retain, nonatomic) IBOutlet UITextField *nameTextField;
+@property (retain, nonatomic) IBOutlet UIView *toSectionView;
+@property (retain, nonatomic) IBOutlet UITableViewCell *emptyCell;
+@property (retain, nonatomic) IBOutlet UITextField *numberOfViewsTextField;
 @property (retain, nonatomic) MFMailComposeViewController* mailComposer;
+@property (retain, nonatomic) IBOutlet UIButton *restrictedViewsRadioButton;
+@property (retain, nonatomic) IBOutlet UIButton *infiniteViewsRadioButton;
+@property (retain, nonatomic) IBOutlet UILabel *maxViewsLabel;
+@property (retain, nonatomic) IBOutlet UIView *infiniteRadioButtonsGroupView;
 
+- (IBAction)onRadioButtonTap:(id)sender;
+- (IBAction)onConfirmMessageTap:(id)sender;
 
 @property (retain, nonatomic) PlaylistItem * playlistItem;
 @property (assign, nonatomic) NSNumber * timeslotId;
