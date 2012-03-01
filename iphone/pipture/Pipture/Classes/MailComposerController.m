@@ -380,6 +380,10 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     }
 }
 
+-(void)textViewDidEndEditing:(UITextView *)textView {
+    messageEdit.text = [messageEdit.text stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+}
+
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     if ([textField isEqual:nameTextField])
     {
