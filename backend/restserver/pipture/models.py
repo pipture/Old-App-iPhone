@@ -25,8 +25,6 @@ from django.http import HttpResponse
 
 import uuid
 
-
-
 class Videos(models.Model):
     VideoId = models.AutoField (primary_key=True)
     VideoDescription = models.CharField (unique=True, max_length=100, verbose_name="Video description")
@@ -210,35 +208,31 @@ class TimeSlots(models.Model):
     def StartDateUTC(self):
         utc_time = datetime.datetime(self.StartDate.year, self.StartDate.month, self.StartDate.day)
         res_date = time.mktime(utc_time.timetuple())
-        return "%s" % (res_date) 
+        return res_date 
     
     @property
     def EndDateUTC(self):
-        utc_time = datetime.datetime(self.EndDate.year, self.EndDate.month, self.EndDate.day)
+        utc_time = datetime.datetime(self.EndDate.year, self.EndDate.month, self.EndDate.day, 23, 59, 59)
         res_date = time.mktime(utc_time.timetuple())
-        return "%s" % (res_date)  
+        return res_date  
     
     @property
     def StartTimeUTC(self):
         cur_date = datetime.date.today()
         utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, self.StartTime.hour, self.StartTime.minute, self.StartTime.second)
         res_date = time.mktime(utc_time.timetuple())
-        return "%s" % (res_date)
+        return res_date
 
     @property
     def EndTimeUTC(self):
         cur_date = datetime.date.today()
         utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, self.EndTime.hour, self.EndTime.minute, self.EndTime.second)
         res_date = time.mktime(utc_time.timetuple())
-        return "%s" % (res_date)
+        return res_date
 
     @property
     def complexName(self):
-        from restserver.pipture.middleware import threadlocals
-        from restserver.pipture.admin import from_utc_to_local_time
-        user = threadlocals.get_current_user()
-        user_tz = user.get_profile().timezone
-        return "%s, A%s, %s - %s" % (self.AlbumId.SeriesId.Title, self.AlbumId.Title, from_utc_to_local_time (user_tz, self.StartTime), from_utc_to_local_time (user_tz, self.EndTime))
+        return "%s, A%s, %s - %s" % (self.AlbumId.SeriesId.Title, self.AlbumId.Title, self.StartDate, self.EndDate)
 
     
     def __unicode__(self):
@@ -314,6 +308,7 @@ class TimeSlotVideos(models.Model):
     LinkId = models.IntegerField (db_index=True)
     #LinkId = models.ForeignKey (Videos)
     LinkType=  models.CharField(db_index=True, max_length=1, choices=LINKTYPE_CHOICES)
+    AutoMode = models.IntegerField(max_length=1)
     
     
     @staticmethod
