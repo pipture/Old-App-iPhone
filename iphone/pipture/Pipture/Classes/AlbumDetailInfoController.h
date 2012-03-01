@@ -11,6 +11,7 @@
 #import "PiptureModel.h"
 #import "DetailsTitleViewController.h"
 #import "ScheduleModel.h"
+#import "LibraryCardController.h"
 
 enum DetailAlbumViewType {
     DetailAlbumViewType_Videos = 20,
@@ -46,5 +47,8 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) IBOutlet UIView *trailerButtonEnhancer;
 @property (retain, nonatomic) IBOutlet UINavigationBar *navigationFake;
 @property (retain, nonatomic) IBOutlet UINavigationItem *navigationItemFake;
+@property (retain, nonatomic) IBOutlet UITableViewCell *emptyCell;
+
+@property (retain, nonatomic) LibraryCardController *cardSectionViewController;
 
 @end

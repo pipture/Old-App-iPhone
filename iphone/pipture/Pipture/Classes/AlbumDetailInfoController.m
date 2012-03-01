@@ -40,7 +40,8 @@
 @synthesize withNavigationBar;
 @synthesize timeslotId;
 @synthesize scheduleModel;
-
+@synthesize cardSectionViewController;
+@synthesize emptyCell;
 
 
 #pragma mark - View lifecycle
@@ -132,6 +133,9 @@
     [trailerButtonEnhancer addGestureRecognizer:tapTRec];
     [tapTRec release];
 
+    cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardB8" bundle:nil];
+    [cardSectionViewController loadView];
+    
     detailsReceived = NO;
     
     asyncImageViews = [[NSMutableDictionary alloc] init];    
@@ -154,10 +158,13 @@
     [self setNavigationFake:nil];
     [self setButtonsPanel:nil];
     [self setNavigationItemFake:nil];
+    [self setCardSectionViewController:nil];
+    [self setEmptyCell:nil];
     [super viewDidUnload];
 }
 
 - (void)dealloc {
+    [emptyCell release];
     [album release];
     [scheduleModel release];
     [subViewContainer release];
@@ -175,18 +182,8 @@
     [buttonsPanel release];
     [navigationItemFake release];
     [asyncImageViews release];
+    [cardSectionViewController release];
     [super dealloc];
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return (indexPath.row % 2 == 0)?86:2;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (album.episodes.count > 0)
-        return album.episodes.count*2;
-    else
-        return 0;
 }
 
 - (void)sendButtonTouchDown:(UIButton*)button withEvent:ev {
@@ -249,6 +246,10 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        return emptyCell;
+    }
+        
     static NSString * const kNorCellID = @"NorCellID";
     static NSString * const kDivCellID = @"DivCellID";
     
@@ -285,14 +286,59 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row %2 == 0) {
-        Episode * episode = [album.episodes objectAtIndex:indexPath.row / 2];
-        [[PiptureAppDelegate instance] getVideoURL:episode forTimeslotId:nil receiver:self];
-        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    if (indexPath.section != 0) {
+        if (indexPath.row %2 == 0) {
+            Episode * episode = [album.episodes objectAtIndex:indexPath.row / 2];
+            [[PiptureAppDelegate instance] getVideoURL:episode forTimeslotId:nil receiver:self];
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        }
+    }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
 
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    switch (section) {
+        case 0: return 1;
+        default:
+            if (album.episodes.count > 0)
+                return album.episodes.count*2;
+            else
+                return 0;
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    switch (indexPath.section) {
+        case 0:     return 0;
+        default:    return (indexPath.row % 2 == 0)?86:2;
+    }
+}
+
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 2;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    switch (section) {
+        case 0:
+            [cardSectionViewController refreshViewsInfo];
+            return cardSectionViewController.view;
+        default:
+            return nil;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    switch (section) {
+        case 0:
+            return cardSectionViewController.view.frame.size.height;
+        default:
+            return 0;
+    }
+    
+}
 
 #pragma mark VideoURLReceiver protocol
 
@@ -372,6 +418,11 @@
             [detailsButton setTitleShadowColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:.5] forState:UIControlStateNormal];
             [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-inactive.png"] forState:UIControlStateNormal];
             [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-active.png"] forState:UIControlStateHighlighted];
+
+            if (videosTable.contentOffset.y < 45) {
+                videosTable.contentOffset = CGPointMake(0, 45);
+            }
+            
             break;
     }
     viewType = [sender tag];
