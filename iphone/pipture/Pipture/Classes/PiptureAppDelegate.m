@@ -12,6 +12,7 @@
 #import "HomeViewController.h"
 #import "UILabel+ResizeForVerticalAlign.h"
 #import "MailComposerController.h"
+#import "Appirater.h"
 
 // Dispatch period in seconds
 static const NSInteger kGANDispatchPeriodSec = 10;
@@ -234,6 +235,7 @@ static PiptureAppDelegate *instance;
     [self.window makeKeyAndVisible];
     self.backgroundImage.hidden = YES;
     [self getHomeView];
+    [Appirater appLaunched:YES];
 }
 
 -(void)loginFailed
@@ -298,10 +300,12 @@ static PiptureAppDelegate *instance;
     wifiConnection = [[NetworkConnectionInformer testConnection] retain];
 	[wifiConnection startNotifier];
 	curConnection = [wifiConnection currentReachabilityStatus];
-
     return YES;
 }
 
+-(void)applicationWillEnterForeground:(UIApplication *)application {
+    [Appirater appEnteredForeground:YES];
+}
 
 
 + (PiptureAppDelegate*) instance {
