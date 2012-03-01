@@ -37,7 +37,7 @@
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
-    libraryCardController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardWithHorizontalText" bundle:nil];
+    libraryCardController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardB8" bundle:nil];
     [libraryCardController loadView];
     [scrollView addSubview:libraryCardController.view];
     CGRect rect = libraryCardController.view.frame;
@@ -131,6 +131,9 @@
     }
             
     scrollView.contentOffset = CGPointMake(0, visibility ? 0 : libraryCardHeight);    
+    if (!libraryCardVisible && libraryCardVisible != visibility)
+        [libraryCardController refreshViewsInfo];
+    
     libraryCardVisible = visibility;
     if (animation) {
         [UIView commitAnimations];

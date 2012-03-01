@@ -227,7 +227,7 @@
 		888943CB14FF41E500331008 /* active-librarycard.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943C714FF41E500331008 /* active-librarycard.png */; };
 		888943CC14FF41E500331008 /* inactive-librarycard@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943C814FF41E500331008 /* inactive-librarycard@2x.png */; };
 		888943CD14FF41E500331008 /* active-librarycard@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943C914FF41E500331008 /* active-librarycard@2x.png */; };
-		888943CF14FF43F600331008 /* LibraryCardWithHorizontalText.xib in Resources */ = {isa = PBXBuildFile; fileRef = 888943CE14FF43F600331008 /* LibraryCardWithHorizontalText.xib */; };
+		888943CF14FF43F600331008 /* LibraryCardB8.xib in Resources */ = {isa = PBXBuildFile; fileRef = 888943CE14FF43F600331008 /* LibraryCardB8.xib */; };
 		888943D214FF531E00331008 /* LibraryCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 888943D114FF531E00331008 /* LibraryCardController.m */; };
 		88982B8814923FBD0012BEC2 /* DataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8514923FBD0012BEC2 /* DataRequest.m */; };
 		88982B8914923FBD0012BEC2 /* DataRequestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8714923FBD0012BEC2 /* DataRequestError.m */; };
@@ -241,6 +241,8 @@
 		889F003B14A0ADBD00F8432A /* ScreenshotImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 889F003A14A0ADBD00F8432A /* ScreenshotImage.m */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
+		88E5098414FF9507003AFA14 /* LibraryCardA7.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88E5098214FF9507003AFA14 /* LibraryCardA7.xib */; };
+		88E5098514FF9507003AFA14 /* LibraryCardB3.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88E5098314FF9507003AFA14 /* LibraryCardB3.xib */; };
 		88FC5C0814922C2800C40DA1 /* NSDictionary+ValueHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0714922C2800C40DA1 /* NSDictionary+ValueHelper.m */; };
 		88FC5C0D14922C3600C40DA1 /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0A14922C3600C40DA1 /* Album.m */; };
 		88FC5C0E14922C3600C40DA1 /* Series.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0C14922C3600C40DA1 /* Series.m */; };
@@ -526,7 +528,7 @@
 		888943C714FF41E500331008 /* active-librarycard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "active-librarycard.png"; sourceTree = "<group>"; };
 		888943C814FF41E500331008 /* inactive-librarycard@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "inactive-librarycard@2x.png"; sourceTree = "<group>"; };
 		888943C914FF41E500331008 /* active-librarycard@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "active-librarycard@2x.png"; sourceTree = "<group>"; };
-		888943CE14FF43F600331008 /* LibraryCardWithHorizontalText.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryCardWithHorizontalText.xib; sourceTree = "<group>"; };
+		888943CE14FF43F600331008 /* LibraryCardB8.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryCardB8.xib; sourceTree = "<group>"; };
 		888943D014FF531E00331008 /* LibraryCardController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryCardController.h; sourceTree = "<group>"; };
 		888943D114FF531E00331008 /* LibraryCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCardController.m; sourceTree = "<group>"; };
 		88982B8414923FBD0012BEC2 /* DataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequest.h; sourceTree = "<group>"; };
@@ -549,6 +551,8 @@
 		88BE44B21483A341002D30ED /* PiptureModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModelTest.m; sourceTree = "<group>"; };
 		88D84207147B626C00E47EF8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		88D84208147B626C00E47EF8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		88E5098214FF9507003AFA14 /* LibraryCardA7.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryCardA7.xib; sourceTree = "<group>"; };
+		88E5098314FF9507003AFA14 /* LibraryCardB3.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryCardB3.xib; sourceTree = "<group>"; };
 		88FC5C0614922C2800C40DA1 /* NSDictionary+ValueHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+ValueHelper.h"; sourceTree = "<group>"; };
 		88FC5C0714922C2800C40DA1 /* NSDictionary+ValueHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+ValueHelper.m"; sourceTree = "<group>"; };
 		88FC5C0914922C3600C40DA1 /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Album.h; sourceTree = "<group>"; };
@@ -796,7 +800,9 @@
 				382D9C2C148E178300005F16 /* snippet.html */,
 				3881FBE914A9C3A1008DC616 /* WelcomeScreenView.xib */,
 				3829907614AB06830003A202 /* HomeItemViewController.xib */,
-				888943CE14FF43F600331008 /* LibraryCardWithHorizontalText.xib */,
+				88E5098314FF9507003AFA14 /* LibraryCardB3.xib */,
+				888943CE14FF43F600331008 /* LibraryCardB8.xib */,
+				88E5098214FF9507003AFA14 /* LibraryCardA7.xib */,
 			);
 			path = Resources;
 			sourceTree = SOURCE_ROOT;
@@ -1286,7 +1292,9 @@
 				888943CB14FF41E500331008 /* active-librarycard.png in Resources */,
 				888943CC14FF41E500331008 /* inactive-librarycard@2x.png in Resources */,
 				888943CD14FF41E500331008 /* active-librarycard@2x.png in Resources */,
-				888943CF14FF43F600331008 /* LibraryCardWithHorizontalText.xib in Resources */,
+				888943CF14FF43F600331008 /* LibraryCardB8.xib in Resources */,
+				88E5098414FF9507003AFA14 /* LibraryCardA7.xib in Resources */,
+				88E5098514FF9507003AFA14 /* LibraryCardB3.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

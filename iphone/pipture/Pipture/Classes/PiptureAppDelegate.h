@@ -75,6 +75,7 @@
 
 - (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo tag:(int)screenId delegate:(id<WelcomeScreenProtocol>)delegate;
 
+- (void)buyViews;
 - (void)setBalance:(NSDecimalNumber*)newBalance;
 - (float)getBalance;
 - (void)updateBalance;
