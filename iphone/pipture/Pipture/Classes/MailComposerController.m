@@ -11,14 +11,13 @@
 #import "PiptureModel.h"
 #import "AlbumScreenshotsController.h"
 #import "Trailer.h"
-#import "LibraryCardController.h"
 
 #define RADIO_BUTTON_ON_IMAGE @"radio-button-pushed.png"
 #define RADIO_BUTTON_OFF_IMAGE @"radio-button.png"
 
-#define MESSAGE_EDITING_SCROLL_OFFSET 0
-#define FROM_EDITING_SCROLL_OFFSET 325
-#define VIEWS_EDITING_SCROLL_OFFSET 425
+#define MESSAGE_EDITING_SCROLL_OFFSET 45
+#define FROM_EDITING_SCROLL_OFFSET 370
+#define VIEWS_EDITING_SCROLL_OFFSET 470
 
 #define MAX__NUMBER_OF_VIEWS 100
 #define DEFAULT_NUMBER_OF_VIEWS 10
@@ -114,6 +113,17 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 #pragma mark - View lifecycle
 
+//method to move the view up/down whenever the keyboard is shown/dismissed
+-(void)moveView:(NSInteger)offset
+{
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.2]; // if you want to slide up the view
+    
+    layoutTableView.contentOffset = CGPointMake(0, offset);
+    
+    [UIView commitAnimations];
+}
+
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
@@ -151,7 +161,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     viewsNumberFormatter = [[NSNumberFormatter alloc] init];
     [viewsNumberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
     
-    cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardWithHorizontalText" bundle:nil];
+    cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardA7" bundle:nil];
     [cardSectionViewController loadView];
    
 }
@@ -216,18 +226,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 -(void)sendMessageURLRequest {
     [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:self.playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot userName:nameTextField.text viewsCount:[NSNumber numberWithInt:(infiniteViews? -1 : numberOfViews)] receiver:self];
 }
-
-//method to move the view up/down whenever the keyboard is shown/dismissed
--(void)moveView:(NSInteger)offset
-{
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0.2]; // if you want to slide up the view
-    
-    layoutTableView.contentOffset = CGPointMake(0, offset);
-    
-    [UIView commitAnimations];
-}
-
 
 - (IBAction)onConfirmMessageTap:(id)sender {
     if ([self isPlaceholderInMessage] || 
@@ -474,13 +472,15 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         self.layoutTableView.contentOffset = CGPointMake(0, 0);
     }
     
+    [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
     
-    [self moveView:0];
+    [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil]; 
     
     [super viewWillDisappear:animated];
@@ -674,6 +674,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     switch (section) {
         case 0:
+            [cardSectionViewController refreshViewsInfo];
             return cardSectionViewController.view;
         case 4:
             return toSectionView;

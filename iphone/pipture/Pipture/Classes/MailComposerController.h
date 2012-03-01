@@ -12,6 +12,7 @@
 #import "ScreenshotImage.h"
 #import "VideoTitleViewController.h"
 #import "AsyncImageView.h"
+#import "LibraryCardController.h"
 
 @interface MailComposerController : UIViewController <UITextViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate>{
 
@@ -43,7 +44,7 @@
 @property (retain, nonatomic) IBOutlet UIButton *infiniteViewsRadioButton;
 @property (retain, nonatomic) IBOutlet UILabel *maxViewsLabel;
 @property (retain, nonatomic) IBOutlet UIView *infiniteRadioButtonsGroupView;
-@property (retain, nonatomic) UIViewController *cardSectionViewController;
+@property (retain, nonatomic) LibraryCardController *cardSectionViewController;
 
 - (IBAction)onRadioButtonTap:(id)sender;
 - (IBAction)onConfirmMessageTap:(id)sender;
