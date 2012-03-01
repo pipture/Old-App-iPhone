@@ -19,6 +19,12 @@
     text-decoration: none;
     text-indent: 0px;
     text-transform: none;
+    
+    overflow: hidden;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 480px;
 }
 .style {
     color: rgb(203, 203, 203);
@@ -29,6 +35,11 @@
     color: rgb(255, 255, 255);
     line-height: 20px;
     opacity: 1.00;
+    overflow: hidden;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 105px;
 }
 .paragraph_style_1 {
     color: rgb(203, 203, 203);

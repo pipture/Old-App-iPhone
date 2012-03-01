@@ -17,11 +17,14 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 @staff_member_required
 def index (request):
-    data = {'timeslots': TimeSlots.objects.all(),
+    response = {}
+    response["Error"] = {"ErrorCode": "888", "ErrorDescription": "Unknown API method."}
+    return HttpResponse (json.dumps(response))
+    '''data = {'timeslots': TimeSlots.objects.all(),
             'albums': Albums.objects.all(),
             'trailers': Trailers.objects.all()}
     return render_to_response('TimeSlotManage.html', data,
-                                       context_instance=RequestContext(request))        
+                                       context_instance=RequestContext(request))'''        
 
 #----------------actual----------------------------
 
@@ -84,7 +87,7 @@ def get_timeslot_videos(request):
         result = []
         videos = TimeSlotVideos.objects.filter(TimeSlotsId=timeslot).order_by('Order')
         for video in videos:
-            video_slot = {'order': video.Order, 'id': video.LinkId, 'type': video.LinkType }
+            video_slot = {'order': video.Order, 'id': video.LinkId, 'type': video.LinkType, 'auto': video.AutoMode }
             if video.LinkType == "T":
                 video_slot ['title'] = get_trailer_title_by_id (video.LinkId)
             elif video.LinkType == "E":
@@ -143,7 +146,7 @@ def set_timeslot (request):
             return HttpResponse("There is no : %s timeslot." % (timeslot))
         TimeSlotVideos.objects.filter(TimeSlotsId=timeslot).delete()
         for videos in timeslot_videos:
-            video = TimeSlotVideos(TimeSlotsId=timeslot, Order=int(videos['Order']), LinkId = int(videos['LinkId']), LinkType=videos['LinkType'])
+            video = TimeSlotVideos(TimeSlotsId=timeslot, Order=int(videos['Order']), LinkId = int(videos['LinkId']), LinkType=videos['LinkType'], AutoMode=videos['AutoMode'])
             try:
                 video.save()
             except Exception as e:

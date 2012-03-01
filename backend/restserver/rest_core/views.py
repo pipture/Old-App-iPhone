@@ -63,9 +63,13 @@ def getTimeslots (request):
         '''timeslots = TimeSlots.objects.select_related(depth=2).filter(Q(EndTime__gt=yesterday,
                                 EndTime__lt=tomorrow)|Q(StartTime__gt=yesterday,
                                 StartTime__lt=tomorrow)).order_by('StartTime')'''
-        timeslots = TimeSlots.objects.select_related(depth=2).filter(Q(EndDate__gt=yesterday,
+        #EndDate__range=(start_date, end_date)
+        
+        '''timeslots = TimeSlots.objects.select_related(depth=2).filter(Q(EndDate__gt=yesterday,
                                 EndDate__lt=tomorrow)|Q(StartDate__gt=yesterday,
-                                StartDate__lt=tomorrow)).order_by('StartTime')
+                                StartDate__lt=tomorrow)).order_by('StartTime')'''
+                                
+        timeslots = TimeSlots.objects.select_related(depth=2).filter(EndDate__gte=yesterday, StartDate__lte=tomorrow).order_by('StartTime')                        
         
                                 
     except Exception as e:
@@ -76,8 +80,8 @@ def getTimeslots (request):
     for ts in timeslots:
         slot = {}
         slot["TimeSlotId"] = ts.TimeSlotsId
-        slot["StartTime"] = ts.StartTimeUTC 
-        slot["EndTime"] = ts.EndTimeUTC
+        slot["StartTime"] = str(ts.StartTimeUTC) 
+        slot["EndTime"] =str(ts.EndTimeUTC)
         slot["ScheduleDescription"] = ts.ScheduleDescription
         slot["Title"] = ts.AlbumId.SeriesId.Title
         slot["AlbumId"] = ts.AlbumId.AlbumId
@@ -190,14 +194,33 @@ def getVideo (request):
         return HttpResponse (json.dumps(response))
 
     elif timeslot_id:
-
         if episode_id:
             video_type = "E"
+            '''try:
+                timeslot = TimeSlots.objects.get(TimeSlotsId=timeslot_id)
+            except Exception as e:
+                response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is no timeslot with id %s" % (timeslot_id)}
+                return HttpResponse (json.dumps(response))
+        
+            try:
+                timeslotv = TimeSlotVideos.objects.get(TimeSlotsId=timeslot_id, LinkId=episode_id)
+            except TimeSlotVideos.DoesNotExist as e: #may be it is autotimeslot
+                
+                response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is no timeslotvideo with id %s" % (timeslot_id)}
+                return HttpResponse (json.dumps(response))
+        
+            if timeslotv.AutoMode == 0:
+                containid = TimeSlotVideos.is_contain_id (timeslot_id, episode_id, video_type)
+            else:
+                containid = get_autoepisode(episode_id, timeslot.StartDate) != 0'''
+            #Removed for support auto-episodes 
+                
         else:
             video_type = "T"
-        
-        if TimeSlots.timeslot_is_current(timeslot_id) and TimeSlotVideos.is_contain_id (timeslot_id, episode_id or trailer_id, video_type):
-            video_url, error = get_video_url_from_episode_or_trailer (id = episode_id or trailer_id, type_r = video_type)
+            #containid = TimeSlotVideos.is_contain_id (timeslot_id, trailer_id, video_type)
+        containid = True
+        if TimeSlots.timeslot_is_current(timeslot_id) and containid:
+            video_url, error = get_video_url_from_episode_or_trailer (id = episode_id or trailer_id, type_r = video_type, video_q=video_quality)
             if error:
                 response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
                 return HttpResponse (json.dumps(response))
@@ -259,6 +282,18 @@ def getVideo (request):
                     response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
                     return HttpResponse (json.dumps(response))
     
+def get_autoepisode(StartEpisodeId, start_time):
+    from restserver.pipture.models import Episodes
+
+    d1 = datetime.datetime.now();
+    delta = d1 - datetime.datetime(start_time.year, start_time.month, start_time.day)
+
+    video = Episodes.objects.select_related(depth=2).get (EpisodeId=StartEpisodeId)
+    episodes = Episodes.objects.filter(AlbumId=video.AlbumId).extra(order_by = ['EpisodeNo'])
+    if len(episodes) > delta.days:
+        return episodes[delta.days]
+    
+    return 0
 
 def getPlaylist (request):
     keys = request.GET.keys()
@@ -327,24 +362,28 @@ def getPlaylist (request):
 
         elif timeslot_video.LinkType == "E":
             try:
-                video = Episodes.objects.select_related(depth=2).get (EpisodeId=timeslot_video.LinkId) 
+                if timeslot_video.AutoMode == 0:
+                    video = Episodes.objects.select_related(depth=2).get (EpisodeId=timeslot_video.LinkId)
+                else:
+                    video = get_autoepisode(StartEpisodeId=timeslot_video.LinkId, start_time=timeslot.StartDate)
             except Exception as e:
                 response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is no episode with id %s" % (timeslot_video.LinkId)}
                 return HttpResponse (json.dumps(response))
             else:
-                response["Videos"].append({"Type": "Episode", "EpisodeId": video.EpisodeId, 
-                                           "Title": video.Title, "Script": video.Script,
-                                           "DateReleased": local_date_time_date_time_to_UTC_sec(video.DateReleased), "Subject": video.Subject,
-                                           "SenderToReceiver": video.SenderToReceiver, 
-                                           "EpisodeNo": video.EpisodeNo,
-                                           "CloseUpThumbnail": (video.CloseUpThumbnail._get_url()).split('?')[0],
-                                           
-                                           'AlbumTitle': video.AlbumId.Title,
-                                           'SeriesTitle': video.AlbumId.SeriesId.Title,
-                                           'AlbumSeason': video.AlbumId.Season,
-                                           'AlbumSquareThumbnail': (video.AlbumId.SquareThumbnail._get_url()).split('?')[0],
-
-                                           "SquareThumbnail": (video.SquareThumbnail._get_url()).split('?')[0]})
+                if (video != 0):
+                    response["Videos"].append({"Type": "Episode", "EpisodeId": video.EpisodeId, 
+                                               "Title": video.Title, "Script": video.Script,
+                                               "DateReleased": local_date_time_date_time_to_UTC_sec(video.DateReleased), "Subject": video.Subject,
+                                               "SenderToReceiver": video.SenderToReceiver, 
+                                               "EpisodeNo": video.EpisodeNo,
+                                               "CloseUpThumbnail": (video.CloseUpThumbnail._get_url()).split('?')[0],
+                                               
+                                               'AlbumTitle': video.AlbumId.Title,
+                                               'SeriesTitle': video.AlbumId.SeriesId.Title,
+                                               'AlbumSeason': video.AlbumId.Season,
+                                               'AlbumSquareThumbnail': (video.AlbumId.SquareThumbnail._get_url()).split('?')[0],
+    
+                                               "SquareThumbnail": (video.SquareThumbnail._get_url()).split('?')[0]})
     return HttpResponse (json.dumps(response))
 
 def get_album_status (album, get_date_only=False):
