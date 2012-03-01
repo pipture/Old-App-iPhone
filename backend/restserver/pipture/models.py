@@ -30,7 +30,8 @@ import uuid
 class Videos(models.Model):
     VideoId = models.AutoField (primary_key=True)
     VideoDescription = models.CharField (unique=True, max_length=100, verbose_name="Video description")
-    VideoUrl = S3EnabledFileField (upload_to=u'documents/', verbose_name="Upload video here")
+    VideoUrl = S3EnabledFileField (upload_to=u'documents/', verbose_name="Upload high quality video here")
+    VideoLQUrl = S3EnabledFileField (upload_to=u'documents/', verbose_name="Upload low quality video here")
 
     def __unicode__(self):
         return "%s" % (self.VideoDescription)
@@ -51,8 +52,7 @@ class Videos(models.Model):
             
 class Trailers(models.Model):
     TrailerId = models.AutoField(primary_key=True)
-    VideoId = models.ForeignKey (Videos, verbose_name="High quality video for the trailer")
-    LQVideoId = models.ForeignKey (Videos, related_name='TLQVideoId', verbose_name="Low quality video for the trailer")
+    VideoId = models.ForeignKey (Videos, verbose_name="Video for the trailer")
     Title = models.CharField (unique=True, max_length=100)
     Line1 = models.CharField (blank=True, max_length=500)
     Line2 = models.CharField (blank=True, max_length=500)
@@ -61,7 +61,6 @@ class Trailers(models.Model):
     @property
     def complexName(self):
         return "%s, %s, %s" % (self.Title, self.Line1, self.Line2 )
-
 
     def __unicode__(self):
         return self.complexName
@@ -104,11 +103,10 @@ class Albums(models.Model):
     AlbumId = models.AutoField (primary_key=True)
     SeriesId = models.ForeignKey (Series, verbose_name='Series for Album')
     TrailerId = models.ForeignKey (Trailers, verbose_name='Trailer for Album')
-    Description = models.CharField (max_length=500)
+    Description = models.CharField (max_length=1000)
     Season = models.CharField (max_length=100)
     Title = models.CharField (max_length=100)
     Rating = models.CharField (max_length=100)
-    Description = models.CharField (max_length=500)
     Credits = models.CharField (blank=True, max_length=500)
     Cover = S3EnabledFileField (upload_to=u'documents/', verbose_name='Landscape') 
     Thumbnail = S3EnabledFileField (upload_to=u'documents/', verbose_name='Cover Thumbnail')
@@ -162,8 +160,7 @@ class AlbumScreenshotGallery(models.Model):
 class Episodes(models.Model):
     EpisodeId = models.AutoField (primary_key=True)
     Title = models.CharField (unique=True, max_length=100)
-    VideoId = models.ForeignKey (Videos, verbose_name='High quality video for episode')
-    LQVideoId = models.ForeignKey (Videos, related_name='ELQVideoId', verbose_name='Low quality video for episode')
+    VideoId = models.ForeignKey (Videos, verbose_name='Video for episode')
     AlbumId = models.ForeignKey (Albums, verbose_name='Album for episode')
     CloseUpThumbnail = S3EnabledFileField (verbose_name='Video Thumbnail', upload_to=u'documents/')
     SquareThumbnail = S3EnabledFileField (verbose_name='Screenshot', upload_to=u'documents/')

@@ -126,20 +126,14 @@ def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
             video_url_i = video.VideoId.VideoUrl
         else:
             try:
-                video_url_i = video.LQVideoId.VideoUrl
+                video_url_i = video.VideoId.VideoLQUrl
             except Exception, e:
                 video_url_i = video.VideoId.VideoUrl
         video_url= (video_url_i._get_url()).split('?')[0]
         return video_url, None
     else:
         video_instance = 0
-        if video_q == 0:
-            video_instance = video.VideoId
-        else:
-            try:
-                video_instance = video.LQVideoId
-            except Exception, e:
-                video_instance = video.VideoId
+        video_instance = video.VideoId
         return video_instance, None
 
 def getVideo (request):

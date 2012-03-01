@@ -202,7 +202,7 @@ class SpecialOrderingChangeList(ChangeList):
 class EpisodesAdmin(DeleteForbidden):
     
     fieldsets = [
-        ('Related objects:', {'fields': ['VideoId', 'LQVideoId', 'AlbumId']}),
+        ('Related objects:', {'fields': ['VideoId', 'AlbumId']}),
         ('Information:', {'fields': ['Title', 'EpisodeNo', 'Script', 'DateReleased',
                     'Subject', 'Keywords', 'SenderToReceiver']}),
         ('Pictures:', {'fields': ['CloseUpThumbnail', 'SquareThumbnail']}),
@@ -216,7 +216,7 @@ class EpisodesAdmin(DeleteForbidden):
 
     def save_model(self, request, obj, form, change):
         user_tz = request.user.get_profile().timezone
-        obj.DateReleased = from_local_to_utc (user_tz, obj.DateReleased)
+        obj.DateReleased = from_local_to_utc_datetime(user_tz, obj.DateReleased)
         obj.save()
     
     def get_form(self, request, obj=None, **kwargs):
