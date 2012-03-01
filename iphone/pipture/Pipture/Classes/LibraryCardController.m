@@ -8,11 +8,7 @@
 
 #import "LibraryCardController.h"
 #import "UILabel+ResizeForVerticalAlign.h"
-
-#define UIColorFromRGB(rgbValue) [UIColor \
-colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
-green:((float)((rgbValue & 0xFF00) >> 8))/255.0 \
-blue:((float)(rgbValue & 0xFF))/255.0 alpha:((float)((rgbValue & 0xFF000000) >> 24))/255.0]
+#import "PiptureAppDelegate.h"
 
 @implementation LibraryCardController
 
@@ -29,6 +25,7 @@ NSString* const inactiveImage = @"inactive-librarycard.png";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];
     }
     return self;
 }
@@ -41,34 +38,41 @@ NSString* const inactiveImage = @"inactive-librarycard.png";
     // Release any cached data, images, etc that aren't in use.
 }
 
-#pragma mark - View lifecycle
+-(void)setNumberOfViews:(NSInteger)numberOfViews {
+    [libraryCardButton setBackgroundImage:[UIImage imageNamed:(numberOfViews > 0 ? activeImage : inactiveImage )] forState:UIControlStateNormal];
 
+    NSString* text = [NSString stringWithFormat:@"%d",numberOfViews,nil];
+    if (prompt1Label.frame.origin.y == prompt2Label.frame.origin.y) {
+        // Need to move prompt 2 and resize number of views
+
+        NSInteger newwidth = [text sizeWithFont:numberOfViewsLabel.font constrainedToSize:CGSizeMake(100, numberOfViewsLabel.frame.size.height) lineBreakMode:UILineBreakModeTailTruncation].width;
+        CGRect rect = numberOfViewsLabel.frame;
+        rect.size.width = newwidth;
+        numberOfViewsLabel.frame = rect;
+        CGRect rect2 = prompt2Label.frame;
+        rect2.origin.x = rect.origin.x + rect.size.width + 5;
+        prompt2Label.frame = rect2;
+    }
+    numberOfViewsLabel.text = text;
+    
+    
+}
+
+
+#pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
     
 }
 
--(void)setTextColor:(NSInteger)color shadowColor:(NSInteger)schadowColor {
-    UIColor* ctextColor = UIColorFromRGB(color);
-    UIColor* cschadowColor = UIColorFromRGB(schadowColor);
-    
-    prompt1Label.textColor = ctextColor;
-    prompt1Label.shadowColor = cschadowColor;
-
-    prompt2Label.textColor = ctextColor;
-    prompt2Label.shadowColor = cschadowColor;
-
-    numberOfViewsLabel.textColor = ctextColor;
-    numberOfViewsLabel.shadowColor = cschadowColor;    
+-(void)viewWillAppear:(BOOL)animated{
+     
 }
 
--(void)setNumberOfViews:(NSInteger)numberOfViews {
-    [libraryCardButton setBackgroundImage:[UIImage imageNamed:(numberOfViews > 0 ? activeImage : inactiveImage )] forState:UIControlStateNormal];
-    
-    
-}
+
 
 - (void)viewDidUnload
 {
@@ -86,12 +90,22 @@ NSString* const inactiveImage = @"inactive-librarycard.png";
     [prompt2Label release];
     [numberOfViewsLabel release];
     [libraryCardButton release];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
 }
+
+
+- (void) onNewBalance:(NSNotification *) notification {
+    [self setNumberOfViews:[[PiptureAppDelegate instance] getBalance]];
+}
+
+
 - (IBAction)onButtonTap:(id)sender {
+    [[PiptureAppDelegate instance] buyViews];
 }
 
 -(void)refreshViewsInfo{
-    
+    [[PiptureAppDelegate instance] updateBalance];    
 }
+
 @end

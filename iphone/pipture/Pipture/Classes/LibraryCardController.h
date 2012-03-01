@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PiptureModel.h"
 
 
 @interface LibraryCardController : UIViewController
@@ -19,6 +20,5 @@
 - (IBAction)onButtonTap:(id)sender;
 
 -(void)refreshViewsInfo; 
--(void)setTextColor:(NSInteger)color shadowColor:(NSInteger)schadowColor;
 
 @end

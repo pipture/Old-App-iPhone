@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "DataRequestError.h"
 
+#define NEW_BALANCE_NOTIFICATION @"PiptureNewBalanceNotification"
 @interface NetworkErrorAlerter : NSObject <UIAlertViewDelegate>{
     BOOL isAlertShowing;
     id<UIAlertViewDelegate> wrappedDelegate;    

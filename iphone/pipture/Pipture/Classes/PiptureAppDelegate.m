@@ -463,6 +463,7 @@ NSInteger networkActivityIndecatorCount;
 - (void)setBalance:(NSDecimalNumber*)newBalance {
     NSLog(@"New balance: %@", newBalance);
     balance = [newBalance intValue];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NEW_BALANCE_NOTIFICATION object:self];    
     if (balance == 0) {
         buyButton.title = @"Buy";
     } else {
@@ -485,6 +486,10 @@ NSInteger networkActivityIndecatorCount;
     alert.tag = INSUFFICIENT_FUND_ALERT;
     [alert show];
     [alert release];
+}
+
+- (void)buyViews {
+    [self buyAction:self];    
 }
 
 - (IBAction)buyAction:(id)sender {
