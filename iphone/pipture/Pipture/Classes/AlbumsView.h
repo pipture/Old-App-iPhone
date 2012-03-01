@@ -8,10 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "HomeScreenDelegate.h"
+#import "LibraryCardController.h"
 
 @interface AlbumsView : UIView <UIScrollViewDelegate>
 {
-    NSMutableArray * albumsItemsArray;    
+    NSMutableArray * albumsItemsArray;
+    NSInteger libraryCardHeight;
+    BOOL libraryCardVisible;
 }
 
 - (void)updateAlbums:(NSArray *)albums;
@@ -21,4 +24,7 @@
 
 @property (retain, nonatomic) NSArray * albumsArray;
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (readonly, nonatomic) LibraryCardController* libraryCardController;
+
+-(void)setLibraryCardVisibility:(BOOL)visibility withAnimation:(BOOL)animation;
 @end

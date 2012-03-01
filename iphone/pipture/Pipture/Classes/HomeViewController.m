@@ -28,6 +28,7 @@
 @synthesize coverView;
 @synthesize albumsView;
 
+
 #pragma mark - View lifecycle
 
 - (void)defineScheduleButtonVisibility
@@ -218,6 +219,7 @@
     [self setFlipButton:nil];
     [self setScheduleButton:nil];
     [self setAlbumsView:nil];
+
     [super viewDidUnload];
 }
 
@@ -309,6 +311,7 @@
     [scheduleButton release];
     [albumsView release];
     [scheduleModel release];
+
 
     [super dealloc];
 }

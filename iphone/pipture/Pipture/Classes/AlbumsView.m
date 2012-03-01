@@ -17,11 +17,16 @@
 
 #define ITEM_HEIGHT 197
 #define ITEM_WIDTH 97
+#define MARGIN_RIGHT 15
+#define MARGIN_TOP 21
+#define OFFSET_FROM_LIB_CARD 15// 15 for top margin. 
+#define LIB_CARD_MARGIN_BOTTOM 8// 15 for top margin. 
 
 @implementation AlbumsView
 @synthesize scrollView;
 @synthesize delegate;
 @synthesize albumsArray;
+@synthesize libraryCardController;
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent {
     //prepare scrollView
@@ -32,6 +37,14 @@
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
+    libraryCardController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardWithHorizontalText" bundle:nil];
+    [libraryCardController loadView];
+    [scrollView addSubview:libraryCardController.view];
+    CGRect rect = libraryCardController.view.frame;
+    rect.origin = CGPointMake(0, MARGIN_TOP);    
+    libraryCardController.view.frame = rect;    
+    libraryCardHeight = libraryCardController.view.frame.size.height + MARGIN_TOP + LIB_CARD_MARGIN_BOTTOM;
+    [self setLibraryCardVisibility:NO withAnimation:NO];
 }
 
 - (void)showDetails:(id)sender {
@@ -48,14 +61,18 @@
     
     //create albums
     if (albumsItemsArray) {
+            //clear scroll view
+        for (UIViewController* vc in albumsItemsArray) {
+            [vc.view removeFromSuperview];
+        }
         [albumsItemsArray release];
     }
     albumsItemsArray = [[NSMutableArray alloc] initWithCapacity:20];
     
-    //clear scroll view
-    while ([scrollView.subviews count]) {
-        [[[scrollView subviews] lastObject] removeFromSuperview];
-    }
+//    //clear scroll view
+//    while ([scrollView.subviews count]) {
+//        [[[scrollView subviews] lastObject] removeFromSuperview];
+//    }
     
     for (int i = 0; i < albums.count; i++) {
         AlbumItemViewController * item = [[AlbumItemViewController alloc] initWithNibName:@"AlbumItemView" bundle:nil];
@@ -92,7 +109,7 @@
     CGRect rect = self.frame;
     
     int rows = ([albumsItemsArray count] + (3 - 1)) / 3;
-    scrollView.contentSize = CGSizeMake(rect.size.width, ITEM_HEIGHT * rows + 15 + 8); // 15 for top margin. 8 for middle button
+    scrollView.contentSize = CGSizeMake(rect.size.width, ITEM_HEIGHT * rows + libraryCardHeight + OFFSET_FROM_LIB_CARD + 8); 
     
     int i = 0;
     
@@ -101,16 +118,48 @@
             if (i >= [albumsItemsArray count])
                 break;
             AlbumItemViewController * item = [albumsItemsArray objectAtIndex:i++];
-            item.view.frame = CGRectMake(15 + (x * ITEM_WIDTH), 15 + (y * ITEM_HEIGHT), ITEM_WIDTH, ITEM_HEIGHT);
+            item.view.frame = CGRectMake(MARGIN_RIGHT + (x * ITEM_WIDTH), libraryCardHeight + OFFSET_FROM_LIB_CARD + (y * ITEM_HEIGHT), ITEM_WIDTH, ITEM_HEIGHT);
             [scrollView addSubview:item.view];
         }
     }
+}
+
+-(void)setLibraryCardVisibility:(BOOL)visibility withAnimation:(BOOL)animation {
+    if (animation) {
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:0.2]; // if you want to slide up the view
+    }
+            
+    scrollView.contentOffset = CGPointMake(0, visibility ? 0 : libraryCardHeight);    
+    libraryCardVisible = visibility;
+    if (animation) {
+        [UIView commitAnimations];
+    }
+}
+
+-(void)fixLibraryCardOffsetIfNeeded {
+    if (!libraryCardVisible && (scrollView.contentOffset.y < libraryCardHeight)){
+        [self setLibraryCardVisibility:YES withAnimation:YES];
+    } else if (libraryCardVisible)
+    {
+        [self setLibraryCardVisibility:(scrollView.contentOffset.y < libraryCardHeight / 2) withAnimation:YES];
+    } 
+    
+}
+
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)lscrollView {
+    [self fixLibraryCardOffsetIfNeeded];
+}
+
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    [self fixLibraryCardOffsetIfNeeded];    
 }
 
 - (void)dealloc {
     [albumsArray release];
     [albumsItemsArray release];
     [scrollView release];
+    [libraryCardController release];
     [super dealloc];
 }
 @end

@@ -25,6 +25,7 @@
     NSArray* screenshotImages_;    
     NSNumberFormatter * viewsNumberFormatter;
     
+    
 }
 @property (retain, nonatomic) IBOutlet UIView *picturePlaceholder;
 @property (retain, nonatomic) IBOutlet UITextView *messageEdit;

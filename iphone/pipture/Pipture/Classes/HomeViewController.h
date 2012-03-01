@@ -12,6 +12,7 @@
 #import "HomeScreenDelegate.h"
 #import "AlbumsView.h"
 #import "ScheduleModel.h"
+#import "LibraryCardController.h"
 
 @interface HomeViewController : UIViewController <AlbumsReceiver, UIAlertViewDelegate, UITabBarDelegate, HomeScreenDelegate, WelcomeScreenProtocol>
 {

@@ -179,7 +179,6 @@
 		38D5100114964123009BF5E9 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D5100014964123009BF5E9 /* libsqlite3.0.dylib */; };
 		38D510041497417E009BF5E9 /* InAppPurchaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D510031497417E009BF5E9 /* InAppPurchaseManager.m */; };
 		38D51006149741C6009BF5E9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D51005149741C6009BF5E9 /* StoreKit.framework */; };
-		38D74550147E660B00062441 /* LibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D7454F147E660B00062441 /* LibraryView.xib */; };
 		38D74553147E6AA600062441 /* AlbumDetailInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38D74552147E6AA600062441 /* AlbumDetailInfoController.m */; };
 		38D74555147E6ABC00062441 /* AlbumDetailInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38D74554147E6ABC00062441 /* AlbumDetailInfo.xib */; };
 		38D74557147E6DAB00062441 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D74556147E6DAB00062441 /* QuartzCore.framework */; };
@@ -224,6 +223,12 @@
 		888943C014FDF47300331008 /* blue-button-bottom-pushed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943BC14FDF47200331008 /* blue-button-bottom-pushed@2x.png */; };
 		888943C114FDF47300331008 /* blue-button-bottom-pushed.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943BD14FDF47200331008 /* blue-button-bottom-pushed.png */; };
 		888943C514FF1D4E00331008 /* Appirater.m in Sources */ = {isa = PBXBuildFile; fileRef = 888943C414FF1D4E00331008 /* Appirater.m */; };
+		888943CA14FF41E500331008 /* inactive-librarycard.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943C614FF41E500331008 /* inactive-librarycard.png */; };
+		888943CB14FF41E500331008 /* active-librarycard.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943C714FF41E500331008 /* active-librarycard.png */; };
+		888943CC14FF41E500331008 /* inactive-librarycard@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943C814FF41E500331008 /* inactive-librarycard@2x.png */; };
+		888943CD14FF41E500331008 /* active-librarycard@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943C914FF41E500331008 /* active-librarycard@2x.png */; };
+		888943CF14FF43F600331008 /* LibraryCardWithHorizontalText.xib in Resources */ = {isa = PBXBuildFile; fileRef = 888943CE14FF43F600331008 /* LibraryCardWithHorizontalText.xib */; };
+		888943D214FF531E00331008 /* LibraryCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 888943D114FF531E00331008 /* LibraryCardController.m */; };
 		88982B8814923FBD0012BEC2 /* DataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8514923FBD0012BEC2 /* DataRequest.m */; };
 		88982B8914923FBD0012BEC2 /* DataRequestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8714923FBD0012BEC2 /* DataRequestError.m */; };
 		889B379614A441CE000B03D2 /* UILabel+ResizeForVerticalAlign.m in Sources */ = {isa = PBXBuildFile; fileRef = 889B379514A441CE000B03D2 /* UILabel+ResizeForVerticalAlign.m */; };
@@ -452,7 +457,6 @@
 		38D510021497417E009BF5E9 /* InAppPurchaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InAppPurchaseManager.h; sourceTree = "<group>"; };
 		38D510031497417E009BF5E9 /* InAppPurchaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InAppPurchaseManager.m; sourceTree = "<group>"; };
 		38D51005149741C6009BF5E9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		38D7454F147E660B00062441 /* LibraryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryView.xib; sourceTree = "<group>"; };
 		38D74551147E6AA600062441 /* AlbumDetailInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailInfoController.h; sourceTree = "<group>"; };
 		38D74552147E6AA600062441 /* AlbumDetailInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailInfoController.m; sourceTree = "<group>"; };
 		38D74554147E6ABC00062441 /* AlbumDetailInfo.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumDetailInfo.xib; sourceTree = "<group>"; };
@@ -518,6 +522,13 @@
 		888943BD14FDF47200331008 /* blue-button-bottom-pushed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-button-bottom-pushed.png"; sourceTree = "<group>"; };
 		888943C314FF1D4D00331008 /* Appirater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Appirater.h; sourceTree = "<group>"; };
 		888943C414FF1D4E00331008 /* Appirater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Appirater.m; sourceTree = "<group>"; };
+		888943C614FF41E500331008 /* inactive-librarycard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "inactive-librarycard.png"; sourceTree = "<group>"; };
+		888943C714FF41E500331008 /* active-librarycard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "active-librarycard.png"; sourceTree = "<group>"; };
+		888943C814FF41E500331008 /* inactive-librarycard@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "inactive-librarycard@2x.png"; sourceTree = "<group>"; };
+		888943C914FF41E500331008 /* active-librarycard@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "active-librarycard@2x.png"; sourceTree = "<group>"; };
+		888943CE14FF43F600331008 /* LibraryCardWithHorizontalText.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryCardWithHorizontalText.xib; sourceTree = "<group>"; };
+		888943D014FF531E00331008 /* LibraryCardController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryCardController.h; sourceTree = "<group>"; };
+		888943D114FF531E00331008 /* LibraryCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCardController.m; sourceTree = "<group>"; };
 		88982B8414923FBD0012BEC2 /* DataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequest.h; sourceTree = "<group>"; };
 		88982B8514923FBD0012BEC2 /* DataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequest.m; sourceTree = "<group>"; };
 		88982B8614923FBD0012BEC2 /* DataRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequestError.h; sourceTree = "<group>"; };
@@ -599,6 +610,8 @@
 				3881FBE714A9C227008DC616 /* WelcomeScreenManager.m */,
 				3829907814AB33D60003A202 /* MailComposerNavigationController.h */,
 				3829907914AB33D60003A202 /* MailComposerNavigationController.m */,
+				888943D014FF531E00331008 /* LibraryCardController.h */,
+				888943D114FF531E00331008 /* LibraryCardController.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -774,7 +787,6 @@
 				8811ED94147B6FC5008CC877 /* HomeView.xib */,
 				38989D18147A6568004DE1E0 /* MainWindow.xib */,
 				381935CB147E2C850049B30E /* AlbumItemView.xib */,
-				38D7454F147E660B00062441 /* LibraryView.xib */,
 				38D74554147E6ABC00062441 /* AlbumDetailInfo.xib */,
 				389C54E314865A6100AF70A9 /* DetailTableItemView.xib */,
 				3886C26E149B39F3007A0317 /* TableDividerView.xib */,
@@ -784,6 +796,7 @@
 				382D9C2C148E178300005F16 /* snippet.html */,
 				3881FBE914A9C3A1008DC616 /* WelcomeScreenView.xib */,
 				3829907614AB06830003A202 /* HomeItemViewController.xib */,
+				888943CE14FF43F600331008 /* LibraryCardWithHorizontalText.xib */,
 			);
 			path = Resources;
 			sourceTree = SOURCE_ROOT;
@@ -810,6 +823,10 @@
 		38A7EC88148DDC03002120F3 /* png */ = {
 			isa = PBXGroup;
 			children = (
+				888943C614FF41E500331008 /* inactive-librarycard.png */,
+				888943C714FF41E500331008 /* active-librarycard.png */,
+				888943C814FF41E500331008 /* inactive-librarycard@2x.png */,
+				888943C914FF41E500331008 /* active-librarycard@2x.png */,
 				888943BA14FDF47200331008 /* blue-button-bottom@2x.png */,
 				888943BB14FDF47200331008 /* blue-button-bottom.png */,
 				888943BC14FDF47200331008 /* blue-button-bottom-pushed@2x.png */,
@@ -1110,7 +1127,6 @@
 				8811ED95147B6FC5008CC877 /* HomeView.xib in Resources */,
 				385FC39D147CD818001CDF43 /* VideoView.xib in Resources */,
 				381935CC147E2C850049B30E /* AlbumItemView.xib in Resources */,
-				38D74550147E660B00062441 /* LibraryView.xib in Resources */,
 				38D74555147E6ABC00062441 /* AlbumDetailInfo.xib in Resources */,
 				389C54E414865A6100AF70A9 /* DetailTableItemView.xib in Resources */,
 				382D9C26148E030100005F16 /* MailComposer.xib in Resources */,
@@ -1266,6 +1282,11 @@
 				888943BF14FDF47300331008 /* blue-button-bottom.png in Resources */,
 				888943C014FDF47300331008 /* blue-button-bottom-pushed@2x.png in Resources */,
 				888943C114FDF47300331008 /* blue-button-bottom-pushed.png in Resources */,
+				888943CA14FF41E500331008 /* inactive-librarycard.png in Resources */,
+				888943CB14FF41E500331008 /* active-librarycard.png in Resources */,
+				888943CC14FF41E500331008 /* inactive-librarycard@2x.png in Resources */,
+				888943CD14FF41E500331008 /* active-librarycard@2x.png in Resources */,
+				888943CF14FF43F600331008 /* LibraryCardWithHorizontalText.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1353,6 +1374,7 @@
 				8812B9D414F7A97B0089A905 /* DataRequestRetryStrategyFactory.m in Sources */,
 				8812B9D714FB4DBE0089A905 /* NetworkErrorAlerter.m in Sources */,
 				888943C514FF1D4E00331008 /* Appirater.m in Sources */,
+				888943D214FF531E00331008 /* LibraryCardController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
