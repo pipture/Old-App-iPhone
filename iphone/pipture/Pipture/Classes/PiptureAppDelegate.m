@@ -12,6 +12,7 @@
 #import "HomeViewController.h"
 #import "UILabel+ResizeForVerticalAlign.h"
 #import "MailComposerController.h"
+#import "Appirater.h"
 
 // Dispatch period in seconds
 static const NSInteger kGANDispatchPeriodSec = 10;
@@ -234,6 +235,7 @@ static PiptureAppDelegate *instance;
     [self.window makeKeyAndVisible];
     self.backgroundImage.hidden = YES;
     [self getHomeView];
+    [Appirater appLaunched:YES];
 }
 
 -(void)loginFailed
@@ -298,10 +300,12 @@ static PiptureAppDelegate *instance;
     wifiConnection = [[NetworkConnectionInformer testConnection] retain];
 	[wifiConnection startNotifier];
 	curConnection = [wifiConnection currentReachabilityStatus];
-
     return YES;
 }
 
+-(void)applicationWillEnterForeground:(UIApplication *)application {
+    [Appirater appEnteredForeground:YES];
+}
 
 
 + (PiptureAppDelegate*) instance {
@@ -340,9 +344,10 @@ static PiptureAppDelegate *instance;
         [animation setSubtype:kCATransitionFromTop];
         [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
         
-        [mailComposerNavigationController prepareMailComposer:playlistItem timeslot:timeslotId prevViewController:self.window.rootViewController];
+        UIViewController* prevViewController = self.window.rootViewController;
         [self.window setRootViewController:mailComposerNavigationController];
         [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+        [mailComposerNavigationController prepareMailComposer:playlistItem timeslot:timeslotId prevViewController:prevViewController];
         
     }
                     
