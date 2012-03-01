@@ -43,6 +43,7 @@
 @property (retain, nonatomic) IBOutlet UIButton *infiniteViewsRadioButton;
 @property (retain, nonatomic) IBOutlet UILabel *maxViewsLabel;
 @property (retain, nonatomic) IBOutlet UIView *infiniteRadioButtonsGroupView;
+@property (retain, nonatomic) UIViewController *cardSectionViewController;
 
 - (IBAction)onRadioButtonTap:(id)sender;
 - (IBAction)onConfirmMessageTap:(id)sender;

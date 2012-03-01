@@ -11,6 +11,7 @@
 #import "PiptureModel.h"
 #import "AlbumScreenshotsController.h"
 #import "Trailer.h"
+#import "LibraryCardController.h"
 
 #define RADIO_BUTTON_ON_IMAGE @"radio-button-pushed.png"
 #define RADIO_BUTTON_OFF_IMAGE @"radio-button.png"
@@ -33,6 +34,7 @@
 @synthesize screenshotName;
 @synthesize nameTextField;
 @synthesize toSectionView;
+@synthesize cardSectionViewController;
 @synthesize emptyCell;
 @synthesize numberOfViewsTextField;
 @synthesize timeslotId;
@@ -149,6 +151,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     viewsNumberFormatter = [[NSNumberFormatter alloc] init];
     [viewsNumberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
     
+    cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardWithHorizontalText" bundle:nil];
+    [cardSectionViewController loadView];
+   
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -332,6 +337,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self setFromCell:nil];
     [self setNameTextField:nil];
     [self setToSectionView:nil];
+    [self setCardSectionViewController:nil];
     [self setEmptyCell:nil];
     [self setNumberOfViewsTextField:nil];
     [viewsNumberFormatter release];
@@ -496,6 +502,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [fromCell release];
     [nameTextField release];
     [mailComposer release];
+    [cardSectionViewController release];
     [toSectionView release];
     [emptyCell release];
     [numberOfViewsTextField release];
@@ -582,13 +589,13 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 {
     int section = indexPath.section;
     int row = indexPath.row;    
-    if (section == 0 && row == 0) {    
+    if (section == 1 && row == 0) {    
         return MESSAGE_CELL_ROW;
     }
-    else if (section == 1 && row == 0) {
+    else if (section == 2 && row == 0) {
         return SCREENSHOT_CELL_ROW;
     }        
-    else if (section == 2 && row == 0) {
+    else if (section == 3 && row == 0) {
         return FROM_CELL_ROW;
     }
     else
@@ -618,7 +625,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 4;
+    return 5;
 }
 
 //- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -651,12 +658,13 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 {
     switch (section) {
         case 0:
-            return nil;
         case 1:
-            return @"Screenshot selection";                
+            return nil;
         case 2:
-            return @"From";                                                
+            return @"Screenshot selection";                
         case 3:
+            return @"From";                                                
+        case 4:
             return @"To (# of viewers)";                                
         default:
             return nil;
@@ -665,7 +673,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     switch (section) {
-        case 3:
+        case 0:
+            return cardSectionViewController.view;
+        case 4:
             return toSectionView;
             break;            
         default:
@@ -675,7 +685,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     switch (section) {
-        case 3:
+        case 0:
+            return cardSectionViewController.view.frame.size.height;
+        case 4:
             return toSectionView.frame.size.height;
             break;            
         default:

@@ -64,7 +64,7 @@
 -(void)purchased:(NSDecimalNumber*)newBalance {
     SET_BALANCE(newBalance);
     [[PiptureAppDelegate instance] dismissModalBusy];
-    TRACK_EVENT(@"Purchase", @"Credits purchased");
+    TRACK_EVENT(@"Purchase", @"100 Views purchased");
     [self release];    
 }
 
