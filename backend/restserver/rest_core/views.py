@@ -840,11 +840,7 @@ def sendMessage (request):
     except PipUsers.DoesNotExist:
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
         return HttpResponse (json.dumps(response))
-    
-
-    #from restserver.pipture.models import PurchaseItems
-    #SEND_EP = PurchaseItems.objects.get(Description="SendEpisode")
-        
+            
     if trailer_id:
         video_url, error = get_video_url_from_episode_or_trailer (id=trailer_id, type_r="T", video_q=0)
         if error:
@@ -855,7 +851,8 @@ def sendMessage (request):
             response['MessageURL'] = "/videos/%s/" % (u_url)
             response['Balance'] = "%s" % (purchaser.Balance)
             return HttpResponse (json.dumps(response))
-    
+
+    #remove already purchased checking    
     '''from restserver.pipture.models import TimeSlots
     from restserver.pipture.models import TimeSlotVideos
    
@@ -865,8 +862,11 @@ def sendMessage (request):
         response['Balance'] = "%s" % (purchaser.Balance)
         return HttpResponse (json.dumps(response))
 
-    from restserver.pipture.models import UserPurchasedItems
     '''
+    from restserver.pipture.models import PurchaseItems
+    from restserver.pipture.models import UserPurchasedItems
+    SEND_EP = PurchaseItems.objects.get(Description="SendEpisode")
+    
     video_url, error = get_video_url_from_episode_or_trailer (id=episode_id, type_r="E", video_q=0)
     if error:
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
@@ -876,25 +876,26 @@ def sendMessage (request):
     #is_purchased = UserPurchasedItems.objects.filter(UserId=purchaser, ItemId=episode_id, PurchaseItemId = SEND_EP).count()
         
     #if is_purchased:
-    u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
-    response['MessageURL'] = "/videos/%s/" % (u_url)
-    response['Balance'] = "%s" % (purchaser.Balance)
-    return HttpResponse (json.dumps(response))
+    #u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
+    #response['MessageURL'] = "/videos/%s/" % (u_url)
+    #response['Balance'] = "%s" % (purchaser.Balance)
+    #return HttpResponse (json.dumps(response))
 
-    '''else:
-        if (purchaser.Balance - SEND_EP.Price) >= 0:
-            new_p = UserPurchasedItems(UserId=purchaser, ItemId=episode_id, PurchaseItemId = SEND_EP, ItemCost=SEND_EP.Price)
-            new_p.save()
-            purchaser.Balance = Decimal (purchaser.Balance - SEND_EP.Price)
-            purchaser.save()
-            u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
-            response['MessageURL'] = "/videos/%s/" % (u_url)
-            response['Balance'] = "%s" % (purchaser.Balance)
-            return HttpResponse (json.dumps(response))
-        else:
-            response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
-            return HttpResponse (json.dumps(response))
-    '''
+    #else:
+    message_cost = int(SEND_EP.Price) * int(views_count)
+    user_ballance = int(purchaser.Balance)
+    if (user_ballance - message_cost) >= 0:
+        new_p = UserPurchasedItems(UserId=purchaser, ItemId=episode_id, PurchaseItemId = SEND_EP, ItemCost=SEND_EP.Price)
+        new_p.save()
+        purchaser.Balance = Decimal (user_ballance - message_cost)
+        purchaser.save()
+        u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
+        response['MessageURL'] = "/videos/%s/" % (u_url)
+        response['Balance'] = "%s" % (purchaser.Balance)
+        return HttpResponse (json.dumps(response))
+    else:
+        response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
+        return HttpResponse (json.dumps(response))
 
 def getAlbumScreenshotByEpisodeId (EpisodeId):
     from restserver.pipture.models import AlbumScreenshotGallery

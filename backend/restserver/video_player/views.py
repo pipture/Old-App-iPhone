@@ -1,6 +1,8 @@
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
+from gdata.
+
 import json
 # list of mobile User Agents
 mobile_uas = [
@@ -93,7 +95,8 @@ def index(request, u_url):
             video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
             message_blocked = False
             
-            if urs_instance.LinkType == 'E':
+            #remove purchasing
+            '''if urs_instance.LinkType == 'E':
                 from restserver.pipture.models import PipUsers
         
                 try:
@@ -115,7 +118,7 @@ def index(request, u_url):
                     purchaser.save()
                 else:
                     response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
-                    return HttpResponse (json.dumps(response))
+                    return HttpResponse (json.dumps(response))'''
  
             urs_instance.ViewsCount = urs_instance.ViewsCount + 1
             urs_instance.save()
