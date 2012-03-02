@@ -27,6 +27,8 @@
 @synthesize scheduleView;
 @synthesize coverView;
 @synthesize albumsView;
+@synthesize scheduleEnhancer;
+@synthesize flipEnhancer;
 
 
 #pragma mark - View lifecycle
@@ -188,6 +190,13 @@
     }
 }
 
+- (void)tapResponder:(UITapGestureRecognizer *)recognizer {
+    if (recognizer.view == scheduleEnhancer) {
+        [self scheduleAction:nil];
+    } else if (recognizer.view == flipEnhancer) {
+        [self flipAction:nil];
+    }
+}
 
 - (void)viewDidLoad
 {
@@ -201,7 +210,14 @@
                                                  name:NEW_TIMESLOTS_NOTIFICATION
                                                object:scheduleModel];
 
+    UITapGestureRecognizer * tapFRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    [flipEnhancer addGestureRecognizer:tapFRec];
+    [tapFRec release];
     
+    UITapGestureRecognizer * tapSRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    [scheduleEnhancer addGestureRecognizer:tapSRec];
+    [tapSRec release];
+        
     [scheduleView prepareWith:self scheduleModel:scheduleModel];
     [coverView prepareWith:self];
     [albumsView prepareWith:self];
@@ -220,6 +236,8 @@
     [self setScheduleButton:nil];
     [self setAlbumsView:nil];
 
+    [self setScheduleEnhancer:nil];
+    [self setFlipEnhancer:nil];
     [super viewDidUnload];
 }
 
@@ -313,6 +331,8 @@
     [scheduleModel release];
 
 
+    [scheduleEnhancer release];
+    [flipEnhancer release];
     [super dealloc];
 }
 

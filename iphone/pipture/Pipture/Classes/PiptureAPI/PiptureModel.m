@@ -887,6 +887,17 @@ BOOL needInvokeCallback;
     }
 }
 
+-(NSString *) urlEncoded:(NSString*)params
+{
+    CFStringRef urlString = CFURLCreateStringByAddingPercentEscapes(
+                                                                    NULL,
+                                                                    (CFStringRef)params,
+                                                                    NULL,
+                                                                    (CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ",
+                                                                    kCFStringEncodingUTF8 );
+    return [(NSString *)urlString autorelease];
+}
+
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url postParams:(NSString*)params callback:(DataRequestCallback)callback
 {
     DataRequest* req = [[[DataRequest alloc]initWithURL:url postParams:params requestManager:self callback:^(NSDictionary* jsonResult, DataRequestError* error)

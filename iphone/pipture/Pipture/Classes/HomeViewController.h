@@ -37,5 +37,7 @@
 @property (retain, nonatomic) IBOutlet ScheduleView *scheduleView;
 @property (retain, nonatomic) IBOutlet CoverView *coverView;
 @property (retain, nonatomic) IBOutlet AlbumsView *albumsView;
+@property (retain, nonatomic) IBOutlet UIView *scheduleEnhancer;
+@property (retain, nonatomic) IBOutlet UIView *flipEnhancer;
 
 @end
