@@ -1,7 +1,6 @@
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
-from gdata.
 
 import json
 # list of mobile User Agents
