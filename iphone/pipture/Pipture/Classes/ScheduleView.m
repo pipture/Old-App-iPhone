@@ -10,6 +10,7 @@
 #import "AsyncImageView.h"
 #import "PiptureAppDelegate.h"
 #import "HomeItemViewController.h"
+#import "TimeslotFormatter.h"
 
 @implementation ScheduleView
 @synthesize navPanel;
@@ -33,7 +34,7 @@
     UILabel * status = (UILabel*)[panel viewWithTag:2];
     
     if (title) title.text = timeslot.title;
-    if (status)status.text= timeslot.timeDescription;
+    if (status)status.text= [TimeslotFormatter formatTimeslot:timeslot ignoreStatus:(timeslotsMode == TimeslotsMode_Schedule || timeslotsMode == TimeslotsMode_Schedule_Fullscreen)];
 }
 
 - (void)panel:(UIView*)panel visible:(BOOL)visible animation:(BOOL)anim{

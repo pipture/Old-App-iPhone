@@ -214,6 +214,7 @@
 		8875179B148CAD3B00AFFFAC /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875178E148CAD3B00AFFFAC /* SBJsonUTF8Stream.m */; };
 		8875179C148CAD3B00AFFFAC /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751790148CAD3B00AFFFAC /* SBJsonWriter.m */; };
 		887517A7148CAE3400AFFFAC /* PiptureAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */; };
+		887AE33A1500BB38009C010A /* TimeslotFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 887AE3391500BB38009C010A /* TimeslotFormatter.m */; };
 		888943B514FDED8C00331008 /* radio-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943B114FDED8C00331008 /* radio-button.png */; };
 		888943B614FDED8C00331008 /* radio-button-pushed.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943B214FDED8C00331008 /* radio-button-pushed.png */; };
 		888943B714FDED8C00331008 /* radio-button-pushed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943B314FDED8C00331008 /* radio-button-pushed@2x.png */; };
@@ -514,6 +515,8 @@
 		88751790148CAD3B00AFFFAC /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureAppDelegate.h; sourceTree = "<group>"; };
 		887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureAppDelegate.m; sourceTree = "<group>"; };
+		887AE3381500BB38009C010A /* TimeslotFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeslotFormatter.h; sourceTree = "<group>"; };
+		887AE3391500BB38009C010A /* TimeslotFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeslotFormatter.m; sourceTree = "<group>"; };
 		888943B114FDED8C00331008 /* radio-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "radio-button.png"; sourceTree = "<group>"; };
 		888943B214FDED8C00331008 /* radio-button-pushed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "radio-button-pushed.png"; sourceTree = "<group>"; };
 		888943B314FDED8C00331008 /* radio-button-pushed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "radio-button-pushed@2x.png"; sourceTree = "<group>"; };
@@ -632,6 +635,8 @@
 				384EBA6914A058F5000973CD /* HomeScreenDelegate.h */,
 				3829907314AB06330003A202 /* HomeItemViewController.h */,
 				3829907414AB06330003A202 /* HomeItemViewController.m */,
+				887AE3381500BB38009C010A /* TimeslotFormatter.h */,
+				887AE3391500BB38009C010A /* TimeslotFormatter.m */,
 			);
 			name = HomeScreen;
 			sourceTree = "<group>";
@@ -1383,6 +1388,7 @@
 				8812B9D714FB4DBE0089A905 /* NetworkErrorAlerter.m in Sources */,
 				888943C514FF1D4E00331008 /* Appirater.m in Sources */,
 				888943D214FF531E00331008 /* LibraryCardController.m in Sources */,
+				887AE33A1500BB38009C010A /* TimeslotFormatter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

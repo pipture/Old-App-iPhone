@@ -9,6 +9,7 @@
 #import "CoverView.h"
 #import "Timeslot.h"
 #import "PiptureAppDelegate.h"
+#import "TimeslotFormatter.h"
 
 @implementation CoverView
 @synthesize coverContainer;
@@ -43,7 +44,7 @@
         UILabel * status = (UILabel*)[coverPanel viewWithTag:2];
         
         if (title) title.text = timeslot.title;
-        if (status)status.text= timeslot.timeDescription;
+        if (status)status.text= [TimeslotFormatter formatTimeslot:timeslot ignoreStatus:NO];
 
         switch (timeslot.timeslotStatus) {
             case TimeslotStatus_Current:

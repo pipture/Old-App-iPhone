@@ -28,7 +28,6 @@ enum TimeslotStatus{
 @property(retain, nonatomic) NSString* closupBackground;
 @property(retain, nonatomic) NSString* scheduleDescription;
 @property(assign, nonatomic) enum TimeslotStatus timeslotStatus;
-@property(readonly, nonatomic) NSString* timeDescription; //TODO to be moved to controller layer because it is presentation
 
 -(id)initWithJSON:(NSDictionary*)jsonData serverTimeDelta:(NSTimeInterval)serverTimeDelta;
 
