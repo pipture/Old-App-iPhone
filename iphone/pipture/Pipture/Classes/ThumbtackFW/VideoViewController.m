@@ -121,6 +121,7 @@
         NSDate * date = [NSDate dateWithTimeIntervalSinceNow:5];//now + 5 sec
         controlsHideTimer = [[NSTimer alloc] initWithFireDate:date interval:0.5 target:self selector:@selector(hideControlsByTimer:) userInfo:nil repeats:NO];
         [[NSRunLoop currentRunLoop] addTimer:controlsHideTimer forMode:NSDefaultRunLoopMode];
+        [controlsHideTimer release];
     }
 }
 
