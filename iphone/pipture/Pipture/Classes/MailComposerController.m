@@ -23,6 +23,38 @@
 #define DEFAULT_NUMBER_OF_VIEWS 10
 #define NOT_CONFIRMABLE_NUMBER_OF_VIEWS 10
 
+@interface ScreenshotsReceiverWraper : NSObject<ScreenshotCollectionReceiver> {
+    NSObject<ScreenshotCollectionReceiver>* wrappedObject_;
+}
+-(id)initWithWrappedObject:(id<ScreenshotCollectionReceiver>)wrappedObject;
+@end
+
+@implementation ScreenshotsReceiverWraper
+
+-(void)screenshotsNotSupported {
+    [wrappedObject_ screenshotsNotSupported];
+}
+
+-(void)screenshotsReceived:(NSArray*)screenshotImages {
+    [wrappedObject_ screenshotsReceived:screenshotImages];
+}
+
+-(id)initWithWrappedObject:(NSObject<ScreenshotCollectionReceiver>*)wrappedObject {
+    self = [super init];
+    if (self) {
+        wrappedObject_ = [wrappedObject retain];
+    }
+    return self;
+}
+
+-(void)dealloc {
+    [wrappedObject_ release];
+    [super dealloc];
+}
+
+@end
+    
+    
 @implementation MailComposerController
 @synthesize picturePlaceholder;
 @synthesize messageEdit;
@@ -162,7 +194,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [viewsNumberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
     
     cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardA7" bundle:nil];
-    [cardSectionViewController loadView];
    
 }
 
@@ -461,7 +492,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
     
     self.navigationItem.hidesBackButton = YES;
-    
     [self displayNumberOfViewsTextField];
     [self displayInfiniteViewsRadioButtons];
     [self setInfiniteRadiobutonsVisiblity];
@@ -733,3 +763,5 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 
 @end
+
+

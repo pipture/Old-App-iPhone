@@ -20,6 +20,27 @@
 NSString* const activeImage = @"active-librarycard.png";
 NSString* const inactiveImage = @"inactive-librarycard.png";
 
+
+-(void)setNumberOfViews:(NSInteger)numberOfViews {
+    [libraryCardButton setBackgroundImage:[UIImage imageNamed:(numberOfViews > 0 ? activeImage : inactiveImage )] forState:UIControlStateNormal];
+    
+    NSString* text = [NSString stringWithFormat:@"%d",numberOfViews,nil];
+    if (prompt1Label.frame.origin.y == prompt2Label.frame.origin.y) {
+        // Need to move prompt 2 and resize number of views
+        
+        NSInteger newwidth = [text sizeWithFont:numberOfViewsLabel.font constrainedToSize:CGSizeMake(100, numberOfViewsLabel.frame.size.height) lineBreakMode:UILineBreakModeTailTruncation].width;
+        CGRect rect = numberOfViewsLabel.frame;
+        rect.size.width = newwidth;
+        numberOfViewsLabel.frame = rect;
+        CGRect rect2 = prompt2Label.frame;
+        rect2.origin.x = rect.origin.x + rect.size.width + 5;
+        prompt2Label.frame = rect2;
+    }
+    numberOfViewsLabel.text = text;
+    
+    
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -38,25 +59,6 @@ NSString* const inactiveImage = @"inactive-librarycard.png";
     // Release any cached data, images, etc that aren't in use.
 }
 
--(void)setNumberOfViews:(NSInteger)numberOfViews {
-    [libraryCardButton setBackgroundImage:[UIImage imageNamed:(numberOfViews > 0 ? activeImage : inactiveImage )] forState:UIControlStateNormal];
-
-    NSString* text = [NSString stringWithFormat:@"%d",numberOfViews,nil];
-    if (prompt1Label.frame.origin.y == prompt2Label.frame.origin.y) {
-        // Need to move prompt 2 and resize number of views
-
-        NSInteger newwidth = [text sizeWithFont:numberOfViewsLabel.font constrainedToSize:CGSizeMake(100, numberOfViewsLabel.frame.size.height) lineBreakMode:UILineBreakModeTailTruncation].width;
-        CGRect rect = numberOfViewsLabel.frame;
-        rect.size.width = newwidth;
-        numberOfViewsLabel.frame = rect;
-        CGRect rect2 = prompt2Label.frame;
-        rect2.origin.x = rect.origin.x + rect.size.width + 5;
-        prompt2Label.frame = rect2;
-    }
-    numberOfViewsLabel.text = text;
-    
-    
-}
 
 
 #pragma mark - View lifecycle
@@ -64,12 +66,12 @@ NSString* const inactiveImage = @"inactive-librarycard.png";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    [self setNumberOfViews:[[PiptureAppDelegate instance] getBalance]];
     
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-     
+
 }
 
 
