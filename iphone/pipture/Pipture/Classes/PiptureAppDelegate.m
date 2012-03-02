@@ -464,11 +464,11 @@ NSInteger networkActivityIndecatorCount;
     NSLog(@"New balance: %@", newBalance);
     balance = [newBalance intValue];
     [[NSNotificationCenter defaultCenter] postNotificationName:NEW_BALANCE_NOTIFICATION object:self];    
-    if (balance == 0) {
-        buyButton.title = @"Buy";
-    } else {
+//    if (balance == 0) {
+//        buyButton.title = @"Buy";
+//    } else {
         buyButton.title = [NSString stringWithFormat:@"%d views", balance];
-    }
+//    }
 }
 
 - (float)getBalance {
