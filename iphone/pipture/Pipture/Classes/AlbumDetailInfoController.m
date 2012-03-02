@@ -134,7 +134,7 @@
     [tapTRec release];
 
     cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardB8" bundle:nil];
-    [cardSectionViewController loadView];
+
     
     detailsReceived = NO;
     
@@ -419,8 +419,8 @@
             [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-inactive.png"] forState:UIControlStateNormal];
             [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-active.png"] forState:UIControlStateHighlighted];
 
-            if (videosTable.contentOffset.y < 45) {
-                videosTable.contentOffset = CGPointMake(0, 45);
+            if (videosTable.contentOffset.y < cardSectionViewController.view.frame.size.height) {
+                videosTable.contentOffset = CGPointMake(0, cardSectionViewController.view.frame.size.height);
             }
             
             break;

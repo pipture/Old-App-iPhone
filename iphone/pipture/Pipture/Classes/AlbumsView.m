@@ -18,9 +18,8 @@
 #define ITEM_HEIGHT 197
 #define ITEM_WIDTH 97
 #define MARGIN_RIGHT 15
-#define MARGIN_TOP 21
-#define OFFSET_FROM_LIB_CARD 15// 15 for top margin. 
-#define LIB_CARD_MARGIN_BOTTOM 8// 15 for top margin. 
+#define OFFSET_FROM_LIB_CARD 15
+
 
 @implementation AlbumsView
 @synthesize scrollView;
@@ -37,13 +36,12 @@
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
-    libraryCardController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardB8" bundle:nil];
-    [libraryCardController loadView];
+    libraryCardController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardB3" bundle:nil];
     [scrollView addSubview:libraryCardController.view];
     CGRect rect = libraryCardController.view.frame;
-    rect.origin = CGPointMake(0, MARGIN_TOP);    
+    rect.origin = CGPointMake(0, 0);    
     libraryCardController.view.frame = rect;    
-    libraryCardHeight = libraryCardController.view.frame.size.height + MARGIN_TOP + LIB_CARD_MARGIN_BOTTOM;
+    libraryCardHeight = libraryCardController.view.frame.size.height;
     [self setLibraryCardVisibility:NO withAnimation:NO];
 }
 
