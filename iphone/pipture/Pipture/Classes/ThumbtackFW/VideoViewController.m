@@ -172,7 +172,9 @@
 
 - (AVPlayerItem *)createItem:(PlaylistItem*)plitem {
     AVPlayerItem * item = nil;
-    if ([[PiptureAppDelegate instance] networkConnection] == NetworkConnection_Cellular)
+    PiptureAppDelegate * instance = [PiptureAppDelegate instance];
+    
+    if ([instance networkConnection] == NetworkConnection_Cellular || ![instance isHighResolutionDevice])
         item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:plitem.videoUrlLQ]];
     else
         item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:plitem.videoUrl]];

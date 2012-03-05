@@ -409,8 +409,22 @@ static PiptureAppDelegate *instance;
     TRACK_EVENT(@"Open Activity", @"Video player");
 }
 
+- (BOOL)isHighResolutionDevice {
+    BOOL hasHighResScreen = NO;
+    if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
+        CGFloat scale = [[UIScreen mainScreen] scale];
+        if (scale > 1.0) {
+            hasHighResScreen = YES;
+        }
+    }
+    
+    return hasHighResScreen;
+}
+
 - (BOOL)getVideoURL:(PlaylistItem*)item forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver {
-    NSNumber * quality = [NSNumber numberWithInt:(curConnection == NetworkConnection_Cellular)?1:0];
+    
+    
+    NSNumber * quality = [NSNumber numberWithInt:(curConnection == NetworkConnection_Cellular || ![self isHighResolutionDevice])?1:0];
         
     return [model_ getVideoURL:item forceBuy:YES forTimeslotId:timeslotId withQuality:quality receiver:receiver];
 }
