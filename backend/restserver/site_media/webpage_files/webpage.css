@@ -1,3 +1,24 @@
+a:link    {
+  /* Applies to all unvisited links */
+  text-decoration:  none;
+  color:            blue;
+} 
+a:visited {
+  /* Applies to all visited links */
+  text-decoration:  none;
+  color:            #f0f;
+} 
+a:hover   {
+  /* Applies to links under the pointer */
+  text-decoration:  underline;
+  color:            #fff;
+} 
+a:active  {
+  /* Applies to activated links */
+  text-decoration:  underline;
+  color: white;
+}
+
 .paragraph_style {
     color: rgb(29, 45, 71);
     font-family: 'Arial-BoldMT', 'Arial', sans-serif;
