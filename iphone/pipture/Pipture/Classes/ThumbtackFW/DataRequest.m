@@ -109,7 +109,8 @@ id<DataRequestManager> requestManager_;
 
     if (postParams_)
     {
-        NSData *requestData = [NSData dataWithBytes: [postParams_ UTF8String] length: [postParams_ length]];        
+        //NSData *requestData = [NSData dataWithBytes: [postParams_ UTF8String] length: [postParams_ length]];        
+        NSData *requestData = [postParams_ dataUsingEncoding:NSUTF8StringEncoding];
         [urlRequest setHTTPBody:requestData]; 
         
         [urlRequest setHTTPMethod:@"POST"];
