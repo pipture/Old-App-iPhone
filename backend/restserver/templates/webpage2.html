@@ -55,7 +55,15 @@
             	{% if message_blocked %}
             	<img src="{{image_url}}" width="400" height="600" alt="" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px;">
             	{% else %}
-              	<video src="{{video_url}}" width="400" height="600" alt="" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px;" poster="{{image_url}}" fullscreen="false"></video>
+              	<video width="400" height="600" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px;" poster="{{image_url}}" fullscreen="false">
+    				<source type="video/mp4" src="{{video_url}}" />
+    				<object width="400" height="600" type="application/x-shockwave-flash" data="flashmediaelement.swf">
+        				<param name="movie" value="flashmediaelement.swf" />
+        				<param name="flashvars" value="controls=true&file={{video_url}}" />
+        				<!-- Image as a last resort -->
+        				<img src="{{image_url}}" width="400" height="600" title="No video playback capabilities" />
+    				</object>
+				</video>
               	{% endif %}
             </div>
           </div>
