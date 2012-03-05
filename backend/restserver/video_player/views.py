@@ -124,7 +124,8 @@ def index(request, u_url):
             request.session["Pipture"+u_url] = storeDateTime(last_visiting)
     
     if mobileBrowser(request):
-        template_h = 'video_mobile.html'
+        #template_h = 'video_mobile.html'
+        template_h = 'mobilepage.html'
     else:
         #template_h = 'video_mobile.html'
         #template_h = 'video_desktop.html'
