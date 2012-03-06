@@ -17,7 +17,7 @@ mobile_uas = [
     'wapr','webc','winw','winw','xda','xda-'
     ]
  
-mobile_ua_hints = [ 'SymbianOS', 'Opera Mini', 'iPhone' ]
+mobile_ua_hints = [ 'SymbianOS', 'Opera Mini', 'iPhone', 'Android' ]
  
  
 def mobileBrowser(request):

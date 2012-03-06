@@ -9,7 +9,7 @@
     <meta name="iWeb-Build" content="local-build-20120222" />
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
     <meta name="viewport" content="width=400" />
-    <title>mobilepage</title>
+    <title>Pipture</title>
     <link rel="stylesheet" type="text/css" media="screen,print" href="{{MEDIA_URL}}webpage_files/mobilepage.css" />
     <!--[if lt IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='{{MEDIA_URL}}mobilepage_files/mobilepageIE.css'/><![endif]-->
     <!--[if gte IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='Media/IE8.css'/><![endif]-->
@@ -40,33 +40,31 @@
               <div class="graphic_shape_layout_style_default"></div>
             </div>
           </div>
-          
-
 
           <div style="height: 200px; width: 380px;  height: 200px; left: 7px; position: absolute; top: 926px; width: 380px; z-index: 1; " class="tinyText">
             <div style="position: relative; width: 380px; ">
               <img src="{{MEDIA_URL}}webpage_files/shapeimage_1.png" alt="" style="height: 200px; left: 0px; position: absolute; top: 0px; width: 380px; " />
             </div>
           </div>
-          
-
 
           <div style="height: 600px; width: 400px;  height: 600px; left: -2px; position: absolute; top: 224px; width: 400px; z-index: 1; " class="tinyText">
             <div style="position: relative; width: 400px; ">
-              <img src="{{MEDIA_URL}}webpage_files/shapeimage_2.png" alt="" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px; " />
+            	{% if message_blocked %}
+            	<img src="{{image_url}}" width="400" height="600" alt="" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px;">
+            	{% else %}
+              	<video src="{{video_url}}" width="400" height="600" alt="" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px;" poster="{{image_url}}" fullscreen="false" controls="controls"></video>
+              	{% endif %}
             </div>
           </div>
           
           <div id="id4" style="height: 56px; left: 20px; position: absolute; top: 75px; width: 249px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_249_56" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
-                <p style="padding-top: 0pt; " class="paragraph_style"><span class="style">From</span> <span class="style_1">Joseph</span><br /></p>
+                <p style="padding-top: 0pt; " class="paragraph_style"><span class="style">From</span> <span class="style_1">{{from}}</span><br /></p>
                 <p style="padding-bottom: 0pt; " class="paragraph_style_1">January 9 at 3:48pm</p>
               </div>
             </div>
           </div>
-          
-
 
           <div id="id5" style="height: 108px; left: 132px; position: absolute; top: 996px; width: 205px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
             <div class="text-content style_External_205_108" style="padding: 0px; ">
@@ -79,8 +77,6 @@
               </div>
             </div>
           </div>
-          
-
 
           <div id="id6" style="height: 58px; left: 132px; position: absolute; top: 951px; width: 215px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_215_58" style="padding: 0px; ">
@@ -90,24 +86,18 @@
               </div>
             </div>
           </div>
-          
-
 
           <div style="height: 150px; width: 89px;  height: 150px; left: 26px; position: absolute; top: 952px; width: 89px; z-index: 1; " class="tinyText">
             <div style="position: relative; width: 89px; ">
               <img src="{{MEDIA_URL}}webpage_files/shapeimage_5.png" alt="" style="height: 150px; left: 0px; position: absolute; top: 0px; width: 89px; " />
             </div>
           </div>
-          
-
 
           <div style="height: 30px; width: 250px;  height: 30px; left: 149px; position: absolute; top: 17px; width: 250px; z-index: 1; " class="tinyText">
             <div style="position: relative; width: 250px; ">
               <img src="{{MEDIA_URL}}webpage_files/shapeimage_5m.png" alt="" style="height: 30px; left: 0px; position: absolute; top: 0px; width: 250px; " />
             </div>
           </div>
-          
-
 
           <div id="id7" style="height: 24px; left: 160px; position: absolute; top: 20px; width: 227px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_227_24" style="padding: 0px; ">
@@ -118,8 +108,6 @@
               </div>
             </div>
           </div>
-          
-
 
           <div style="height: 35px; width: 105px;  height: 35px; left: 20px; position: absolute; top: 14px; width: 105px; z-index: 1; " class="tinyText style_SkipStroke_4 stroke_0">
           	<a href="http://www.pipture.com">
@@ -132,41 +120,33 @@
               <div class="graphic_shape_layout_style_default"></div>
             </div>
           </div>
-          
-
 
           <div id="id10" style="height: 27px; left: -3px; position: absolute; top: 880px; width: 402px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_402_27" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
-                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_6">           At 100 views, this video will have reached its maximum views.  </p>
+                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_6">At {{views_limit}} views, this video will have reached its maximum views.</p>
               </div>
             </div>
           </div>
-          
-
 
           <div id="id11" style="height: 54px; left: 273px; position: absolute; top: 841px; width: 121px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_121_54" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
-                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_7">82</p>
+                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_7">{{views_count}}</p>
               </div>
             </div>
           </div>
-          
-
 
           <div style="height: 117px; width: 403px;  height: 91px; left: -4px; position: absolute; top: 135px; width: 402px; z-index: 1; " class="tinyText shadow_1">
             <div style="position: relative; width: 402px; ">
               <img src="{{MEDIA_URL}}webpage_files/shapeimage_8m.png" alt="" style="height: 117px; left: 0px; margin-top: -1px; position: absolute; top: 0px; width: 403px; " />
             </div>
           </div>
-          
-
 
           <div id="id12" style="height: 48px; left: 11px; position: absolute; top: 154px; width: 361px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_361_48" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
-                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="Body">Hey guys, thought of you when I watched this video. What do you think?</p>
+                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="Body">{{text_2}}</p>
               </div>
             </div>
           </div>
@@ -179,5 +159,3 @@
     </div>
   </body>
 </html>
-
-
