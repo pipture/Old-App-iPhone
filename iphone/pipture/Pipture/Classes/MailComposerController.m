@@ -340,15 +340,14 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
             [self displayNumberOfViewsTextField];
             [self displayInfiniteViewsRadioButtons];
             [self setInfiniteRadiobutonsVisiblity];
+            [self displayScreenshot];
+            messageEdit.text = @"";            
+            [self setEmptyMessagePlaceholderIfNeeded];
         }
         
     }
 
     [it release];
-    if (messageEdit)
-    {
-         messageEdit.text = @"";   
-    }
 
 }
 
@@ -496,12 +495,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self displayInfiniteViewsRadioButtons];
     [self setInfiniteRadiobutonsVisiblity];
     [self displayScreenshot];
-    [self setEmptyMessagePlaceholderIfNeeded];
-    if ([self isPlaceholderInMessage])
-    {
-        self.layoutTableView.contentOffset = CGPointMake(0, 0);
-    }
-    
+    [self setEmptyMessagePlaceholderIfNeeded];    
     [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
     
 }
@@ -510,7 +504,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 {
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
     
-    [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil]; 
     
     [super viewWillDisappear:animated];

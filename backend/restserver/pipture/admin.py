@@ -35,12 +35,18 @@ import pytz
 import datetime
 
 def from_local_to_utc_datetime (tz, dtime):
+    if (dtime == None):
+        return None
+        
     user_tz = pytz.timezone(tz)
     local_time = dtime
     utc_time = user_tz.normalize(user_tz.localize(local_time)).astimezone(pytz.utc)
     return datetime.datetime(utc_time.year, utc_time.month, utc_time.day, utc_time.hour, utc_time.minute, utc_time.second)
 
 def from_local_to_utc_time (tz, time):
+    if (time == None):
+        return None
+    
     user_tz = pytz.timezone(tz)
     cur_date = datetime.date.today()
     utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, time.hour, time.minute, time.second)
@@ -48,6 +54,9 @@ def from_local_to_utc_time (tz, time):
     return datetime.time(local_time.hour, local_time.minute, local_time.second)
 
 def from_utc_to_local_time (tz, time):
+    if (time == None):
+        return None
+    
     user_tz = pytz.timezone(tz)
     cur_date = datetime.date.today()
     utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, time.hour, time.minute, time.second)
@@ -55,6 +64,9 @@ def from_utc_to_local_time (tz, time):
     return datetime.time(local_time.hour, local_time.minute, local_time.second)
 
 def from_utc_to_local_datetime (tz, dtime):
+    if (dtime == None):
+        return None
+    
     user_tz = pytz.timezone(tz)
     utc_time = dtime
     local_time = pytz.utc.normalize(pytz.utc.localize(utc_time)).astimezone(user_tz)
@@ -119,8 +131,9 @@ class TimeSlotsAdmin(ButtonableModelAdmin):
         user_tz = request.user.get_profile().timezone
 
         form = super(self.__class__, self).get_form(request, obj, **kwargs)
-        obj.StartTime = from_utc_to_local_time (user_tz, obj.StartTime)
-        obj.EndTime = from_utc_to_local_time (user_tz, obj.EndTime)
+        if obj != None:
+            obj.StartTime = from_utc_to_local_time (user_tz, obj.StartTime)
+            obj.EndTime = from_utc_to_local_time (user_tz, obj.EndTime)
         return form    
 
 
@@ -207,7 +220,8 @@ class EpisodesAdmin(DeleteForbidden):
         user_tz = request.user.get_profile().timezone
 
         form = super(self.__class__, self).get_form(request, obj, **kwargs)
-        obj.DateReleased = from_utc_to_local_datetime (user_tz, obj.DateReleased)
+        if obj != None:
+            obj.DateReleased = from_utc_to_local_datetime (user_tz, obj.DateReleased)
         return form    
 
     

@@ -347,7 +347,7 @@ static PiptureAppDelegate *instance;
         UIViewController* prevViewController = self.window.rootViewController;
         [self.window setRootViewController:mailComposerNavigationController];
         [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
-        [mailComposerNavigationController prepareMailComposer:playlistItem timeslot:timeslotId prevViewController:prevViewController];
+        [mailComposerNavigationController prepareMailComposer:playlistItem timeslot:timeslotId prevViewController:prevViewController];        
         
     }
                     
@@ -409,8 +409,22 @@ static PiptureAppDelegate *instance;
     TRACK_EVENT(@"Open Activity", @"Video player");
 }
 
+- (BOOL)isHighResolutionDevice {
+    BOOL hasHighResScreen = NO;
+    if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
+        CGFloat scale = [[UIScreen mainScreen] scale];
+        if (scale > 1.0) {
+            hasHighResScreen = YES;
+        }
+    }
+    
+    return hasHighResScreen;
+}
+
 - (BOOL)getVideoURL:(PlaylistItem*)item forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver {
-    NSNumber * quality = [NSNumber numberWithInt:(curConnection == NetworkConnection_Cellular)?1:0];
+    
+    
+    NSNumber * quality = [NSNumber numberWithInt:(curConnection == NetworkConnection_Cellular || ![self isHighResolutionDevice])?1:0];
         
     return [model_ getVideoURL:item forceBuy:YES forTimeslotId:timeslotId withQuality:quality receiver:receiver];
 }

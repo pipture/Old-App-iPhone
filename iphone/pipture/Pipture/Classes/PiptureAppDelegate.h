@@ -97,6 +97,6 @@
 - (void)showInsufficientFunds;
 
 - (NetworkConnection)networkConnection;
-
+- (BOOL)isHighResolutionDevice;
 - (BOOL)getVideoURL:(PlaylistItem*)item forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
 @end
