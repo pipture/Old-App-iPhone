@@ -78,11 +78,11 @@
 	<string>register</string>
 	<key>Rest Send message</key>
 	<string>sendMessage</string>
-	<key>Rest end point</key>
+	<key>Rest end point martin</key>
 	<string>http://ec2-67-202-31-72.compute-1.amazonaws.com/</string>
 	<key>Rest end point local</key>
 	<string>http://192.168.9.129:8001/</string>
-	<key>Rest end point stage</key>
+	<key>Rest end point</key>
 	<string>http://ec2-23-20-20-219.compute-1.amazonaws.com/</string>
 	<key>UIPrerenderedIcon</key>
 	<true/>

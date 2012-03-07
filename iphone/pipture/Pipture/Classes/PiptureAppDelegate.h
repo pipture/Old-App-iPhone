@@ -49,6 +49,8 @@
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
+
+@property (retain, nonatomic) IBOutlet UINavigationController *piptureStoreNavigationController;
 @property (retain, nonatomic) IBOutlet VideoViewController *videoViewController;
 @property (retain, nonatomic) IBOutlet MailComposerNavigationController *mailComposerNavigationController;
 
@@ -83,12 +85,16 @@
 
 - (IBAction)actionButton:(id)sender;
 - (IBAction)buyAction:(id)sender;
+- (IBAction)onStoreClick:(id)sender;
 
 - (BOOL)trackEvent:(NSString*)event :(NSString*)action;
 - (void)openHome;
 - (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId;//TODO: add video mode, playlist, e .t.c
 - (void)openMailComposer:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId fromViewController:(UIViewController*)viewController;
 - (void)closeMailComposer;
+
+-(void)openPiptureStore;
+-(void)closePiptureStore;
 
 - (void)showModalBusy:(void (^)(void))completion;
 - (void)dismissModalBusy;

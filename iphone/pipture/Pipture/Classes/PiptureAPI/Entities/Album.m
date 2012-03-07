@@ -46,6 +46,8 @@
 @synthesize episodes = episodes_;
 @synthesize trailer = trailer_;
 @synthesize detailsLoaded;
+@synthesize sellStatus;
+@synthesize sellPrice;
 
 
 static NSString* const JSON_PARAM_ALBUM_ID = @"AlbumId";
@@ -81,7 +83,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     [series release];
     [episodes_ release];
     [trailer_ release];
-
+    [sellPrice release];
     [super dealloc];
 }
 
