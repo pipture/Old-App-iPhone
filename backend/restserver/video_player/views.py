@@ -55,8 +55,10 @@ def todaySeconds():
 def index(request, u_url):
     '''Render the index page'''
  
+    from restserver.pipture.models import Albums
     from restserver.pipture.models import SendMessage
     from restserver.rest_core.views import get_video_url_from_episode_or_trailer
+    from restserver.rest_core.views import get_album_status
     
     response = {}
     
@@ -82,6 +84,47 @@ def index(request, u_url):
     if error:
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
         return HttpResponse (json.dumps(response))
+
+    from restserver.pipture.models import Episodes
+
+    show_shortinfo = True
+    try:
+        id = int (urs_instance.LinkId)
+    except ValueError as e:
+        return None, "There is internal error - %s (%s)." % (e, type (e))
+    if urs_instance.LinkType not in ['E', 'T']:
+        return None, "There is unknown type %s" % (urs_instance.LinkType)
+    if urs_instance.LinkType == "E":
+        try:
+            #video = Episodes.objects.select_related(depth=1).get(EpisodeId=id)
+            video = Episodes.objects.get(EpisodeId=id)
+        except Episodes.DoesNotExist as e:
+            return None, "There is no episode with id %s" % (id)
+    else:
+        show_shortinfo = False
+
+    disclaimer = ''
+    seriesname = ''
+    title = ''
+    info_line = ''
+    released_date = ''
+    cover_pic = ''
+    
+    if show_shortinfo:
+        album = video.AlbumId
+        
+        cover_pic = (album.Thumbnail._get_url()).split('?')[0]
+        disclaimer = album.WebPageDisclaimer
+        seriesname = album.SeriesId.Title
+        title = video.Title
+        info_line = "Season %s, Album %s, Video %s" % (album.Season, album.Title, video.EpisodeNo)
+        from django.db.models import Min
+        res = Episodes.objects.filter(AlbumId=album).aggregate(Min('DateReleased'))
+        min_date = res['DateReleased__min']
+        min_date = min_date or datetime.datetime(1970, 1, 1, 00, 00)
+        released_date = min_date.strftime('Released in %h %d, %Y')
+        
+    sent_date = urs_instance.Timestamp.strftime('%B %d at %I:%M%p')
 
     video_url = ''
     message_blocked = True
@@ -123,6 +166,8 @@ def index(request, u_url):
             urs_instance.save()
             request.session["Pipture"+u_url] = storeDateTime(last_visiting)
     
+    video_url = video_url.replace("https://", "http://")
+    
     if mobileBrowser(request):
         #template_h = 'video_mobile.html'
         template_h = 'mobilepage.html'
@@ -139,6 +184,14 @@ def index(request, u_url):
             'views_limit': urs_instance.ViewsLimit,
             'views_count': urs_instance.ViewsCount,
             'message_blocked':message_blocked,
+            'show_info':show_shortinfo,
+            'disclaimer': disclaimer,
+            'seriesname': seriesname,
+            'title': title, 
+            'info_line': info_line,
+            'released_date': released_date,
+            'cover_pic': cover_pic,
+            'sent_date': sent_date,
             'from': "%s" % (urs_instance.UserName)}
     return render_to_response(template_h, data,
                                        context_instance=RequestContext(request))

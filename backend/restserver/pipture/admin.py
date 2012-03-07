@@ -159,7 +159,7 @@ class AlbumsAdmin(DeleteForbidden):
      
     fieldsets = [
         ('Related objects', {'fields': ['SeriesId', 'TrailerId']}),
-        ('Information', {'fields': ['Description', 'Season', 'Title', 'Rating', 'Credits']}),
+        ('Information', {'fields': ['Description', 'Season', 'Title', 'Rating', 'Credits', 'WebPageDisclaimer']}),
         ('Pictures:', {'fields': ['Cover', 'Thumbnail', 'CloseUpBackground', 'SquareThumbnail']}),
     ]
         
