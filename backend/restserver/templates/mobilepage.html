@@ -15,7 +15,16 @@
     <!--[if gte IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='Media/IE8.css'/><![endif]-->
     <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebSite.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebImage.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/mobilepage.js"></script>
+    <script type="text/javascript">
+    jQuery(document).ready(function(){
+
+		var video = document.getElementById('video');
+			video.addEventListener('click',function(){
+  			video.play();
+		},false);
+	});
+    	
+    </script>
   </head>
   <body style="background: rgb(0, 0, 0); margin: 0pt; " onload="onPageLoad();">
     <div style="text-align: center; ">
@@ -29,21 +38,10 @@
         </div>
         <div style="margin-left: 0px; position: relative; width: 400px; z-index: 5; " id="body_layer">
           <div style="height: 0px; line-height: 0px; " class="bumper"> </div>
-          <div id="id1" style="height: 230px; left: -3px; position: absolute; top: 913px; width: 403px; z-index: 1; " class="style_SkipStroke shape-with-text">
-            <div class="text-content graphic_shape_layout_style_default_External_403_230" style="padding: 0px; ">
-              <div class="graphic_shape_layout_style_default"></div>
-            </div>
-          </div>
           
           <div id="id3" style="height: 75px; left: -4px; position: absolute; top: 60px; width: 403px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
             <div class="text-content graphic_shape_layout_style_default_External_403_75" style="padding: 0px; ">
               <div class="graphic_shape_layout_style_default"></div>
-            </div>
-          </div>
-
-          <div style="height: 200px; width: 380px;  height: 200px; left: 7px; position: absolute; top: 926px; width: 380px; z-index: 1; " class="tinyText">
-            <div style="position: relative; width: 380px; ">
-              <img src="{{MEDIA_URL}}webpage_files/shapeimage_1.png" alt="" style="height: 200px; left: 0px; position: absolute; top: 0px; width: 380px; " />
             </div>
           </div>
 
@@ -52,7 +50,10 @@
             	{% if message_blocked %}
             	<img src="{{image_url}}" width="400" height="600" alt="" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px;">
             	{% else %}
-              	<video src="{{video_url}}" width="400" height="600" alt="" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px;" poster="{{image_url}}" fullscreen="false" controls="controls"></video>
+              	<video id="video" autobuffer width="400" height="600" poster="{{image_url}}" controls="controls">
+              		<source src="{{ video_url }}">
+              			
+              	</video>
               	{% endif %}
             </div>
           </div>
@@ -61,8 +62,21 @@
             <div class="text-content graphic_textbox_layout_style_default_External_249_56" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
                 <p style="padding-top: 0pt; " class="paragraph_style"><span class="style">From</span> <span class="style_1">{{from}}</span><br /></p>
-                <p style="padding-bottom: 0pt; " class="paragraph_style_1">January 9 at 3:48pm</p>
+                <p style="padding-bottom: 0pt; " class="paragraph_style_1">{{sent_date}}</p>
               </div>
+            </div>
+          </div>
+
+		{% if show_info %}
+		  <div id="id1" style="height: 230px; left: -3px; position: absolute; top: 913px; width: 403px; z-index: 1; " class="style_SkipStroke shape-with-text">
+            <div class="text-content graphic_shape_layout_style_default_External_403_230" style="padding: 0px; ">
+              <div class="graphic_shape_layout_style_default"></div>
+            </div>
+          </div>
+          
+          <div style="height: 200px; width: 380px;  height: 200px; left: 7px; position: absolute; top: 926px; width: 380px; z-index: 1; " class="tinyText">
+            <div style="position: relative; width: 380px; ">
+              <img src="{{MEDIA_URL}}webpage_files/shapeimage_1.png" alt="" style="height: 200px; left: 0px; position: absolute; top: 0px; width: 380px; " />
             </div>
           </div>
 
@@ -70,10 +84,10 @@
             <div class="text-content style_External_205_108" style="padding: 0px; ">
               <div class="style_2">
                 <p style="padding-top: 0pt; " class="paragraph_style_2">About the video:<br /></p>
-                <p class="paragraph_style_3">Let’s get together<br /></p>
-                <p class="paragraph_style_3">THE N.J. BRO<br /></p>
-                <p class="paragraph_style_3">Season 1, Album 1, Video 32 <br /></p>
-                <p style="padding-bottom: 0pt; " class="paragraph_style_3">Released in Jan 2, 2011</p>
+                <p class="paragraph_style_3">{{ title }}<br /></p>
+                <p class="paragraph_style_3">{{ seriesname }}<br /></p>
+                <p class="paragraph_style_3">{{ info_line }} <br /></p>
+                <p style="padding-bottom: 0pt; " class="paragraph_style_3">{{ released_date }}</p>
               </div>
             </div>
           </div>
@@ -81,17 +95,22 @@
           <div id="id6" style="height: 58px; left: 132px; position: absolute; top: 951px; width: 215px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_215_58" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
-                <p style="padding-top: 0pt; " class="paragraph_style_4">Did you see the series THE N.J. BRO on <span class="style_3">Pipture</span>?  <br /></p>
-                <p style="padding-bottom: 0pt; " class="paragraph_style_4">The series stars Greg Burke</p>
+                <p style="padding-top: 0pt; " class="paragraph_style_4">Did you see the series {{seriesname}} on
+                	<a href="http://itunes.apple.com/us/collection/apple-apps/id25204?fcId=489239905&mt=8&v0=WWW-NAUS-STAPG-GAMESAPPS-PROMO"> 
+                		<span class="style_3">Pipture</span></a>?  <br />
+                </p>
+                	
+                <p style="padding-bottom: 0pt; " class="paragraph_style_4">{{ disclaimer }}</p>
               </div>
             </div>
           </div>
 
           <div style="height: 150px; width: 89px;  height: 150px; left: 26px; position: absolute; top: 952px; width: 89px; z-index: 1; " class="tinyText">
             <div style="position: relative; width: 89px; ">
-              <img src="{{MEDIA_URL}}webpage_files/shapeimage_5.png" alt="" style="height: 150px; left: 0px; position: absolute; top: 0px; width: 89px; " />
+              <img src="{{ cover_pic }}" alt="" style="height: 150px; left: 0px; position: absolute; top: 0px; width: 89px; " />
             </div>
           </div>
+       	{% endif %}
 
           <div style="height: 30px; width: 250px;  height: 30px; left: 149px; position: absolute; top: 17px; width: 250px; z-index: 1; " class="tinyText">
             <div style="position: relative; width: 250px; ">
@@ -137,19 +156,31 @@
             </div>
           </div>
 
-          <div style="height: 117px; width: 403px;  height: 91px; left: -4px; position: absolute; top: 135px; width: 402px; z-index: 1; " class="tinyText shadow_1">
+          <div style="height: 117px; width: 403px;  height: 91px; left: -4px; position: absolute; top: 175px; width: 402px; z-index: 1; " class="tinyText shadow_1">
             <div style="position: relative; width: 402px; ">
               <img src="{{MEDIA_URL}}webpage_files/shapeimage_8m.png" alt="" style="height: 117px; left: 0px; margin-top: -1px; position: absolute; top: 0px; width: 403px; " />
             </div>
           </div>
 
-          <div id="id12" style="height: 48px; left: 11px; position: absolute; top: 154px; width: 361px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
+          <div id="id12" style="height: 48px; left: 11px; position: absolute; top: 194px; width: 361px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_361_48" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
                 <p style="padding-bottom: 0pt; padding-top: 0pt; " class="Body">{{text_2}}</p>
               </div>
             </div>
           </div>
+          
+          {% if message_blocked %}
+          <div id="id9" style="height: 44px; left: 0px; position: absolute; top: 125px; width: 399px; z-index: 1; " class="style_SkipStroke_4m shape-with-text">
+            <div class="text-content graphic_textbox_layout_style_default_External_399_44" style="padding: 0px; ">
+              <div class="graphic_textbox_layout_style_default">
+                <p style="padding-top: 0pt; " class="paragraph_style_8m">VIDEO NO LONGER ACCESSIBLE<br /></p>
+                <p style="padding-bottom: 0pt; " class="paragraph_style_9m">It has reached the maximum amount of views</p>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          
           <div style="height: 1200px; line-height: 1200px; " class="spacer"> </div>
         </div>
         <div style="height: 0px; line-height: 0px; margin-left: 0px; position: relative; width: 400px; z-index: 15; " id="footer_layer">

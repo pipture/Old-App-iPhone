@@ -110,6 +110,7 @@ class Albums(models.Model):
     Thumbnail = S3EnabledFileField (upload_to=u'documents/', verbose_name='Cover Thumbnail')
     CloseUpBackground = S3EnabledFileField (verbose_name='Cover', upload_to=u'documents/')
     SquareThumbnail = S3EnabledFileField (verbose_name='Default Screenshot', upload_to=u'documents/')
+    WebPageDisclaimer = models.CharField (max_length=100, verbose_name='Webpage Disclaimer')
 
     @property
     def complexName(self):
