@@ -390,7 +390,7 @@ class PipUsers(models.Model):
 
 class PurchaseItems(models.Model):
     PurchaseItemId = models.AutoField (primary_key=True)
-    Description = models.CharField (max_length=100, editable=False)
+    Description = models.CharField (max_length=100, editable=False, verbose_name="Internal purchase description")
     Price = models.DecimalField( max_digits=7, decimal_places=0)
     
     def __unicode__(self):
@@ -558,6 +558,7 @@ def install(**kwargs):
     if PurchaseItems.objects.count() == 0:
         PurchaseItems(Description="WatchEpisode", Price=Decimal('1')).save()   
         PurchaseItems( Description="SendEpisode", Price=Decimal('1')).save()
+        PurchaseItems( Description="Album", Price=Decimal('0')).save()
     
 
     if AppleProducts.objects.count() == 0:
