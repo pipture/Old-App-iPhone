@@ -498,6 +498,7 @@ def getAlbums (request):
         
     response, error = fill_albums_response(user_id=None)
     if error:
+        response = {}
         response["Error"] = error
         return HttpResponse (json.dumps(response))
 
@@ -525,6 +526,7 @@ def getSellableAlbums (request):
     
     response, error = fill_albums_response(user_id=key)
     if error:
+        response = {}
         response["Error"] = error
         return HttpResponse (json.dumps(response))
     
