@@ -416,10 +416,10 @@ class UserPurchasedItems(models.Model):
     ItemCost = models.DecimalField(editable=False, max_digits=7, decimal_places=0)
     
     def __unicode__(self):
-        return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemCost)
+        return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemId)
 
     def __str__(self):
-        return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemCost)
+        return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemId)
 
     class Admin:
         pass

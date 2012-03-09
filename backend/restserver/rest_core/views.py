@@ -466,7 +466,7 @@ def fill_albums_response(user_id):
             if not albumid_inlist(albumid=album.AlbumId, lister=purchased_albums_list):
                 album_each = {}            
                 album_each['AlbumId'] = album.AlbumId
-                album_each['Cover'] =  (album.Cover._get_url()).split('?')[0]
+                album_each['Cover'] =  (album.CloseUpBackground._get_url()).split('?')[0]
                 album_each['SeriesTitle'] = album.SeriesId.Title
                 album_each['Title'] = album.Title
                 if album.PurchaseStatus == 'P':
