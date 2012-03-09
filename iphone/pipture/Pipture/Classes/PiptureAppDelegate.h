@@ -16,6 +16,8 @@
 #import "NetworkConnectionInformer.h"
 #import "NetworkErrorAlerter.h"
 #import "MailComposerNavigationController.h"
+#import "PiptureStoreModel.h"
+#import "PiptureStoreController.h"
 
 #define PLACEHOLDER1 @"default.png"
 
@@ -53,7 +55,7 @@
 @property (retain, nonatomic) IBOutlet UINavigationController *piptureStoreNavigationController;
 @property (retain, nonatomic) IBOutlet VideoViewController *videoViewController;
 @property (retain, nonatomic) IBOutlet MailComposerNavigationController *mailComposerNavigationController;
-
+@property (readonly, nonatomic) InAppPurchaseManager* purchases;
 
 @property (readonly, nonatomic) PiptureModel * model;
 @property (retain, nonatomic) BusyViewController * busyView;

@@ -11,9 +11,10 @@
 
 @interface PurchaseSession : NSObject<PurchaseDelegate, UIAlertViewDelegate> {
     NSString*receipt_;
+    NSString*appleProductId_;
 }    
 
--(id)initWithReceipt:(NSString*)receipt;
+-(id)initWithReceipt:(NSString*)receipt appleProductId:(NSString*)appleProductId;
 -(void)run;
 
 @end
@@ -21,16 +22,18 @@
 @implementation PurchaseSession
     
 
--(id)initWithReceipt:(NSString*)receipt {
+-(id)initWithReceipt:(NSString*)receipt appleProductId:(NSString*)appleProductId {
     self = [super init];
     if (self) {
         receipt_ = [receipt retain];
+        appleProductId_ = [appleProductId retain];
     }
     return self;
 }
 
 - (void)dealloc {
     [receipt_ release];
+    [appleProductId_ release];
     [super dealloc];
 }
 
@@ -50,6 +53,10 @@
         [self runRaw];
     } else {
         [[PiptureAppDelegate instance] dismissModalBusy];        
+        NSRange rng = [appleProductId_ rangeOfString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumProductPrefix"]];
+        if (0 == rng.location) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:ALBUM_PURCHASED_NOTIFICATION object:nil];
+        }
         [self release];        
     }
 }
@@ -112,11 +119,20 @@
     [super dealloc];
 }
 
+- (void)requestProductsWithIds:(NSSet*)ids delegate:(id<SKProductsRequestDelegate>)delegate
+{                
+    productsRequest = [[[SKProductsRequest alloc] initWithProductIdentifiers:ids] autorelease];
+    productsRequest.delegate = delegate;
+    [productsRequest start];
+
+} 
+
+
 - (void)requestCreditsProductData
 {
     NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
     NSSet *productIdentifiers = [NSSet setWithObject:productId];
-    productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
+    productsRequest = [[[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers] autorelease];
     productsRequest.delegate = self;
     [productsRequest start];
 } 
@@ -159,6 +175,16 @@
     
 } 
 
+- (void)purchaseAlbum:(NSString*)appleProductId {
+    
+    TRACK_EVENT(@"PurchaseAlbum", @"Start album purchasing");
+    
+    [[PiptureAppDelegate instance] showModalBusy:^{
+        SKPayment *payment = [SKPayment paymentWithProductIdentifier:appleProductId];
+        [[SKPaymentQueue defaultQueue] addPayment:payment];
+    }];
+    
+}
 #pragma mark -
 #pragma mark Purchase helpers 
 
@@ -201,12 +227,13 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 //
 - (void)finishTransaction:(SKPaymentTransaction *)transaction wasSuccessful:(BOOL)wasSuccessful
 {
+
     // remove the transaction from the payment queue.
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
     if (wasSuccessful)
     {
         NSString * base64 = [self base64Encoding:transaction.transactionReceipt];
-        PurchaseSession* purchase = [[PurchaseSession alloc] initWithReceipt:base64];
+        PurchaseSession* purchase = [[PurchaseSession alloc] initWithReceipt:base64 appleProductId:[transaction payment].productIdentifier];                
         [purchase run];
         [purchase release];
         NSLog(@"InApp transaction OK!");
@@ -305,7 +332,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         NSLog(@"Invalid product id: %@" , invalidProductId);
     }
 
-    [productsRequest release];
 }
 
 

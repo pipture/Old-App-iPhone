@@ -44,6 +44,12 @@
 	<string>24</string>
 	<key>CreditesProductId</key>
 	<string>com.pipture.Pipture.credits</string>
+	<key>AlbumPassProductId</key>
+	<string>com.pipture.Pipture.AlbumPass.%d</string>
+	<key>AlbumBuyProductId</key>
+	<string>com.pipture.Pipture.AlbumBuy.%d</string>
+	<key>AlbumProductPrefix</key>
+	<string>com.pipture.Pipture.Album</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
@@ -60,6 +66,8 @@
 	<string>getAlbumScreenshots?%@=%@</string>
 	<key>Rest Get albums request</key>
 	<string>getAlbums?</string>
+	<key>Rest Get sellable albums request</key>
+	<string>getSellableAlbums?</string>
 	<key>Rest Get balance</key>
 	<string>getBalance?</string>
 	<key>Rest Get current timeslots</key>

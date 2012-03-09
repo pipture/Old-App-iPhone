@@ -30,6 +30,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize window = _window;
 @synthesize homeNavigationController;
 @synthesize piptureStoreNavigationController;
+@synthesize purchases = purchases;
 @synthesize videoViewController;
 @synthesize mailComposerNavigationController;
 @synthesize model = model_;
@@ -61,7 +62,6 @@ static PiptureAppDelegate *instance;
     [homeViewController release];
     [busyView release];
     [[GANTracker sharedTracker] stopTracker];
-    
     [purchases release];
     [homeNavigationController release];
     [_window release];
@@ -77,6 +77,8 @@ static PiptureAppDelegate *instance;
     [backgroundImage release];
     [mailComposerNavigationController release];
     [piptureStoreNavigationController release];
+
+    
     [super dealloc];
 }
 
@@ -342,7 +344,7 @@ static PiptureAppDelegate *instance;
         [animation setDuration:0.5];
         [animation setType:kCATransitionMoveIn];
         [animation setSubtype:kCATransitionFromTop];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];        
+        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
         [self.window setRootViewController:piptureStoreNavigationController];
         [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
         

@@ -60,13 +60,15 @@ static NSString* const JSON_PARAM_RATING = @"Rating";
 static NSString* const JSON_PARAM_COVER = @"Cover";
 static NSString* const JSON_PARAM_RELEASE_DATE = @"ReleaseDate";
 static NSString* const JSON_PARAM_THUMBNAIL = @"Thumbnail";
-static NSString* const JSON_PARAM_CLOSEUP = @"Closeup";
+static NSString* const JSON_PARAM_CLOSEUP = @"Cover";
 static NSString* const JSON_PARAM_CREDITS = @"Credits";
+static NSString* const JSON_PARAM_SELL_STATUS = @"SellStatus";
 
 static NSString* const CREDITS_SEPARATOR = @".";
 static NSString* const CREDITS_TITLE_SEPARATOR = @":";
 static NSString* const CREDITS_ITEM_SEPARATOR = @";";
 static NSString* const CREDITS_ITEM_TAB = @",";
+
 
 
 - (void)dealloc {
@@ -138,6 +140,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     self.title = [jsonData strValueForKey:JSON_PARAM_TITLE defaultIfEmpty:self.title];
     self.series.title = [jsonData strValueForKey:JSON_PARAM_SERIES_TITLE defaultIfEmpty:self.series.title];
     self.status = [jsonData intValueForKey:JSON_PARAM_STATUS defaultIfEmpty:self.status];
+    self.sellStatus = [jsonData intValueForKey:JSON_PARAM_SELL_STATUS defaultIfEmpty:self.sellStatus];
     self.albumDescription = [jsonData strValueForKey:JSON_PARAM_ALBUM_DESCRIPTION defaultIfEmpty:self.albumDescription];
     self.season = [jsonData strValueForKey:JSON_PARAM_SEASON defaultIfEmpty:self.season];
     self.rating = [jsonData strValueForKey:JSON_PARAM_RATING defaultIfEmpty:self.rating];

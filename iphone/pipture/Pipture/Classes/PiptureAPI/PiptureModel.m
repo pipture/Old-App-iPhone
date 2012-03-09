@@ -42,6 +42,7 @@ NSString *GET_PLAYLIST_FOR_TIMESLOT_REQUEST;
 NSString *GET_VIDEO_FROM_TIMESLOT_REQUEST;
 NSString *GET_VIDEO_REQUEST;
 NSString *GET_ALBUMS_REQUEST;
+NSString *GET_SELLABLE_ALBUMS_REQUEST;
 NSString *GET_ALBUM_DETAILS_REQUEST;
 NSString *GET_ALBUM_DETAILS_FOR_TIMESLOT_REQUEST;
 NSString *GET_BALANCE_REQUEST;
@@ -91,6 +92,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         GET_VIDEO_FROM_TIMESLOT_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get video from timeslot"] retain];        
         GET_VIDEO_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get video"] retain];        
         GET_ALBUMS_REQUEST =  [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get albums request"] retain];
+        GET_SELLABLE_ALBUMS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get sellable albums request"] retain];
         GET_ALBUM_DETAILS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get album details"] retain]; 
         GET_ALBUM_DETAILS_FOR_TIMESLOT_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get album details for timeslot"] retain]; 
         GET_BALANCE_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get balance"] retain];
@@ -116,6 +118,7 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
     [GET_PLAYLIST_FOR_TIMESLOT_REQUEST release];  
     [GET_VIDEO_FROM_TIMESLOT_REQUEST release];  
     [GET_ALBUMS_REQUEST release];  
+    [GET_SELLABLE_ALBUMS_REQUEST release];
     [GET_ALBUM_DETAILS_REQUEST release];  
     [GET_ALBUM_DETAILS_FOR_TIMESLOT_REQUEST release];
     [GET_VIDEO_REQUEST release];  
@@ -485,6 +488,46 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
     request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];    
     return [request startExecute];
  
+}
+
+-(BOOL)getSellableAlbumsForReceiver:(NSObject<SellableAlbumsReceiver>*)receiver {
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_SELLABLE_ALBUMS_REQUEST]];
+    
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
+        
+        if (error) 
+        {
+            [PiptureModel processError:error receiver:receiver];
+        } 
+        else
+        {
+            NSMutableString*errDesc = [NSMutableString string];
+            NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
+            switch (errCode) { 
+                case 0:   
+                {
+                    NSArray* albums = [[PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_ALBUMS itemCreator:^(NSDictionary*jsonIT)
+                                        {
+                                            return [[[Album alloc] initWithJSON:jsonIT] autorelease];
+                                        } itemName:@"Album"] retain];              
+                    
+                    [receiver performSelectorOnMainThread:@selector(albumsReceived:) withObject:albums waitUntilDone:YES];
+                    [albums release];
+                    break;
+                }
+                case 100:                        
+                    [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];                    
+                    break;                                                
+                default:
+                    [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
+                    break;
+            }                            
+        }        
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
+    }];
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];    
+    return [request startExecute];    
 }
 
 -(BOOL)getAlbumDetails:(NSURL*)url album:(Album*)album receiver:(NSObject<AlbumDetailsReceiver>*)receiver

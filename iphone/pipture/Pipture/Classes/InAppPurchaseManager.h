@@ -10,6 +10,8 @@
 #import "PiptureModel.h"
 #import "BusyViewController.h"
 
+#define ALBUM_PURCHASED_NOTIFICATION @"AlbumPurchasedNotification"
+
 @interface InAppPurchaseManager : NSObject <SKProductsRequestDelegate, SKPaymentTransactionObserver, UIAlertViewDelegate>
 {
     SKProduct *creditsProduct;
@@ -17,8 +19,11 @@
 }
 
 // public methods
+- (void)requestProductsWithIds:(NSSet*)ids delegate:(id<SKProductsRequestDelegate>)delegate;
+
 - (void)loadStore;
 - (BOOL)canMakePurchases;
 - (void)purchaseCredits;
+- (void)purchaseAlbum:(NSString*)appleProductId;
 
 @end

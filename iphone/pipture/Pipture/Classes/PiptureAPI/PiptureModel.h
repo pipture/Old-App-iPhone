@@ -33,11 +33,13 @@
 
 @end
 
+@protocol SensitiveDataReceiver
+@required
+-(void)authenticationFailed;
+@end
 
 @protocol TimeslotsReceiver <PiptureModelDelegate>
-
 -(void)timeslotsReceived:(NSArray*)timeslots;
-
 @end
 
 @protocol PlaylistReceiver <PiptureModelDelegate>
@@ -50,10 +52,9 @@
 
 @end
 
-@protocol BalanceReceiver <PiptureModelDelegate>
+@protocol BalanceReceiver <PiptureModelDelegate,SensitiveDataReceiver>
 @required
 -(void)balanceReceived:(NSDecimalNumber*)balance;
--(void)authenticationFailed;
 @end
 
 @protocol VideoURLReceiver <BalanceReceiver>
@@ -75,6 +76,9 @@
 -(void)albumsReceived:(NSArray*)albums;
 @end
 
+@protocol SellableAlbumsReceiver <AlbumsReceiver,SensitiveDataReceiver>
+@end
+
 @protocol AuthenticationDelegate <PiptureModelDelegate>
 @required
 -(void)loggedIn;
@@ -82,10 +86,9 @@
 -(void)registred:(NSString*)uuid;
 @end
 
-@protocol PurchaseDelegate <PiptureModelDelegate>
+@protocol PurchaseDelegate <PiptureModelDelegate,SensitiveDataReceiver>
 @required
 -(void)purchased:(NSDecimalNumber*)newBalance;
--(void)authenticationFailed;
 -(void)purchaseNotConfirmed;
 -(void)unknownProductPurchased;
 -(void)duplicateTransactionId;
@@ -131,6 +134,8 @@
 -(BOOL)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId withQuality:(NSNumber*)videoQuality receiver:(NSObject<VideoURLReceiver>*)receiver;
 
 -(BOOL)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver;
+
+-(BOOL)getSellableAlbumsForReceiver:(NSObject<SellableAlbumsReceiver>*)receiver;
 
 -(BOOL)getDetailsForAlbum:(Album*)album receiver:(NSObject<AlbumDetailsReceiver>*)receiver;
 

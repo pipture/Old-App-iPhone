@@ -18,6 +18,7 @@
 @synthesize priceLabel;
 @synthesize navigationPanel;
 
+
 static NSString* const activeImage = @"active-librarycard.png";
 static NSString* const inactiveImage = @"inactive-librarycard.png";
 static NSString* const PASS_PRICE_TAG = @"BUY One ALBUM PASS for $%@";
@@ -25,6 +26,19 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 @synthesize closeButton;
 @synthesize libraryCardButton;
+
+-(void)subscribeModel {
+    if (model) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAlbumsUpdate:) name:SELLABLE_ALBUMS_UPDATE_NOTIFICATION object:model];  
+    }
+}
+
+-(void)unsubscribeModel {
+    if (model) {    
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:SELLABLE_ALBUMS_UPDATE_NOTIFICATION object:model];
+    }
+}
+
 
 -(void)displayLibraryCard {
     [libraryCardButton setBackgroundImage:[UIImage imageNamed:([[PiptureAppDelegate instance] getBalance] > 0 ? activeImage : inactiveImage )] forState:UIControlStateNormal];
@@ -34,110 +48,9 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
   
     }
     return self;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
-#pragma mark - View lifecycle
-
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView
-{
-}
-*/
-
-
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    UIBarButtonItem* lcbi = [[UIBarButtonItem alloc] initWithCustomView:libraryCardButton];    
-    UIBarButtonItem* cbi = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
-    self.navigationItem.leftBarButtonItem = lcbi;
-    self.navigationItem.rightBarButtonItem = cbi;    
-    [lcbi release];    
-    [cbi release];
-
-    self.navigationItem.title = @"Pipture Store";
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];  
-    
-    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
-    scrollView.showsHorizontalScrollIndicator = NO;
-    scrollView.showsVerticalScrollIndicator = NO;
-    scrollView.scrollsToTop = NO;
-    scrollView.delegate = self;
-    
-    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
-    singleFingerTap.cancelsTouchesInView = NO;
-    [self.scrollView addGestureRecognizer:singleFingerTap];
-    [singleFingerTap release];    
-} 
-
-- (void) onNewBalance:(NSNotification *) notification {
-    [self displayLibraryCard];
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    [self displayLibraryCard];
-    [self updateAlbums];
-}
-
--(void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-}
-
-- (void)viewDidUnload
-{
-    [self setLibraryCardButton:nil];    
-    [self setCloseButton:nil];    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];      
-    [self setTitleLabel:nil];
-    [self setPriceLabel:nil];
-    [self setNavigationPanel:nil];
-    [self setScrollView:nil];
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-- (void)dealloc {
-    [libraryCardButton release];
-    [closeButton release];                                              
-    [titleLabel release];
-    [priceLabel release];
-    [navigationPanel release];
-    [scrollView release];
-    [coverItems release];
-    [super dealloc];
-}
-
-- (IBAction)onLibraryCardTap:(id)sender {
-    [[PiptureAppDelegate instance] buyViews];
-}
-
-
-- (IBAction)onCloseTap:(id)sender {
-    [[PiptureAppDelegate instance] closePiptureStore];    
-    
 }
 
 - (void)updateAlbumInfo:(Album*)album {
@@ -272,7 +185,14 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
             [self redraw];         
             return;
         }
-        
+        int curPage = [self getPageNumber];
+        if (curPage < 0) {
+            curPage = 0;
+        } else {
+            while (![model pageInRange:curPage] && curPage > 0) {
+                curPage --;
+            }
+        }
 
         
         if (coverItems) {
@@ -300,7 +220,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
             [[scrollView.subviews lastObject] removeFromSuperview];
         }
         
-        int page = 0;
+        int page = curPage;
         [self scrollToPage:page animated:NO];
         [self prepareImageFor: page - 1];
         [self prepareImageFor: page];
@@ -313,6 +233,106 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
         [self redraw];
         
     }
+}
+
+- (void) onAlbumsUpdate:(NSNotification *) notification {
+    [self updateAlbums];
+}
+
+
+- (void) onNewBalance:(NSNotification *) notification {
+    [self displayLibraryCard];
+}
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    UIBarButtonItem* lcbi = [[UIBarButtonItem alloc] initWithCustomView:libraryCardButton];    
+    UIBarButtonItem* cbi = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
+    self.navigationItem.leftBarButtonItem = lcbi;
+    self.navigationItem.rightBarButtonItem = cbi;    
+    [lcbi release];    
+    [cbi release];
+    
+    self.navigationItem.title = @"Pipture Store";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];  
+    
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
+    scrollView.showsHorizontalScrollIndicator = NO;
+    scrollView.showsVerticalScrollIndicator = NO;
+    scrollView.scrollsToTop = NO;
+    scrollView.delegate = self;
+    
+    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    singleFingerTap.cancelsTouchesInView = NO;
+    [self.scrollView addGestureRecognizer:singleFingerTap];
+    [singleFingerTap release];    
+} 
+
+
+-(void)loadView {
+    [super loadView];
+    if (!model) {
+        model = [[PiptureStoreModel alloc] init];
+        [self subscribeModel];
+    }
+
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self displayLibraryCard];
+    [self updateAlbums];
+    [model updateAlbums];
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+}
+
+-(void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+}
+
+- (void)viewDidUnload
+{
+    [self setLibraryCardButton:nil];    
+    [self setCloseButton:nil];    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];      
+    [self setTitleLabel:nil];
+    [self setPriceLabel:nil];
+    [self setNavigationPanel:nil];
+    [self setScrollView:nil];
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+}
+
+- (void)dealloc {
+    [libraryCardButton release];
+    [closeButton release];                                              
+    [titleLabel release];
+    [priceLabel release];
+    [navigationPanel release];
+    [scrollView release];
+    [coverItems release];
+    [self unsubscribeModel];
+    [model release];
+    [super dealloc];
+}
+
+- (IBAction)onLibraryCardTap:(id)sender {
+    [[PiptureAppDelegate instance] buyViews];
+}
+
+
+- (IBAction)onCloseTap:(id)sender {
+    [[PiptureAppDelegate instance] closePiptureStore];    
+    
 }
 
 
@@ -331,7 +351,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (IBAction)onBuyButton:(id)sender {
-    NSLog(@"Buy");
+    [model buyAlbumAtPage:[self getPageNumber]];
 }
 
 - (void)processWrap {
