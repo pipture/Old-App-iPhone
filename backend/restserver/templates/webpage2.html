@@ -2,10 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
-    <meta name="Generator" content="iWeb 3.0.4">
-    <meta name="iWeb-Build" content="local-build-20120109">
-    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
-    <meta name="viewport" content="width=960">
+    <meta name="viewport" content="width=640">
     <title>Pipture page</title>
 
     <script src="{{MEDIA_URL}}jquery.js"></script>
@@ -40,19 +37,17 @@
             </div>
           </div>
 
-          <div style="height: 600px; width: 400px;  height: 600px; left: 20px; position: absolute; top: 60px; width: 400px; z-index: 1; " class="myCustom">
-            <div style="position: relative; width: 400px; ">
+          <div style="height: 600px; width: 400px; left: 20px; position: absolute; top: 60px; z-index: 1; ">
+            <div style="position: relative; width: 400px; height: 600px">
             	{% if message_blocked %}
             	<img src="{{image_url}}" width="400" height="600" alt="" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px;">
             	{% else %}
-              	<video width="400" height="600" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px;" poster="{{image_url}}" fullscreen="false">
+              	<video id="video" preload="none" width="400" height="600" poster="{{image_url}}" fullscreen="false">
     				<source type="video/mp4" src="{{video_url}}" />
-    				<object width="400" height="600" type="application/x-shockwave-flash" data="flashmediaelement.swf">
-        				<param name="movie" value="flashmediaelement.swf" />
+    				<object width="400" height="600" type="application/x-shockwave-flash" data="{{MEDIA_URL}}flashmediaelement.swf">
+        				<param name="movie" value="{{MEDIA_URL}}flashmediaelement.swf" />
         				<param name="flashvars" value="controls=true&file={{video_url}}" />
-        				<!-- Image as a last resort -->
-        				<img src="{{image_url}}" width="400" height="600" title="No video playback capabilities" />
-    				</object>
+        			</object>
 				</video>
               	{% endif %}
             </div>
@@ -211,7 +206,7 @@
 <script type="text/javascript">
 jQuery(document).ready(function(){
 
-	jQuery('video,audio').mediaelementplayer({features: ['playpause','progress','volume']});
+	jQuery('video,audio').mediaelementplayer({videoWidth: 400, videoHeight: 600, features: ['playpause','progress','volume']});
 
 });
 
