@@ -72,7 +72,8 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 - (CGRect) rectImageForIdx:(int)idx {
     int w = scrollView.frame.size.width;
-    return CGRectMake(w*idx, 0, w, scrollView.frame.size.height);
+    int h = scrollView.frame.size.height;
+    return CGRectMake(w*idx, 0, w, h);
 }
 
 - (void) imagePlace:(Album *) album rect:(CGRect) frame idx:(int)idx{
@@ -255,10 +256,14 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     self.navigationItem.rightBarButtonItem = cbi;    
     [lcbi release];    
     [cbi release];
-    
+  
+
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+        
     self.navigationItem.title = @"Pipture Store";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];  
-    
+    //TODO: By some reason height is set to 500 without next line. Reason to be found ()
+    scrollView.frame = CGRectMake(0, 0, 320, 480); 
     scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.showsVerticalScrollIndicator = NO;
@@ -281,7 +286,14 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 }
 
+-(void)viewDidAppear:(BOOL)animated{
+    self.view.frame = CGRectMake(0, -64, 320, 480);    
+    [super viewDidAppear:animated];
+
+}
+
 -(void)viewWillAppear:(BOOL)animated{
+    
     [super viewWillAppear:animated];
     [self displayLibraryCard];
     [self updateAlbums];

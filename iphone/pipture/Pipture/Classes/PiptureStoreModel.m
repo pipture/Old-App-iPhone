@@ -6,6 +6,12 @@
 //  Copyright (c) 2012 Thumbtack Technology. All rights reserved.
 //
 
+#ifdef DEBUG
+#define SHOW_STORE_WHEN_CANT_MAKE_PURCHASES 1
+#else
+#define SHOW_STORE_WHEN_CANT_MAKE_PURCHASES 0
+#endif
+
 #import "PiptureStoreModel.h"
 #import "PiptureAppDelegate.h"
 
@@ -84,11 +90,26 @@
 
 -(void)buyAlbumAtPage:(NSInteger)page {
     if ([self pageInRange:page]) {
-        Album* album = [self albumForPage:page];
-        NSString*appleProductId = [self appleProductIdForAlbum:album];
-        [[[PiptureAppDelegate instance] purchases] purchaseAlbum:appleProductId];
+        InAppPurchaseManager* purchaseMgr = [[PiptureAppDelegate instance] purchases];
+        if ([purchaseMgr canMakePurchases]) {
+            Album* album = [self albumForPage:page];
+            NSString*appleProductId = [self appleProductIdForAlbum:album];
+            [purchaseMgr purchaseAlbum:appleProductId];
+        } else {
+            SHOW_ERROR(@"Purchase failed", @"Can't make purchases!");
+        }
     }
     
+}
+
+- (void)setFakePrices
+{    
+    for (int i=newAlbums_.count - 1; i>=0; i--) {
+        Album* a = [newAlbums_ objectAtIndex:i];
+        a.sellPrice = [NSDecimalNumber decimalNumberWithString:(a.sellStatus == AlbumSellStatus_Pass) ? @"3.99" : @"4.99"];
+    }
+    [albums_ removeAllObjects];
+    [albums_ addObjectsFromArray:newAlbums_];        
 }
 
 
@@ -97,11 +118,18 @@
 -(void)albumsReceived:(NSArray *)albums {
     @synchronized(self)
     {
+        InAppPurchaseManager* purchaseMgr = [[PiptureAppDelegate instance] purchases];
+        
         [newAlbums_ removeAllObjects];
         [newAlbums_ addObjectsFromArray:albums];
-        [[PiptureAppDelegate instance] showModalBusy:^{
-            [[[PiptureAppDelegate instance] purchases] requestProductsWithIds:[self appleProductIds:newAlbums_] delegate:self];
-        }];
+        if ([purchaseMgr canMakePurchases]) {
+            [[PiptureAppDelegate instance] showModalBusy:^{
+                [purchaseMgr requestProductsWithIds:[self appleProductIds:newAlbums_] delegate:self];
+            }];
+        } else if (SHOW_STORE_WHEN_CANT_MAKE_PURCHASES) {
+            [self setFakePrices];
+            [[NSNotificationCenter defaultCenter] postNotificationName:SELLABLE_ALBUMS_UPDATE_NOTIFICATION object:self];                
+        }
     }      
 }
 
@@ -139,6 +167,7 @@
         [[PiptureAppDelegate instance] dismissModalBusy];
     }
 }
+
 
 
 
