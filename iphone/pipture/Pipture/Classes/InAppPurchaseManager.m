@@ -53,10 +53,6 @@
         [self runRaw];
     } else {
         [[PiptureAppDelegate instance] dismissModalBusy];        
-        NSRange rng = [appleProductId_ rangeOfString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumProductPrefix"]];
-        if (0 == rng.location) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:ALBUM_PURCHASED_NOTIFICATION object:nil];
-        }
         [self release];        
     }
 }
@@ -71,6 +67,10 @@
 -(void)purchased:(NSDecimalNumber*)newBalance {
     SET_BALANCE(newBalance);
     [[PiptureAppDelegate instance] dismissModalBusy];
+    NSRange rng = [appleProductId_ rangeOfString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumProductPrefix"]];
+    if (0 == rng.location) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:ALBUM_PURCHASED_NOTIFICATION object:nil];
+    }    
     TRACK_EVENT(@"Purchase", @"100 Views purchased");
     [self release];    
 }
@@ -227,7 +227,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 //
 - (void)finishTransaction:(SKPaymentTransaction *)transaction wasSuccessful:(BOOL)wasSuccessful
 {
-
     // remove the transaction from the payment queue.
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
     if (wasSuccessful)

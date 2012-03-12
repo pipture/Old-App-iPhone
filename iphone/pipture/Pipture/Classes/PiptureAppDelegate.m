@@ -254,15 +254,15 @@ static PiptureAppDelegate *instance;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    [self dismissModalBusy];
-    
+    [self dismissModalBusy]; 
     [videoViewController setSuspended:YES];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+
     //Every time app become active we need to check if authentification is passed. If not - login or register.
-    //It is needed for case when connection were missed on first try.
+    //It is needed for case when connection were missed on first try.    
     [self processAuthentication];
 }
 
