@@ -98,6 +98,12 @@ class Series(models.Model):
         
     
 class Albums(models.Model):
+    PURCHASETYPE_CHOICES = (
+        ('N', 'Not for sale'),
+        ('P', 'Album pass'),
+        ('B', 'Buy album'),
+    )    
+    
     AlbumId = models.AutoField (primary_key=True)
     SeriesId = models.ForeignKey (Series, verbose_name='Series for Album')
     TrailerId = models.ForeignKey (Trailers, verbose_name='Trailer for Album')
@@ -111,10 +117,11 @@ class Albums(models.Model):
     CloseUpBackground = S3EnabledFileField (verbose_name='Cover', upload_to=u'documents/')
     SquareThumbnail = S3EnabledFileField (verbose_name='Default Screenshot', upload_to=u'documents/')
     WebPageDisclaimer = models.CharField (max_length=100, verbose_name='Webpage Disclaimer')
+    PurchaseStatus = models.CharField(db_index=True, max_length=1, choices=PURCHASETYPE_CHOICES, verbose_name='In-App purchases status')
 
     @property
     def complexName(self):
-        return "%s, S%s, A%s" % (self.SeriesId.Title, self.Season, self.Title)
+        return "%s, S%s, A%s (Id: %s)" % (self.SeriesId.Title, self.Season, self.Title, self.AlbumId)
 
     def __unicode__(self):
         return self.complexName
@@ -383,7 +390,7 @@ class PipUsers(models.Model):
 
 class PurchaseItems(models.Model):
     PurchaseItemId = models.AutoField (primary_key=True)
-    Description = models.CharField (max_length=100, editable=False)
+    Description = models.CharField (max_length=100, editable=False, verbose_name="Internal purchase description")
     Price = models.DecimalField( max_digits=7, decimal_places=0)
     
     def __unicode__(self):
@@ -409,10 +416,10 @@ class UserPurchasedItems(models.Model):
     ItemCost = models.DecimalField(editable=False, max_digits=7, decimal_places=0)
     
     def __unicode__(self):
-        return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemCost)
+        return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemId)
 
     def __str__(self):
-        return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemCost)
+        return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemId)
 
     class Admin:
         pass
@@ -551,6 +558,7 @@ def install(**kwargs):
     if PurchaseItems.objects.count() == 0:
         PurchaseItems(Description="WatchEpisode", Price=Decimal('1')).save()   
         PurchaseItems( Description="SendEpisode", Price=Decimal('1')).save()
+        PurchaseItems( Description="Album", Price=Decimal('0')).save()
     
 
     if AppleProducts.objects.count() == 0:

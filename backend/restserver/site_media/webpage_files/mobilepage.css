@@ -276,11 +276,13 @@ a:active  {
     opacity: 1.00;
 }
 .style_SkipStroke {
-    background: transparent url(backgroundimage_1m.jpg) no-repeat scroll center center;
+    background-image: url(backgroundimage_1m.jpg);
+    background-repeat:no-repeat;
     opacity: 1.00;
 }
 .style_SkipStroke_1 {
-    background: transparent url(backgroundimage_2.jpg) no-repeat scroll center center;
+	background-image: url(backgroundimage_2.jpg);
+    background-repeat:no-repeat;
     opacity: 1.00;
 }
 .style_SkipStroke_4 {
