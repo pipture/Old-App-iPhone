@@ -44,6 +44,12 @@
 	<string>25</string>
 	<key>CreditesProductId</key>
 	<string>com.pipture.Pipture.credits</string>
+	<key>AlbumPassProductId</key>
+	<string>com.pipture.Pipture.AlbumPass.%d</string>
+	<key>AlbumBuyProductId</key>
+	<string>com.pipture.Pipture.AlbumBuy.%d</string>
+	<key>AlbumProductPrefix</key>
+	<string>com.pipture.Pipture.Album</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
@@ -60,6 +66,8 @@
 	<string>getAlbumScreenshots?%@=%@</string>
 	<key>Rest Get albums request</key>
 	<string>getAlbums?</string>
+	<key>Rest Get sellable albums request</key>
+	<string>getSellableAlbums?</string>
 	<key>Rest Get balance</key>
 	<string>getBalance?</string>
 	<key>Rest Get current timeslots</key>
@@ -82,7 +90,7 @@
 	<string>http://ec2-67-202-31-72.compute-1.amazonaws.com/</string>
 	<key>Rest end point</key>
 	<string>http://192.168.9.129:8001/</string>
-	<key>Rest end point develop</key>
+	<key>Rest end point</key>
 	<string>http://ec2-23-20-20-219.compute-1.amazonaws.com/</string>
 	<key>UIPrerenderedIcon</key>
 	<true/>

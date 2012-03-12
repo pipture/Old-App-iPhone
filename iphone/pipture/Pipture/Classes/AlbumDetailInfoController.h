@@ -31,6 +31,7 @@ enum DetailAlbumViewType {
 @property (assign, nonatomic) BOOL withNavigationBar;
 @property (retain, nonatomic) Album * album;
 @property (retain, nonatomic) ScheduleModel* scheduleModel;
+@property (retain, nonatomic) IBOutlet UIView *purchasedInfoView;
 @property (assign, nonatomic) NSInteger timeslotId;
 
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;

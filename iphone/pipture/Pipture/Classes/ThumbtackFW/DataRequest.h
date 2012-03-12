@@ -27,6 +27,7 @@ typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
     
     DataRequestCallback callback_;
     BOOL canceled;
+    BOOL progressShown;    
 }
 
 @property(readonly, nonatomic) NSURL* url;

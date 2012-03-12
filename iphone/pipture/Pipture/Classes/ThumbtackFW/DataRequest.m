@@ -30,6 +30,22 @@
 
 id<DataRequestManager> requestManager_;
 
+-(void)showProgress {
+    if (progress && !progressShown) 
+    {
+        [progress showRequestProgress];
+        progressShown = YES;
+    }        
+}
+
+
+-(void)hideProgress {
+    if (progress && progressShown) 
+    {
+        [progress hideRequestProgress];
+        progressShown = NO;
+    }        
+}
 
 - (void)tryCallbackWithData:(NSDictionary*)dctData error:(DataRequestError *)err {
     if (!canceled) {
@@ -39,10 +55,7 @@ id<DataRequestManager> requestManager_;
                 NSLog(@"Next attempt in %d seconds", delay);
                 if (delay > 0) 
                 {
-                    if (progress) 
-                    {
-                        [progress showRequestProgress];
-                    }                        
+                    [self showProgress];
                     [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(startExecuteByTimer) userInfo:nil repeats:NO];
                 } else
                 {
@@ -86,10 +99,7 @@ id<DataRequestManager> requestManager_;
 }
 
 - (BOOL)startExecuteByTimer {
-    if (progress) 
-    {
-        [progress hideRequestProgress];//after timer
-    }        
+    [self hideProgress];
     return [self startExecute];
 }
 
@@ -127,11 +137,8 @@ id<DataRequestManager> requestManager_;
             [requestManager_ completeRequest:self];
         }              
     }
-    else {        
-        if (progress) 
-        {
-            [progress showRequestProgress];
-        }
+    else {  
+        [self showProgress];
     }
     return YES;
         
@@ -192,6 +199,7 @@ id<DataRequestManager> requestManager_;
     [self tryCallbackWithData:nil error:[[[DataRequestError alloc] initWithNSError:error] autorelease]];
 }
 
+
 -(void)finish
 {
     if (requestManager_ && canceled == NO)
@@ -201,10 +209,7 @@ id<DataRequestManager> requestManager_;
     NSURLConnection * tCo = connection;
     connection = nil; 
     if (tCo) [tCo release];
-    if (progress) 
-    {
-        [progress hideRequestProgress];
-    }    
+    [self hideProgress];
 }
 
 - (void)setCanceled {

@@ -16,6 +16,14 @@ enum AlbumStatus{
     AlbumStatus_CommingSoon = 3,    
 };
 
+enum AlbumSellStatus{
+    AlbumSellStatus_NotSellable = 0,
+    AlbumSellStatus_Pass = 1,
+    AlbumSellStatus_Buy = 2,    
+    AlbumSellStatus_Purchased = 100        
+};
+
+
 @interface Album : NSObject
 {
     @private
@@ -33,6 +41,8 @@ enum AlbumStatus{
 @property(retain, nonatomic) NSString* thumbnail;
 @property(retain, nonatomic) NSString* closeupBackground;
 @property(retain, nonatomic) NSString* emailScreenshot;
+@property(assign, nonatomic) enum AlbumSellStatus sellStatus;
+@property(retain, nonatomic) NSDecimalNumber* sellPrice;
 
 @property(readonly, nonatomic) NSArray* credits;
 @property(readonly, nonatomic) Series* series;

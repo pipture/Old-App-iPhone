@@ -17,8 +17,8 @@
 @synthesize numberOfViewsLabel;
 @synthesize libraryCardButton;
 
-NSString* const activeImage = @"active-librarycard.png";
-NSString* const inactiveImage = @"inactive-librarycard.png";
+static NSString* const activeImage = @"active-librarycard.png";
+static NSString* const inactiveImage = @"inactive-librarycard.png";
 
 
 -(void)setNumberOfViews:(NSInteger)numberOfViews {
@@ -46,7 +46,7 @@ NSString* const inactiveImage = @"inactive-librarycard.png";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];
+       
     }
     return self;
 }
@@ -66,6 +66,7 @@ NSString* const inactiveImage = @"inactive-librarycard.png";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];    
     [self setNumberOfViews:[[PiptureAppDelegate instance] getBalance]];
     
 }
@@ -82,6 +83,7 @@ NSString* const inactiveImage = @"inactive-librarycard.png";
     [self setPrompt2Label:nil];
     [self setNumberOfViewsLabel:nil];
     [self setLibraryCardButton:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];    
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -92,7 +94,6 @@ NSString* const inactiveImage = @"inactive-librarycard.png";
     [prompt2Label release];
     [numberOfViewsLabel release];
     [libraryCardButton release];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
 }
 

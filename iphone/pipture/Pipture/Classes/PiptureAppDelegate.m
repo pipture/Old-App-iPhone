@@ -29,6 +29,8 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize buyButton;
 @synthesize window = _window;
 @synthesize homeNavigationController;
+@synthesize piptureStoreNavigationController;
+@synthesize purchases = purchases;
 @synthesize videoViewController;
 @synthesize mailComposerNavigationController;
 @synthesize model = model_;
@@ -60,7 +62,6 @@ static PiptureAppDelegate *instance;
     [homeViewController release];
     [busyView release];
     [[GANTracker sharedTracker] stopTracker];
-    
     [purchases release];
     [homeNavigationController release];
     [_window release];
@@ -75,6 +76,9 @@ static PiptureAppDelegate *instance;
     [videoViewController release];
     [backgroundImage release];
     [mailComposerNavigationController release];
+    [piptureStoreNavigationController release];
+
+    
     [super dealloc];
 }
 
@@ -250,15 +254,15 @@ static PiptureAppDelegate *instance;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    [self dismissModalBusy];
-    
+    [self dismissModalBusy]; 
     [videoViewController setSuspended:YES];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+
     //Every time app become active we need to check if authentification is passed. If not - login or register.
-    //It is needed for case when connection were missed on first try.
+    //It is needed for case when connection were missed on first try.    
     [self processAuthentication];
 }
 
@@ -326,12 +330,50 @@ static PiptureAppDelegate *instance;
     [self.window bringSubviewToFront:tabView];
 }
 
+-(BOOL)piptureStoreVisible {
+    UIViewController * visible = self.window.rootViewController;
+    BOOL vis = visible == piptureStoreNavigationController;
+    return vis;
+}
+
+
+-(void)openPiptureStore {
+    if (![self piptureStoreVisible])
+    {
+        CATransition *animation = [CATransition animation];
+        [animation setDuration:0.5];
+        [animation setType:kCATransitionMoveIn];
+        [animation setSubtype:kCATransitionFromTop];
+        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        [self.window setRootViewController:piptureStoreNavigationController];
+        [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+        
+    }    
+}
+
+-(void)closePiptureStore {
+    
+    if ([self piptureStoreVisible]) {
+        CATransition *animation = [CATransition animation];
+        [animation setDuration:0.5];
+        [animation setType:kCATransitionReveal];
+        [animation setSubtype:kCATransitionFromBottom];
+        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        
+        
+        [self.window setRootViewController:homeNavigationController];
+        [self.window bringSubviewToFront:tabView];        
+        
+        [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];        
+    }    
+}
+
 -(BOOL)mailComposerVisible {
     UIViewController * visible = self.window.rootViewController;
     BOOL vis = visible.class == [MailComposerNavigationController class];
-    NSLog(@"mailComposer visible: %d", vis);
     return vis;
 }
+
 
 - (void)openMailComposer:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId fromViewController:(UIViewController*)viewController
 {
@@ -350,14 +392,7 @@ static PiptureAppDelegate *instance;
         [mailComposerNavigationController prepareMailComposer:playlistItem timeslot:timeslotId prevViewController:prevViewController];        
         
     }
-                    
-//    if ([MFMailComposeViewController canSendMail] && playlistItem) {
-//        [mailComposerNavigationController prepareMailComposer:playlistItem timeslot:timeslotId];
-//        [viewController presentModalViewController:mailComposerNavigationController animated:YES];
-//
-//    } else {
-//        //TODO: can't send message
-//    }    
+                
 }
 
 - (void)closeMailComposer
@@ -512,6 +547,10 @@ NSInteger networkActivityIndecatorCount;
     } else {
         SHOW_ERROR(@"Purchase failed", @"Can't make purchases!");
     }
+}
+
+- (IBAction)onStoreClick:(id)sender {
+    [self openPiptureStore];
 }
 
 - (void)powerButtonEnable:(BOOL)enable {
