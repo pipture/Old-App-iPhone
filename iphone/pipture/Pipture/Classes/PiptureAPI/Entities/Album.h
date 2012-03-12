@@ -20,6 +20,7 @@ enum AlbumSellStatus{
     AlbumSellStatus_NotSellable = 0,
     AlbumSellStatus_Pass = 1,
     AlbumSellStatus_Buy = 2,    
+    AlbumSellStatus_Purchased = 100        
 };
 
 

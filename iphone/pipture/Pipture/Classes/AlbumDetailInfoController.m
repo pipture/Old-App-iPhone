@@ -40,6 +40,7 @@
 @synthesize withNavigationBar;
 @synthesize timeslotId;
 @synthesize scheduleModel;
+@synthesize purchasedInfoView;
 @synthesize cardSectionViewController;
 @synthesize emptyCell;
 
@@ -160,6 +161,7 @@
     [self setNavigationItemFake:nil];
     [self setCardSectionViewController:nil];
     [self setEmptyCell:nil];
+    [self setPurchasedInfoView:nil];
     [super viewDidUnload];
 }
 
@@ -183,6 +185,7 @@
     [navigationItemFake release];
     [asyncImageViews release];
     [cardSectionViewController release];
+    [purchasedInfoView release];
     [super dealloc];
 }
 
@@ -320,11 +323,21 @@
     return 2;
 }
 
+- (UIView *)topSectionView:(BOOL)updateData {
+    if (album.sellStatus == AlbumSellStatus_Purchased) {
+        return purchasedInfoView;        
+    } else {
+        if (updateData) {
+            [cardSectionViewController refreshViewsInfo];
+        }
+        return cardSectionViewController.view;
+    }
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     switch (section) {
         case 0:
-            [cardSectionViewController refreshViewsInfo];
-            return cardSectionViewController.view;
+            return [self topSectionView:YES];
         default:
             return nil;
     }
@@ -333,7 +346,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     switch (section) {
         case 0:
-            return cardSectionViewController.view.frame.size.height;
+            return [self topSectionView:NO].frame.size.height;
         default:
             return 0;
     }
@@ -419,8 +432,9 @@
             [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-inactive.png"] forState:UIControlStateNormal];
             [detailsButton setBackgroundImage:[UIImage imageNamed:@"button-details-active.png"] forState:UIControlStateHighlighted];
 
-            if (videosTable.contentOffset.y < cardSectionViewController.view.frame.size.height) {
-                videosTable.contentOffset = CGPointMake(0, cardSectionViewController.view.frame.size.height);
+            NSInteger topSectionViewHeight = [self topSectionView:NO].frame.size.height;
+            if (videosTable.contentOffset.y < topSectionViewHeight) {
+                videosTable.contentOffset = CGPointMake(0, topSectionViewHeight);
             }
             
             break;
