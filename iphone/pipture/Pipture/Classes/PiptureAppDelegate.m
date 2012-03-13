@@ -37,6 +37,8 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize homeViewController;
 @synthesize welcomeScreen;
 @synthesize networkErrorAlerter = networkErrorAlerter_;
+@synthesize userPurchasedViewsSinceAppStart;
+@synthesize userPurchasedAlbumSinceAppStart;
 
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";

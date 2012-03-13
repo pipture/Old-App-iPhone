@@ -12,6 +12,10 @@
 
 #define ALBUM_PURCHASED_NOTIFICATION @"AlbumPurchasedNotification"
 
+#define VIEWS_PURCHASED_NOTIFICATION @"ViewsPurchasedNotification"
+
+
+
 @interface InAppPurchaseManager : NSObject <SKProductsRequestDelegate, SKPaymentTransactionObserver, UIAlertViewDelegate>
 {
     SKProduct *creditsProduct;

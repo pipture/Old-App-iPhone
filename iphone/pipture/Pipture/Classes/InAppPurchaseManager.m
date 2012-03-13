@@ -69,8 +69,13 @@
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSRange rng = [appleProductId_ rangeOfString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumProductPrefix"]];
     if (0 == rng.location) {
+        [[PiptureAppDelegate instance] setUserPurchasedAlbumSinceAppStart:YES];                
         [[NSNotificationCenter defaultCenter] postNotificationName:ALBUM_PURCHASED_NOTIFICATION object:nil];
-    }    
+    } else {
+        [[PiptureAppDelegate instance] setUserPurchasedViewsSinceAppStart:YES];        
+        [[NSNotificationCenter defaultCenter] postNotificationName:VIEWS_PURCHASED_NOTIFICATION object:nil];
+        
+    }
     TRACK_EVENT(@"Purchase", @"100 Views purchased");
     [self release];    
 }
