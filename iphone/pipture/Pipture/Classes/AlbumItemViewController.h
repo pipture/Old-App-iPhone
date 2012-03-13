@@ -7,11 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Album.h"
+#import "HomeScreenDelegate.h"
 
-@interface AlbumItemViewController : UIViewController
+@interface AlbumItemViewController : UIViewController {
+    Album* album;
+}
 
 @property (retain, nonatomic) IBOutlet UILabel *titleLabel;
 @property (retain, nonatomic) IBOutlet UILabel *tagLabel;
 @property (retain, nonatomic) IBOutlet UIView *thumbnailButton;
+@property (retain, nonatomic) Album* album;
+@property (retain, nonatomic) NSObject<HomeScreenDelegate>* delegate;
 
 @end

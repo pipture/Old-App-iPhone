@@ -24,7 +24,11 @@
 @implementation AlbumsView
 @synthesize scrollView;
 @synthesize delegate;
-@synthesize albumsArray;
+@synthesize albumsFilterView;
+@synthesize allAlbumsButton;
+@synthesize allAlbumsButtonEnchancer;
+@synthesize purchasedAlbumsButton;
+@synthesize purchasedAlbumsButtonEnchancer;
 @synthesize libraryCardController;
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent {
@@ -38,89 +42,92 @@
     scrollView.delegate = self;
     libraryCardController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardB3" bundle:nil];
     [scrollView addSubview:libraryCardController.view];
+    [scrollView addSubview:albumsFilterView];
     CGRect rect = libraryCardController.view.frame;
     rect.origin = CGPointMake(0, 0);    
-    libraryCardController.view.frame = rect;    
+    libraryCardController.view.frame = rect;
+    rect = albumsFilterView.frame;
+    rect.origin = CGPointMake(115, 0);
+    albumsFilterView.frame = rect;
     libraryCardHeight = libraryCardController.view.frame.size.height;
-    [self setLibraryCardVisibility:NO withAnimation:NO];
+
+    
+    for (UITapGestureRecognizer*gr in allAlbumsButtonEnchancer.gestureRecognizers) {
+        [allAlbumsButtonEnchancer removeGestureRecognizer:gr];
+    }
+    
+    UITapGestureRecognizer* gr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(enchancersTapResponder:)];
+    [allAlbumsButtonEnchancer addGestureRecognizer:gr];
+    [gr release];
+    
+    gr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(enchancersTapResponder:)];
+    [purchasedAlbumsButtonEnchancer addGestureRecognizer:gr];
+    [gr release]; 
+    
+    [self onAlbumFilterButtonTouch:allAlbumsButton];
+    [self setLibraryCardVisibility:NO withAnimation:NO];    
+    
 }
 
-- (void)showDetails:(id)sender {
-    if (sender && [sender superview]) {
-        int tag = [[[sender superview] superview] tag];
-        Album * album = [albumsArray objectAtIndex:tag];
-        [delegate showAlbumDetails:album];
-    }
-}
 
-- (void)updateAlbums:(NSArray *)albums{
-    
-    self.albumsArray = albums;
-    
-    //create albums
-    if (albumsItemsArray) {
-            //clear scroll view
-        for (UIViewController* vc in albumsItemsArray) {
-            [vc.view removeFromSuperview];
-        }
-        [albumsItemsArray release];
-    }
-    albumsItemsArray = [[NSMutableArray alloc] initWithCapacity:20];
-    
-//    //clear scroll view
-//    while ([scrollView.subviews count]) {
-//        [[[scrollView subviews] lastObject] removeFromSuperview];
-//    }
-    
-    for (int i = 0; i < albums.count; i++) {
-        AlbumItemViewController * item = [[AlbumItemViewController alloc] initWithNibName:@"AlbumItemView" bundle:nil];
-        [item loadView];
-        
-        Album * album = [albumsArray objectAtIndex:i];
-        
-        CGRect rect = item.thumbnailButton.frame;
-        
-        AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
+- (void)displayAlbums{
 
-        [item.thumbnailButton addSubview:imageView];
-        
-        [imageView loadImageFromURL:[NSURL URLWithString:album.thumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small  localStore:YES force:NO asButton:YES target:self selector:@selector(showDetails:)];
-        
-        
-        [item.titleLabel setTextWithVerticalResize:album.series.title lineBreakMode:UILineBreakModeTailTruncation];
-        
-        CGRect labelRect = item.titleLabel.frame;
-        CGRect tagRect = item.tagLabel.frame;
-        item.tagLabel.frame = CGRectMake(tagRect.origin.x, labelRect.origin.y + labelRect.size.height + 2, tagRect.size.width, tagRect.size.height);
-        item.tagLabel.text = @"";
-        switch (album.status) {
-            case AlbumStatus_Normal:        item.tagLabel.text = @""; break;
-            case AlbumStatus_CommingSoon:   item.tagLabel.text = @"COMING SOON"; break;
-            case AlbumStatus_Premiere:      item.tagLabel.text = @"PREMIERE"; break;
+    NSMutableArray *filteredAlbums = [[NSMutableArray alloc] initWithCapacity:[albumsItemsArray count]]; 
+    
+    for (AlbumItemViewController* vc in albumsItemsArray) {
+        [vc.view removeFromSuperview];
+        if (!filterOnPurchasedAlbums || vc.album.sellStatus == AlbumSellStatus_Purchased) {
+            [filteredAlbums addObject:vc];
         }
-        item.thumbnailButton.tag = i;
-        
-        [albumsItemsArray addObject:item];
-        [item release];
     }
     
+        
     CGRect rect = self.frame;
     
-    int rows = ([albumsItemsArray count] + (3 - 1)) / 3;
-    scrollView.contentSize = CGSizeMake(rect.size.width, ITEM_HEIGHT * rows + libraryCardHeight + OFFSET_FROM_LIB_CARD + 8); 
+    int rows = ([filteredAlbums count] + (3 - 1)) / 3;
+    int hightRows = MAX(2, rows);
+    scrollView.contentSize = CGSizeMake(rect.size.width, ITEM_HEIGHT * hightRows + libraryCardHeight + OFFSET_FROM_LIB_CARD + 8); 
     
     int i = 0;
     
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < 3; x++) {
-            if (i >= [albumsItemsArray count])
+            if (i >= [filteredAlbums count])
                 break;
-            AlbumItemViewController * item = [albumsItemsArray objectAtIndex:i++];
+            AlbumItemViewController * item = [filteredAlbums objectAtIndex:i++];
             item.view.frame = CGRectMake(MARGIN_RIGHT + (x * ITEM_WIDTH), libraryCardHeight + OFFSET_FROM_LIB_CARD + (y * ITEM_HEIGHT), ITEM_WIDTH, ITEM_HEIGHT);
             [scrollView addSubview:item.view];
         }
     }
+    [filteredAlbums release];
 }
+
+
+- (void)updateAlbums:(NSArray *)albums{
+        
+    if (!albumsItemsArray) {
+        albumsItemsArray = [[NSMutableArray alloc] initWithCapacity:20];
+    } else {
+        for (AlbumItemViewController* vc in albumsItemsArray) {
+            [vc.view removeFromSuperview];
+        }                
+        [albumsItemsArray removeAllObjects];
+    }
+    
+    for (int i = 0; i < albums.count; i++) {
+        AlbumItemViewController * item = [[AlbumItemViewController alloc] initWithNibName:@"AlbumItemView" bundle:nil];
+        [item loadView];
+        item.delegate = delegate;
+        
+        item.album = [albums objectAtIndex:i];
+                
+        [albumsItemsArray addObject:item];
+        [item release];
+    }
+    [self setLibraryCardVisibility:NO withAnimation:NO];
+    [self filterOnPurchasedAlbums:filterOnPurchasedAlbums];    
+}
+
 
 -(void)setLibraryCardVisibility:(BOOL)visibility withAnimation:(BOOL)animation {
     if (animation) {
@@ -157,10 +164,46 @@
 }
 
 - (void)dealloc {
-    [albumsArray release];
     [albumsItemsArray release];
     [scrollView release];
     [libraryCardController release];
+    [albumsFilterView release];
+    [allAlbumsButton release];
+    [purchasedAlbumsButton release];
+    [allAlbumsButtonEnchancer release];
+    [purchasedAlbumsButtonEnchancer release];
     [super dealloc];
 }
+
+- (void)enchancersTapResponder:(UITapGestureRecognizer *)recognizer {
+    UIButton*enchButton;
+    if (recognizer.view == allAlbumsButtonEnchancer) {
+        enchButton = allAlbumsButton;
+    } else if (recognizer.view == purchasedAlbumsButtonEnchancer) {
+        enchButton = purchasedAlbumsButton;
+    } else {
+        return;
+    }
+    [self onAlbumFilterButtonTouch:enchButton];
+}
+
+- (IBAction)onAlbumFilterButtonTouch:(id)sender {
+    if (sender == allAlbumsButton) {
+        [allAlbumsButton setBackgroundImage:[UIImage imageNamed:@"button-all-active.png"] forState:UIControlStateNormal];
+        [purchasedAlbumsButton setBackgroundImage:[UIImage imageNamed:@"button-purchases-inactive.png"] forState:UIControlStateNormal];       
+        [self filterOnPurchasedAlbums:NO];
+    }
+    else if (sender == purchasedAlbumsButton) {
+        [allAlbumsButton setBackgroundImage:[UIImage imageNamed:@"button-all-inactive.png"] forState:UIControlStateNormal];
+        [purchasedAlbumsButton setBackgroundImage:[UIImage imageNamed:@"button-purchases-active.png"] forState:UIControlStateNormal];        
+        [self filterOnPurchasedAlbums:YES];        
+    }
+}
+
+-(void)filterOnPurchasedAlbums:(BOOL)filter {
+    filterOnPurchasedAlbums = filter;
+    [self displayAlbums];
+}
+
+
 @end

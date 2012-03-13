@@ -21,6 +21,7 @@
 #define WELCOMESCREEN_LIBRARY 2
 
 @implementation HomeViewController
+
 @synthesize tabbarContainer;
 @synthesize flipButton;
 @synthesize scheduleButton;
@@ -333,6 +334,7 @@
 
     [scheduleEnhancer release];
     [flipEnhancer release];
+
     [super dealloc];
 }
 
@@ -467,7 +469,7 @@
                  storeKey:@"LibraryWelcomeShown" image:NO tag:WELCOMESCREEN_LIBRARY delegate:self];
                 
                 [tabbarContainer addSubview:albumsView];
-                
+                [albumsView setLibraryCardVisibility:NO withAnimation:NO];
                 [self updateAlbums];
                 [self setNavBarMode];
                 
