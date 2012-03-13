@@ -9,28 +9,39 @@
 #import "AlbumItemViewController.h"
 #import "AsyncImageView.h"
 #import "UILabel+ResizeForVerticalAlign.h"
+#import "PiptureAppDelegate.h"
 
 @implementation AlbumItemViewController
 @synthesize titleLabel;
 @synthesize tagLabel;
 @synthesize thumbnailButton;
 @synthesize delegate;
+@synthesize episodesIndicator;
 
 - (void)dealloc {
     [titleLabel release];
     [delegate release];
     [tagLabel release];
     [thumbnailButton release];
+    [episodesIndicator release];
     [super dealloc];
 }
 
 - (void)viewDidUnload {
     [self setThumbnailButton:nil];
+    [self setEpisodesIndicator:nil];
     [super viewDidUnload];
 }
 
 -(Album*)album {
     return album;
+}
+
+-(BOOL)haveNewEpisodes {
+    NSInteger savedDate = [[PiptureAppDelegate instance] getUpdateTimeForAlbumId:album.albumId];
+    NSInteger updateDate = [album.updateDate timeIntervalSince1970];
+    
+    return savedDate >= updateDate;
 }
 
 -(void)setAlbum:(Album *)newAlbum {
@@ -55,9 +66,15 @@
         tagLabel.frame = CGRectMake(tagRect.origin.x, labelRect.origin.y + labelRect.size.height + 2, tagRect.size.width, tagRect.size.height);
         tagLabel.text = @"";
         switch (album.status) {
-            case AlbumStatus_Normal:        tagLabel.text = @""; break;
-            case AlbumStatus_CommingSoon:   tagLabel.text = @"COMING SOON"; break;
-            case AlbumStatus_Premiere:      tagLabel.text = @"PREMIERE"; break;
+            case AlbumStatus_Normal:
+                episodesIndicator.hidden = [self haveNewEpisodes];
+                tagLabel.text = @""; break;
+            case AlbumStatus_CommingSoon: 
+                episodesIndicator.hidden = YES;
+                tagLabel.text = @"COMING SOON"; break;
+            case AlbumStatus_Premiere:
+                episodesIndicator.hidden = YES;
+                tagLabel.text = @"PREMIERE"; break;
         }
     }        
 }

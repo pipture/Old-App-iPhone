@@ -19,5 +19,6 @@
 @property (retain, nonatomic) IBOutlet UIView *thumbnailButton;
 @property (retain, nonatomic) Album* album;
 @property (retain, nonatomic) NSObject<HomeScreenDelegate>* delegate;
+@property (retain, nonatomic) IBOutlet UIImageView *episodesIndicator;
 
 @end

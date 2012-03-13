@@ -396,23 +396,30 @@ def getPlaylist (request):
 
 def get_album_status (album, get_date_only=False):
     from django.db.models import Min
+    from django.db.models import Max
     from restserver.pipture.models import PiptureSettings
     from restserver.pipture.models import Episodes
 
     
-    res = Episodes.objects.filter(AlbumId=album).aggregate(Min('DateReleased'))
-    min_date = res['DateReleased__min']
+    resmin = Episodes.objects.filter(AlbumId=album).aggregate(Min('DateReleased'))
+    resmax = Episodes.objects.filter(AlbumId=album).aggregate(Max('DateReleased'))
+    min_date = resmin['DateReleased__min']
     min_date = min_date or datetime.datetime(1970, 1, 1, 00, 00)
-    sec = local_date_time_date_time_to_UTC_sec(min_date)
+    
+    max_date = resmax['DateReleased__max']
+    max_date = max_date or datetime.datetime.now()
+    
+    secmin = local_date_time_date_time_to_UTC_sec(min_date)
+    secmax = local_date_time_date_time_to_UTC_sec(max_date)
     if get_date_only:
-        return sec
-    if not min_date: return sec, 1#"NORMAL" It means that albums hasn't any episodes 
+        return secmin, secmax
+    if not min_date: return secmin, secmax, 1#"NORMAL" It means that albums hasn't any episodes 
     date_utc_now = datetime.datetime.utcnow()#.date()
-    if min_date > date_utc_now: return sec, 3#"COMMING SOON"
+    if min_date > date_utc_now: return secmin, secmax, 3#"COMMING SOON"
     premiere_days = PiptureSettings.objects.all()[0].PremierePeriod
     timedelta_4 = datetime.timedelta(days=premiere_days)
-    if min_date >= (date_utc_now - timedelta_4): return sec, 2#"PREMIERE"
-    return sec, 1#"NORMAL"
+    if min_date >= (date_utc_now - timedelta_4): return secmin, secmax, 2#"PREMIERE"
+    return secmin, secmax, 1#"NORMAL"
 
 def albumid_inlist(albumid, lister):
     if lister == None:
@@ -470,7 +477,7 @@ def fill_albums_response(user_id, sallable):
             album_each['SquareThumbnail'] =  (album.SquareThumbnail._get_url()).split('?')[0]
             album_each['SeriesTitle'] = album.SeriesId.Title
             album_each['Title'] = album.Title
-            album_each['ReleaseDate'], album_each['AlbumStatus'] = get_album_status (album)
+            album_each['ReleaseDate'], album_each['UpdateDate'], album_each['AlbumStatus'] = get_album_status (album)
             
             if albumid_inlist(albumid=album.AlbumId, lister=purchased_albums_list):
                 album_each['SellStatus'] = 100
@@ -582,7 +589,7 @@ def album_json_by_id (album):
     album_json['Description'] = album.Description
     album_json['Rating'] = album.Rating
     album_json['Credits'] = album.Credits
-    album_json['ReleaseDate'] = get_album_status (album, get_date_only=True) 
+    album_json['ReleaseDate'], album_json['UpdateDate'] = get_album_status (album, get_date_only=True) 
     return album_json
 
 
