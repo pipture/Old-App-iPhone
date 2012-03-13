@@ -143,6 +143,15 @@ def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
         video_instance = video.VideoId
         return video_instance, None
 
+def episode_in_purchased_album(videoid, purchaser):
+    from restserver.pipture.models import Episodes
+    try:
+        video = Episodes.objects.select_related(depth=2).get (EpisodeId=videoid)
+    except Episodes.DoesNotExist:
+        return False
+    
+    return album_purchased(albumid=video.AlbumId, userid=purchaser)
+
 def getVideo (request):
     keys = request.GET.keys()
     response = {}
@@ -175,6 +184,10 @@ def getVideo (request):
     from restserver.pipture.models import TimeSlots
     from restserver.pipture.models import TimeSlotVideos
 
+    if episode_id:
+        video_type = "E"
+    else:
+        video_type = "T"
     
     if force_buy and not purchaser:
         response["Error"] = {"ErrorCode": "4", "ErrorDescription": "Wrong authentication error"}
@@ -197,9 +210,9 @@ def getVideo (request):
         return HttpResponse (json.dumps(response))
 
     elif timeslot_id:
-        if episode_id:
+        '''if episode_id:
             video_type = "E"
-            '''try:
+            try:
                 timeslot = TimeSlots.objects.get(TimeSlotsId=timeslot_id)
             except Exception as e:
                 response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is no timeslot with id %s" % (timeslot_id)}
@@ -215,12 +228,13 @@ def getVideo (request):
             if timeslotv.AutoMode == 0:
                 containid = TimeSlotVideos.is_contain_id (timeslot_id, episode_id, video_type)
             else:
-                containid = get_autoepisode(episode_id, timeslot.StartDate) != 0'''
+                containid = get_autoepisode(episode_id, timeslot.StartDate) != 0
             #Removed for support auto-episodes 
                 
         else:
             video_type = "T"
-            #containid = TimeSlotVideos.is_contain_id (timeslot_id, trailer_id, video_type)
+            #containid = TimeSlotVideos.is_contain_id (timeslot_id, trailer_id, video_type)'''
+        
         containid = True
         if TimeSlots.timeslot_is_current(timeslot_id) and containid:
             video_url, error = get_video_url_from_episode_or_trailer (id = episode_id or trailer_id, type_r = video_type, video_q=video_quality)
@@ -235,34 +249,18 @@ def getVideo (request):
 
 
     else:
-        force_buy = force_buy or "0"
-        if force_buy not in ["1", "0"]:
-            response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is wrong ForceBuy %s (not 0 or 1)" % (force_buy)}
-            return HttpResponse (json.dumps(response))
-
-        from restserver.pipture.models import PipUsers
+        if episode_id:
+            is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=purchaser)
+        else:
+            is_purchased = True
         
-        try:
-            purchaser = PipUsers.objects.get(Token=purchaser)
-        except PipUsers.DoesNotExist:
-            response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
-            return HttpResponse (json.dumps(response))
-
-        #from restserver.pipture.models import UserPurchasedItems
-        from restserver.pipture.models import PurchaseItems
-        WATCH_EP = PurchaseItems.objects.get(Description="WatchEpisode")
-        #SEND_EP = PurchaseItems.objects.get(Description="SendEpisode")
-
-        
-        #remove is_purchased check. always purchase
-        #is_purchased = UserPurchasedItems.objects.filter(UserId=purchaser, ItemId=episode_id, PurchaseItemId = WATCH_EP).count()
-        is_purchased = False
-        
-        video_url, error = get_video_url_from_episode_or_trailer (id = episode_id, type_r = "E", video_q=video_quality)
+        video_url, error = get_video_url_from_episode_or_trailer (id = episode_id, type_r = video_type, video_q=video_quality)
         if error:
             response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is internal error. Wrong video URL"}
             return HttpResponse (json.dumps(response))
-            
+        
+        from restserver.pipture.models import PurchaseItems
+        WATCH_EP = PurchaseItems.objects.get(Description="WatchEpisode")
         
         if is_purchased:
             response['VideoURL'] = video_url
@@ -273,6 +271,12 @@ def getVideo (request):
                 response["Error"] = {"ErrorCode": "2", "ErrorDescription": "Video not purchased."}
                 return HttpResponse (json.dumps(response))
             else:
+                from restserver.pipture.models import PipUsers
+                try:
+                    purchaser = PipUsers.objects.get(Token=purchaser)
+                except PipUsers.DoesNotExist:
+                    response["Error"] = {"ErrorCode": "4", "ErrorDescription": "Wrong authentication error"}
+                    return HttpResponse (json.dumps(response))
                 if (purchaser.Balance - WATCH_EP.Price) >= 0:
                     #remove storing in purchased items
                     #new_p = UserPurchasedItems(UserId=purchaser, ItemId=episode_id, PurchaseItemId = WATCH_EP, ItemCost=WATCH_EP.Price)
@@ -398,33 +402,67 @@ def get_album_status (album, get_date_only=False):
     
     res = Episodes.objects.filter(AlbumId=album).aggregate(Min('DateReleased'))
     min_date = res['DateReleased__min']
+    min_date = min_date or datetime.datetime(1970, 1, 1, 00, 00)
+    sec = local_date_time_date_time_to_UTC_sec(min_date)
     if get_date_only:
-        min_date = min_date or datetime.datetime(1970, 1, 1, 00, 00)
-        return local_date_time_date_time_to_UTC_sec(min_date)
-    if not min_date: return 1#"NORMAL" It means that albums hasn't any episodes 
+        return sec
+    if not min_date: return sec, 1#"NORMAL" It means that albums hasn't any episodes 
     date_utc_now = datetime.datetime.utcnow()#.date()
-    if min_date > date_utc_now: return 3#"COMMING SOON"
+    if min_date > date_utc_now: return sec, 3#"COMMING SOON"
     premiere_days = PiptureSettings.objects.all()[0].PremierePeriod
     timedelta_4 = datetime.timedelta(days=premiere_days)
-    if min_date >= (date_utc_now - timedelta_4): return 2#"PREMIERE"
-    return 1#"NORMAL"
+    if min_date >= (date_utc_now - timedelta_4): return sec, 2#"PREMIERE"
+    return sec, 1#"NORMAL"
 
 def albumid_inlist(albumid, lister):
+    if lister == None:
+        return False
+    
     for album in lister:
         if int(album.ItemId) == albumid:
             return True
     return False
-        
-def fill_albums_response(user_id):
+
+def get_purchased_album_list(userid):
+    from restserver.pipture.models import PurchaseItems
+    #from restserver.pipture.models import UserPurchasedItems
+    ALBUM_EP = PurchaseItems.objects.get(Description="Album")
+    
+    from restserver.pipture.models import PipUsers
+    try:
+        purchaser = PipUsers.objects.get(Token=userid)
+    except PipUsers.DoesNotExist:
+        return None
+
+    #get allpurchased albums for user
+    from restserver.pipture.models import UserPurchasedItems
+    try:
+        return UserPurchasedItems.objects.all().filter(UserId = purchaser).filter(PurchaseItemId = ALBUM_EP)
+    except Exception as e:
+        return None
+    
+    return None
+
+def album_purchased (albumid, userid):
+    listalb = get_purchased_album_list(userid = userid)
+    if listalb == None:
+        return False
+    
+    return albumid_inlist(albumid=albumid, lister=listalb)
+    
+def fill_albums_response(user_id, sallable):
     response = {}
     albums_json = []
-    if user_id == None:
+    if not sallable:
         from restserver.pipture.models import Albums
         try:
             albums_list = Albums.objects.select_related(depth=1).all()
         except Exception as e:
             response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is internal error: %s." % (e)}
             return HttpResponse (json.dumps(response))
+        
+        purchased_albums_list = get_purchased_album_list(userid = user_id)
+        
         for album in albums_list:
             album_each = {}
             album_each['AlbumId'] = album.AlbumId
@@ -432,35 +470,29 @@ def fill_albums_response(user_id):
             album_each['SquareThumbnail'] =  (album.SquareThumbnail._get_url()).split('?')[0]
             album_each['SeriesTitle'] = album.SeriesId.Title
             album_each['Title'] = album.Title
-            album_each['AlbumStatus'] = get_album_status (album)
-            album_each['ReleaseDate'] = get_album_status (album, get_date_only=True)
+            album_each['ReleaseDate'], album_each['AlbumStatus'] = get_album_status (album)
+            
+            if albumid_inlist(albumid=album.AlbumId, lister=purchased_albums_list):
+                album_each['SellStatus'] = 100
+            else:
+                if album.PurchaseStatus == 'P':
+                    album_each['SellStatus'] = 1
+                elif album.PurchaseStatus == 'B':
+                    album_each['SellStatus'] = 2
+                else:
+                    album_each['SellStatus'] = 0
             
             albums_json.append(album_each)
     else:
         from restserver.pipture.models import Albums
-        from restserver.pipture.models import PipUsers
-        from restserver.pipture.models import UserPurchasedItems
-        from restserver.pipture.models import PurchaseItems
-        #from restserver.pipture.models import UserPurchasedItems
-        ALBUM_EP = PurchaseItems.objects.get(Description="Album")
-    
-        try:
-            purchaser = PipUsers.objects.get(Token=user_id)
-        except PipUsers.DoesNotExist:
-            return None, {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        
+        purchased_albums_list = get_purchased_album_list(userid = user_id)
         
         #get all albums fith sallable attribute
         try:
             albums_list = Albums.objects.select_related(depth=1).all().exclude(PurchaseStatus = 'N').exclude(PurchaseStatus = None)
         except Exception as e:
             return None, {"ErrorCode": "2", "ErrorDescription": "There is internal error: %s." % (e)}
-        
-        #get allpurchased albums for user
-        try:
-            purchased_albums_list = UserPurchasedItems.objects.all().filter(UserId = purchaser).filter(PurchaseItemId = ALBUM_EP)
-        except Exception as e:
-            return None, {"ErrorCode": "2", "ErrorDescription": "There is internal error: %s." % (e)}
-        
         
         for album in albums_list:
             if not albumid_inlist(albumid=album.AlbumId, lister=purchased_albums_list):
@@ -471,11 +503,10 @@ def fill_albums_response(user_id):
                 album_each['Title'] = album.Title
                 if album.PurchaseStatus == 'P':
                     album_each['SellStatus'] = 1
+                elif album.PurchaseStatus == 'B':
+                    album_each['SellStatus'] = 2
                 else:
-                    if album.PurchaseStatus == 'B':
-                        album_each['SellStatus'] = 2
-                    else:
-                        album_each['SellStatus'] = 0
+                    album_each['SellStatus'] = 0
                 
                 albums_json.append(album_each)
     
@@ -495,8 +526,13 @@ def getAlbums (request):
         return HttpResponse (json.dumps(response))
     else:
         response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
-        
-    response, error = fill_albums_response(user_id=None)
+
+    key = request.GET.get('Key', None)
+    if key == None:
+        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        return HttpResponse (json.dumps(response))
+            
+    response, error = fill_albums_response(user_id=key, sallable=False)
     if error:
         response = {}
         response["Error"] = error
@@ -524,7 +560,7 @@ def getSellableAlbums (request):
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
         return HttpResponse (json.dumps(response))
     
-    response, error = fill_albums_response(user_id=key)
+    response, error = fill_albums_response(user_id=key, sallable=True)
     if error:
         response = {}
         response["Error"] = error
@@ -834,10 +870,10 @@ def buy (request):
         #pass: com.pipture.Pipture.AlbumPass.
         #buy:  com.pipture.Pipture.AlbumBuy.
         albumid = ''
-        if len(apple_product_response) == 29 and apple_product_response[:29] == "com.pipture.Pipture.AlbumBuy.":
+        if apple_product_response[:29] == "com.pipture.Pipture.AlbumBuy.":
+            albumid = apple_product_response[29:]
+        if apple_product_response[:30] == "com.pipture.Pipture.AlbumPass.":
             albumid = apple_product_response[30:]
-        if len(apple_product_response) == 30 and apple_product_response[:30] == "com.pipture.Pipture.AlbumPass.":
-            albumid = apple_product_response[31:]
         
         if albumid == '':        
             response["Error"] = {"ErrorCode": "2", "ErrorDescription": "Wrong product."}
@@ -991,7 +1027,16 @@ def sendMessage (request):
     #return HttpResponse (json.dumps(response))
 
     #else:
+    
+    is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=key)
     message_cost = int(SEND_EP.Price) * int(views_count)
+    
+    #if album is purchased, then 10 views are free
+    if int(views_count) > 10 and is_purchased:
+        message_cost = message_cost - int(SEND_EP.Price) * 10
+    elif int(views_count) <= 10 and is_purchased:
+        message_cost = 0
+    
     user_ballance = int(purchaser.Balance)
     if (user_ballance - message_cost) >= 0:
         #remove storing in purchased item
@@ -1054,3 +1099,111 @@ def getAlbumScreenshots (request):
         return HttpResponse (json.dumps(response))
 
     return getAlbumScreenshotByEpisodeId (EpisodeId)
+
+def getUnusedMessageViews (request):
+    keys = request.GET.keys()
+    response = {}
+    if "API" not in keys:
+        response["Error"] = {"ErrorCode": "666", "ErrorDescription": "There is no API parameter."}
+        return HttpResponse (json.dumps(response))
+    else:
+        api_ver = request.GET.get("API")
+        
+    if api_ver != "1":
+        response["Error"] = {"ErrorCode": "777", "ErrorDescription": "Wrong API version."}
+        return HttpResponse (json.dumps(response))
+    else:
+        response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
+    
+    key = request.GET.get('Key', None)
+    if not key:
+        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        return HttpResponse (json.dumps(response))
+    
+    from restserver.pipture.models import PipUsers
+    try:
+        purchaser = PipUsers.objects.get(Token=key)
+    except PipUsers.DoesNotExist:
+        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        return HttpResponse (json.dumps(response))
+    
+    from restserver.pipture.models import SendMessage
+    
+    try:
+        messages = SendMessage.objects.all().filter(UserId = purchaser)
+    except SendMessage.DoesNotExist:
+        response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is no messages for user %s." % (purchaser)}
+        return HttpResponse (json.dumps(response))
+    
+    d1 = datetime.datetime.now();
+    weekdate = d1 - datetime.timedelta(7)
+
+    group1 = 0
+    group2 = 0
+    for message in messages:
+        if message.Timestamp>= weekdate:
+            group1 = group1 + message.ViewsLimit - message.ViewsCount
+        else:
+            group2 = group2 + message.ViewsLimit - message.ViewsCount
+            
+    response["unusedmessages"] = {"period1": group1, "period2": group2, "allperiods": group1+group2 }
+    return HttpResponse (json.dumps(response))
+
+def deactivateMessageViews (request):
+    keys = request.GET.keys()
+    response = {}
+    if "API" not in keys:
+        response["Error"] = {"ErrorCode": "666", "ErrorDescription": "There is no API parameter."}
+        return HttpResponse (json.dumps(response))
+    else:
+        api_ver = request.GET.get("API")
+        
+    if api_ver != "1":
+        response["Error"] = {"ErrorCode": "777", "ErrorDescription": "Wrong API version."}
+        return HttpResponse (json.dumps(response))
+    else:
+        response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
+    
+    key = request.GET.get('Key', None)
+    if not key:
+        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        return HttpResponse (json.dumps(response))
+    
+    try:
+        period = int(request.GET.get('Period', None))
+    except Exception:
+        period = 0    
+    
+    from restserver.pipture.models import PipUsers
+    try:
+        purchaser = PipUsers.objects.get(Token=key)
+    except PipUsers.DoesNotExist:
+        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        return HttpResponse (json.dumps(response))
+    
+    from restserver.pipture.models import SendMessage
+    
+    try:
+        messages = SendMessage.objects.all().filter(UserId = purchaser)
+    except SendMessage.DoesNotExist:
+        response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is no messages for user %s." % (purchaser)}
+        return HttpResponse (json.dumps(response))
+    
+    d1 = datetime.datetime.now();
+    weekdate = d1 - datetime.timedelta(7)
+
+    group = 0
+    for message in messages:
+        if period == 0 or (message.Timestamp>= weekdate and period == 1) or (message.Timestamp>= weekdate and period == 2):
+            group = group + message.ViewsLimit - message.ViewsCount
+            if message.ViewsCount < message.ViewsLimit:
+                message.ViewsCount = message.ViewsLimit
+                message.save()
+
+    user_ballance = int(purchaser.Balance)
+    purchaser.Balance = Decimal (user_ballance + group)
+    purchaser.save()
+            
+    response["Restored"] = "%s" % group
+    response["Balance"] = "%s" % (purchaser.Balance)
+    return HttpResponse (json.dumps(response))

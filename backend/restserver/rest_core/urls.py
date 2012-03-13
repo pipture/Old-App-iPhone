@@ -16,5 +16,7 @@ urlpatterns = patterns('',
                        (r'^getBalance$', rest_view.getBalance),
                        (r'^sendMessage$', rest_view.sendMessage),
                        (r'^getAlbumScreenshots$', rest_view.getAlbumScreenshots),
+                       (r'^getUnusedMessageViews$', rest_view.getUnusedMessageViews),
+                       (r'^deactivateMessageViews$', rest_view.deactivateMessageViews),                       
                        (r'', rest_view.index),
                        )
