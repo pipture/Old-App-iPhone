@@ -1146,17 +1146,21 @@ def getUnusedMessageViews (request):
         else:
             group2 = group2 + message.ViewsLimit - message.ViewsCount
             
-    response["unusedmessages"] = {"period1": group1, "period2": group2, "allperiods": group1+group2 }
+    response["Unreaded"] = {"period1": group1, "period2": group2, "allperiods": group1+group2 }
     return HttpResponse (json.dumps(response))
 
+@csrf_exempt
 def deactivateMessageViews (request):
-    keys = request.GET.keys()
+    if request.method != 'POST':
+        return HttpResponse ("There is POST method only.")
+    
+    keys = request.POST.keys()
     response = {}
     if "API" not in keys:
         response["Error"] = {"ErrorCode": "666", "ErrorDescription": "There is no API parameter."}
         return HttpResponse (json.dumps(response))
     else:
-        api_ver = request.GET.get("API")
+        api_ver = request.POST.get("API")
         
     if api_ver != "1":
         response["Error"] = {"ErrorCode": "777", "ErrorDescription": "Wrong API version."}
@@ -1164,13 +1168,13 @@ def deactivateMessageViews (request):
     else:
         response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
     
-    key = request.GET.get('Key', None)
+    key = request.POST.get('Key', None)
     if not key:
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
         return HttpResponse (json.dumps(response))
     
     try:
-        period = int(request.GET.get('Period', None))
+        period = int(request.POST.get('Period', None))
     except Exception:
         period = 0    
     
@@ -1194,7 +1198,7 @@ def deactivateMessageViews (request):
 
     group = 0
     for message in messages:
-        if period == 0 or (message.Timestamp>= weekdate and period == 1) or (message.Timestamp>= weekdate and period == 2):
+        if period == 0 or (message.Timestamp >= weekdate and period == 1) or (message.Timestamp < weekdate and period == 2):
             group = group + message.ViewsLimit - message.ViewsCount
             if message.ViewsCount < message.ViewsLimit:
                 message.ViewsCount = message.ViewsLimit

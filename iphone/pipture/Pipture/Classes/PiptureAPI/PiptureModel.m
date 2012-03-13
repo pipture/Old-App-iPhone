@@ -49,6 +49,8 @@ NSString *GET_BALANCE_REQUEST;
 NSString *GET_BUY_REQUEST;
 NSString *SEND_MESSAGE_REQUEST;
 NSString *GET_SCREENSHOT_COLLECTION;
+NSString *GET_UNREADED_MESSAGES;
+NSString *SEND_DEACTIVATE_MESSAGES;
 
 
 static NSString* const REST_PARAM_API = @"API";
@@ -60,6 +62,7 @@ static NSString* const REST_PARAM_VIEWS = @"ViewsCount";
 static NSString* const REST_PARAM_TIMESLOT_ID = @"TimeslotId";
 static NSString* const REST_PARAM_SCREENSHOT_IMAGE = @"ScreenshotURL";
 static NSString* const REST_PARAM_USER_NAME = @"UserName";
+static NSString* const REST_PARAM_PERIOD = @"Period";
 
 static NSString* const JSON_PARAM_CURRENT_TIME = @"CurrentTime";
 static NSString* const JSON_PARAM_TIMESLOTS = @"Timeslots";
@@ -77,6 +80,8 @@ static NSString* const JSON_PARAM_BALANCE = @"Balance";
 static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
 static NSString* const JSON_PARAM_UUID = @"UUID";
 static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
+static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
+
 
 - (id)init
 {
@@ -99,6 +104,8 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
         GET_BUY_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Buy"] retain];
         SEND_MESSAGE_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Send message"] retain];
         GET_SCREENSHOT_COLLECTION = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get album screenshots"] retain];
+        GET_UNREADED_MESSAGES = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get unreaded messages"] retain];
+        SEND_DEACTIVATE_MESSAGES = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Send deactivate messages"] retain];
         DefaultDataRequestFactory* factory = [[[DefaultDataRequestFactory alloc] init] autorelease];
         [self setDataRequestFactory:factory];
 //        currentRequests = [[NSMutableDictionary alloc] init];
@@ -805,6 +812,92 @@ static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
     return [request startExecute];  
 }
 
+-(BOOL)getUnusedMessageViews:(NSObject<UnreadMessagesReceiver>*)receiver {
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_UNREADED_MESSAGES]];
+    
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
+        
+        if (error) 
+        {
+            [PiptureModel processError:error receiver:receiver];
+        } 
+        else
+        {
+            NSMutableString*errDesc = [NSMutableString string];
+            NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
+            switch (errCode) { 
+                case 0:   
+                {
+                    UnreadedPeriod* unreadedMessages = [[UnreadedPeriod alloc] initWithJSON:[jsonResult objectForKey:JSON_PARAM_UNREADED]];
+                    
+                    if (unreadedMessages)
+                    {
+                        [receiver performSelectorOnMainThread:@selector(unreadMessagesReceived:) withObject:unreadedMessages waitUntilDone:YES];                                                        
+                    }
+                    else
+                    {
+                        NSLog(@"Unreaded meassages were not sent from server"); 
+                    }      
+                    [unreadedMessages release];
+                    break;
+                }                                                                                                                   
+                default:
+                    [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
+                    break;
+            }                
+        }
+        
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
+    }];
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    return [request startExecute];
+}
+
+-(BOOL)deactivateMessageViews:(NSNumber *)periodId receiver:(NSObject<BalanceReceiver>*)receiver {
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:SEND_DEACTIVATE_MESSAGES]];
+    
+    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, REST_PARAM_PERIOD, periodId];
+    
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postParams:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
+        
+        if (error) 
+        {
+            [PiptureModel processError:error receiver:receiver];
+        } 
+        else
+        {
+            NSMutableString*errDesc = [NSMutableString string];
+            NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
+            switch (errCode) { 
+                case 0:   
+                {
+                    id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
+                    if (bal)
+                    {
+                        [receiver performSelectorOnMainThread:@selector(balanceReceived:) withObject:bal waitUntilDone:YES];                                                        
+                    }
+                    else
+                    {
+                        NSLog(@"Balance was not sent from server"); 
+                    }                    
+                    break;
+                }                                               
+                case 100:                        
+                    [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];
+                    break;                                                                        
+                default:
+                    [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
+                    break;
+            }              
+        }
+        
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
+    }];
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    return [request startExecute];
+}
+
+#pragma mark static methods
 
 + (void)setModelRequestingState:(BOOL)state receiver:(NSObject<PiptureModelDelegate>*)receiver
 {

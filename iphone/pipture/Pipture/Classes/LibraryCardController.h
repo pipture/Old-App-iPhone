@@ -10,15 +10,15 @@
 #import "PiptureModel.h"
 
 
-@interface LibraryCardController : UIViewController
+@interface LibraryCardController : UIViewController <UIActionSheetDelegate, UnreadMessagesReceiver, BalanceReceiver>
 
 
 @property (retain, nonatomic) IBOutlet UILabel *prompt1Label;
 @property (retain, nonatomic) IBOutlet UILabel *prompt2Label;
 @property (retain, nonatomic) IBOutlet UILabel *numberOfViewsLabel;
 @property (retain, nonatomic) IBOutlet UIButton *libraryCardButton;
+@property (retain, nonatomic) IBOutlet UIView *returnViewsView;
 - (IBAction)onButtonTap:(id)sender;
 
 -(void)refreshViewsInfo; 
-
 @end
