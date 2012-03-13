@@ -177,7 +177,7 @@
 						</object>
 					</object>
 				</array>
-				<string key="NSFrameSize">{320, 59}</string>
+				<string key="NSFrameSize">{115, 59}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="970453488"/>

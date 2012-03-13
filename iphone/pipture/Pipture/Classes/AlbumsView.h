@@ -15,6 +15,7 @@
     NSMutableArray * albumsItemsArray;
     NSInteger libraryCardHeight;
     BOOL libraryCardVisible;
+    BOOL filterOnPurchasedAlbums;
 }
 
 - (void)updateAlbums:(NSArray *)albums;
@@ -22,9 +23,16 @@
 
 @property (assign, nonatomic) id<HomeScreenDelegate> delegate;
 
-@property (retain, nonatomic) NSArray * albumsArray;
+@property (retain, nonatomic) IBOutlet UIView *albumsFilterView;
+@property (retain, nonatomic) IBOutlet UIButton *allAlbumsButton;
+@property (retain, nonatomic) IBOutlet UIView *allAlbumsButtonEnchancer;
+- (IBAction)onAlbumFilterButtonTouch:(id)sender;
+@property (retain, nonatomic) IBOutlet UIButton *purchasedAlbumsButton;
+@property (retain, nonatomic) IBOutlet UIView *purchasedAlbumsButtonEnchancer;
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (readonly, nonatomic) LibraryCardController* libraryCardController;
+
+-(void)filterOnPurchasedAlbums:(BOOL)filter;
 
 -(void)setLibraryCardVisibility:(BOOL)visibility withAnimation:(BOOL)animation;
 @end
