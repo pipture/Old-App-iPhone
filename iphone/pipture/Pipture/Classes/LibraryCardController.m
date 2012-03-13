@@ -16,6 +16,7 @@
 @synthesize prompt2Label;
 @synthesize numberOfViewsLabel;
 @synthesize libraryCardButton;
+@synthesize returnViewsView;
 
 static NSString* const activeImage = @"active-librarycard.png";
 static NSString* const inactiveImage = @"inactive-librarycard.png";
@@ -59,7 +60,9 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
     // Release any cached data, images, etc that aren't in use.
 }
 
-
+- (void)tapResponder:(UITapGestureRecognizer *)recognizer {
+    [[[PiptureAppDelegate instance] model] getUnusedMessageViews:self];
+}
 
 #pragma mark - View lifecycle
 
@@ -68,6 +71,11 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];    
     [self setNumberOfViews:[[PiptureAppDelegate instance] getBalance]];
+    
+    UITapGestureRecognizer * returnViewsAction = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    returnViewsAction.cancelsTouchesInView = NO;
+    [returnViewsView addGestureRecognizer:returnViewsAction];
+    [returnViewsAction release];
     
 }
 
@@ -84,6 +92,7 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
     [self setNumberOfViewsLabel:nil];
     [self setLibraryCardButton:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];    
+    [self setReturnViewsView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -94,6 +103,7 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
     [prompt2Label release];
     [numberOfViewsLabel release];
     [libraryCardButton release];
+    [returnViewsView release];
     [super dealloc];
 }
 
@@ -109,6 +119,46 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
 
 -(void)refreshViewsInfo{
     [[PiptureAppDelegate instance] updateBalance];    
+}
+
+#pragma mark ActionSheet Delegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0:
+            [[[PiptureAppDelegate instance] model] deactivateMessageViews:[NSNumber numberWithInt:1] receiver:self];
+            break;
+        case 1:
+            [[[PiptureAppDelegate instance] model] deactivateMessageViews:[NSNumber numberWithInt:2] receiver:self];
+            break;
+        case 2:
+            [[[PiptureAppDelegate instance] model] deactivateMessageViews:[NSNumber numberWithInt:0] receiver:self];
+            break;
+        default:
+            break;
+    }
+}
+
+#pragma mark UnreadMessagesReceiver
+
+-(void)unreadMessagesReceived:(UnreadedPeriod*)periods {
+    int allcount = periods.unreadedCount1.intValue + periods.unreadedCount2.intValue;
+    NSString * title = [NSString stringWithFormat:@"You have a total of %d unused views in sent videos. You can return views to your library card by deactivating some choosing one of the options below", allcount];
+    NSString * btn1 = [NSString stringWithFormat:@"Most Recent (%d Views)", periods.unreadedCount1.intValue];
+    NSString * btn2 = [NSString stringWithFormat:@"After 1 Week (%d Views)", periods.unreadedCount2.intValue];
+    NSString * btn3 = [NSString stringWithFormat:@"All Unused (%d Views)", allcount];
+    UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle:title delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:btn1, btn2, btn3, nil];
+    popupQuery.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+    [popupQuery showInView:self.view.superview];
+    [popupQuery release];
+}
+
+-(void)balanceReceived:(NSDecimalNumber*)newBalance {
+    SET_BALANCE(newBalance);
+}
+
+-(void)authenticationFailed {
+    NSLog(@"auth failed!");
 }
 
 @end

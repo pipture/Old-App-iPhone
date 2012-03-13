@@ -110,4 +110,8 @@
 - (NetworkConnection)networkConnection;
 - (BOOL)isHighResolutionDevice;
 - (BOOL)getVideoURL:(PlaylistItem*)item forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
+
+- (void)putUpdateTimeForAlbumId:(NSInteger)albumId updateDate:(NSInteger)date;
+- (NSInteger)getUpdateTimeForAlbumId:(NSInteger)albumId;
+
 @end

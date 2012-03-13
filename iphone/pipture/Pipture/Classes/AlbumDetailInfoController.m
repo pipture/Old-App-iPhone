@@ -465,7 +465,7 @@
             [self tabChanged:videosButton];
             break;
     }
-    
+    [[PiptureAppDelegate instance] putUpdateTimeForAlbumId:album.albumId updateDate:[album.updateDate timeIntervalSince1970]];
     [[PiptureAppDelegate instance] powerButtonEnable:([scheduleModel albumIsPlayingNow:album.albumId])];        
 
 }

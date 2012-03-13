@@ -13,6 +13,7 @@
 #import "PlaylistItem.h"
 #import "SBJson.h"
 #import "ScreenshotImage.h"
+#import "UnreadedPeriod.h"
 #import "DataRequestRetryStrategyFactory.h"
 @interface DefaultDataRequestFactory : NSObject<DataRequestManager>
 
@@ -106,6 +107,11 @@
 -(void)screenshotsReceived:(NSArray*)screenshotImages;
 @end
 
+@protocol UnreadMessagesReceiver <PiptureModelDelegate>
+@required
+-(void)unreadMessagesReceived:(UnreadedPeriod*)periods;
+@end
+
 
 @interface PiptureModel : NSObject     
 {
@@ -148,6 +154,10 @@
 -(BOOL)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId screenshotImage:(NSString*)screenshotImage userName:(NSString*)userName viewsCount:(NSNumber*)viewsCount receiver:(NSObject<SendMessageDelegate>*)receiver;
 
 -(BOOL)getScreenshotCollectionFor:(PlaylistItem*)playlistItem receiver:(NSObject<ScreenshotCollectionReceiver>*)receiver;
+
+-(BOOL)getUnusedMessageViews:(NSObject<UnreadMessagesReceiver>*)receiver;
+
+-(BOOL)deactivateMessageViews:(NSNumber *)periodId receiver:(NSObject<BalanceReceiver>*)receiver;
 
 @end
 

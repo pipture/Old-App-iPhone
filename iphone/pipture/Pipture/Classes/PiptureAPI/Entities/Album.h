@@ -38,6 +38,7 @@ enum AlbumSellStatus{
 @property(retain, nonatomic) NSString* rating;
 @property(retain, nonatomic) NSString* cover;
 @property(retain, nonatomic) NSDate* releaseDate;
+@property(retain, nonatomic) NSDate* updateDate;
 @property(retain, nonatomic) NSString* thumbnail;
 @property(retain, nonatomic) NSString* closeupBackground;
 @property(retain, nonatomic) NSString* emailScreenshot;

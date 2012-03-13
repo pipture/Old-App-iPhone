@@ -197,6 +197,16 @@ static PiptureAppDelegate *instance;
     return [[NSUserDefaults standardUserDefaults] stringForKey:USERNAME_KEY];
 }
 
+- (void)putUpdateTimeForAlbumId:(NSInteger)albumId updateDate:(NSInteger)date {
+    [[NSUserDefaults standardUserDefaults] setInteger:date forKey:[NSString stringWithFormat:@"album%d", albumId]];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSInteger)getUpdateTimeForAlbumId:(NSInteger)albumId {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"album%d", albumId]];
+}
+
+
 -(void)unsuspendPlayer {
     if (self.window.rootViewController == videoViewController) {
         [videoViewController setSuspended:NO];
@@ -669,6 +679,7 @@ NSInteger networkActivityIndecatorCount;
 - (NetworkConnection)networkConnection {
     return curConnection;
 }
+
 
 #pragma mark -
 

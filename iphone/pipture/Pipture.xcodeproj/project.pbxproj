@@ -89,6 +89,9 @@
 		385CC83114A44B6A00D21D94 /* selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 385CC82F14A44B6A00D21D94 /* selected.png */; };
 		385CC83214A44B6A00D21D94 /* selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 385CC83014A44B6A00D21D94 /* selected@2x.png */; };
 		385FC39D147CD818001CDF43 /* VideoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 385FC39C147CD818001CDF43 /* VideoView.xib */; };
+		387215EE150F046700049FA3 /* UnreadedPeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = 387215ED150F046700049FA3 /* UnreadedPeriod.m */; };
+		387215F6150F380500049FA3 /* circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 387215F4150F380500049FA3 /* circle.png */; };
+		387215F7150F380500049FA3 /* circle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 387215F5150F380500049FA3 /* circle@2x.png */; };
 		387E9F5714A493A800355C43 /* DetailsTitleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 387E9F5614A493A800355C43 /* DetailsTitleViewController.m */; };
 		3881FBE314A9AF5E008DC616 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3881FBE114A9AF5E008DC616 /* icon.png */; };
 		3881FBE414A9AF5E008DC616 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3881FBE214A9AF5E008DC616 /* icon@2x.png */; };
@@ -386,6 +389,10 @@
 		385CC82F14A44B6A00D21D94 /* selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selected.png; sourceTree = "<group>"; };
 		385CC83014A44B6A00D21D94 /* selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "selected@2x.png"; sourceTree = "<group>"; };
 		385FC39C147CD818001CDF43 /* VideoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoView.xib; sourceTree = "<group>"; };
+		387215EC150F046700049FA3 /* UnreadedPeriod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnreadedPeriod.h; sourceTree = "<group>"; };
+		387215ED150F046700049FA3 /* UnreadedPeriod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnreadedPeriod.m; sourceTree = "<group>"; };
+		387215F4150F380500049FA3 /* circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle.png; sourceTree = "<group>"; };
+		387215F5150F380500049FA3 /* circle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "circle@2x.png"; sourceTree = "<group>"; };
 		387E9F5514A493A800355C43 /* DetailsTitleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailsTitleViewController.h; sourceTree = "<group>"; };
 		387E9F5614A493A800355C43 /* DetailsTitleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailsTitleViewController.m; sourceTree = "<group>"; };
 		3881FBE114A9AF5E008DC616 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -715,6 +722,8 @@
 		384A1F8C1491C21C007D5E0B /* Entities */ = {
 			isa = PBXGroup;
 			children = (
+				387215EC150F046700049FA3 /* UnreadedPeriod.h */,
+				387215ED150F046700049FA3 /* UnreadedPeriod.m */,
 				88FC5C0914922C3600C40DA1 /* Album.h */,
 				88FC5C0A14922C3600C40DA1 /* Album.m */,
 				88FC5C0B14922C3600C40DA1 /* Series.h */,
@@ -897,6 +906,8 @@
 		38A7EC88148DDC03002120F3 /* png */ = {
 			isa = PBXGroup;
 			children = (
+				387215F4150F380500049FA3 /* circle.png */,
+				387215F5150F380500049FA3 /* circle@2x.png */,
 				884CA11F150F33FE00E820E7 /* case-info.png */,
 				884CA120150F33FE00E820E7 /* case-info@2x.png */,
 				884CA117150E0D5900E820E7 /* button-purchases-active.png */,
@@ -1411,6 +1422,8 @@
 				884CA121150F33FE00E820E7 /* case-info.png in Resources */,
 				884CA122150F33FE00E820E7 /* case-info@2x.png in Resources */,
 				884CA124150F343900E820E7 /* ScrollHintPopup.xib in Resources */,
+				387215F6150F380500049FA3 /* circle.png in Resources */,
+				387215F7150F380500049FA3 /* circle@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1502,7 +1515,11 @@
 				887AE33A1500BB38009C010A /* TimeslotFormatter.m in Sources */,
 				884D41D615062C4100C91986 /* PiptureStoreController.m in Sources */,
 				88AC138B1507777500F02F97 /* PiptureStoreModel.m in Sources */,
+
 				884CA127150F37D800E820E7 /* ScrollingHintPopupController.m in Sources */,
+
+				387215EE150F046700049FA3 /* UnreadedPeriod.m in Sources */,
+
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
