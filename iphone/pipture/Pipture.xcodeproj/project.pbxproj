@@ -208,6 +208,9 @@
 		884CA11C150E0D5900E820E7 /* button-purchases-active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 884CA118150E0D5900E820E7 /* button-purchases-active@2x.png */; };
 		884CA11D150E0D5900E820E7 /* button-purchases-inactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 884CA119150E0D5900E820E7 /* button-purchases-inactive.png */; };
 		884CA11E150E0D5900E820E7 /* button-purchases-inactive@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 884CA11A150E0D5900E820E7 /* button-purchases-inactive@2x.png */; };
+		884CA121150F33FE00E820E7 /* case-info.png in Resources */ = {isa = PBXBuildFile; fileRef = 884CA11F150F33FE00E820E7 /* case-info.png */; };
+		884CA122150F33FE00E820E7 /* case-info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 884CA120150F33FE00E820E7 /* case-info@2x.png */; };
+		884CA124150F343900E820E7 /* ScrollHintPopup.xib in Resources */ = {isa = PBXBuildFile; fileRef = 884CA123150F343800E820E7 /* ScrollHintPopup.xib */; };
 		884D41D21506245900C91986 /* PiptureStore.xib in Resources */ = {isa = PBXBuildFile; fileRef = 884D41D11506245900C91986 /* PiptureStore.xib */; };
 		884D41D615062C4100C91986 /* PiptureStoreController.m in Sources */ = {isa = PBXBuildFile; fileRef = 884D41D515062C4100C91986 /* PiptureStoreController.m */; };
 		884D41DB15063BE500C91986 /* special-close-button-pushed.png in Resources */ = {isa = PBXBuildFile; fileRef = 884D41D715063BE500C91986 /* special-close-button-pushed.png */; };
@@ -516,6 +519,9 @@
 		884CA118150E0D5900E820E7 /* button-purchases-active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-purchases-active@2x.png"; sourceTree = "<group>"; };
 		884CA119150E0D5900E820E7 /* button-purchases-inactive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-purchases-inactive.png"; sourceTree = "<group>"; };
 		884CA11A150E0D5900E820E7 /* button-purchases-inactive@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-purchases-inactive@2x.png"; sourceTree = "<group>"; };
+		884CA11F150F33FE00E820E7 /* case-info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "case-info.png"; sourceTree = "<group>"; };
+		884CA120150F33FE00E820E7 /* case-info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "case-info@2x.png"; sourceTree = "<group>"; };
+		884CA123150F343800E820E7 /* ScrollHintPopup.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ScrollHintPopup.xib; sourceTree = "<group>"; };
 		884D41D11506245900C91986 /* PiptureStore.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PiptureStore.xib; sourceTree = "<group>"; };
 		884D41D415062C4100C91986 /* PiptureStoreController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureStoreController.h; sourceTree = "<group>"; };
 		884D41D515062C4100C91986 /* PiptureStoreController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureStoreController.m; sourceTree = "<group>"; };
@@ -859,6 +865,7 @@
 				888943CE14FF43F600331008 /* LibraryCardB8.xib */,
 				88E5098214FF9507003AFA14 /* LibraryCardA7.xib */,
 				884D41D11506245900C91986 /* PiptureStore.xib */,
+				884CA123150F343800E820E7 /* ScrollHintPopup.xib */,
 			);
 			path = Resources;
 			sourceTree = SOURCE_ROOT;
@@ -885,6 +892,8 @@
 		38A7EC88148DDC03002120F3 /* png */ = {
 			isa = PBXGroup;
 			children = (
+				884CA11F150F33FE00E820E7 /* case-info.png */,
+				884CA120150F33FE00E820E7 /* case-info@2x.png */,
 				884CA117150E0D5900E820E7 /* button-purchases-active.png */,
 				884CA118150E0D5900E820E7 /* button-purchases-active@2x.png */,
 				884CA119150E0D5900E820E7 /* button-purchases-inactive.png */,
@@ -1394,6 +1403,9 @@
 				884CA11C150E0D5900E820E7 /* button-purchases-active@2x.png in Resources */,
 				884CA11D150E0D5900E820E7 /* button-purchases-inactive.png in Resources */,
 				884CA11E150E0D5900E820E7 /* button-purchases-inactive@2x.png in Resources */,
+				884CA121150F33FE00E820E7 /* case-info.png in Resources */,
+				884CA122150F33FE00E820E7 /* case-info@2x.png in Resources */,
+				884CA124150F343900E820E7 /* ScrollHintPopup.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
