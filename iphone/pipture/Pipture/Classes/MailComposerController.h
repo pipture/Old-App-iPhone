@@ -17,6 +17,7 @@
 @interface MailComposerController : UIViewController <UITextViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate>{
 
     @private
+    NSString * message_;
     ScreenshotImage* screenshotImage_;
     ScreenshotImage* defaultScreenshotImage_;
     PlaylistItem* playlistItem_;
@@ -54,4 +55,5 @@
 
 - (IBAction)onTableTap:(id)sender;
 - (void) setScreenshotImage:(ScreenshotImage*)screenshotImage;
+- (void) setMessageText:(NSString*)messageText;
 @end

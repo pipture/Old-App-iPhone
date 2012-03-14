@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "MailComposerController.h"
 
-
 @interface MailComposerNavigationController : UINavigationController
 
 - (void)prepareMailComposer:(PlaylistItem*)item timeslot:(NSNumber*)timeslotId prevViewController:(UIViewController*)viewController;

@@ -11,6 +11,7 @@
 #import "PiptureModel.h"
 #import "AlbumScreenshotsController.h"
 #import "Trailer.h"
+#import "MessageComposerController.h"
 
 #define RADIO_BUTTON_ON_IMAGE @"radio-button-pushed.png"
 #define RADIO_BUTTON_OFF_IMAGE @"radio-button.png"
@@ -255,7 +256,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 -(void)sendMessageURLRequest {
-    [[[PiptureAppDelegate instance] model] sendMessage:messageEdit.text playlistItem:self.playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot userName:nameTextField.text viewsCount:[NSNumber numberWithInt:(infiniteViews? -1 : numberOfViews)] receiver:self];
+    [[[PiptureAppDelegate instance] model] sendMessage:message_ ? message_ : @"" playlistItem:self.playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot userName:nameTextField.text viewsCount:[NSNumber numberWithInt:(infiniteViews? -1 : numberOfViews)] receiver:self];
 }
 
 - (IBAction)onConfirmMessageTap:(id)sender {
@@ -517,6 +518,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [screenshotCell release];
     [messageCell release];
     [layoutTableView release];
+    [message_ release];
     [screenshotImage_ release];
     [screenshotName release];
     [lastScreenshotView release];
@@ -578,7 +580,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self displayScreenshot];
 }
 
-
+- (void) setMessageText:(NSString *)messageText {
+    NSString* newmessage = [messageText retain];
+    [message_ release];
+    message_ = newmessage;
+}
 
 
 -(void)balanceReceived:(NSDecimalNumber*)balance
@@ -681,10 +687,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 {
     switch (section) {
         case 0:
-        case 1:
             return nil;
+        case 1:
+            return @"Message";
         case 2:
-            return @"Screenshot selection";                
+            return @"Screenshot selection";
         case 3:
             return @"From";                                                
         case 4:
@@ -723,6 +730,17 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self calcCellRow:indexPath] == MESSAGE_CELL_ROW) {
+        
+        MessageComposerController* mcctrl = [[MessageComposerController alloc] initWithNibName:@"MessageComposer" bundle:nil mailComposerController:self];
+        /*mcctrl.defaultImage = defaultScreenshotImage_;
+        mcctrl.screenshotImages = screenshotImages_;
+        mcctrl.selectedImage = screenshotImage_; */
+        
+        [self.navigationController pushViewController:mcctrl animated:YES];
+        [mcctrl release];
+    }
+    
     if ([self calcCellRow:indexPath] == SCREENSHOT_CELL_ROW && screenshotImages_) {
         
         AlbumScreenshotsController* asctrl = [[AlbumScreenshotsController alloc] initWithNibName:@"AlbumScreenshots" bundle:nil mailComposerController:self];
