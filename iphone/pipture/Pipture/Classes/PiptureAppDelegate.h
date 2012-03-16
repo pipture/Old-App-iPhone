@@ -42,6 +42,9 @@
     NetworkConnectionInformer * wifiConnection;
 }
 
+@property (assign, nonatomic) BOOL userPurchasedViewsSinceAppStart;
+@property (assign, nonatomic) BOOL userPurchasedAlbumSinceAppStart;
+
 @property (retain, nonatomic) IBOutlet UIView *tabView;
 @property (retain, nonatomic) IBOutlet UIImageView *backgroundImage;
 @property (retain, nonatomic) IBOutlet UIButton *channelButton;

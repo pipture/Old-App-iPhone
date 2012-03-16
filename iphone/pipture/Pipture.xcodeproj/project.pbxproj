@@ -218,6 +218,7 @@
 		884CA121150F33FE00E820E7 /* case-info.png in Resources */ = {isa = PBXBuildFile; fileRef = 884CA11F150F33FE00E820E7 /* case-info.png */; };
 		884CA122150F33FE00E820E7 /* case-info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 884CA120150F33FE00E820E7 /* case-info@2x.png */; };
 		884CA124150F343900E820E7 /* ScrollHintPopup.xib in Resources */ = {isa = PBXBuildFile; fileRef = 884CA123150F343800E820E7 /* ScrollHintPopup.xib */; };
+		884CA127150F37D800E820E7 /* ScrollingHintPopupController.m in Sources */ = {isa = PBXBuildFile; fileRef = 884CA126150F37D800E820E7 /* ScrollingHintPopupController.m */; };
 		884D41D21506245900C91986 /* PiptureStore.xib in Resources */ = {isa = PBXBuildFile; fileRef = 884D41D11506245900C91986 /* PiptureStore.xib */; };
 		884D41D615062C4100C91986 /* PiptureStoreController.m in Sources */ = {isa = PBXBuildFile; fileRef = 884D41D515062C4100C91986 /* PiptureStoreController.m */; };
 		884D41DB15063BE500C91986 /* special-close-button-pushed.png in Resources */ = {isa = PBXBuildFile; fileRef = 884D41D715063BE500C91986 /* special-close-button-pushed.png */; };
@@ -538,6 +539,8 @@
 		884CA11F150F33FE00E820E7 /* case-info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "case-info.png"; sourceTree = "<group>"; };
 		884CA120150F33FE00E820E7 /* case-info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "case-info@2x.png"; sourceTree = "<group>"; };
 		884CA123150F343800E820E7 /* ScrollHintPopup.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ScrollHintPopup.xib; sourceTree = "<group>"; };
+		884CA125150F37D700E820E7 /* ScrollingHintPopupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScrollingHintPopupController.h; sourceTree = "<group>"; };
+		884CA126150F37D800E820E7 /* ScrollingHintPopupController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrollingHintPopupController.m; sourceTree = "<group>"; };
 		884D41D11506245900C91986 /* PiptureStore.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PiptureStore.xib; sourceTree = "<group>"; };
 		884D41D415062C4100C91986 /* PiptureStoreController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureStoreController.h; sourceTree = "<group>"; };
 		884D41D515062C4100C91986 /* PiptureStoreController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureStoreController.m; sourceTree = "<group>"; };
@@ -693,6 +696,8 @@
 				888943D114FF531E00331008 /* LibraryCardController.m */,
 				884D41D415062C4100C91986 /* PiptureStoreController.h */,
 				884D41D515062C4100C91986 /* PiptureStoreController.m */,
+				884CA125150F37D700E820E7 /* ScrollingHintPopupController.h */,
+				884CA126150F37D800E820E7 /* ScrollingHintPopupController.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -1527,6 +1532,9 @@
 				887AE33A1500BB38009C010A /* TimeslotFormatter.m in Sources */,
 				884D41D615062C4100C91986 /* PiptureStoreController.m in Sources */,
 				88AC138B1507777500F02F97 /* PiptureStoreModel.m in Sources */,
+
+				884CA127150F37D800E820E7 /* ScrollingHintPopupController.m in Sources */,
+
 				387215EE150F046700049FA3 /* UnreadedPeriod.m in Sources */,
 				38FA2C7A150F5D6D00CBEDD8 /* MessageComposerController.m in Sources */,
 			);

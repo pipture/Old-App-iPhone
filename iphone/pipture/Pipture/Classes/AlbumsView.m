@@ -100,6 +100,7 @@
         }
     }
     [filteredAlbums release];
+    [scrollingHintController onScrollContentChanged];
 }
 
 
@@ -137,7 +138,10 @@
             
     scrollView.contentOffset = CGPointMake(0, visibility ? 0 : libraryCardHeight);    
     if (!libraryCardVisible && libraryCardVisible != visibility)
-        [libraryCardController refreshViewsInfo];
+    {
+        [libraryCardController refreshViewsInfo];        
+        [scrollingHintController onHintUsed];
+    }
     
     libraryCardVisible = visibility;
     if (animation) {
@@ -172,6 +176,7 @@
     [purchasedAlbumsButton release];
     [allAlbumsButtonEnchancer release];
     [purchasedAlbumsButtonEnchancer release];
+    [scrollingHintController release];
     [super dealloc];
 }
 
@@ -205,5 +210,16 @@
     [self displayAlbums];
 }
 
+-(void)showScrollingHintIfNeeded {
+    
+    if (!scrollingHintController) {
+        scrollingHintController = [[ScrollingHintPopupController alloc] initWithNibName:@"ScrollHintPopup" bundle:nil screenName:@"B3" scrollView:scrollView origin:CGPointMake(0, libraryCardHeight + 8)];
+        scrollingHintController.showOnAlbumPurchase = YES;
+        scrollingHintController.showOnViewsPurchase = YES;        
+    }
+    if (!libraryCardVisible) {
+        [scrollingHintController showHintIfNeeded];
+    }
+}
 
 @end

@@ -224,8 +224,14 @@
     [albumsView prepareWith:self];
 
     [self setHomeScreenMode:[[PiptureAppDelegate instance] getHomescreenState]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onViewsPurchased:) name:VIEWS_PURCHASED_NOTIFICATION object:nil]; 
 }
 
+- (void) onViewsPurchased:(NSNotification *) notification {
+    if (homeScreenMode == HomeScreenMode_Albums) {
+        [albumsView showScrollingHintIfNeeded];
+    }
+}
 
 
 - (void)viewDidUnload
@@ -240,6 +246,7 @@
     [self setScheduleEnhancer:nil];
     [self setFlipEnhancer:nil];
     [super viewDidUnload];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setFullScreenMode {
@@ -291,6 +298,8 @@
     switch (homeScreenMode) {
         case HomeScreenMode_Albums:
             [self updateAlbums];
+            [albumsView setLibraryCardVisibility:NO withAnimation:NO];
+            [albumsView showScrollingHintIfNeeded];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
         case HomeScreenMode_PlayingNow:
@@ -470,6 +479,7 @@
                 
                 [tabbarContainer addSubview:albumsView];
                 [albumsView setLibraryCardVisibility:NO withAnimation:NO];
+                [albumsView showScrollingHintIfNeeded];
                 [self updateAlbums];
                 [self setNavBarMode];
                 

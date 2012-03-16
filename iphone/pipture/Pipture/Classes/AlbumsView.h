@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "HomeScreenDelegate.h"
 #import "LibraryCardController.h"
+#import "ScrollingHintPopupController.h"
 
 @interface AlbumsView : UIView <UIScrollViewDelegate>
 {
@@ -16,6 +17,7 @@
     NSInteger libraryCardHeight;
     BOOL libraryCardVisible;
     BOOL filterOnPurchasedAlbums;
+    ScrollingHintPopupController *scrollingHintController;
 }
 
 - (void)updateAlbums:(NSArray *)albums;
@@ -32,6 +34,8 @@
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (readonly, nonatomic) LibraryCardController* libraryCardController;
 
+
+-(void)showScrollingHintIfNeeded;
 -(void)filterOnPurchasedAlbums:(BOOL)filter;
 
 -(void)setLibraryCardVisibility:(BOOL)visibility withAnimation:(BOOL)animation;
