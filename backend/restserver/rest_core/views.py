@@ -969,9 +969,10 @@ def sendMessage (request):
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There are no EpisodeId or TrailerId. Should be one param."}
         return HttpResponse (json.dumps(response))
 
-    if not message:
-        response["Error"] = {"ErrorCode": "4", "ErrorDescription": "Message is empty."}
-        return HttpResponse (json.dumps(response))
+    
+    #if not message:
+    #    response["Error"] = {"ErrorCode": "4", "ErrorDescription": "Message is empty."}
+    #    return HttpResponse (json.dumps(response))
 
     if len(message) >= 200:
         response["Error"] = {"ErrorCode": "4", "ErrorDescription": "Message is too long."}

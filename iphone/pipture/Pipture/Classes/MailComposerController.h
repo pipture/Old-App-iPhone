@@ -13,6 +13,7 @@
 #import "VideoTitleViewController.h"
 #import "AsyncImageView.h"
 #import "LibraryCardController.h"
+#import "ScrollingHintPopupController.h"
 
 @interface MailComposerController : UIViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate>{
 
@@ -26,8 +27,7 @@
     NSInteger numberOfViews;
     NSArray* screenshotImages_;    
     NSNumberFormatter * viewsNumberFormatter;
-    
-    
+    ScrollingHintPopupController *scrollingHintController;
 }
 @property (retain, nonatomic) IBOutlet UIView *picturePlaceholder;
 @property (retain, nonatomic) IBOutlet UITableViewCell *screenshotCell;
@@ -56,4 +56,6 @@
 - (void) setScreenshotImage:(ScreenshotImage*)screenshotImage;
 - (void) setMessageText:(NSString*)messageText;
 - (NSString *) getMessageText;
+
+-(void)showScrollingHintIfNeeded;
 @end

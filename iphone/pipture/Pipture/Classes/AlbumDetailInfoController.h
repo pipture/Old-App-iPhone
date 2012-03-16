@@ -12,6 +12,7 @@
 #import "DetailsTitleViewController.h"
 #import "ScheduleModel.h"
 #import "LibraryCardController.h"
+#import "ScrollingHintPopupController.h"
 
 enum DetailAlbumViewType {
     DetailAlbumViewType_Videos = 20,
@@ -23,6 +24,7 @@ enum DetailAlbumViewType {
     enum DetailAlbumViewType viewType;
     BOOL detailsReceived;
     NSMutableDictionary* asyncImageViews;
+    ScrollingHintPopupController *scrollingHintController;
 }
 - (IBAction)backAction:(id)sender;
 - (IBAction)tabChanged:(id)sender;
@@ -51,5 +53,7 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) IBOutlet UITableViewCell *emptyCell;
 
 @property (retain, nonatomic) LibraryCardController *cardSectionViewController;
+
+-(void)showScrollingHintIfNeeded;
 
 @end

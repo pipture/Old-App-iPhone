@@ -170,7 +170,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [viewsNumberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
     
     cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardA7" bundle:nil];
-   
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:VIEWS_PURCHASED_NOTIFICATION object:nil];   
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -320,6 +321,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (void)viewDidUnload
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [self setRestrictedViewsRadioButton:nil];            
     [self setInfiniteViewsRadioButton:nil];    
     [self setPicturePlaceholder:nil];
@@ -430,6 +433,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self displayScreenshot];
     [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
     
+    [self showScrollingHintIfNeeded];    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -543,6 +547,20 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [[[PiptureAppDelegate instance] networkErrorAlerter] showStandardAlertForError:error];
 }
 
+- (void) onNewBalance:(NSNotification *) notification {
+    [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
+    [self showScrollingHintIfNeeded];
+}
+
+-(void)showScrollingHintIfNeeded {
+    
+    if (!scrollingHintController) {
+        scrollingHintController = [[ScrollingHintPopupController alloc] initWithNibName:@"ScrollHintPopup" bundle:nil screenName:@"A7" scrollView:layoutTableView origin:CGPointMake(0, cardSectionViewController.view.frame.size.height + 18)];
+        scrollingHintController.showOnViewsPurchase = YES;        
+    }
+    [scrollingHintController showHintIfNeeded];
+}
+
 #pragma mark Table delegates
 
 #define MESSAGE_CELL_ROW 1
@@ -641,6 +659,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     switch (section) {
         case 0:
             [cardSectionViewController refreshViewsInfo];
+            [scrollingHintController onHintUsed];
             return cardSectionViewController.view;
         case 4:
             return toSectionView;

@@ -136,6 +136,7 @@
 
     cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardB8" bundle:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:VIEWS_PURCHASED_NOTIFICATION object:nil]; 
     
     detailsReceived = NO;
     
@@ -145,6 +146,8 @@
 
 - (void)viewDidUnload
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [self setSubViewContainer:nil];
     [self setDetailPage:nil];
     [self setVideosTable:nil];
@@ -186,6 +189,7 @@
     [asyncImageViews release];
     [cardSectionViewController release];
     [purchasedInfoView release];
+    [scrollingHintController release];
     [super dealloc];
 }
 
@@ -329,6 +333,7 @@
     } else {
         if (updateData) {
             [cardSectionViewController refreshViewsInfo];
+            [scrollingHintController onHintUsed];
         }
         return cardSectionViewController.view;
     }
@@ -374,8 +379,14 @@
     SHOW_ERROR(@"Playing failed", @"Authentication failed");
 }
 
+- (void) onNewBalance:(NSNotification *) notification {
+    if (viewType == DetailAlbumViewType_Videos) {
+        [self showScrollingHintIfNeeded];
+    }
+}
+
 -(void)balanceReceived:(NSDecimalNumber*)balance {
-    SET_BALANCE(balance);
+    
 }
 
 -(void)notEnoughMoneyForWatch:(PlaylistItem*)playlistItem {
@@ -420,6 +431,8 @@
             [videosButton setBackgroundImage:[UIImage imageNamed:@"button-videos-active.png"] forState:UIControlStateHighlighted];
             break;
         case DetailAlbumViewType_Videos:
+            [self showScrollingHintIfNeeded];
+            
             videosTable.frame = rect;
             [subViewContainer addSubview:videosTable];
             [videosTable reloadData];
@@ -474,5 +487,15 @@
     //TODO nothing to do?
     NSLog(@"Details for unknown album");
 }
+
+-(void)showScrollingHintIfNeeded {
+    
+    if (!scrollingHintController) {
+        scrollingHintController = [[ScrollingHintPopupController alloc] initWithNibName:@"ScrollHintPopup" bundle:nil screenName:@"B8" scrollView:videosTable origin:CGPointMake(0, cardSectionViewController.view.frame.size.height + 8)];
+        scrollingHintController.showOnViewsPurchase = YES;        
+    }
+    [scrollingHintController showHintIfNeeded];
+}
+
 
 @end
