@@ -7,10 +7,33 @@
 //
 
 #import "MessageComposerController.h"
+#import "PiptureAppDelegate.h"
 
 @implementation MessageComposerController
 @synthesize textView;
 @synthesize bottomBar;
+@synthesize counterView;
+
+static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
+
+- (BOOL)isPlaceholderInMessage
+{
+    return [textView.text isEqualToString:MESSAGE_PLACEHOLDER];
+}
+- (BOOL)isMessageEmpty
+{
+    return[textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0;
+}
+- (void)setEmptyMessagePlaceholderIfNeeded
+{
+    if ([self isMessageEmpty]) {        
+        textView.text = MESSAGE_PLACEHOLDER;
+        textView.textColor = [UIColor grayColor];    
+    } else {
+        counterView.text = [NSString stringWithFormat:@"%d", 200-textView.text.length];
+    }
+}
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil mailComposerController: (MailComposerController*)mailComposerController
 {
@@ -68,21 +91,38 @@
 }
 */
 
-/*
+- (void)onBarTap:(id)sender {
+    [textView resignFirstResponder];
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    UITapGestureRecognizer *singleFingerDTap = [[UITapGestureRecognizer alloc]
+                                                initWithTarget:self action:@selector(onBarTap:)];
+    [bottomBar addGestureRecognizer:singleFingerDTap];
+    [singleFingerDTap release];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
 }
-*/
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    textView.text = [mailComposerController_ getMessageText];
+    [self setEmptyMessagePlaceholderIfNeeded];
+}
 
 - (void)viewDidUnload
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil]; 
+    
     [self setTextView:nil];
     [self setBottomBar:nil];
+    [self setCounterView:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -95,6 +135,65 @@
     [mailComposerController_ release];
     [textView release];
     [bottomBar release];
+    [counterView release];
     [super dealloc];
 }
+
+//method to move the view up/down whenever the keyboard is shown/dismissed
+-(void)resizeViews:(BOOL)shrink
+{
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.2]; // if you want to slide up the view
+    
+    CGRect bottomBarRect = bottomBar.frame;
+    CGRect messageRect = textView.frame;
+    
+    if (shrink) {
+        messageRect.size.height -= kHEIGHT_FOR_KEYBOARD;
+        bottomBarRect.origin.y -= kHEIGHT_FOR_KEYBOARD;
+    } else {
+        messageRect.size.height += kHEIGHT_FOR_KEYBOARD;
+        bottomBarRect.origin.y += kHEIGHT_FOR_KEYBOARD;
+    }
+    
+    bottomBar.frame = bottomBarRect;
+    textView.frame = messageRect;
+    
+    [UIView commitAnimations];
+}
+
+- (void)keyboardWillHide:(NSNotification *)notif
+{
+    [self setEmptyMessagePlaceholderIfNeeded];
+    [self resizeViews:NO];
+}
+
+
+-(void)textViewDidBeginEditing:(UITextView *)sender
+{
+    if ([sender isEqual:textView])
+    {        
+        [self resizeViews:YES];
+        if ([self isPlaceholderInMessage]) {
+            textView.text = @"";
+            textView.textColor = [UIColor darkTextColor];
+        }
+    }
+}
+
+- (void)textViewDidChange:(UITextView *)sender {
+    if ([sender isEqual:textView])
+    {
+        if (textView.text.length > 200) {
+            textView.text = [textView.text substringToIndex:198];
+        }
+        counterView.text = [NSString stringWithFormat:@"%d", 200-textView.text.length];
+    }
+}
+
+-(void)textViewDidEndEditing:(UITextView *)sender {
+    textView.text = [textView.text stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+}
+
+
 @end

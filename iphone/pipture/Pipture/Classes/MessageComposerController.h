@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "MailComposerController.h"
 
-@interface MessageComposerController : UIViewController {
+@interface MessageComposerController : UIViewController<UITextViewDelegate> {
     MailComposerController* mailComposerController_; 
 }
 @property (retain, nonatomic) IBOutlet UITextView *textView;
 @property (retain, nonatomic) IBOutlet UIView *bottomBar;
+@property (retain, nonatomic) IBOutlet UILabel *counterView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil mailComposerController: (MailComposerController*)mailComposerController;
 

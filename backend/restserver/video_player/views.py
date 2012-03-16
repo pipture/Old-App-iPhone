@@ -128,7 +128,6 @@ def index(request, u_url):
 
     video_url = ''
     message_blocked = True
-
     if not obsolete_url:
         video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
         message_blocked = False
@@ -176,7 +175,8 @@ def index(request, u_url):
         #template_h = 'video_desktop.html'
         template_h = 'webpage2.html'
  
-    text_m = urs_instance.Text 
+    text_m = urs_instance.Text
+    message_empty = len(text_m) == 0 
     data = {'video_url': video_url,
             'image_url': urs_instance.ScreenshotURL,
             'text_1': "%s..." % (text_m[0:int(len(text_m)/3)]),
@@ -184,6 +184,7 @@ def index(request, u_url):
             'views_limit': urs_instance.ViewsLimit,
             'views_count': urs_instance.ViewsCount,
             'message_blocked':message_blocked,
+            'message_empty':message_empty,
             'show_info':show_shortinfo,
             'disclaimer': disclaimer,
             'seriesname': seriesname,

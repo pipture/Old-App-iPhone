@@ -37,6 +37,14 @@
             </div>
           </div>
 
+		  {% if not message_empty %}
+           <div style="height: 92px; width: 501px;  height: 90px; left: 442px; position: absolute; top: 243px; width: 480px; z-index: 1; " class="tinyText shadow_1"><canvas style="position: absolute; top: -1px; left: -20px;" height="101" width="510"></canvas>
+             <div style="position: relative; width: 480px; ">
+               <img src="{{MEDIA_URL}}webpage_files/shapeimage_3.png" alt="" style="height: 92px; left: 0px; margin-left: -20px; margin-top: -1px; position: absolute; top: 0px; width: 501px; opacity: 0;">
+             </div>
+           </div>
+      	 {% endif %}
+
           <div style="height: 600px; width: 400px; left: 20px; position: absolute; top: 60px; z-index: 1; ">
             <div style="position: relative; width: 400px; height: 600px">
             	{% if message_blocked %}
@@ -52,10 +60,12 @@
               	{% endif %}
             </div>
           </div>
-
-		  <div style="height: 92px; width: 501px;  height: 90px; left: 442px; position: absolute; top: 243px; width: 480px; z-index: 1; " class="tinyText shadow_1"><canvas style="position: absolute; top: -1px; left: -20px;" height="101" width="510"></canvas>
-            <div style="position: relative; width: 480px; ">
-              <img src="{{MEDIA_URL}}webpage_files/shapeimage_3.png" alt="" style="height: 92px; left: 0px; margin-left: -20px; margin-top: -1px; position: absolute; top: 0px; width: 501px; opacity: 0;">
+          
+          
+          
+          <div style="height: 30px; width: 250px;  height: 30px; left: 690px; position: absolute; top: 17px; width: 250px; z-index: 1; " class="tinyText">
+            <div style="position: relative; width: 250px; ">
+              <img src="{{MEDIA_URL}}webpage_files/shapeimage_6.png" alt="" style="height: 30px; left: 0px; position: absolute; top: 0px; width: 250px;">
             </div>
           </div>
           
@@ -129,16 +139,6 @@
             </div>
           </div>
           
-
-
-          <div style="height: 30px; width: 250px;  height: 30px; left: 690px; position: absolute; top: 17px; width: 250px; z-index: 1; " class="tinyText">
-            <div style="position: relative; width: 250px; ">
-              <img src="{{MEDIA_URL}}webpage_files/shapeimage_6.png" alt="" style="height: 30px; left: 0px; position: absolute; top: 0px; width: 250px;">
-            </div>
-          </div>
-          
-
-
           <div id="id8" style="height: 24px; left: 701px; position: absolute; top: 20px; width: 227px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_227_24" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
@@ -188,13 +188,15 @@
             </div>
           </div>
 		{% endif %}
-		<!--
-          <div style="height: 92px; width: 501px;  height: 90px; left: 442px; position: absolute; top: 243px; width: 480px; z-index: 1; " class="tinyText shadow_0">
+		
+		{% if message_empty %}
+		  <div style="height: 92px; width: 501px;  height: 90px; left: 442px; position: absolute; top: 243px; width: 480px; z-index: 1; " class="tinyText shadow_0">
             <div style="position: relative; width: 480px; ">
               <img src="{{MEDIA_URL}}webpage_files/shapeimage_5_nolonger.png" alt="" style="height: 92px; left: 0px; margin-left: -20px; margin-top: -1px; position: absolute; top: 0px; width: 501px; " />
             </div>
           </div>
-      -->
+        {% endif %}
+      	
           <div style="height: 800px; line-height: 800px; " class="spacer">&nbsp;</div>
         </div>
         <div style="height: 0px; line-height: 0px; margin-left: 0px; position: relative; width: 960px; z-index: 15; " id="footer_layer">

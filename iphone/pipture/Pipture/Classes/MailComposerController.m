@@ -58,7 +58,6 @@
     
 @implementation MailComposerController
 @synthesize picturePlaceholder;
-@synthesize messageEdit;
 @synthesize screenshotCell;
 @synthesize messageCell;
 @synthesize fromCell;
@@ -76,20 +75,9 @@
 @synthesize maxViewsLabel;
 @synthesize infiniteRadioButtonsGroupView;
 
-
-
-static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
-
 static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
-
-
-
-- (BOOL)isPlaceholderInMessage
-{
-    return [messageEdit.text isEqualToString:MESSAGE_PLACEHOLDER];
-}
 
 - (void)displayNumberOfViewsTextField {
     numberOfViewsTextField.text = [NSString stringWithFormat:@"%d", numberOfViews];    
@@ -98,19 +86,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (void)displayInfiniteViewsRadioButtons {    
     [self onRadioButtonTap:(infiniteViews ? infiniteViewsRadioButton : restrictedViewsRadioButton)];
 }
-
-- (BOOL)isMessageEmpty
-{
-    return[messageEdit.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0;
-}
-- (void)setEmptyMessagePlaceholderIfNeeded
-{
-    if ([self isMessageEmpty]) {        
-        messageEdit.text = MESSAGE_PLACEHOLDER;
-        messageEdit.textColor = [UIColor grayColor];    
-    }
-}
-
 
 - (void) displayScreenshot
 {
@@ -260,21 +235,13 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (IBAction)onConfirmMessageTap:(id)sender {
-    if ([self isPlaceholderInMessage] || 
-        [self isMessageEmpty])
-    {
-        [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
-        [messageEdit becomeFirstResponder];        
-        return;
-    }
-    
+   
     if ([nameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
         [self moveView:FROM_EDITING_SCROLL_OFFSET];        
         [nameTextField becomeFirstResponder];
         return;
     }
     
-    [messageEdit resignFirstResponder];
     [nameTextField resignFirstResponder];
     [numberOfViewsTextField resignFirstResponder]; 
 
@@ -342,8 +309,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
             [self displayInfiniteViewsRadioButtons];
             [self setInfiniteRadiobutonsVisiblity];
             [self displayScreenshot];
-            messageEdit.text = @"";            
-            [self setEmptyMessagePlaceholderIfNeeded];
         }
         
     }
@@ -357,7 +322,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 {
     [self setRestrictedViewsRadioButton:nil];            
     [self setInfiniteViewsRadioButton:nil];    
-    [self setMessageEdit:nil];
     [self setPicturePlaceholder:nil];
     [self setScreenshotCell:nil];
     [self setMessageCell:nil];
@@ -391,34 +355,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [UIView commitAnimations];
 }
 
-
-
-
--(void)textViewDidBeginEditing:(UITextView *)sender
-{
-    if ([sender isEqual:messageEdit])
-    {        
-        [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
-        if ([self isPlaceholderInMessage]) {
-            messageEdit.text = @"";
-            messageEdit.textColor = [UIColor darkTextColor];
-        }
-    }
-}
-
-- (void)textViewDidChange:(UITextView *)textView {
-    if ([textView isEqual:messageEdit])
-    {
-        if (messageEdit.text.length > 200) {
-            messageEdit.text = [messageEdit.text substringToIndex:198];
-        }
-    }
-}
-
--(void)textViewDidEndEditing:(UITextView *)textView {
-    messageEdit.text = [messageEdit.text stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
-}
-
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     if ([textField isEqual:nameTextField])
     {
@@ -427,7 +363,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         [self moveView:VIEWS_EDITING_SCROLL_OFFSET];        
     }
 }
-
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     
@@ -445,8 +380,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     }
         
 }
-
-
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     if (textField == numberOfViewsTextField) {
@@ -474,7 +407,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (void)keyboardWillHide:(NSNotification *)notif
 {
-    [self setEmptyMessagePlaceholderIfNeeded];
     [self fixScrollOffsetIfNeeded];
 }
 
@@ -496,7 +428,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self displayInfiniteViewsRadioButtons];
     [self setInfiniteRadiobutonsVisiblity];
     [self displayScreenshot];
-    [self setEmptyMessagePlaceholderIfNeeded];    
     [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
     
 }
@@ -513,7 +444,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (void)dealloc {
     [restrictedViewsRadioButton release];            
     [infiniteViewsRadioButton release];    
-    [messageEdit release];
     [picturePlaceholder release];
     [screenshotCell release];
     [messageCell release];
@@ -586,6 +516,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     message_ = newmessage;
 }
 
+- (NSString *) getMessageText {
+    if (message_) {
+        return message_;
+    }
+    return @"";
+}
 
 -(void)balanceReceived:(NSDecimalNumber*)balance
 {
@@ -759,14 +695,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded)
     {
-        [messageEdit resignFirstResponder];
         [nameTextField resignFirstResponder];        
         [numberOfViewsTextField resignFirstResponder];
     }
 }
 
 - (IBAction)onTableTap:(id)sender {
-    [messageEdit resignFirstResponder];
     [nameTextField resignFirstResponder];
     [numberOfViewsTextField resignFirstResponder];    
 }

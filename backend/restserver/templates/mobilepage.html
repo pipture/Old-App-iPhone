@@ -156,11 +156,19 @@
             </div>
           </div>
 
-          <div style="height: 117px; width: 403px;  height: 91px; left: -4px; position: absolute; top: 175px; width: 402px; z-index: 1; " class="tinyText shadow_1">
+		{% if not message_empty %}
+		  <div style="height: 117px; width: 403px;  height: 91px; left: -4px; position: absolute; top: 175px; width: 402px; z-index: 1; " class="tinyText shadow_1">
             <div style="position: relative; width: 402px; ">
               <img src="{{MEDIA_URL}}webpage_files/shapeimage_8m.png" alt="" style="height: 117px; left: 0px; margin-top: -1px; position: absolute; top: 0px; width: 403px; " />
             </div>
           </div>
+		{% else %}
+          <div style="height: 117px; width: 403px;  height: 91px; left: -4px; position: absolute; top: 175px; width: 402px; z-index: 1; " class="tinyText shadow_1">
+            <div style="position: relative; width: 402px; ">
+              <img src="{{MEDIA_URL}}webpage_files/shapeimage_8m_nolonger.png" alt="" style="height: 117px; left: 0px; margin-top: -1px; position: absolute; top: 0px; width: 403px; " />
+            </div>
+          </div>
+        {% endif %}
 
           <div id="id12" style="height: 48px; left: 11px; position: absolute; top: 194px; width: 361px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_361_48" style="padding: 0px; ">

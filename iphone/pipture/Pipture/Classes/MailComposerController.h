@@ -14,7 +14,7 @@
 #import "AsyncImageView.h"
 #import "LibraryCardController.h"
 
-@interface MailComposerController : UIViewController <UITextViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate>{
+@interface MailComposerController : UIViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate>{
 
     @private
     NSString * message_;
@@ -30,7 +30,6 @@
     
 }
 @property (retain, nonatomic) IBOutlet UIView *picturePlaceholder;
-@property (retain, nonatomic) IBOutlet UITextView *messageEdit;
 @property (retain, nonatomic) IBOutlet UITableViewCell *screenshotCell;
 @property (retain, nonatomic) IBOutlet UITableViewCell *messageCell;
 @property (retain, nonatomic) IBOutlet UITableViewCell *fromCell;
@@ -56,4 +55,5 @@
 - (IBAction)onTableTap:(id)sender;
 - (void) setScreenshotImage:(ScreenshotImage*)screenshotImage;
 - (void) setMessageText:(NSString*)messageText;
+- (NSString *) getMessageText;
 @end
