@@ -17,10 +17,10 @@
 			<string>IBUICustomObject</string>
 			<string>IBUIImageView</string>
 			<string>IBUIWindow</string>
-			<string>IBUIBarButtonItem</string>
+			<string>IBUIButton</string>
 			<string>IBUINavigationBar</string>
 			<string>IBUINavigationItem</string>
-			<string>IBUIButton</string>
+			<string>IBUIBarButtonItem</string>
 			<string>IBUIView</string>
 		</array>
 		<array key="IBDocument.PluginDependencies">
@@ -137,7 +137,6 @@
 										<string key="NSFrame">{{218, 11}, {98, 44}}</string>
 										<reference key="NSSuperview" ref="795262716"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView"/>
 										<string key="NSReuseIdentifierKey">_NS:225</string>
 										<bool key="IBUIOpaque">NO</bool>
 										<int key="IBUITag">2</int>
@@ -265,15 +264,10 @@
 				<array class="NSMutableArray" key="IBUIViewControllers">
 					<object class="IBUIViewController" id="794762067">
 						<object class="IBUINavigationItem" key="IBUINavigationItem" id="118096285">
+							<reference key="IBUINavigationBar"/>
 							<string key="IBUITitle"/>
 							<object class="IBUIBarButtonItem" key="IBUILeftBarButtonItem" id="255625457">
 								<string key="IBUITitle">Store</string>
-								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<int key="IBUIStyle">1</int>
-								<reference key="IBUINavigationItem" ref="118096285"/>
-							</object>
-							<object class="IBUIBarButtonItem" key="IBUIRightBarButtonItem" id="948065552">
-								<string key="IBUITitle">0 views</string>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIStyle">1</int>
 								<reference key="IBUINavigationItem" ref="118096285"/>
@@ -344,7 +338,6 @@
 				<array class="NSMutableArray" key="IBUIViewControllers">
 					<object class="IBUIViewController" id="195280343">
 						<object class="IBUINavigationItem" key="IBUINavigationItem" id="836017980">
-							<reference key="IBUINavigationBar"/>
 							<string key="IBUITitle">Root View Controller</string>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						</object>
@@ -384,7 +377,6 @@
 				<array class="NSMutableArray" key="IBUIViewControllers">
 					<object class="IBUIViewController" id="820858209">
 						<object class="IBUINavigationItem" key="IBUINavigationItem" id="126859332">
-							<reference key="IBUINavigationBar"/>
 							<string key="IBUITitle">Root View Controller</string>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						</object>
@@ -425,14 +417,6 @@
 						<reference key="destination" ref="378760892"/>
 					</object>
 					<int key="connectionID">52</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">buyButton</string>
-						<reference key="source" ref="982200970"/>
-						<reference key="destination" ref="948065552"/>
-					</object>
-					<int key="connectionID">75</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
@@ -513,14 +497,6 @@
 						<reference key="destination" ref="307694026"/>
 					</object>
 					<int key="connectionID">139</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">buyAction:</string>
-						<reference key="source" ref="948065552"/>
-						<reference key="destination" ref="982200970"/>
-					</object>
-					<int key="connectionID">76</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -622,7 +598,6 @@
 						<int key="objectID">6</int>
 						<reference key="object" ref="118096285"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="948065552"/>
 							<reference ref="255625457"/>
 						</array>
 						<reference key="parent" ref="794762067"/>
@@ -636,11 +611,6 @@
 						<int key="objectID">73</int>
 						<reference key="object" ref="1020986070"/>
 						<reference key="parent" ref="380026005"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">74</int>
-						<reference key="object" ref="948065552"/>
-						<reference key="parent" ref="118096285"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">88</int>
@@ -793,7 +763,6 @@
 				<string key="5.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="6.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="73.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<string key="74.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="88.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="89.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<real value="1" key="89.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
@@ -1009,7 +978,6 @@
 						<string key="layoutTableView">UITableView</string>
 						<string key="maxViewsLabel">UILabel</string>
 						<string key="messageCell">UITableViewCell</string>
-						<string key="messageEdit">UITextView</string>
 						<string key="nameTextField">UITextField</string>
 						<string key="numberOfViewsTextField">UITextField</string>
 						<string key="picturePlaceholder">UIView</string>
@@ -1046,10 +1014,6 @@
 						<object class="IBToOneOutletInfo" key="messageCell">
 							<string key="name">messageCell</string>
 							<string key="candidateClassName">UITableViewCell</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="messageEdit">
-							<string key="name">messageEdit</string>
-							<string key="candidateClassName">UITextView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="nameTextField">
 							<string key="name">nameTextField</string>

@@ -51,7 +51,6 @@
 @property (retain, nonatomic) IBOutlet UIButton *libraryButton;
 @property (retain, nonatomic) IBOutlet UIView *tabbarView;
 @property (retain, nonatomic) IBOutlet UIButton *powerButton;
-@property (retain, nonatomic) IBOutlet UIBarButtonItem *buyButton;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
 
@@ -89,7 +88,6 @@
 
 
 - (IBAction)actionButton:(id)sender;
-- (IBAction)buyAction:(id)sender;
 - (IBAction)onStoreClick:(id)sender;
 
 - (BOOL)trackEvent:(NSString*)event :(NSString*)action;

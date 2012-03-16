@@ -26,7 +26,6 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize tabbarView;
 @synthesize tabViewBaseHeight;
 @synthesize powerButton;
-@synthesize buyButton;
 @synthesize window = _window;
 @synthesize homeNavigationController;
 @synthesize piptureStoreNavigationController;
@@ -68,7 +67,6 @@ static PiptureAppDelegate *instance;
     [homeNavigationController release];
     [_window release];
     [model_ release];
-    [buyButton release];
     [tabView release];
     [powerButton release];
     [welcomeScreen release];
@@ -525,11 +523,6 @@ NSInteger networkActivityIndecatorCount;
     NSLog(@"New balance: %@", newBalance);
     balance = [newBalance intValue];
     [[NSNotificationCenter defaultCenter] postNotificationName:NEW_BALANCE_NOTIFICATION object:self];    
-//    if (balance == 0) {
-//        buyButton.title = @"Buy";
-//    } else {
-        buyButton.title = [NSString stringWithFormat:@"%d views", balance];
-//    }
 }
 
 - (float)getBalance {
@@ -550,10 +543,6 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (void)buyViews {
-    [self buyAction:self];    
-}
-
-- (IBAction)buyAction:(id)sender {
     if ([purchases canMakePurchases]) {
         [purchases purchaseCredits];
     } else {
@@ -690,7 +679,7 @@ NSInteger networkActivityIndecatorCount;
         case INSUFFICIENT_FUND_ALERT:
             if (buttonIndex == 1)
             {
-                [self buyAction:self];
+                [self buyViews];
             }
             break;
         case GENERAL_ALERT:
