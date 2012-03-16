@@ -13,6 +13,7 @@
 @synthesize textView;
 @synthesize bottomBar;
 @synthesize counterView;
+@synthesize doneButton;
 
 static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
 
@@ -28,9 +29,12 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
 {
     if ([self isMessageEmpty]) {        
         textView.text = MESSAGE_PLACEHOLDER;
-        textView.textColor = [UIColor grayColor];    
+        textView.textColor = [UIColor grayColor];
+        doneButton.enabled = NO;
     } else {
-        counterView.text = [NSString stringWithFormat:@"%d", 200-textView.text.length];
+        int len = 200-textView.text.length;
+        counterView.text = [NSString stringWithFormat:@"%d", len];
+        doneButton.enabled = len < 200;
     }
 }
 
@@ -42,19 +46,11 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
         mailComposerController_ = [mailComposerController retain];
        
         self.navigationItem.hidesBackButton = YES;
-        
-        UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
-        self.navigationItem.leftBarButtonItem = cancelButton;
-        [cancelButton release];
-        
-        UIBarButtonItem* doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(onDone)];
-        self.navigationItem.rightBarButtonItem = doneButton;
-        [doneButton release];
     }
     return self;
 }
 
--(void)onDone
+-(IBAction)onDone:sender
 {
     [mailComposerController_ setMessageText:textView.text];
     [self.navigationController popViewControllerAnimated:YES];
@@ -105,6 +101,15 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
     [bottomBar addGestureRecognizer:singleFingerDTap];
     [singleFingerDTap release];
     
+    UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
+    self.navigationItem.leftBarButtonItem = cancelButton;
+    [cancelButton release];
+    
+    UIBarButtonItem* doneBarButton = [[UIBarButtonItem alloc] initWithCustomView:doneButton];
+    //[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(onDone)];
+    self.navigationItem.rightBarButtonItem = doneBarButton;
+    [doneBarButton release];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
 }
 
@@ -122,6 +127,7 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
     [self setTextView:nil];
     [self setBottomBar:nil];
     [self setCounterView:nil];
+    [self setDoneButton:nil];
     [super viewDidUnload];
 }
 
@@ -136,6 +142,7 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
     [textView release];
     [bottomBar release];
     [counterView release];
+    [doneButton release];
     [super dealloc];
 }
 
@@ -187,7 +194,10 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
         if (textView.text.length > 200) {
             textView.text = [textView.text substringToIndex:198];
         }
-        counterView.text = [NSString stringWithFormat:@"%d", 200-textView.text.length];
+        
+        int len = 200-textView.text.length;
+        counterView.text = [NSString stringWithFormat:@"%d", len];
+        doneButton.enabled = len < 200;
     }
 }
 

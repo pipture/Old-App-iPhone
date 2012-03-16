@@ -15,7 +15,8 @@
 @property (retain, nonatomic) IBOutlet UITextView *textView;
 @property (retain, nonatomic) IBOutlet UIView *bottomBar;
 @property (retain, nonatomic) IBOutlet UILabel *counterView;
+@property (retain, nonatomic) IBOutlet UIButton *doneButton;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil mailComposerController: (MailComposerController*)mailComposerController;
-
+-(IBAction)onDone:sender;
 @end
