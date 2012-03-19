@@ -11,6 +11,7 @@
 #import "PiptureModel.h"
 #import "AlbumScreenshotsController.h"
 #import "Trailer.h"
+#import "Episode.h"
 #import "MessageComposerController.h"
 
 #define RADIO_BUTTON_ON_IMAGE @"radio-button-pushed.png"
@@ -304,6 +305,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         screenshotImage_ = [defaultScreenshotImage_ retain];    
         
         numberOfViews = DEFAULT_NUMBER_OF_VIEWS;
+        
+        if (playlistItem.class == [Episode class]) {
+            Episode * ep = (Episode*)playlistItem;
+            numberOfViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)?DEFAULT_NUMBER_OF_VIEWS:1;
+        }
         infiniteViews = (playlistItem.class == [Trailer class]);
         if (self.view) {
             [self displayNumberOfViewsTextField];
@@ -489,8 +495,15 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     NSString * newUrl = [[endPoint substringToIndex:endPoint.length - 1] stringByAppendingString:url];
     
     [htmlData replaceOccurrencesOfString:HTML_MACROS_MESSAGE_URL withString:newUrl options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
-    [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
-    [htmlData replaceOccurrencesOfString:HTML_MACROS_FROM_NAME withString:nameTextField.text options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
+    [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
+    
+    NSString * nameField = nameTextField.text;
+    if (nameField.length >= 32) {
+        nameField = [nameField substringToIndex:31];
+        nameField = [nameField stringByAppendingString:@"..."];
+    }
+    
+    [htmlData replaceOccurrencesOfString:HTML_MACROS_FROM_NAME withString:nameField options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
     
     
     MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];

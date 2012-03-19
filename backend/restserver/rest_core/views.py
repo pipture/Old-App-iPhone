@@ -489,6 +489,13 @@ def fill_albums_response(user_id, sallable):
                 else:
                     album_each['SellStatus'] = 0
             
+            trailer = album.TrailerId
+    
+            album_each["Trailer"] ={"Type": "Trailer", "TrailerId": trailer.TrailerId, 
+                               "Title": trailer.Title, "Line1": trailer.Line1,
+                               "Line2": trailer.Line2,
+                               "SquareThumbnail": (trailer.SquareThumbnail._get_url()).split('?')[0]}
+            
             albums_json.append(album_each)
     else:
         from restserver.pipture.models import Albums
@@ -514,6 +521,13 @@ def fill_albums_response(user_id, sallable):
                     album_each['SellStatus'] = 2
                 else:
                     album_each['SellStatus'] = 0
+                
+                trailer = album.TrailerId
+    
+                album_each["Trailer"] ={"Type": "Trailer", "TrailerId": trailer.TrailerId, 
+                               "Title": trailer.Title, "Line1": trailer.Line1,
+                               "Line2": trailer.Line2,
+                               "SquareThumbnail": (trailer.SquareThumbnail._get_url()).split('?')[0]}
                 
                 albums_json.append(album_each)
     

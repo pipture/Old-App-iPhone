@@ -148,14 +148,15 @@ class DeleteForbidden(admin.ModelAdmin):
         return []
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        #return False
+        return True
     
 class AlbumScreenshotGalleryInline(admin.TabularInline):
     model = AlbumScreenshotGallery
     verbose_name = "Screensot gallery:"
     ordering = ['Description']
 
-class AlbumsAdmin(DeleteForbidden):
+class AlbumsAdmin(admin.ModelAdmin):
      
     fieldsets = [
         ('Related objects', {'fields': ['SeriesId', 'TrailerId']}),
@@ -196,7 +197,7 @@ class SpecialOrderingChangeList(ChangeList):
         return queryset.order_by(*self.model._meta.ordering)
 
     
-class EpisodesAdmin(DeleteForbidden):
+class EpisodesAdmin(admin.ModelAdmin):
     
     fieldsets = [
         ('Related objects:', {'fields': ['VideoId', 'AlbumId']}),

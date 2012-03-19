@@ -473,8 +473,8 @@
                 break;
             case HomeScreenMode_Albums:
                 [[PiptureAppDelegate instance] 
-                 showWelcomeScreenWithTitle:@"About the Pipture Library"                                                 
-                 message:@"Add credit to your App and gain access to the entire collection of videos that have already been broadcast.\n\nEach time you watch or send an episode $0.0099 will be deducted from your credits. That's 1 PIP less than a penny!\n\nTo add credit, which starts at $0.99, click the button at the top right in the Library section. Enjoy!" 
+                 showWelcomeScreenWithTitle:@"About Pipture Library"                                                 
+                 message:@"Add views to your Library Card and gain\naccess to the entire collection of videos that\nhave already been broadcast on Pipture.\n\nEach time you watch or send a video, a\n view will be deducted from your card. You\nget unlimited views if you purchase Albums.\n\nTo add 100 views, which is at $0.99, or only\n $0.0099 per view, click the Store button at the top left in the Library. Enjoy!" 
                  storeKey:@"LibraryWelcomeShown" image:NO tag:WELCOMESCREEN_LIBRARY delegate:self];
                 
                 [tabbarContainer addSubview:albumsView];

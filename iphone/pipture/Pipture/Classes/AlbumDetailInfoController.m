@@ -70,30 +70,33 @@
     [UIApplication sharedApplication].statusBarHidden = NO;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     int heightOffset = 0;
+    
+    UIButton * backButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 50, 29)];
+    [backButton setBackgroundImage:[UIImage imageNamed:@"back-button-up.png"] forState:UIControlStateNormal];
+    [backButton setTitle:@" Back" forState:UIControlStateNormal];
+    [backButton addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
+    [[backButton titleLabel] setFont:[UIFont boldSystemFontOfSize:12]];
+    UIBarButtonItem * back = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+    
     if (withNavigationBar) {
         [self.navigationController setNavigationBarHidden:NO animated:YES];
         self.navigationFake.hidden = YES;
         heightOffset = buttonsPanel.frame.size.height;
         buttonsPanel.frame = CGRectMake(0, 0, buttonsPanel.frame.size.width, buttonsPanel.frame.size.height);
         subViewContainer.frame = CGRectMake(0, buttonsPanel.frame.size.height, buttonsPanel.frame.size.width, self.view.frame.size.height-buttonsPanel.frame.size.height);
+        
+        self.navigationItem.leftBarButtonItem = back;
     } else {
         [self.navigationController setNavigationBarHidden:YES animated:NO];
         self.navigationFake.hidden = NO;
         heightOffset = self.navigationFake.frame.size.height + buttonsPanel.frame.size.height;
         buttonsPanel.frame = CGRectMake(0, self.navigationFake.frame.size.height, buttonsPanel.frame.size.width, buttonsPanel.frame.size.height);
-
-        UIButton * backButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 50, 29)];
-        [backButton setBackgroundImage:[UIImage imageNamed:@"back-button-up.png"] forState:UIControlStateNormal];
-        [backButton setTitle:@" Back" forState:UIControlStateNormal];
-        [backButton addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
-        [[backButton titleLabel] setFont:[UIFont boldSystemFontOfSize:13]];
-        UIBarButtonItem * back = [[UIBarButtonItem alloc] initWithCustomView:backButton];
-        self.navigationItemFake.leftBarButtonItem = back;
-        [back release];
-        [backButton release];
         
+        self.navigationItemFake.leftBarButtonItem = back;
     }
-    
+        
+    [back release];
+    [backButton release];
     subViewContainer.frame = CGRectMake(0, heightOffset, buttonsPanel.frame.size.width, self.view.frame.size.height-heightOffset);
     
     

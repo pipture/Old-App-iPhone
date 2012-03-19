@@ -42,7 +42,7 @@ from base64 import b64decode
 
 def restoreDateTime(b64str):
     stored_datetime = b64decode(b64str)
-    return int(stored_datetime)
+    return float(stored_datetime)
 
 def storeDateTime(sec):
     return b64encode(str(sec))
@@ -68,7 +68,7 @@ def index(request, u_url):
         last_visiting = 0
     
     if last_visiting == 0:
-        last_visiting = int(todaySeconds()) 
+        last_visiting = float(todaySeconds()) 
         request.session["Pipture"+u_url] = storeDateTime(last_visiting)
         obsolete_url = True
     else:
@@ -163,7 +163,7 @@ def index(request, u_url):
  
             urs_instance.ViewsCount = urs_instance.ViewsCount + 1
             urs_instance.save()
-            request.session["Pipture"+u_url] = storeDateTime(last_visiting)
+            request.session["Pipture"+u_url] = storeDateTime(float(todaySeconds()))
     
     video_url = video_url.replace("https://", "http://")
     

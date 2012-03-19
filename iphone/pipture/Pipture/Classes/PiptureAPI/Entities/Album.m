@@ -65,6 +65,7 @@ static NSString* const JSON_PARAM_THUMBNAIL = @"Thumbnail";
 static NSString* const JSON_PARAM_CLOSEUP = @"Cover";
 static NSString* const JSON_PARAM_CREDITS = @"Credits";
 static NSString* const JSON_PARAM_SELL_STATUS = @"SellStatus";
+static NSString* const JSON_PARAM_TRAILER = @"Trailer";
 
 static NSString* const CREDITS_SEPARATOR = @".";
 static NSString* const CREDITS_TITLE_SEPARATOR = @":";
@@ -116,15 +117,11 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     
 }
 
--(void)updateWithDetails:(NSDictionary*)jsonData episodes:(NSArray*)episodes trailer:(Trailer*)trailer
+-(void)updateWithDetails:(NSDictionary*)jsonData episodes:(NSArray*)episodes
 {
     [episodes retain];
     [episodes_ release];
     episodes_ = episodes;
-    
-    [trailer retain];
-    [trailer_ release];
-    trailer_ = trailer;
     
     if (jsonData != nil)
     {
@@ -149,6 +146,12 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     self.rating = [jsonData strValueForKey:JSON_PARAM_RATING defaultIfEmpty:self.rating];
     self.cover = [jsonData strValueForKey:JSON_PARAM_COVER defaultIfEmpty:self.cover];
 
+    
+    Trailer* trailer = [[Trailer alloc] initWithJSON:[jsonData objectForKey:JSON_PARAM_TRAILER]];
+    [trailer retain];
+    [trailer_ release];
+    trailer_ = trailer;
+    
     NSNumber*millisecs = [jsonData objectForKey:JSON_PARAM_RELEASE_DATE];
     self.releaseDate = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]];
     

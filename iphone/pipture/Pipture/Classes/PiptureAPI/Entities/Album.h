@@ -52,7 +52,7 @@ enum AlbumSellStatus{
 @property(readonly, nonatomic) BOOL detailsLoaded;
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
--(void)updateWithDetails:(NSDictionary*)jsonData episodes:(NSArray*)episodes trailer:(Trailer*)trailer;
+-(void)updateWithDetails:(NSDictionary*)jsonData episodes:(NSArray*)episodes;
 
 @end
 

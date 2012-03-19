@@ -74,7 +74,6 @@ static NSString* const JSON_PARAM_VIDEO_URL = @"VideoURL";
 static NSString* const JSON_PARAM_ALBUMS = @"Albums";
 static NSString* const JSON_PARAM_EPISODES = @"Episodes";
 static NSString* const JSON_PARAM_ALBUM = @"Album";
-static NSString* const JSON_PARAM_TRAILER = @"Trailer";
 static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
 static NSString* const JSON_PARAM_BALANCE = @"Balance";
 static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
@@ -555,17 +554,13 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
             
             NSDictionary* jsonAlbumDetails = [jsonResult objectForKey:JSON_PARAM_ALBUM];
             
-            Trailer* trailer = [[Trailer alloc] initWithJSON:[jsonResult objectForKey:JSON_PARAM_TRAILER]];
-            
-            [album updateWithDetails:jsonAlbumDetails episodes:episodes trailer:trailer];
+            [album updateWithDetails:jsonAlbumDetails episodes:episodes];
             
             for (Episode* ep in episodes) {
                 [ep setExternalAlbum:album];
             }
             
             [episodes release];
-            
-            [trailer release];
             
             [receiver performSelectorOnMainThread:@selector(albumDetailsReceived:) withObject:album waitUntilDone:YES];
         }
