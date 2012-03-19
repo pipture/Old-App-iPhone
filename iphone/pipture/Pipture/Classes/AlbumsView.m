@@ -33,6 +33,7 @@
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent {
     //prepare scrollView
+    needToUpdate_ = YES;
     self.delegate = parent;
     
     self.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - [PiptureAppDelegate instance].tabViewBaseHeight);
@@ -105,28 +106,49 @@
 
 
 - (void)updateAlbums:(NSArray *)albums{
-        
+    BOOL needToUpdate = NO;
+    
+    if (albumsItemsArray == nil || albums.count != albumsItemsArray.count)
+        needToUpdate = YES;
+    
+    if (!needToUpdate) {
+        for (int i = 0; i < albums.count; i++) {
+            Album * newAlb = (Album*)[albums objectAtIndex:i];
+            AlbumItemViewController * item = [albumsItemsArray objectAtIndex:i];
+            
+            if (![newAlb compareTo:item.album]) {
+                needToUpdate = YES;
+                break;
+            }
+        }
+    }
+    
     if (!albumsItemsArray) {
         albumsItemsArray = [[NSMutableArray alloc] initWithCapacity:20];
     } else {
-        for (AlbumItemViewController* vc in albumsItemsArray) {
-            [vc.view removeFromSuperview];
-        }                
-        [albumsItemsArray removeAllObjects];
+        if (needToUpdate) {
+            for (AlbumItemViewController* vc in albumsItemsArray) {
+                [vc.view removeFromSuperview];
+            }                
+            [albumsItemsArray removeAllObjects];
+        }
     }
     
-    for (int i = 0; i < albums.count; i++) {
-        AlbumItemViewController * item = [[AlbumItemViewController alloc] initWithNibName:@"AlbumItemView" bundle:nil];
-        [item loadView];
-        item.delegate = delegate;
+    if (needToUpdate) {
+        for (int i = 0; i < albums.count; i++) {
+            AlbumItemViewController * item = [[AlbumItemViewController alloc] initWithNibName:@"AlbumItemView" bundle:nil];
+            [item loadView];
+            item.delegate = delegate;
         
-        item.album = [albums objectAtIndex:i];
+            item.album = [albums objectAtIndex:i];
                 
-        [albumsItemsArray addObject:item];
-        [item release];
+            [albumsItemsArray addObject:item];
+            [item release];
+        }
     }
     [self setLibraryCardVisibility:NO withAnimation:NO];
-    [self filterOnPurchasedAlbums:filterOnPurchasedAlbums];    
+    [self filterOnPurchasedAlbums:filterOnPurchasedAlbums];
+    needToUpdate_ = NO;
 }
 
 
@@ -220,6 +242,14 @@
     if (!libraryCardVisible) {
         [scrollingHintController showHintIfNeeded];
     }
+}
+
+-(void)setNeedToUpdate {
+    needToUpdate_ = YES;
+}
+
+-(BOOL)needToUpdate {
+    return albumsItemsArray == nil || needToUpdate_;
 }
 
 @end

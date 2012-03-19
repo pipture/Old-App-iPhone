@@ -18,6 +18,7 @@
     BOOL libraryCardVisible;
     BOOL filterOnPurchasedAlbums;
     ScrollingHintPopupController *scrollingHintController;
+    BOOL needToUpdate_;
 }
 
 - (void)updateAlbums:(NSArray *)albums;
@@ -34,7 +35,8 @@
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (readonly, nonatomic) LibraryCardController* libraryCardController;
 
-
+-(void)setNeedToUpdate;
+-(BOOL)needToUpdate;
 -(void)showScrollingHintIfNeeded;
 -(void)filterOnPurchasedAlbums:(BOOL)filter;
 

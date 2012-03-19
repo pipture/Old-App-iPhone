@@ -50,6 +50,9 @@
 - (void)updateDetails {
     if (self.album) {
         NSLog(@"Details update by Album, %@", self.album);
+        if (album.detailsLoaded) {
+            [self albumDetailsReceived:self.album];
+        }
         [[[PiptureAppDelegate instance] model] getDetailsForAlbum:self.album receiver:self];
     } else {
         NSLog(@"Details update by TimeslotId");

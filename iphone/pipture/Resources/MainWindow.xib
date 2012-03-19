@@ -88,7 +88,7 @@
 										<string key="NSFrame">{{4, 11}, {98, 44}}</string>
 										<reference key="NSSuperview" ref="795262716"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView" ref="229316421"/>
+										<reference key="NSNextKeyView" ref="270863268"/>
 										<string key="NSReuseIdentifierKey">_NS:225</string>
 										<bool key="IBUIOpaque">NO</bool>
 										<int key="IBUITag">1</int>
@@ -137,6 +137,7 @@
 										<string key="NSFrame">{{218, 11}, {98, 44}}</string>
 										<reference key="NSSuperview" ref="795262716"/>
 										<reference key="NSWindow"/>
+										<reference key="NSNextKeyView"/>
 										<string key="NSReuseIdentifierKey">_NS:225</string>
 										<bool key="IBUIOpaque">NO</bool>
 										<int key="IBUITag">2</int>
@@ -203,16 +204,27 @@
 											<int key="NSfFlags">16</int>
 										</object>
 									</object>
+									<object class="IBUIView" id="270863268">
+										<reference key="NSNextResponder" ref="795262716"/>
+										<int key="NSvFlags">-2147482332</int>
+										<string key="NSFrame">{{110, 2}, {100, 53}}</string>
+										<reference key="NSSuperview" ref="795262716"/>
+										<reference key="NSWindow"/>
+										<reference key="NSNextKeyView" ref="229316421"/>
+										<string key="NSReuseIdentifierKey">_NS:196</string>
+										<object class="NSColor" key="IBUIBackgroundColor" id="749495954">
+											<int key="NSColorSpace">3</int>
+											<bytes key="NSWhite">MCAwAA</bytes>
+										</object>
+										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+									</object>
 								</array>
 								<string key="NSFrameSize">{320, 57}</string>
 								<reference key="NSSuperview" ref="29760908"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="874080896"/>
 								<string key="NSReuseIdentifierKey">_NS:196</string>
-								<object class="NSColor" key="IBUIBackgroundColor" id="749495954">
-									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MCAwAA</bytes>
-								</object>
+								<reference key="IBUIBackgroundColor" ref="749495954"/>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							</object>
 						</array>
@@ -338,6 +350,7 @@
 				<array class="NSMutableArray" key="IBUIViewControllers">
 					<object class="IBUIViewController" id="195280343">
 						<object class="IBUINavigationItem" key="IBUINavigationItem" id="836017980">
+							<reference key="IBUINavigationBar"/>
 							<string key="IBUITitle">Root View Controller</string>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						</object>
@@ -499,6 +512,14 @@
 					<int key="connectionID">139</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">refreshTapZone</string>
+						<reference key="source" ref="982200970"/>
+						<reference key="destination" ref="270863268"/>
+					</object>
+					<int key="connectionID">142</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">actionButton:</string>
 						<reference key="source" ref="229316421"/>
@@ -634,6 +655,7 @@
 							<reference ref="179866372"/>
 							<reference ref="901993547"/>
 							<reference ref="229316421"/>
+							<reference ref="270863268"/>
 						</array>
 						<reference key="parent" ref="29760908"/>
 					</object>
@@ -723,6 +745,11 @@
 						<reference key="object" ref="836017980"/>
 						<reference key="parent" ref="195280343"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">141</int>
+						<reference key="object" ref="270863268"/>
+						<reference key="parent" ref="795262716"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -755,6 +782,7 @@
 				<string key="136.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="14.CustomClassName">PiptureAppDelegate</string>
 				<string key="14.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="141.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<dictionary class="NSMutableDictionary" key="2.IBAttributePlaceholdersKey"/>
 				<string key="2.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="3.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -771,7 +799,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">140</int>
+			<int key="maxID">142</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1073,17 +1101,12 @@
 					<string key="superclassName">UIResponder</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="actionButton:">id</string>
-						<string key="buyAction:">id</string>
 						<string key="onStoreClick:">id</string>
 						<string key="tabBarClick:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="actionButton:">
 							<string key="name">actionButton:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="buyAction:">
-							<string key="name">buyAction:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="onStoreClick:">
@@ -1097,13 +1120,13 @@
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="backgroundImage">UIImageView</string>
-						<string key="buyButton">UIBarButtonItem</string>
 						<string key="channelButton">UIButton</string>
 						<string key="homeNavigationController">UINavigationController</string>
 						<string key="libraryButton">UIButton</string>
 						<string key="mailComposerNavigationController">MailComposerNavigationController</string>
 						<string key="piptureStoreNavigationController">UINavigationController</string>
 						<string key="powerButton">UIButton</string>
+						<string key="refreshTapZone">UIView</string>
 						<string key="tabView">UIView</string>
 						<string key="tabbarView">UIView</string>
 						<string key="videoViewController">VideoViewController</string>
@@ -1114,10 +1137,6 @@
 						<object class="IBToOneOutletInfo" key="backgroundImage">
 							<string key="name">backgroundImage</string>
 							<string key="candidateClassName">UIImageView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="buyButton">
-							<string key="name">buyButton</string>
-							<string key="candidateClassName">UIBarButtonItem</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="channelButton">
 							<string key="name">channelButton</string>
@@ -1142,6 +1161,10 @@
 						<object class="IBToOneOutletInfo" key="powerButton">
 							<string key="name">powerButton</string>
 							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="refreshTapZone">
+							<string key="name">refreshTapZone</string>
+							<string key="candidateClassName">UIView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="tabView">
 							<string key="name">tabView</string>

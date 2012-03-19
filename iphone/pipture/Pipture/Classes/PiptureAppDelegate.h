@@ -51,6 +51,7 @@
 @property (retain, nonatomic) IBOutlet UIButton *libraryButton;
 @property (retain, nonatomic) IBOutlet UIView *tabbarView;
 @property (retain, nonatomic) IBOutlet UIButton *powerButton;
+@property (retain, nonatomic) IBOutlet UIView *refreshTapZone;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
 @property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
 

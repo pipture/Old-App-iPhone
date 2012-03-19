@@ -25,6 +25,7 @@ enum HomeScreenMode {
 - (void)setHomeScreenMode:(enum HomeScreenMode)mode;
 - (enum HomeScreenMode)homescreenMode;
 
+- (void)doUpdate;
 - (void)doFlip;
 - (void)doPower;
 

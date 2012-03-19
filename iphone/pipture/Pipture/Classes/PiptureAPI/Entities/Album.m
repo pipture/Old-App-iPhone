@@ -203,6 +203,27 @@ static NSString* const CREDITS_ITEM_TAB = @",";
 
 }
 
+-(BOOL)compareTo:(Album*)alb {
+    if (alb == nil) return NO;
+    
+    BOOL compareDesc = self.albumDescription?[alb.albumDescription compare:self.albumDescription] == NSOrderedSame:YES;
+    BOOL compareSeason = self.season?[alb.season compare:self.season] == NSOrderedSame:YES;
+    BOOL compareRating = self.rating?[alb.rating compare:self.rating] == NSOrderedSame:YES;
+    BOOL compareCover = self.cover?[alb.cover compare:self.cover] == NSOrderedSame:YES;
+    BOOL compareBack = self.closeupBackground?[alb.closeupBackground compare:self.closeupBackground] == NSOrderedSame:YES;
+
+    BOOL compareId = alb.albumId == self.albumId;
+    BOOL comapreTitle = self.title?[alb.title compare:self.title] == NSOrderedSame:YES;
+    BOOL compareRDate = self.releaseDate?[alb.releaseDate compare:self.releaseDate] == NSOrderedSame:YES;
+    BOOL compareUDate = self.updateDate?[alb.updateDate compare:self.updateDate] == NSOrderedSame:YES;
+    BOOL compareThumb = self.thumbnail?[alb.thumbnail compare:self.thumbnail] == NSOrderedSame:YES;
+    BOOL comparePrice = self.sellPrice?[alb.sellPrice compare:self.sellPrice] == NSOrderedSame:YES;
+    BOOL compareStatus = alb.status == self.status;
+    BOOL compareSStatus = alb.sellStatus == self.sellStatus;
+    
+    return compareId && compareDesc && comapreTitle && compareSeason && compareRating && compareCover && compareRDate && compareUDate && compareThumb && compareBack && comparePrice && compareStatus && compareSStatus;
+}
+
 @end
 
 

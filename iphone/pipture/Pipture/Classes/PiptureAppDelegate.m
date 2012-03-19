@@ -26,6 +26,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize tabbarView;
 @synthesize tabViewBaseHeight;
 @synthesize powerButton;
+@synthesize refreshTapZone;
 @synthesize window = _window;
 @synthesize homeNavigationController;
 @synthesize piptureStoreNavigationController;
@@ -79,6 +80,7 @@ static PiptureAppDelegate *instance;
     [piptureStoreNavigationController release];
 
     
+    [refreshTapZone release];
     [super dealloc];
 }
 
@@ -209,6 +211,11 @@ static PiptureAppDelegate *instance;
     if (self.window.rootViewController == videoViewController) {
         [videoViewController setSuspended:NO];
     }
+    
+    HomeViewController * vc = [self getHomeView];
+    if (vc) {
+        [vc.albumsView setNeedToUpdate];
+    }
 }
 
 -(void) processAuthentication
@@ -238,9 +245,23 @@ static PiptureAppDelegate *instance;
     }
 }
 
+- (void)tapResponder:(UITapGestureRecognizer *)recognizer {
+    if (powerButton.enabled == NO) {
+        HomeViewController * vc = [self getHomeView];
+        if (vc) {
+            [vc doUpdate];
+        }
+    }
+}
+
 -(void)loggedIn
 {
     loggedIn = YES;
+    
+    UITapGestureRecognizer * tapVRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    [refreshTapZone addGestureRecognizer:tapVRec];
+    [tapVRec release];
+    
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
     
     [self.window setRootViewController:homeNavigationController];
@@ -556,6 +577,7 @@ NSInteger networkActivityIndecatorCount;
 
 - (void)powerButtonEnable:(BOOL)enable {
     powerButton.enabled = enable;
+    refreshTapZone.hidden = enable;
 }
 
 //The event handling method

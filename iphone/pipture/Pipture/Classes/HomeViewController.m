@@ -153,7 +153,9 @@
 }
 
 - (void)updateAlbums {
-    [[[PiptureAppDelegate instance] model] getAlbumsForReciever:self];
+    if ([albumsView needToUpdate]) {
+        [[[PiptureAppDelegate instance] model] getAlbumsForReciever:self];
+    }
 }
 
 - (void)resetScheduleTimer {
@@ -493,6 +495,10 @@
     }
     [self defineScheduleButtonVisibility];
     [self defineFlipButtonVisibility];
+}
+
+- (void)doUpdate {
+    [scheduleModel updateTimeslots];
 }
 
 - (void)doFlip {
