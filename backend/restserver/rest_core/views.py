@@ -133,7 +133,7 @@ def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
                 video_url_i = video.VideoId.VideoLQUrl
             except Exception, e:
                 video_url_i = video.VideoId.VideoUrl
-        if video_url_i._file == None:
+        if video_url_i.name == "":
             video_url_i = video.VideoId.VideoUrl
             
         video_url= (video_url_i._get_url()).split('?')[0]
