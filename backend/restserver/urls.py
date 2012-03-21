@@ -5,6 +5,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
                        (r'^media/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': "/".join((settings.MEDIA_ROOT,'admin','media')) }), #for admin module
+                       (r'^videos/site_media/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.MEDIA_ROOT }),
                        (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.MEDIA_ROOT }),
                        (r'^admin/', include(admin.site.urls)),
                        (r'^manage/', include('restserver.pipture.urls')),
