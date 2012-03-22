@@ -24,12 +24,14 @@
     ScheduleModel* scheduleModel;
     
     BOOL redrawDiscarding;
+    int lastHS_mode;
 }
 
 //returns current visible page in scrollview
 
 - (IBAction)scheduleAction:(id)sender;
 - (IBAction)flipAction:(id)sender;
+- (IBAction)searchAction:(id)sender;
 
 @property (retain, nonatomic) IBOutlet UIView *tabbarContainer;
 @property (retain, nonatomic) IBOutlet UIButton *flipButton;
@@ -39,5 +41,6 @@
 @property (retain, nonatomic) IBOutlet AlbumsView *albumsView;
 @property (retain, nonatomic) IBOutlet UIView *scheduleEnhancer;
 @property (retain, nonatomic) IBOutlet UIView *flipEnhancer;
+@property (retain, nonatomic) IBOutlet UIButton *searchButton;
 
 @end

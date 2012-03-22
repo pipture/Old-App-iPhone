@@ -199,32 +199,31 @@
     [super dealloc];
 }
 
-- (void)sendButtonTouchDown:(UIButton*)button withEvent:ev {
+- (void)sendButtonTouchDown:(UIButton*)button {
+    //UIControlEventTouchDown|UIControlEventTouchUpInside|UIControlEventTouchUpOutside
     [button setImage:[UIImage imageNamed:SEND_VIDEO_PRESSED_ICON] forState:UIControlStateHighlighted];
-    UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
-    NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];
-    [videosTable selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-    
+    //UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
+    //NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];
+    //[videosTable selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
 }
 
 
-- (void)sendButtonTouchUpInside:(UIButton*)button withEvent:(UIEvent*)ev {
+- (void)sendButtonTouchUpInside:(UIButton*)button {
     [button setImage:[UIImage imageNamed:SEND_VIDEO_ICON] forState:UIControlStateHighlighted];    
     UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
     NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];        
     NSInteger row = [indexPath row];
     Episode * episode = [album.episodes objectAtIndex:row/2];
     [[PiptureAppDelegate instance] openMailComposer:episode timeslotId:nil fromViewController:self];    
-    [videosTable deselectRowAtIndexPath:indexPath animated:NO];
-
+    //[videosTable deselectRowAtIndexPath:indexPath animated:NO];
 }
 
-- (void)sendButtonTouchUpOutside:(UIButton*)button withEvent:(UIEvent*)ev {
+- (void)sendButtonTouchUpOutside:(UIButton*)button {
 
     [button setImage:[UIImage imageNamed:SEND_VIDEO_ICON] forState:UIControlStateHighlighted];    
-    UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
-    NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];    
-    [videosTable deselectRowAtIndexPath:indexPath animated:NO];
+    //UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
+    //NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];    
+    //[videosTable deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 
@@ -279,9 +278,9 @@
             
             UIButton * sendButton = (UIButton*) [cell viewWithTag:6];
             
-            [sendButton addTarget:self action:@selector(sendButtonTouchDown:withEvent:) forControlEvents:UIControlEventTouchDown];
-            [sendButton addTarget:self action:@selector(sendButtonTouchUpInside:withEvent:) forControlEvents:UIControlEventTouchUpInside];
-            [sendButton addTarget:self action:@selector(sendButtonTouchUpOutside:withEvent:) forControlEvents:UIControlEventTouchUpOutside];
+            [sendButton addTarget:self action:@selector(sendButtonTouchDown:)       forControlEvents:UIControlEventTouchDown];
+            [sendButton addTarget:self action:@selector(sendButtonTouchUpInside:)   forControlEvents:UIControlEventTouchUpInside];
+            [sendButton addTarget:self action:@selector(sendButtonTouchUpOutside:)  forControlEvents:UIControlEventTouchUpOutside];
             
         }
         [self fillCell:[indexPath row] cell:cell];
@@ -289,9 +288,7 @@
         cell = [tableView dequeueReusableCellWithIdentifier:kDivCellID];
         if (cell == nil) {
             NSLog(@"load table divider");
-            [[NSBundle mainBundle] loadNibNamed:@"TableDividerView" owner:self options:nil];
             cell = dividerTableCell;
-            dividerTableCell = nil;
         }
     }
     

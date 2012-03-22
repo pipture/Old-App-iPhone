@@ -113,4 +113,8 @@
 - (void)putUpdateTimeForAlbumId:(NSInteger)albumId updateDate:(NSInteger)date;
 - (NSInteger)getUpdateTimeForAlbumId:(NSInteger)albumId;
 
+- (void)storeInAppPurchase:(NSString *)transactionId receipt:(NSString *)receipt;
+- (NSArray*)getInAppPurchases;
+- (void)clearInAppPurchases;
+
 @end

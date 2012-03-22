@@ -723,6 +723,119 @@ def getAlbumDetail (request):
 
     return HttpResponse (json.dumps(response))
 
+def getSearchResult (request):
+    keys = request.GET.keys()
+    response = {}
+    if "API" not in keys:
+        response["Error"] = {"ErrorCode": "666", "ErrorDescription": "There is no API parameter."}
+        return HttpResponse (json.dumps(response))
+    else:
+        api_ver = request.GET.get("API")
+    if api_ver != "1":
+        response["Error"] = {"ErrorCode": "777", "ErrorDescription": "Wrong API version."}
+        return HttpResponse (json.dumps(response))
+    else:
+        response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
+
+    searchquery = request.GET.get('query', None)
+    
+    from restserver.pipture.models import Episodes
+    from restserver.pipture.models import Series
+    from restserver.pipture.models import Albums
+    from restserver.pipture.views import get_albums_from_series
+
+    allalbums = []
+    allepisodes = []
+    
+    try:
+        series = Series.objects.filter(Title__icontains=searchquery)
+    except Exception as e:
+        pass
+    else:
+        for serie in series:
+            try:
+                seralbums, error = get_albums_from_series(series_id=serie.SeriesId)
+            except Exception as e:
+                pass
+            else:
+                allalbums.extend(seralbums)
+                
+    searchalbums_desc = None
+    searchalbums_cred = None
+    try:
+        searchalbums_desc = Albums.objects.filter(Description__icontains=searchquery)
+    except Exception as e:
+        pass
+    
+    try:
+        searchalbums_cred = Albums.objects.filter(Credits__icontains=searchquery)
+    except Exception as e:
+        pass
+    
+    if searchalbums_desc != None:
+        allalbums.extend(searchalbums_desc)
+        
+    if searchalbums_cred != None:
+        allalbums.extend(searchalbums_cred)
+    
+    if allalbums != 0:
+        for album in allalbums:
+            try:
+                albepisodes = Episodes.objects.filter(AlbumId=album).order_by('EpisodeNo') 
+            except Exception as e:
+                pass
+            else:
+                allepisodes.extend(albepisodes)
+    
+    episodes_title = None
+    episodes_subj = None
+    episodes_keys = None
+    
+    try:
+        episodes_title = Episodes.objects.filter(Title__icontains=searchquery) 
+    except Exception as e:
+        pass
+                
+    try:
+        episodes_subj = Episodes.objects.filter(Subject__icontains=searchquery) 
+    except Exception as e:
+        pass            
+    
+    try:
+        episodes_keys = Episodes.objects.filter(Keywords__icontains=searchquery) 
+    except Exception as e:
+        pass
+    
+    if episodes_title != None:
+        allepisodes.extend(episodes_title)
+
+    if episodes_subj != None:
+        allepisodes.extend(episodes_subj)
+        
+    if episodes_keys != None:
+        allepisodes.extend(episodes_keys)
+                
+    
+    appendeditems = []
+    
+    response["Episodes"] = []
+    
+    for episode in allepisodes:
+        try:
+            appendeditems.index(episode.EpisodeId)
+        except Exception as e:
+            #no item, append
+            response["Episodes"].append({"Type": "Episode", "EpisodeId": episode.EpisodeId, 
+                                   "Title": episode.Title, "Script": episode.Script,
+                                   "DateReleased": local_date_time_date_time_to_UTC_sec(episode.DateReleased), "Subject": episode.Subject,
+                                   "SenderToReceiver": episode.SenderToReceiver, 
+                                   "EpisodeNo": episode.EpisodeNo,
+                                   "CloseUpThumbnail": (episode.CloseUpThumbnail._get_url()).split('?')[0],
+                                   "SquareThumbnail": (episode.SquareThumbnail._get_url()).split('?')[0]
+                                   })
+            appendeditems.append(episode.EpisodeId)
+
+    return HttpResponse (json.dumps(response))
 
 def register_pip_user (email, password, first_name,last_name):
     from restserver.pipture.models import PipUsers
@@ -832,8 +945,9 @@ def buy (request):
     
     key = request.POST.get('Key', None)
     apple_purchase = request.POST.get('AppleReceiptData', None)
+    transaction_id = request.POST.get('TransactionId', None)
     
-    if not key or not apple_purchase:
+    if not key or not apple_purchase or not transaction_id:
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
         return HttpResponse (json.dumps(response))
     
@@ -843,6 +957,20 @@ def buy (request):
         purchaser = PipUsers.objects.get(Token=key)
     except PipUsers.DoesNotExist:
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        return HttpResponse (json.dumps(response))
+    
+    from restserver.pipture.models import Transactions
+    #first check transaction in our table
+    
+    try:
+        apple_transaction = Transactions.objects.get(AppleTransactionId=transaction_id)
+    except Transactions.DoesNotExist:
+        #first buying
+        apple_transaction = None
+    
+    #allready bought
+    if apple_transaction != None:
+        response["Balance"] = "%s" % (purchaser.Balance)
         return HttpResponse (json.dumps(response))
 
     #-----------------------To Apple Server----------------------------
@@ -864,7 +992,6 @@ def buy (request):
     #-----------------------To Apple Server----------------------------
     
     from restserver.pipture.models import AppleProducts
-    from restserver.pipture.models import Transactions
     from django.db import IntegrityError
     
     if apple_product_response == "com.pipture.Pipture.credits":
@@ -887,7 +1014,7 @@ def buy (request):
         return HttpResponse (json.dumps(response))
  
     else:
-        #check for album pass or by prefix
+        #check for album pass or buy prefix
         #pass: com.pipture.Pipture.AlbumPass.
         #buy:  com.pipture.Pipture.AlbumBuy.
         albumid = ''

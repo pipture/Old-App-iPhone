@@ -39,6 +39,7 @@ NSString *REGISTER_REQUEST;
 NSString *GET_TIMESLOTS_REQUEST;
 NSString *GET_CURRENT_TIMESLOTS_REQUEST;
 NSString *GET_PLAYLIST_FOR_TIMESLOT_REQUEST;
+NSString *GET_SEARCH_RESULT_FOR_REQUEST;
 NSString *GET_VIDEO_FROM_TIMESLOT_REQUEST;
 NSString *GET_VIDEO_REQUEST;
 NSString *GET_ALBUMS_REQUEST;
@@ -57,6 +58,7 @@ static NSString* const REST_PARAM_API = @"API";
 static NSString* const REST_PARAM_SESSION_KEY = @"Key";
 static NSString* const REST_PARAM_UUID = @"UUID";
 static NSString* const REST_PARAM_RECEIPT_DATA = @"AppleReceiptData";
+static NSString* const REST_PARAM_TRANSACTIONID = @"TransactionId";
 static NSString* const REST_PARAM_MESSAGE = @"Message";
 static NSString* const REST_PARAM_VIEWS = @"ViewsCount";
 static NSString* const REST_PARAM_TIMESLOT_ID = @"TimeslotId";
@@ -92,7 +94,8 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         REGISTER_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Register"] retain];    
         GET_CURRENT_TIMESLOTS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get current timeslots"] retain];
         GET_TIMESLOTS_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get timeslots"] retain];        
-        GET_PLAYLIST_FOR_TIMESLOT_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get playlist"] retain];        
+        GET_PLAYLIST_FOR_TIMESLOT_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get playlist"] retain];
+        GET_SEARCH_RESULT_FOR_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get search result"] retain];
         GET_VIDEO_FROM_TIMESLOT_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get video from timeslot"] retain];        
         GET_VIDEO_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get video"] retain];        
         GET_ALBUMS_REQUEST =  [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get albums request"] retain];
@@ -385,6 +388,47 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
     return [request startExecute];
 }
 
+-(BOOL)getSearchResults:(NSString*)query receiver:(NSObject<SearchResultReceiver>*)receiver {
+    
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_SEARCH_RESULT_FOR_REQUEST, query]];
+    
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
+        
+        if (error) 
+        {
+            [PiptureModel processError:error receiver:receiver];
+        } 
+        else
+        {
+            
+            NSMutableString*errDesc = [NSMutableString string];
+            NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
+            switch (errCode) { 
+                case 0:
+                {
+                    //NSArray *playlistItems = [PiptureModel parsePlaylistItems:jsonResult];
+                    
+                    NSArray* playlistItems = [[PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_EPISODES itemCreator:^(NSDictionary*jsonIT)
+                                               {
+                                                   return [PlaylistItemFactory createItem:jsonIT];
+                                                   
+                                               } itemName:@"Playlist item"] retain]; 
+                    [receiver performSelectorOnMainThread:@selector(searchResultReceived:) withObject:playlistItems waitUntilDone:YES];
+                    [playlistItems release];
+                    break;
+                }
+                default:
+                    [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
+                    break;
+            }
+        }
+        
+        [PiptureModel setModelRequestingState:NO receiver:receiver];        
+    }];
+    [PiptureModel setModelRequestingState:YES receiver:receiver];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy]; 
+    return [request startExecute];
+}
 
 -(BOOL)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId withQuality:(NSNumber*)videoQuality receiver:(NSObject<VideoURLReceiver>*)receiver
 {
@@ -401,8 +445,8 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
     else
     {
         NSURL* url = timeslotId ? 
-        [self buildURLWithRequest:[NSString stringWithFormat:GET_VIDEO_FROM_TIMESLOT_REQUEST,[playListItem videoKeyName],[NSNumber numberWithInt:[playListItem videoKeyValue]],timeslotId, videoQuality]]:
-        [self buildURLWithRequest:[NSString stringWithFormat:GET_VIDEO_REQUEST, [playListItem videoKeyName],[NSNumber numberWithInt:[playListItem videoKeyValue]],[NSNumber numberWithBool:forceBuy], videoQuality]];
+            [self buildURLWithRequest:[NSString stringWithFormat:GET_VIDEO_FROM_TIMESLOT_REQUEST,[playListItem videoKeyName],[NSNumber numberWithInt:[playListItem videoKeyValue]],timeslotId, videoQuality]]:
+            [self buildURLWithRequest:[NSString stringWithFormat:GET_VIDEO_REQUEST, [playListItem videoKeyName],[NSNumber numberWithInt:[playListItem videoKeyValue]],[NSNumber numberWithBool:forceBuy], videoQuality]];
         DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
             
             if (error) 
@@ -459,7 +503,9 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         [PiptureModel setModelRequestingState:YES receiver:receiver];
         if (timeslotId) //For timeslot it is called inside player. Can do retries unless player is closed. For other cases retries inappropriate 
         {
-                request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy]; 
+            request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy]; 
+        } else {
+            request.retryStrategy = [DataRequestRetryStrategyFactory createEasyStrategy]; 
         }
         return [request startExecute];
 
@@ -598,47 +644,48 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
 }
 
 
--(BOOL)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver
+-(BOOL)buyCredits:(NSString *)transactioId withData:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver
 {    
     NSURL* url = [self buildURLWithRequest:GET_BUY_REQUEST sendAPIVersion:NO sendKey:NO];    
     
-    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, REST_PARAM_RECEIPT_DATA, receiptData];
+    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@", REST_PARAM_API, API_VERSION, REST_PARAM_SESSION_KEY, sessionKey, REST_PARAM_RECEIPT_DATA, receiptData, REST_PARAM_TRANSACTIONID, transactioId];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url postParams:params callback:^(NSDictionary* jsonResult, DataRequestError* error){
         
-        if (error) 
+        if (error)
         {
             [PiptureModel processError:error receiver:receiver];
-        } 
+        }
         else
         {
             NSMutableString*errDesc = [NSMutableString string];
             NSInteger errCode = [PiptureModel parseErrorCode:jsonResult description:errDesc];
-            switch (errCode) { 
-                case 0:   
+            switch (errCode) {
+                case 0:
                 {
-                    id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
+                    id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];
                     if (bal)
                     {
-                        [receiver performSelectorOnMainThread:@selector(purchased:) withObject:(NSDecimalNumber*)bal waitUntilDone:YES];                                                        
+                        [receiver performSelectorOnMainThread:@selector(purchased:) withObject:(NSDecimalNumber*)bal waitUntilDone:YES];
                     }
                     else
                     {
-                        NSLog(@"Balance was not sent from"); 
+                        NSLog(@"Balance was not sent from");
                     }
                     break;
                 }
                 case 1:
-                    [receiver performSelectorOnMainThread:@selector(purchaseNotConfirmed) withObject:nil waitUntilDone:YES];                    
+                    [receiver performSelectorOnMainThread:@selector(purchaseNotConfirmed) withObject:nil waitUntilDone:YES];
                     break;
                 case 2:
                     [receiver performSelectorOnMainThread:@selector(unknownProductPurchased) withObject:nil waitUntilDone:YES];
-                    break;  
+                    break;
                 case 3:
-                    [receiver performSelectorOnMainThread:@selector(duplicateTransactionId) withObject:nil waitUntilDone:YES];                    
-                    break;  
-                case 100:                        
-                    [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];                    break;                                                
+                    [receiver performSelectorOnMainThread:@selector(duplicateTransactionId) withObject:nil waitUntilDone:YES];
+                    break;
+                case 100:
+                    [receiver performSelectorOnMainThread:@selector(authenticationFailed) withObject:nil waitUntilDone:YES];
+                    break;
                 default:
                     [PiptureModel processAPIError:errCode description:errDesc receiver:receiver];
                     break;
@@ -646,7 +693,8 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         }
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createEasyStrategy];//for implementation more robust payments
     return [request startExecute];
     
 }
@@ -752,7 +800,8 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         }
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createEasyStrategy]; 
     return [request startExecute];      
 }
 
@@ -803,7 +852,8 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createEasyStrategy];
     return [request startExecute];  
 }
 
@@ -844,7 +894,8 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createEasyStrategy];
     return [request startExecute];
 }
 
@@ -888,7 +939,8 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
-    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    [PiptureModel setModelRequestingState:YES receiver:receiver];
+    request.retryStrategy = [DataRequestRetryStrategyFactory createEasyStrategy];
     return [request startExecute];
 }
 

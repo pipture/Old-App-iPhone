@@ -17,6 +17,7 @@ enum HomeScreenMode {
     HomeScreenMode_PlayingNow,
     HomeScreenMode_Schedule,
     HomeScreenMode_Albums,
+    HomeScreenMode_Last = 98,
     HomeScreenMode_Unknown = 99,
 };
 

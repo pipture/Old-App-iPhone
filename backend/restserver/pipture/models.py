@@ -472,18 +472,41 @@ class Transactions(models.Model):
         ordering = ['Timestamp']
 
 
-import uuid
+def to_uuid(value):
+    from uuid import UUID
+    
+    if isinstance(value, UUID) or value is None:
+        return value
+    elif isinstance(value, basestring):
+        if len(value) == 16:
+            return UUID(bytes=value)
+        else:
+            return UUID(value)
+    elif isinstance(value, (int, long)):
+        return UUID(int=value)
+    elif isinstance(value, (list, tuple)):
+        return UUID(fields=value)
+    else:
+        raise TypeError("Unrecognized type for UUID, got '%s'" %
+                      (type(value).__name__))
 
+def uuid2shortid(uuid):
+    from base64 import b64encode
+    return b64encode(to_uuid(uuid).bytes, '-_')[:-2]
+        
 class SendMessage(models.Model):
-
 
     LINKTYPE_CHOICES = (
         ('E', 'Episodes'),
         ('T', 'Trailer'),
     )
 
+    try:
+        urlenc = uuid2shortid(uuid.uuid4())
+    except Exception as e:
+        urlenc = uuid.uuid4()
 
-    Url = models.CharField(max_length=36, primary_key=True, default=uuid.uuid4)
+    Url = models.CharField(max_length=36, primary_key=True, default=urlenc)
     UserId = models.ForeignKey (PipUsers)
     Text = models.CharField (max_length=200)
     Timestamp = models.DateTimeField(auto_now_add=True)
@@ -500,7 +523,6 @@ class SendMessage(models.Model):
         verbose_name = "Sent Message"
         verbose_name_plural = "Sent Messages"    
         ordering = ['-Timestamp']
-
 
 from django.contrib.auth.models import User
 

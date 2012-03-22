@@ -13,6 +13,7 @@
 #import "Timeslot.h"
 #import "AsyncImageView.h"
 #import "AlbumDetailInfoController.h"
+#import "SearchViewController.h"
 
 #define TIMESLOT_CHANGE_POLL_INTERVAL 60
 #define TIMESLOT_REGULAR_POLL_INTERVAL 900
@@ -30,6 +31,7 @@
 @synthesize albumsView;
 @synthesize scheduleEnhancer;
 @synthesize flipEnhancer;
+@synthesize searchButton;
 
 
 #pragma mark - View lifecycle
@@ -204,7 +206,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    lastHS_mode = HomeScreenMode_Cover;
     homeScreenMode = HomeScreenMode_Unknown;
     
     scheduleModel = [[ScheduleModel alloc] init];
@@ -224,6 +226,10 @@
     [scheduleView prepareWith:self scheduleModel:scheduleModel];
     [coverView prepareWith:self];
     [albumsView prepareWith:self];
+    
+    UIBarButtonItem* search = [[UIBarButtonItem alloc] initWithCustomView:searchButton];    
+    self.navigationItem.rightBarButtonItem = search;
+    [search release];
 
     [self setHomeScreenMode:[[PiptureAppDelegate instance] getHomescreenState]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onViewsPurchased:) name:VIEWS_PURCHASED_NOTIFICATION object:nil]; 
@@ -247,6 +253,7 @@
 
     [self setScheduleEnhancer:nil];
     [self setFlipEnhancer:nil];
+    [self setSearchButton:nil];
     [super viewDidUnload];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -346,6 +353,7 @@
     [scheduleEnhancer release];
     [flipEnhancer release];
 
+    [searchButton release];
     [super dealloc];
 }
 
@@ -353,12 +361,13 @@
 
 - (void)scheduleAction:(id)sender {
     NSLog(@"schedule action!");
+    
     switch (homeScreenMode) {
         case HomeScreenMode_PlayingNow:
             [self setHomeScreenMode:HomeScreenMode_Schedule];
             break;
         case HomeScreenMode_Schedule:
-            [self setHomeScreenMode:HomeScreenMode_PlayingNow];
+            [self setHomeScreenMode:HomeScreenMode_Last];
             break;
         case HomeScreenMode_Cover:
             [self setHomeScreenMode:HomeScreenMode_Schedule];            
@@ -376,6 +385,18 @@
     }
 }
 
+- (IBAction)searchAction:(id)sender {
+    self.navigationItem.title = @"Library";
+    redrawDiscarding = YES;
+    [scheduleView scrollToCurPage];
+    [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+        
+    SearchViewController* search = [[SearchViewController alloc] initWithNibName:@"SearchController" bundle:nil];
+    [self.navigationController pushViewController:search animated:YES];
+    [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
+    [search release];
+}
+
 - (void)createFlipAnimation {
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.5];
@@ -385,12 +406,21 @@
 
 - (void)setHomeScreenMode:(enum HomeScreenMode)mode {
     //TODO: Part of 9151 refactor
+    
+    if (mode == HomeScreenMode_Last)
+        mode = lastHS_mode;
+    
     if (mode != homeScreenMode) {
+        if (homeScreenMode != HomeScreenMode_Unknown) {
+            lastHS_mode = homeScreenMode;
+        }
+        
         //flip to cover or back to PN
         
         BOOL flipAction = NO;
         if ((mode == HomeScreenMode_Cover && homeScreenMode == HomeScreenMode_PlayingNow)||
-            ((mode == HomeScreenMode_PlayingNow || mode == HomeScreenMode_Schedule) && homeScreenMode == HomeScreenMode_Cover)) {
+            ((mode == HomeScreenMode_PlayingNow || mode == HomeScreenMode_Schedule) && homeScreenMode == HomeScreenMode_Cover)||
+            (mode == HomeScreenMode_Cover && homeScreenMode == HomeScreenMode_Schedule)) {
             [self createFlipAnimation];
             [scheduleView scrollToCurPage];
             flipAction = YES;
@@ -415,7 +445,7 @@
                 
                 [tabbarContainer addSubview:coverView];
                 if (flipAction) [UIView commitAnimations];
-                
+
                 [self setFullScreenMode];
                 
                 [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
@@ -435,7 +465,7 @@
                 if (flipAction) [UIView commitAnimations];
                 [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
                 [scheduleModel updateTimeslots];
-                
+
                 [self setFullScreenMode];
                 homeScreenMode = mode;
                 [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
@@ -483,10 +513,13 @@
                 [albumsView setLibraryCardVisibility:NO withAnimation:NO];
                 [albumsView showScrollingHintIfNeeded];
                 [self updateAlbums];
+                [self setFullScreenMode];
                 [self setNavBarMode];
                 
                 [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_LIBRARY];
                 [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
+                
+                [[PiptureAppDelegate instance] putHomescreenState:mode];
                 break;
             default: break;
         }        

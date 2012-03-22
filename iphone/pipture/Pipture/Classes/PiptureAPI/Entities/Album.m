@@ -146,11 +146,13 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     self.rating = [jsonData strValueForKey:JSON_PARAM_RATING defaultIfEmpty:self.rating];
     self.cover = [jsonData strValueForKey:JSON_PARAM_COVER defaultIfEmpty:self.cover];
 
-    
-    Trailer* trailer = [[Trailer alloc] initWithJSON:[jsonData objectForKey:JSON_PARAM_TRAILER]];
-    [trailer retain];
-    [trailer_ release];
-    trailer_ = trailer;
+    NSDictionary * trailerJson = [jsonData objectForKey:JSON_PARAM_TRAILER];
+    if (trailerJson != nil) {
+        Trailer* trailer = [[Trailer alloc] initWithJSON:trailerJson];
+        [trailer retain];
+        [trailer_ release];
+        trailer_ = trailer;
+    }
     
     NSNumber*millisecs = [jsonData objectForKey:JSON_PARAM_RELEASE_DATE];
     self.releaseDate = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]];

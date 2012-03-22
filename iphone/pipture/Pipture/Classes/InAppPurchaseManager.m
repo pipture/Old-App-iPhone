@@ -10,11 +10,12 @@
 #import "PiptureAppDelegate.h"
 
 @interface PurchaseSession : NSObject<PurchaseDelegate, UIAlertViewDelegate> {
+    NSString*transaction_;
     NSString*receipt_;
     NSString*appleProductId_;
 }    
 
--(id)initWithReceipt:(NSString*)receipt appleProductId:(NSString*)appleProductId;
+-(id)initWithReceipt:(NSString*)receipt appleProductId:(NSString*)appleProductId  transactionId:(NSString*)transaction;
 -(void)run;
 
 @end
@@ -22,23 +23,27 @@
 @implementation PurchaseSession
     
 
--(id)initWithReceipt:(NSString*)receipt appleProductId:(NSString*)appleProductId {
+-(id)initWithReceipt:(NSString*)receipt appleProductId:(NSString*)appleProductId transactionId:(NSString*)transaction{
     self = [super init];
     if (self) {
+        transaction_ = [transaction retain];
         receipt_ = [receipt retain];
         appleProductId_ = [appleProductId retain];
+        
+        [[PiptureAppDelegate instance] storeInAppPurchase:transaction_ receipt:receipt_];
     }
     return self;
 }
 
 - (void)dealloc {
+    [transaction_ release];
     [receipt_ release];
     [appleProductId_ release];
     [super dealloc];
 }
 
 -(void)runRaw {
-    [[[PiptureAppDelegate instance] model] buyCredits:receipt_ receiver:self];    
+    [[[PiptureAppDelegate instance] model] buyCredits:transaction_ withData:receipt_ receiver:self];    
 }
 
 -(void)run {
@@ -49,23 +54,49 @@
 #pragma mark AlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        [self runRaw];
-    } else {
-        [[PiptureAppDelegate instance] dismissModalBusy];        
-        [self release];        
+    switch (buttonIndex) {
+        case 0:
+            [[PiptureAppDelegate instance] dismissModalBusy];
+            [self release];
+            break;
+        case 1:
+            [self runRaw];
+            break;
+        case 2:
+            [[PiptureAppDelegate instance] dismissModalBusy];
+            NSRange rng = [appleProductId_ rangeOfString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumProductPrefix"]];
+            
+            NSString * title = nil;
+            NSString * message = nil;
+            
+            if (0 == rng.location) {
+                title = @"Album was purchased";
+                message = @"You should repeat buy this album again. Second try will be free for you";
+            } else {
+                title = @"Views was purchased";
+                message = @"Information was stored and will be confirmed at the next application launching";
+            }
+            
+            UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [requestIssuesAlert show];
+            [requestIssuesAlert release];
+            
+            [self release];
     }
 }
 
 #pragma mark PurchaseReceiver methods
 
 
--(void)dataRequestFailed:(DataRequestError*)error {    
-    [[[PiptureAppDelegate instance] networkErrorAlerter] showAlertForError:error delegate:self tag:0 cancelButtonTitle:@"Cancel" otherButtonTitles:@"Retry",nil];
+-(void)dataRequestFailed:(DataRequestError*)error {
+    
+    [[[PiptureAppDelegate instance] networkErrorAlerter] showAlertForError:error delegate:self tag:0 cancelButtonTitle:@"Cancel" otherButtonTitles:@"Retry", @"Later", nil];
 }
 
 -(void)purchased:(NSDecimalNumber*)newBalance {
     SET_BALANCE(newBalance);
+    
+    [[PiptureAppDelegate instance] clearInAppPurchases];
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSRange rng = [appleProductId_ rangeOfString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumProductPrefix"]];
     if (0 == rng.location) {
@@ -125,8 +156,9 @@
 }
 
 - (void)requestProductsWithIds:(NSSet*)ids delegate:(id<SKProductsRequestDelegate>)delegate
-{                
-    productsRequest = [[[SKProductsRequest alloc] initWithProductIdentifiers:ids] autorelease];
+{   
+    NSLog(@"starting product request");
+    productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:ids];
     productsRequest.delegate = delegate;
     [productsRequest start];
 
@@ -135,9 +167,10 @@
 
 - (void)requestCreditsProductData
 {
+    NSLog(@"starting product request");
     NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
     NSSet *productIdentifiers = [NSSet setWithObject:productId];
-    productsRequest = [[[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers] autorelease];
+    productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
     productsRequest.delegate = self;
     [productsRequest start];
 } 
@@ -172,12 +205,23 @@
 {
     TRACK_EVENT(@"Purchase", @"Start credits purchasing");
     
-    [[PiptureAppDelegate instance] showModalBusy:^{
-        NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
-        SKPayment *payment = [SKPayment paymentWithProductIdentifier:productId];
-        [[SKPaymentQueue defaultQueue] addPayment:payment];
-    }];
+    NSArray * purchase = [[PiptureAppDelegate instance] getInAppPurchases];
     
+    if (purchase && purchase.count == 2) {
+        NSString * transactionId = [purchase objectAtIndex:0];
+        NSString * base64 = [purchase objectAtIndex:1];
+        NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
+        
+        PurchaseSession* purchase = [[PurchaseSession alloc] initWithReceipt:base64 appleProductId:productId transactionId:transactionId];
+        [purchase run];
+        [purchase release];
+    } else {
+        [[PiptureAppDelegate instance] showModalBusy:^{
+            NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
+            SKPayment *payment = [SKPayment paymentWithProductIdentifier:productId];
+            [[SKPaymentQueue defaultQueue] addPayment:payment];
+        }];
+    }
 } 
 
 - (void)purchaseAlbum:(NSString*)appleProductId {
@@ -237,7 +281,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     if (wasSuccessful)
     {
         NSString * base64 = [self base64Encoding:transaction.transactionReceipt];
-        PurchaseSession* purchase = [[PurchaseSession alloc] initWithReceipt:base64 appleProductId:[transaction payment].productIdentifier];                
+        
+        PurchaseSession* purchase = [[PurchaseSession alloc] initWithReceipt:base64 appleProductId:[transaction payment].productIdentifier transactionId:transaction.transactionIdentifier];                
         [purchase run];
         [purchase release];
         NSLog(@"InApp transaction OK!");
@@ -321,6 +366,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
 {
+    NSLog(@"product reqDidResponse");
     NSArray *products = response.products;
     creditsProduct = [products count] == 1 ? [[products objectAtIndex:0] retain] : nil;
     if (creditsProduct)
@@ -335,8 +381,15 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     {
         NSLog(@"Invalid product id: %@" , invalidProductId);
     }
-
+    
+    [request release];
 }
+
+- (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
+    NSLog(@"product reqDidFail");
+    [request release];
+}
+
 
 
 @end

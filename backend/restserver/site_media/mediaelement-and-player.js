@@ -2354,7 +2354,7 @@ if (typeof jQuery != 'undefined') {
 			// this needs to come last so it's on top
 			bigPlay = 
 				$('<div class="mejs-overlay mejs-layer mejs-overlay-play">'+
-					'<div class="mejs-overlay-button"></div>'+
+					//'<div class="mejs-overlay-button"></div>'+
 				'</div>')
 				.appendTo(layers)
 				.click(function() {

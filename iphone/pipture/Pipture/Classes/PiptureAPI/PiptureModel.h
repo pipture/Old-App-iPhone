@@ -53,6 +53,13 @@
 
 @end
 
+@protocol SearchResultReceiver <PiptureModelDelegate>
+@required
+-(void)searchResultReceived:(NSArray*)searchResultItems;
+
+@end
+
+
 @protocol BalanceReceiver <PiptureModelDelegate,SensitiveDataReceiver>
 @required
 -(void)balanceReceived:(NSDecimalNumber*)balance;
@@ -137,6 +144,8 @@
 
 -(BOOL)getPlaylistForTimeslot:(NSNumber*)timeslotId receiver:(NSObject<PlaylistReceiver>*)receiver;
 
+-(BOOL)getSearchResults:(NSString*)query receiver:(NSObject<SearchResultReceiver>*)receiver;
+
 -(BOOL)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId withQuality:(NSNumber*)videoQuality receiver:(NSObject<VideoURLReceiver>*)receiver;
 
 -(BOOL)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver;
@@ -147,7 +156,7 @@
 
 -(BOOL)getAlbumDetailsForTimeslotId:(NSInteger)timeslotId receiver:(NSObject<AlbumDetailsReceiver>*)receiver;
 
--(BOOL)buyCredits:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver;
+-(BOOL)buyCredits:(NSString*)transactionId withData:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver;
 
 -(BOOL)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver;
 

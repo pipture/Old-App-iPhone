@@ -8,12 +8,7 @@
 
 #import "DataRequest.h"
 #import "SBJson.h"
-
-#ifdef DEBUG
-#define TIMEOUT_INTERVAL 30
-#else
-#define TIMEOUT_INTERVAL 5
-#endif
+#import "PiptureAppDelegate.h"
 
 @interface DataRequest(Private)
 -(void)finish;
@@ -103,6 +98,14 @@ id<DataRequestManager> requestManager_;
     return [self startExecute];
 }
 
+- (int)timeoutInterval {
+#ifdef DEBUG
+    return 30;
+#else
+    return [[PiptureAppDelegate instance] networkConnection] == NetworkConnection_Cellular?30:10;
+#endif
+}
+
 - (BOOL)startExecute 
 {
     canceled = NO;
@@ -115,7 +118,7 @@ id<DataRequestManager> requestManager_;
     }      
 	NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url_
                                                 cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                            timeoutInterval:TIMEOUT_INTERVAL];
+                                            timeoutInterval:[self timeoutInterval]];
 
     if (postParams_)
     {

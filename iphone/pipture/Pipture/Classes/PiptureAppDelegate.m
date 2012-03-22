@@ -123,10 +123,13 @@ static PiptureAppDelegate *instance;
     return (HomeViewController*)homeViewController;
 }
 
+- (NSString*)documentsDirectory {
+    NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    return [savePaths objectAtIndex:0];
+}
 
 - (void)cleanDocDir:(int) limit{
-    NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [savePaths objectAtIndex:0];
+    NSString * documentsDirectory = [self documentsDirectory];
     
     //Use an enumerator to store all the valid music file paths at the top level of your App's Documents directory
     NSFileManager * manager = [NSFileManager defaultManager];
@@ -165,6 +168,31 @@ static PiptureAppDelegate *instance;
         
         NSLog(@"Doc filesize after cleaning: %llu, limit %d", documentsFolderSize, limit);
     }
+}
+
+- (void)storeInAppPurchase:(NSString *)transactionId receipt:(NSString *)receipt {
+    NSString * storage = [[self documentsDirectory] stringByAppendingPathComponent:@"pipture_purchases"];
+    
+    NSMutableArray * oldSavedArray = [NSKeyedUnarchiver unarchiveObjectWithFile:storage];
+    if (!oldSavedArray) {
+        [oldSavedArray addObject:transactionId];
+        [oldSavedArray addObject:receipt];
+        [transactionId release];
+        [receipt release];
+        
+        [NSKeyedArchiver archiveRootObject:oldSavedArray toFile:storage];
+    }
+}
+
+- (NSArray*)getInAppPurchases {
+    NSString * storage = [[self documentsDirectory] stringByAppendingPathComponent:@"pipture_purchases"];
+    return (NSArray*)[NSKeyedUnarchiver unarchiveObjectWithFile:storage];
+}
+
+- (void)clearInAppPurchases {
+    NSString * storage = [[self documentsDirectory] stringByAppendingPathComponent:@"pipture_purchases"];
+    NSFileManager * manager = [NSFileManager defaultManager];
+    [manager removeItemAtPath:storage error:nil];
 }
 
 - (NSString*)loadUserUUID
@@ -628,8 +656,8 @@ NSInteger networkActivityIndecatorCount;
     HomeViewController * vc = [self getHomeView];
     if (vc) {
         switch ([sender tag]) {
-            case TABBARITEM_CHANNEL: [vc setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
-            case TABBARITEM_LIBRARY: {[vc setHomeScreenMode:HomeScreenMode_Albums]; break;}
+            case TABBARITEM_CHANNEL: [vc setHomeScreenMode:HomeScreenMode_Last]; break;
+            case TABBARITEM_LIBRARY: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
         }
         
         [self tabbarSelect:[sender tag]];
@@ -645,6 +673,9 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (void)tabbarVisible:(BOOL)visible slide:(BOOL)slide {
+    channelButton.enabled = visible;
+    libraryButton.enabled = visible;
+    
     CGRect rect = tabView.frame;
     if (slide) {
         [UIView beginAnimations:nil context:NULL];
@@ -690,7 +721,6 @@ NSInteger networkActivityIndecatorCount;
 - (NetworkConnection)networkConnection {
     return curConnection;
 }
-
 
 #pragma mark -
 
