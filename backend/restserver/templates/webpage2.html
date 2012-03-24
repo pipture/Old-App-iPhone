@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=640">
-    <title>Pipture page</title>
+    <title>PIPTURE VIDEO MESSAGE</title>
 
     <script src="{{MEDIA_URL}}jquery.js"></script>
     <script src="{{MEDIA_URL}}mediaelement-and-player.js"></script>
@@ -72,7 +72,9 @@
           <div id="id3" style="height: 48px; left: 455px; position: absolute; top: 259px; width: 447px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_447_48" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
+              	{% autoescape off %}
                 <p style="padding-bottom: 0pt; padding-top: 0pt; " class="Body">{{text_2}}</p>
+                {% endautoescape %}
               </div>
             </div>
           </div>

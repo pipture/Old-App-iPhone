@@ -20,6 +20,7 @@
 
 @property(retain,nonatomic) NSString *videoUrl;
 @property(retain,nonatomic) NSString *videoUrlLQ;
+@property(retain,nonatomic) NSString *videoSubs;
 
 
 -(BOOL)isVideoUrlLoaded;

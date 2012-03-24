@@ -30,6 +30,7 @@ class Videos(models.Model):
     VideoDescription = models.CharField (unique=True, max_length=100, verbose_name="Video description")
     VideoUrl = S3EnabledFileField (upload_to=u'documents/', verbose_name="Upload high quality video here")
     VideoLQUrl = S3EnabledFileField (upload_to=u'documents/', verbose_name="Upload low quality video here")
+    VideoSubtitles = S3EnabledFileField (upload_to=u'documents/', verbose_name="Upload subtitles here")
 
     def __unicode__(self):
         return "%s" % (self.VideoDescription)

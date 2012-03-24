@@ -73,6 +73,7 @@ static NSString* const JSON_PARAM_ERROR = @"Error";
 static NSString* const JSON_PARAM_ERRORCODE = @"ErrorCode";
 static NSString* const JSON_PARAM_ERROR_DESCRIPTION = @"ErrorDescription";
 static NSString* const JSON_PARAM_VIDEO_URL = @"VideoURL";
+static NSString* const JSON_PARAM_VIDEO_SUBS = @"Subs";
 static NSString* const JSON_PARAM_ALBUMS = @"Albums";
 static NSString* const JSON_PARAM_EPISODES = @"Episodes";
 static NSString* const JSON_PARAM_ALBUM = @"Album";
@@ -461,6 +462,7 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
                     case 0:   
                     {
                         NSString *videoUrl = [jsonResult objectForKey:JSON_PARAM_VIDEO_URL];
+                        playListItem.videoSubs = [jsonResult objectForKey:JSON_PARAM_VIDEO_SUBS];
                         if ([videoUrl length] > 0)
                         {
                             if (videoQuality.intValue == 0)

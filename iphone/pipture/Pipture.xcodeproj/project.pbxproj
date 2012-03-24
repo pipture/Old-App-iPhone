@@ -207,6 +207,7 @@
 		38DA46F2151B09C000107A50 /* eraser-cross@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38DA46EC151B09C000107A50 /* eraser-cross@2x.png */; };
 		38DA46F4151B5FE400107A50 /* SearchTableItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DA46F3151B5FE300107A50 /* SearchTableItemView.xib */; };
 		38DA46F6151B60DC00107A50 /* SearchDividerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DA46F5151B60DB00107A50 /* SearchDividerView.xib */; };
+		38DA46FB151DD50600107A50 /* SubRip.m in Sources */ = {isa = PBXBuildFile; fileRef = 38DA46FA151DD50600107A50 /* SubRip.m */; };
 		38E9E0A114A9ED9400A2C039 /* comingsoon.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E9E09F14A9ED9400A2C039 /* comingsoon.png */; };
 		38E9E0A214A9ED9400A2C039 /* comingsoon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E9E0A014A9ED9400A2C039 /* comingsoon@2x.png */; };
 		38EA8F2814AC92B200E6134B /* tab-bar-details.png in Resources */ = {isa = PBXBuildFile; fileRef = 38EA8F2614AC92B200E6134B /* tab-bar-details.png */; };
@@ -545,6 +546,8 @@
 		38DA46EC151B09C000107A50 /* eraser-cross@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "eraser-cross@2x.png"; sourceTree = "<group>"; };
 		38DA46F3151B5FE300107A50 /* SearchTableItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchTableItemView.xib; sourceTree = "<group>"; };
 		38DA46F5151B60DB00107A50 /* SearchDividerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchDividerView.xib; sourceTree = "<group>"; };
+		38DA46F9151DD50600107A50 /* SubRip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubRip.h; sourceTree = "<group>"; };
+		38DA46FA151DD50600107A50 /* SubRip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubRip.m; sourceTree = "<group>"; };
 		38E9E09F14A9ED9400A2C039 /* comingsoon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = comingsoon.png; sourceTree = "<group>"; };
 		38E9E0A014A9ED9400A2C039 /* comingsoon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "comingsoon@2x.png"; sourceTree = "<group>"; };
 		38EA8F2614AC92B200E6134B /* tab-bar-details.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-bar-details.png"; sourceTree = "<group>"; };
@@ -847,6 +850,7 @@
 		38989CE1147A631E004DE1E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				38DA46F8151DD50600107A50 /* SubRip */,
 				888943C214FF1D4D00331008 /* Appirater */,
 				38D50FF914963EEC009BF5E9 /* GA */,
 				88751776148CAD3B00AFFFAC /* SBJSON */,
@@ -1178,6 +1182,16 @@
 				38DA46E3151B03CF00107A50 /* SearchViewController.m */,
 			);
 			name = Library;
+			sourceTree = "<group>";
+		};
+		38DA46F8151DD50600107A50 /* SubRip */ = {
+			isa = PBXGroup;
+			children = (
+				38DA46F9151DD50600107A50 /* SubRip.h */,
+				38DA46FA151DD50600107A50 /* SubRip.m */,
+			);
+			name = SubRip;
+			path = Pipture/Classes/SubRip;
 			sourceTree = "<group>";
 		};
 		88606F1814C41595009FB5FD /* Model */ = {
@@ -1617,6 +1631,7 @@
 				387215EE150F046700049FA3 /* UnreadedPeriod.m in Sources */,
 				38FA2C7A150F5D6D00CBEDD8 /* MessageComposerController.m in Sources */,
 				38DA46E4151B03D000107A50 /* SearchViewController.m in Sources */,
+				38DA46FB151DD50600107A50 /* SubRip.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

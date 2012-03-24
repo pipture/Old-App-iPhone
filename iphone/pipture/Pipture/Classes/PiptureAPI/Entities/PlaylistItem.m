@@ -12,10 +12,12 @@
 
 @synthesize videoUrl;
 @synthesize videoUrlLQ;
+@synthesize videoSubs;
 
 - (void)dealloc {
     [videoUrl release];
     [videoUrlLQ release];
+    [videoSubs release];
     [super dealloc];
 }
 

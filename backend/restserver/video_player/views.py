@@ -176,12 +176,24 @@ def index(request, u_url):
         template_h = 'webpage2.html'
  
     text_m = urs_instance.Text
-    message_empty = len(text_m) == 0 
+    message_empty = len(text_m) == 0
+
+    limit = urs_instance.ViewsLimit
+    if urs_instance.ViewsLimit == -1:
+        limit = "infinite"
+    
+    if not message_empty:
+        from django.utils.html import urlize
+        text_m = urlize(text=text_m)
+        
+    #for grp in grps:
+        
+          
     data = {'video_url': video_url,
             'image_url': urs_instance.ScreenshotURL,
             'text_1': "%s..." % (text_m[0:int(len(text_m)/3)]),
             'text_2': text_m,
-            'views_limit': urs_instance.ViewsLimit,
+            'views_limit': limit,
             'views_count': urs_instance.ViewsCount,
             'message_blocked':message_blocked,
             'message_empty':message_empty,

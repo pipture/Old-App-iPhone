@@ -12,6 +12,7 @@
 #import "PlayerView.h"
 #import "PiptureModel.h"
 #import "MediaPlayer/MPVolumeView.h"
+#import "SubRip.h"
 
 @interface VideoViewController : UIViewController<VideoURLReceiver, PlaylistReceiver>
 {
@@ -31,6 +32,8 @@
     BOOL pausedStatus;
     BOOL controlsShouldBeHiddenOnPlay;
     BOOL fingerOnControls;
+    
+    SubRip * subtitles;
 }
 - (AVPlayerItem *)createItem:(PlaylistItem*)item;
 
@@ -64,6 +67,8 @@
 @property (retain, nonatomic) IBOutlet UIButton *pauseButton;
 @property (retain, nonatomic) IBOutlet UIButton *prevButton;
 @property (retain, nonatomic) IBOutlet MPVolumeView *volumeView;
+@property (retain, nonatomic) IBOutlet UIView *subtitlesView;
+@property (retain, nonatomic) IBOutlet UILabel *subtitlesLabel;
 
 @property (assign, nonatomic) BOOL simpleMode;
 

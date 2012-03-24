@@ -288,7 +288,9 @@
         cell = [tableView dequeueReusableCellWithIdentifier:kDivCellID];
         if (cell == nil) {
             NSLog(@"load table divider");
+            [[NSBundle mainBundle] loadNibNamed:@"TableDividerView" owner:self options:nil];
             cell = dividerTableCell;
+            dividerTableCell = nil;
         }
     }
     

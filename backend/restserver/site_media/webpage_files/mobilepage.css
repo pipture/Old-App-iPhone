@@ -1,24 +1,31 @@
 a:link    {
   /* Applies to all unvisited links */
-  text-decoration:  none;
-  color:            blue;
+  	color: rgb(71, 157, 250);
+  	line-height: 17px;
+  	opacity: 1.00;
+  	text-decoration: underline;
 } 
 a:visited {
   /* Applies to all visited links */
-  text-decoration:  none;
-  color:            #f0f;
+  	color: rgb(88, 77, 77);
+    line-height: 17px;
+    opacity: 1.00;
+    text-decoration: underline;
 } 
 a:hover   {
   /* Applies to links under the pointer */
-  text-decoration:  underline;
-  color:            #fff;
+  	color: rgb(71, 157, 250);
+  	line-height: 17px;
+  	opacity: 1.00;
+  	text-decoration: underline;
 } 
 a:active  {
   /* Applies to activated links */
-  text-decoration:  underline;
-  color: white;
+  	color: rgb(71, 157, 250);
+  	line-height: 17px;
+    opacity: 1.00;
+    text-decoration: underline;
 }
-
 
 .paragraph_style {
     color: rgb(29, 45, 71);
@@ -380,6 +387,14 @@ a:active  {
 .graphic_textbox_layout_style_default_External_121_54 {
     position: relative;
 }
+
+.graphic_textbox_layout_style_default1 {
+	vertical-align: middle;
+	border: 1px solid red;
+	height: 100px;
+	display:inline;display:inline-table;display:inline-block;
+}
+
 .graphic_textbox_style_default_SkipStroke {
     background: transparent;
     opacity: 1.00;
@@ -427,4 +442,8 @@ div.paragraph {
 }
 li.full-width {
     width: 100;
+}
+
+.shadow_1 {
+	box-shadow: 3px 6px 20px #000;
 }

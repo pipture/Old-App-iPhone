@@ -1,22 +1,30 @@
 a:link    {
   /* Applies to all unvisited links */
-  text-decoration:  none;
-  color:            blue;
+  	color: rgb(71, 157, 250);
+  	line-height: 17px;
+  	opacity: 1.00;
+  	text-decoration: underline;
 } 
 a:visited {
   /* Applies to all visited links */
-  text-decoration:  none;
-  color:            #f0f;
+  	color: rgb(88, 77, 77);
+    line-height: 17px;
+    opacity: 1.00;
+    text-decoration: underline;
 } 
 a:hover   {
   /* Applies to links under the pointer */
-  text-decoration:  underline;
-  color:            #fff;
+  	color: rgb(71, 157, 250);
+  	line-height: 17px;
+  	opacity: 1.00;
+  	text-decoration: underline;
 } 
 a:active  {
   /* Applies to activated links */
-  text-decoration:  underline;
-  color: white;
+  	color: rgb(71, 157, 250);
+  	line-height: 17px;
+    opacity: 1.00;
+    text-decoration: underline;
 }
 
 .paragraph_style {
@@ -332,6 +340,7 @@ a:active  {
     text-indent: 0px;
     text-transform: none;
 }
+
 .graphic_image_style_default_SkipStroke {
     background: transparent;
     opacity: 1.00;

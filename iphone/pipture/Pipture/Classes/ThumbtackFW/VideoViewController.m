@@ -9,6 +9,7 @@
 #import "VideoViewController.h"
 #import "PlaylistItem.h"
 #import "PiptureAppDelegate.h"
+#import "UILabel+ResizeForVerticalAlign.h"
 
 @implementation VideoViewController
 @synthesize controlsPanel;
@@ -19,6 +20,8 @@
 @synthesize pauseButton;
 @synthesize prevButton;
 @synthesize volumeView;
+@synthesize subtitlesView;
+@synthesize subtitlesLabel;
 @synthesize simpleMode;
 @synthesize playlist;
 @synthesize videoTitleView;
@@ -91,7 +94,7 @@
         float position = CMTimeGetSeconds(player.currentItem.currentTime);
         
 
-        NSLog(@"Pos: %f, len: %f", position, duration);
+        //NSLog(@"Pos: %f, len: %f", position, duration);
         if (duration > 0 && duration - position < 10 && nextPlayerItem == nil && !precacheBegin && playlist && pos + 1 < [playlist count]) {
             NSLog(@"Precaching");
             
@@ -99,6 +102,29 @@
             [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId receiver:self];
             precacheBegin = YES;
         }
+        
+        if (subtitles && subtitlesView.hidden == NO) {
+            SubRipItem * item = nil;
+            int idx = -1;
+            idx = [subtitles indexOfSubRipItemWithStartTime:player.currentItem.currentTime];
+            NSString * label = @"";
+            
+            if (idx != LONG_MAX) {
+                item = [subtitles.subtitleItems objectAtIndex:idx];
+                label = item.text;
+            }
+
+            [subtitlesLabel setTextWithVerticalResize:label];
+            //vertical center in View
+            CGRect rect = subtitlesLabel.frame;
+            if (rect.size.height <= 50) {
+                float textpos = (subtitlesView.frame.size.height - rect.size.height)/2;
+                subtitlesLabel.frame = CGRectMake(rect.origin.x, textpos, rect.size.width, rect.size.height);
+            } //another way (increase subtitles height not supported by feature #9659)
+            
+            //NSLog(@"Text: %@, idx: %d", (item != nil)?item.text:@"", idx);
+        }
+        
     }
 }
 
@@ -200,9 +226,16 @@
     }
 }
 
+
 - (BOOL)playNextItem {
     if (nextPlayerItem != nil) {
         [player pause];
+        
+        PlaylistItem * item = [playlist objectAtIndex:pos + 1];
+        
+        SubRip * newsubtitles = [[SubRip alloc] initWithString:item.videoSubs];
+        [subtitles release];
+        subtitles = newsubtitles;
         
         [videoContainer setPlayer:nil];
         
@@ -213,7 +246,6 @@
         [self createHandlers];
         
         if (nextPlayerItem.playbackLikelyToKeepUp) {
-            PlaylistItem * item = [playlist objectAtIndex:pos + 1];
             [self sendToGA:item.videoName];
             [self setPlay];
         }
@@ -462,6 +494,8 @@
     [self setNavigationItem:nil];
     [self setNavigationBar:nil];
     [self setVolumeView:nil];
+    [self setSubtitlesView:nil];
+    [self setSubtitlesLabel:nil];
     [super viewDidUnload];
 }
 
@@ -596,6 +630,8 @@
         player = nil;
     }
     
+    [subtitles release];
+    
     [timeslotId release];
     [playlist release];
     [controlsPanel release];
@@ -609,6 +645,8 @@
     [navigationItem release];
     [navigationBar release];
     [volumeView release];
+    [subtitlesView release];
+    [subtitlesLabel release];
     [super dealloc];
 }
 
@@ -631,6 +669,10 @@
             nextPlayerItem = nil;
             videoContainer.player = player;
 
+            SubRip * newsubtitles = [[SubRip alloc] initWithString:playlistItem.videoSubs];
+            [subtitles release];
+            subtitles = newsubtitles;
+            
             pos++;
             [self customNavBarTitle];
         } else {

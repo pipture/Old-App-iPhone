@@ -126,6 +126,12 @@ def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
         except Trailers.DoesNotExist as e:
             return None, "There is no trailer with id %s" % (id)
     if is_url:
+        subs_url_i = video.VideoId.VideoSubtitles
+        if subs_url_i.name == "":
+            subs_url= ""
+        else:
+            subs_url= (subs_url_i._get_url()).split('?')[0]
+            
         if video_q == 0:
             video_url_i = video.VideoId.VideoUrl
         else:
@@ -137,7 +143,8 @@ def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
             video_url_i = video.VideoId.VideoUrl
             
         video_url= (video_url_i._get_url()).split('?')[0]
-        return video_url, None
+        
+        return video_url, subs_url, None
     else:
         video_instance = 0
         video_instance = video.VideoId
@@ -151,6 +158,14 @@ def episode_in_purchased_album(videoid, purchaser):
         return False
     
     return album_purchased(albumid=video.AlbumId, userid=purchaser)
+
+def readSubtitles(subs_url):
+    if (subs_url != None) and (subs_url != ""):
+        import urllib2
+        u = urllib2.urlopen(subs_url)
+        return u.read()
+    
+    return ""
 
 def getVideo (request):
     keys = request.GET.keys()
@@ -202,11 +217,13 @@ def getVideo (request):
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There are no EpisodeId or TrailerId. Should be one param."}
         return HttpResponse (json.dumps(response))
     if trailer_id and not timeslot_id:
-        video_url, error = get_video_url_from_episode_or_trailer (id = trailer_id, type_r = "T", video_q=video_quality)
+        video_url, subs_url, error = get_video_url_from_episode_or_trailer (id = trailer_id, type_r = "T", video_q=video_quality)
         if error:
             response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
             return HttpResponse (json.dumps(response))
+        
         response['VideoURL'] = video_url
+        response['Subs'] = readSubtitles(subs_url=subs_url)
         return HttpResponse (json.dumps(response))
 
     elif timeslot_id:
@@ -237,11 +254,12 @@ def getVideo (request):
         
         containid = True
         if TimeSlots.timeslot_is_current(timeslot_id) and containid:
-            video_url, error = get_video_url_from_episode_or_trailer (id = episode_id or trailer_id, type_r = video_type, video_q=video_quality)
+            video_url, subs_url, error = get_video_url_from_episode_or_trailer (id = episode_id or trailer_id, type_r = video_type, video_q=video_quality)
             if error:
                 response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
                 return HttpResponse (json.dumps(response))
             response['VideoURL'] = video_url
+            response['Subs'] = readSubtitles(subs_url=subs_url)
             return HttpResponse (json.dumps(response))
         else:
             response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Timeslot expired"}
@@ -254,7 +272,7 @@ def getVideo (request):
         else:
             is_purchased = True
         
-        video_url, error = get_video_url_from_episode_or_trailer (id = episode_id, type_r = video_type, video_q=video_quality)
+        video_url, subs_url, error = get_video_url_from_episode_or_trailer (id = episode_id, type_r = video_type, video_q=video_quality)
         if error:
             response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is internal error. Wrong video URL"}
             return HttpResponse (json.dumps(response))
@@ -264,6 +282,7 @@ def getVideo (request):
         
         if is_purchased:
             response['VideoURL'] = video_url
+            response['Subs'] = readSubtitles(subs_url=subs_url)
             response['Balance'] = "%s" % (purchaser.Balance)
             return HttpResponse (json.dumps(response))
         else:
@@ -284,6 +303,7 @@ def getVideo (request):
                     purchaser.Balance = Decimal (purchaser.Balance - WATCH_EP.Price)
                     purchaser.save()
                     response['VideoURL'] = video_url
+                    response['Subs'] = readSubtitles(subs_url=subs_url)
                     response['Balance'] = "%s" % (purchaser.Balance)
                     return HttpResponse (json.dumps(response))
                 else:
