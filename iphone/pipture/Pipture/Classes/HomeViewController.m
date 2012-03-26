@@ -174,6 +174,33 @@
     }
 }
 
+- (void)updateBlink:(NSTimer *)timer {
+    static int firecount = 0;
+    
+    UIColor * col = (firecount++ % 2 != 0)?[UIColor colorWithRed:0.2 green:0.67 blue:0.95 alpha:1]:[UIColor blackColor];
+    
+
+    switch (homeScreenMode) {
+        case HomeScreenMode_Cover:  
+            [coverView setTitleColor:col];
+            break;
+        case HomeScreenMode_PlayingNow:        
+            [scheduleView setTitleColor:col];
+            break;
+        default: break;
+    }
+    
+    if (firecount == 5) {
+        [timer invalidate];
+        firecount = 0;
+    }
+}
+
+- (void)startBlinkTimer {
+    [NSTimer scheduledTimerWithTimeInterval:.8 target:self selector:@selector(updateBlink:) userInfo:nil repeats:YES];
+}
+
+
 - (void)startTimer:(float)interval {
     [self stopTimer];
     updateTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:scheduleModel selector:@selector(updateTimeslots) userInfo:nil repeats:YES];
@@ -531,6 +558,7 @@
 }
 
 - (void)doUpdate {
+    [self startBlinkTimer];
     [scheduleModel updateTimeslots];
 }
 

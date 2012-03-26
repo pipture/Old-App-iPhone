@@ -14,7 +14,7 @@
     BOOL allowBubble;
 }
 
-
+- (void)setTitleColor:(UIColor*)color;
 - (void)prepareWith:(id<HomeScreenDelegate>)parent;
 - (void)updateTimeSlotInfo:(Timeslot*)timeslot;
 - (void)allowShowBubble:(BOOL)allow;

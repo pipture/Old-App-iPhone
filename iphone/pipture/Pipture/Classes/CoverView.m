@@ -21,6 +21,11 @@
 
 #pragma mark - View lifecycle
 
+- (void)setTitleColor:(UIColor*)color {
+    UILabel * status = (UILabel*)[coverPanel viewWithTag:2];
+    status.textColor = color;
+}
+
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     coverPanel.hidden = coverPanel.alpha == 0.0;
 }

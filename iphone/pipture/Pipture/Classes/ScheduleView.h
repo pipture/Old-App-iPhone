@@ -26,6 +26,7 @@ enum TimeslotsMode{
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent scheduleModel:(ScheduleModel*)scheduleModel;
 
+- (void)setTitleColor:(UIColor*)color;
 - (void)redraw;
 - (void)scrollToPage:(int) page animated:(BOOL)animated;
 - (int)getPageNumber;

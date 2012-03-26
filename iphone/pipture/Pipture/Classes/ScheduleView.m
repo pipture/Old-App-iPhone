@@ -22,6 +22,15 @@
 @synthesize delegate;
 @synthesize timeslotsMode;
 
+- (void)setTitleColor:(UIColor*)color {
+    UILabel * status = (UILabel*)[navPanel viewWithTag:2];
+    status.textColor = color;
+    status = (UILabel*)[pnPanel viewWithTag:2];
+    status.textColor = color;
+    status = (UILabel*)[psPanel viewWithTag:2];
+    status.textColor = color;
+}
+
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     navPanel.hidden = navPanel.alpha == 0.0;
     pnPanel.hidden = pnPanel.alpha == 0.0;

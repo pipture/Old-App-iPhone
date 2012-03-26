@@ -175,14 +175,17 @@ static PiptureAppDelegate *instance;
     NSString * storage = [[self documentsDirectory] stringByAppendingPathComponent:@"pipture_purchases"];
     
     NSMutableArray * oldSavedArray = [NSKeyedUnarchiver unarchiveObjectWithFile:storage];
-    if (!oldSavedArray) {
-        [oldSavedArray addObject:transactionId];
-        [oldSavedArray addObject:receipt];
-        [transactionId release];
-        [receipt release];
-        
-        [NSKeyedArchiver archiveRootObject:oldSavedArray toFile:storage];
+    if (oldSavedArray) {
+        [oldSavedArray removeAllObjects];
+    } else {
+        oldSavedArray = [NSMutableArray array];
     }
+    [oldSavedArray addObject:transactionId];
+    [oldSavedArray addObject:receipt];
+    //[transactionId release];
+    //[receipt release];
+    
+    [NSKeyedArchiver archiveRootObject:oldSavedArray toFile:storage];
 }
 
 - (NSArray*)getInAppPurchases {

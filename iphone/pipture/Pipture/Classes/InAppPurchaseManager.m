@@ -74,10 +74,10 @@
                 message = @"You should repeat buy this album again. Second try will be free for you";
             } else {
                 title = @"Views was purchased";
-                message = @"Information was stored and will be confirmed at the next application launching";
+                message = @"Information was stored and will be confirmed at the next buying attempt";
             }
             
-            UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
             [requestIssuesAlert show];
             [requestIssuesAlert release];
             
