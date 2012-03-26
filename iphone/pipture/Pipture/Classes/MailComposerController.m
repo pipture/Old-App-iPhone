@@ -67,6 +67,7 @@
 @synthesize nameTextField;
 @synthesize toSectionView;
 @synthesize cardSectionViewController;
+@synthesize editMessageLabel;
 @synthesize emptyCell;
 @synthesize numberOfViewsTextField;
 @synthesize timeslotId;
@@ -346,6 +347,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     viewsNumberFormatter = nil;
     [self setMaxViewsLabel:nil];
     [self setInfiniteRadioButtonsGroupView:nil];
+    [self setEditMessageLabel:nil];
     [super viewDidUnload];
 }
 
@@ -432,6 +434,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
     
+    if (message_ && [message_ length] > 0 ) {
+        editMessageLabel.text = @"Edit Message";
+    } else {
+        editMessageLabel.text = @"Add Message";
+    }
+    
     self.navigationItem.hidesBackButton = YES;
     [self displayNumberOfViewsTextField];
     [self displayInfiniteViewsRadioButtons];
@@ -474,6 +482,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [viewsNumberFormatter release];
     [maxViewsLabel release];
     [infiniteRadioButtonsGroupView release];
+    [editMessageLabel release];
     [super dealloc];
 }
 
@@ -638,6 +647,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     switch ([self calcCellRow:indexPath]) {
         case MESSAGE_CELL_ROW:
+            if (message_ && [message_ length] > 0 ) {
+                editMessageLabel.text = @"Edit Message";
+            } else {
+                editMessageLabel.text = @"Add Message";
+            }
             return messageCell;
         case FROM_CELL_ROW:
             return fromCell;            

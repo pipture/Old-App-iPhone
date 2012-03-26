@@ -19,6 +19,7 @@
 @synthesize nextButton;
 @synthesize pauseButton;
 @synthesize prevButton;
+@synthesize subsButton;
 @synthesize volumeView;
 @synthesize subtitlesView;
 @synthesize subtitlesLabel;
@@ -86,6 +87,31 @@
         [videoTitleView composeTitle:item];
     }
 }
+
+- (void)setupSubsButton:(BOOL)state {
+    subtitlesView.hidden = !state;
+    if (state) {
+        [subsButton setImage:[UIImage imageNamed:@"subtitle-button.png"] forState:UIControlStateNormal];
+        [subsButton setImage:[UIImage imageNamed:@"subtitle-button-press.png"] forState:UIControlStateHighlighted];
+    } else {
+        [subsButton setImage:[UIImage imageNamed:@"subtitle-button-off.png"] forState:UIControlStateNormal];
+        [subsButton setImage:[UIImage imageNamed:@"subtitle-button-off-press.png"] forState:UIControlStateHighlighted];
+    }
+}
+
+- (void)setupSubtitles:(PlaylistItem*) item {
+    SubRip * newsubtitles = [[SubRip alloc] initWithString:item.videoSubs];
+    [subtitles release];
+    subtitles = newsubtitles;
+    
+    subsButton.hidden = [item.videoSubs length] == 0;
+    subtitlesView.hidden = [item.videoSubs length] == 0;
+    if (!subtitlesView.hidden) {
+        BOOL state = [[PiptureAppDelegate instance] getSubtitlesState];
+        [self setupSubsButton:state];
+    }
+}
+
 
 - (void)updateProgress:(NSTimer *)updatedTimer
 {
@@ -233,9 +259,7 @@
         
         PlaylistItem * item = [playlist objectAtIndex:pos + 1];
         
-        SubRip * newsubtitles = [[SubRip alloc] initWithString:item.videoSubs];
-        [subtitles release];
-        subtitles = newsubtitles;
+        [self setupSubtitles:item];
         
         [videoContainer setPlayer:nil];
         
@@ -496,6 +520,7 @@
     [self setVolumeView:nil];
     [self setSubtitlesView:nil];
     [self setSubtitlesLabel:nil];
+    [self setSubsButton:nil];
     [super viewDidUnload];
 }
 
@@ -619,6 +644,13 @@
     [self goBack];
 }
 
+- (IBAction)subsAction:(id)sender {
+    BOOL state = [[PiptureAppDelegate instance] getSubtitlesState];
+    state = !state;
+    [[PiptureAppDelegate instance] putSubtitlesState:state];
+    [self setupSubsButton:state];
+}
+
 - (void)dealloc {
     NSLog(@"video released");
     
@@ -647,6 +679,7 @@
     [volumeView release];
     [subtitlesView release];
     [subtitlesLabel release];
+    [subsButton release];
     [super dealloc];
 }
 
@@ -669,9 +702,7 @@
             nextPlayerItem = nil;
             videoContainer.player = player;
 
-            SubRip * newsubtitles = [[SubRip alloc] initWithString:playlistItem.videoSubs];
-            [subtitles release];
-            subtitles = newsubtitles;
+            [self setupSubtitles:playlistItem];
             
             pos++;
             [self customNavBarTitle];

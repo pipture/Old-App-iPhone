@@ -45,7 +45,7 @@
 }
 
 -(void)setAlbum:(Album *)newAlbum {
-    BOOL new = newAlbum != album;
+    BOOL new = newAlbum != nil && newAlbum != album;
     if (new) {
         [album release];
         album = [newAlbum retain];    
@@ -76,10 +76,11 @@
                 episodesIndicator.hidden = YES;
                 tagLabel.text = @"PREMIERE"; break;
         }
-    }        
+    }
 }
 
 - (void)showDetails:(id)sender {
+    episodesIndicator.hidden = YES;
     [delegate showAlbumDetails:album];    
 }
 

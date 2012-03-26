@@ -157,7 +157,7 @@ def episode_in_purchased_album(videoid, purchaser):
     except Episodes.DoesNotExist:
         return False
     
-    return album_purchased(albumid=video.AlbumId, userid=purchaser)
+    return album_purchased(albumid=video.AlbumId.AlbumId, userid=purchaser)
 
 def readSubtitles(subs_url):
     if (subs_url != None) and (subs_url != ""):
@@ -194,7 +194,7 @@ def getVideo (request):
     episode_id = request.GET.get('EpisodeId', None)
     trailer_id = request.GET.get('TrailerId', None)
     force_buy = request.GET.get('ForceBuy', None)
-    purchaser = request.GET.get('Key', None)
+    key = request.GET.get('Key', None)
     
     from restserver.pipture.models import TimeSlots
     from restserver.pipture.models import TimeSlotVideos
@@ -204,7 +204,7 @@ def getVideo (request):
     else:
         video_type = "T"
     
-    if force_buy and not purchaser:
+    if force_buy and not key:
         response["Error"] = {"ErrorCode": "4", "ErrorDescription": "Wrong authentication error"}
         return HttpResponse (json.dumps(response))
     if not (timeslot_id or force_buy) and not trailer_id:
@@ -267,8 +267,15 @@ def getVideo (request):
 
 
     else:
+        from restserver.pipture.models import PipUsers
+        try:
+            purchaser = PipUsers.objects.get(Token=key)
+        except PipUsers.DoesNotExist:
+            response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+            return HttpResponse (json.dumps(response))
+        
         if episode_id:
-            is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=purchaser)
+            is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=key)
         else:
             is_purchased = True
         
@@ -290,12 +297,6 @@ def getVideo (request):
                 response["Error"] = {"ErrorCode": "2", "ErrorDescription": "Video not purchased."}
                 return HttpResponse (json.dumps(response))
             else:
-                from restserver.pipture.models import PipUsers
-                try:
-                    purchaser = PipUsers.objects.get(Token=purchaser)
-                except PipUsers.DoesNotExist:
-                    response["Error"] = {"ErrorCode": "4", "ErrorDescription": "Wrong authentication error"}
-                    return HttpResponse (json.dumps(response))
                 if (purchaser.Balance - WATCH_EP.Price) >= 0:
                     #remove storing in purchased items
                     #new_p = UserPurchasedItems(UserId=purchaser, ItemId=episode_id, PurchaseItemId = WATCH_EP, ItemCost=WATCH_EP.Price)
@@ -1135,7 +1136,7 @@ def sendMessage (request):
     #    response["Error"] = {"ErrorCode": "4", "ErrorDescription": "Message is empty."}
     #    return HttpResponse (json.dumps(response))
 
-    if len(message) >= 200:
+    if len(message) > 200:
         response["Error"] = {"ErrorCode": "4", "ErrorDescription": "Message is too long."}
         return HttpResponse (json.dumps(response))
 
@@ -1156,7 +1157,7 @@ def sendMessage (request):
         return HttpResponse (json.dumps(response))
             
     if trailer_id:
-        video_url, error = get_video_url_from_episode_or_trailer (id=trailer_id, type_r="T", video_q=0)
+        video_url, subs_url, error = get_video_url_from_episode_or_trailer (id=trailer_id, type_r="T", video_q=0)
         if error:
             response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
             return HttpResponse (json.dumps(response))
@@ -1181,7 +1182,7 @@ def sendMessage (request):
     #from restserver.pipture.models import UserPurchasedItems
     SEND_EP = PurchaseItems.objects.get(Description="SendEpisode")
     
-    video_url, error = get_video_url_from_episode_or_trailer (id=episode_id, type_r="E", video_q=0)
+    video_url, subs_url, error = get_video_url_from_episode_or_trailer (id=episode_id, type_r="E", video_q=0)
     if error:
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
         return HttpResponse (json.dumps(response))
@@ -1310,10 +1311,21 @@ def getUnusedMessageViews (request):
     group1 = 0
     group2 = 0
     for message in messages:
-        if message.Timestamp>= weekdate:
-            group1 = group1 + message.ViewsLimit - message.ViewsCount
-        else:
-            group2 = group2 + message.ViewsLimit - message.ViewsCount
+        if message.LinkType == "E":
+            is_purchased = episode_in_purchased_album(videoid=message.LinkId, purchaser=key)
+            cnt = message.ViewsLimit - message.ViewsCount
+            if is_purchased:
+                if cnt <= 10:
+                    cnt = 0
+                else:
+                    cnt = cnt - 10
+            
+            if cnt < 0: cnt = 0    
+                
+            if message.Timestamp>= weekdate:
+                group1 = group1 + cnt
+            else:
+                group2 = group2 + cnt
             
     response["Unreaded"] = {"period1": group1, "period2": group2, "allperiods": group1+group2 }
     return HttpResponse (json.dumps(response))
@@ -1367,11 +1379,22 @@ def deactivateMessageViews (request):
 
     group = 0
     for message in messages:
-        if period == 0 or (message.Timestamp >= weekdate and period == 1) or (message.Timestamp < weekdate and period == 2):
-            group = group + message.ViewsLimit - message.ViewsCount
-            if message.ViewsCount < message.ViewsLimit:
-                message.ViewsCount = message.ViewsLimit
-                message.save()
+        if message.LinkType == "E":
+            if period == 0 or (message.Timestamp >= weekdate and period == 1) or (message.Timestamp < weekdate and period == 2):
+                is_purchased = episode_in_purchased_album(videoid=message.LinkId, purchaser=key)
+                cnt = message.ViewsLimit - message.ViewsCount
+                if is_purchased:
+                    if cnt <= 10:
+                        cnt = 0
+                    else:
+                        cnt = cnt - 10
+                
+                if cnt < 0: cnt = 0
+                
+                group = group + cnt
+                if message.ViewsCount < message.ViewsLimit:
+                    message.ViewsCount = message.ViewsLimit
+                    message.save()
 
     user_ballance = int(purchaser.Balance)
     purchaser.Balance = Decimal (user_ballance + group)

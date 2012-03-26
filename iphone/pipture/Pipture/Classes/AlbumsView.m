@@ -108,7 +108,7 @@
 - (void)updateAlbums:(NSArray *)albums{
     BOOL needToUpdate = NO;
     
-    if (albumsItemsArray == nil || albums.count != albumsItemsArray.count)
+    if (albumsItemsArray == nil || (albums != nil && albums.count != albumsItemsArray.count))
         needToUpdate = YES;
     
     if (!needToUpdate) {
@@ -146,6 +146,7 @@
             [item release];
         }
     }
+    
     [self setLibraryCardVisibility:NO withAnimation:NO];
     [self filterOnPurchasedAlbums:filterOnPurchasedAlbums];
     needToUpdate_ = NO;

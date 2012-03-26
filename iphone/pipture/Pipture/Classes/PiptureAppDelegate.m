@@ -43,6 +43,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
 static NSString* const HOMESCREENSTATE_KEY = @"HSState";
+static NSString* const SUBSSTATE_KEY = @"SubsState";
 
 enum {
     INSUFFICIENT_FUND_ALERT = 1,
@@ -204,6 +205,16 @@ static PiptureAppDelegate *instance;
 {
     [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:UUID_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)putSubtitlesState:(BOOL)state {
+    [[NSUserDefaults standardUserDefaults] setBool:state forKey:SUBSSTATE_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (BOOL)getSubtitlesState {
+    BOOL state = [[NSUserDefaults standardUserDefaults] boolForKey:SUBSSTATE_KEY];
+    return state;
 }
 
 - (void)putHomescreenState:(int)state {

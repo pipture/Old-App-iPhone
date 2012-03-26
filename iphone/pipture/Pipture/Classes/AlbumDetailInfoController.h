@@ -23,6 +23,8 @@ enum DetailAlbumViewType {
 {
     enum DetailAlbumViewType viewType;
     BOOL detailsReceived;
+    NSInteger libraryCardHeight;
+    BOOL libraryCardVisible;
     NSMutableDictionary* asyncImageViews;
     ScrollingHintPopupController *scrollingHintController;
 }
@@ -55,5 +57,5 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) LibraryCardController *cardSectionViewController;
 
 -(void)showScrollingHintIfNeeded;
-
+-(void)setLibraryCardVisibility:(BOOL)visibility withAnimation:(BOOL)animation;
 @end

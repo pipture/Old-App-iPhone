@@ -48,6 +48,7 @@
 - (IBAction)playpauseAction:(id)sender;
 - (IBAction)nextAction:(id)sender;
 - (IBAction)doneAction:(id)sender;
+- (IBAction)subsAction:(id)sender;
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer;
 - (void)movieFinishedCallback:(NSNotification*) aNotification;
 
@@ -66,6 +67,7 @@
 @property (retain, nonatomic) IBOutlet UIButton *nextButton;
 @property (retain, nonatomic) IBOutlet UIButton *pauseButton;
 @property (retain, nonatomic) IBOutlet UIButton *prevButton;
+@property (retain, nonatomic) IBOutlet UIButton *subsButton;
 @property (retain, nonatomic) IBOutlet MPVolumeView *volumeView;
 @property (retain, nonatomic) IBOutlet UIView *subtitlesView;
 @property (retain, nonatomic) IBOutlet UILabel *subtitlesLabel;

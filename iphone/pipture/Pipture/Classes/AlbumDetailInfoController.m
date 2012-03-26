@@ -58,6 +58,7 @@
         NSLog(@"Details update by TimeslotId");
         [[[PiptureAppDelegate instance] model] getAlbumDetailsForTimeslotId:self.timeslotId receiver:self];
     }
+    [self setLibraryCardVisibility:NO withAnimation:NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -141,7 +142,8 @@
     [tapTRec release];
 
     cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardB8" bundle:nil];
-
+    libraryCardHeight = cardSectionViewController.view.frame.size.height;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:VIEWS_PURCHASED_NOTIFICATION object:nil]; 
     
     detailsReceived = NO;
@@ -363,6 +365,45 @@
     
 }
 
+-(void)setLibraryCardVisibility:(BOOL)visibility withAnimation:(BOOL)animation {
+    if (animation) {
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:0.2]; // if you want to slide up the view
+    }
+    
+    videosTable.contentOffset = CGPointMake(0, visibility ? 0 : libraryCardHeight);    
+    if (!libraryCardVisible && libraryCardVisible != visibility)
+    {
+        [cardSectionViewController refreshViewsInfo];        
+        [scrollingHintController onHintUsed];
+    }
+    
+    libraryCardVisible = visibility;
+    if (animation) {
+        [UIView commitAnimations];
+    }
+}
+
+-(void)fixLibraryCardOffsetIfNeeded {
+    int offset = videosTable.contentOffset.y;
+    if (!libraryCardVisible && (offset <  libraryCardHeight)){
+        [self setLibraryCardVisibility:YES withAnimation:YES];
+    } else if (libraryCardVisible)
+    {
+        [self setLibraryCardVisibility:(offset < libraryCardHeight / 2) withAnimation:YES];
+    } 
+    
+}
+
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)lscrollView {
+    [self fixLibraryCardOffsetIfNeeded];
+}
+
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    //[self fixLibraryCardOffsetIfNeeded];    
+}
+
+
 #pragma mark VideoURLReceiver protocol
 
 -(void)videoURLReceived:(PlaylistItem*)playlistItem {
@@ -441,6 +482,11 @@
             videosTable.frame = rect;
             [subViewContainer addSubview:videosTable];
             [videosTable reloadData];
+            
+            int theight = self.videosTable.contentSize.height;
+            int sheight = subViewContainer.frame.size.height;
+            theight = (theight < sheight)?sheight:theight; 
+            self.videosTable.contentSize = CGSizeMake(self.videosTable.contentSize.width, theight);
             
             [videosButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             [videosButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];
