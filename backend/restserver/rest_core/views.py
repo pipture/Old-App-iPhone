@@ -1322,10 +1322,11 @@ def getUnusedMessageViews (request):
             
             if cnt < 0: cnt = 0    
                 
-            if message.Timestamp>= weekdate:
-                group1 = group1 + cnt
-            else:
-                group2 = group2 + cnt
+            if message.Timestamp != None:
+                if message.Timestamp>= weekdate:
+                    group1 = group1 + cnt
+                else:
+                    group2 = group2 + cnt
             
     response["Unreaded"] = {"period1": group1, "period2": group2, "allperiods": group1+group2 }
     return HttpResponse (json.dumps(response))
