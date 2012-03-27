@@ -499,9 +499,13 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     NSString *snippet = [[NSBundle mainBundle] pathForResource:@"snippet" ofType:@"html"];  
     NSMutableString * htmlData = [[NSMutableString alloc] initWithContentsOfFile:snippet encoding:NSUTF8StringEncoding error:nil];
-    
-    NSString * endPoint = [[[PiptureAppDelegate instance] model] getEndPoint];
-    NSString * newUrl = [[endPoint substringToIndex:endPoint.length - 1] stringByAppendingString:url];
+    NSString * newUrl;
+    if ([[url substringToIndex:1] compare:@"/"] == NSOrderedSame) {
+        NSString * endPoint = [[[PiptureAppDelegate instance] model] getEndPoint];
+        newUrl = [[endPoint substringToIndex:endPoint.length - 1] stringByAppendingString:url];
+    } else {
+        newUrl = url;
+    }
     
     [htmlData replaceOccurrencesOfString:HTML_MACROS_MESSAGE_URL withString:newUrl options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
     [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:screenshotImage_ ? screenshotImage_.imageURLLQ : self.playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];

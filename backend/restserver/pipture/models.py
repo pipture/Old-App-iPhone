@@ -368,6 +368,7 @@ class TimeSlotVideos(models.Model):
 class PiptureSettings(models.Model):
     PremierePeriod = models.IntegerField(help_text='Count of days after premiere', verbose_name="Premiere period")
     Cover = S3EnabledFileField (upload_to=u'documents/', verbose_name="Upload cover image here", blank=True)
+    VideoHost = models.CharField(verbose_name="Enter URL for video messages", max_length=100)
 
     def validate_unique(self, exclude = None):
         from django.core.exceptions import ValidationError, NON_FIELD_ERRORS

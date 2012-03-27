@@ -1180,7 +1180,10 @@ def sendMessage (request):
             return HttpResponse (json.dumps(response))
         else:
             u_url = new_send_message (user=purchaser, video_id=trailer_id, message=message, video_type="T", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
-            response['MessageURL'] = "/videos/%s/" % (u_url)
+            from restserver.pipture.models import PiptureSettings
+            vhost = PiptureSettings.objects.all()[0].VideoHost
+            
+            response['MessageURL'] = "%s/%s/" % (vhost, u_url)
             response['Balance'] = "%s" % (purchaser.Balance)
             return HttpResponse (json.dumps(response))
 
