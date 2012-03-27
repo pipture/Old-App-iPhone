@@ -36,6 +36,7 @@
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UINavigationControllerDelegate, UIAlertViewDelegate>
 {
+    NSString * coverImage;
     int balance;
     InAppPurchaseManager * purchases;
     NetworkConnection curConnection;

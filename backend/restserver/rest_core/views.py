@@ -885,6 +885,14 @@ def update_pip_user (pipUsersEmail, password):
     else:
         return token
 
+def get_cover():
+    from restserver.pipture.models import PiptureSettings
+    cover = PiptureSettings.objects.all()[0].Cover    
+    if cover.name == None or cover.name == "":
+        return ""
+    else:
+        return (cover._get_url()).split('?')[0]
+
 @csrf_exempt
 def register (request):
     if request.method != 'POST':
@@ -904,10 +912,11 @@ def register (request):
         response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
     
     from restserver.pipture.models import PipUsers
-
+    
     user = PipUsers()
     user.save()
-        
+
+    response['Cover'] = get_cover()        
     response["SessionKey"] = "%s" % (user.Token)
     response["UUID"] = "%s" % (user.UserUID)
     return HttpResponse (json.dumps(response))
@@ -946,6 +955,8 @@ def login (request):
         pipUsersUID.Token=uuid.uuid1()
         pipUsersUID.save()
         token = pipUsersUID.Token
+        
+        response['Cover'] = get_cover()        
         response["SessionKey"]="%s" % (token)
         return HttpResponse (json.dumps(response))
         

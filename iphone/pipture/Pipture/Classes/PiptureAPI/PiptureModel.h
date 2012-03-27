@@ -89,9 +89,9 @@
 
 @protocol AuthenticationDelegate <PiptureModelDelegate>
 @required
--(void)loggedIn;
+-(void)loggedIn:(NSDictionary*)params;
 -(void)loginFailed;
--(void)registred:(NSString*)uuid;
+-(void)registred:(NSDictionary*)params;
 @end
 
 @protocol PurchaseDelegate <PiptureModelDelegate,SensitiveDataReceiver>

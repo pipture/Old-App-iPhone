@@ -59,6 +59,7 @@ static PiptureAppDelegate *instance;
 
 - (void)dealloc
 {
+    [coverImage release];
     [networkErrorAlerter_ release];
     [wifiConnection release];
     [welcomeScreen release];
@@ -296,8 +297,12 @@ static PiptureAppDelegate *instance;
     }
 }
 
--(void)loggedIn
+-(void)loggedIn:(NSDictionary*)params
 {
+    NSString * cov = [params objectForKey:@"Cover"];
+    [coverImage release];
+    coverImage = [cov retain];
+    
     loggedIn = YES;
     
     UITapGestureRecognizer * tapVRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
@@ -321,9 +326,13 @@ static PiptureAppDelegate *instance;
     [self processAuthentication];
 }
 
--(void)registred:(NSString *)uuid
-{    
-    [self saveUUID:uuid];
+-(void)registred:(NSDictionary*)params
+{
+    NSString * cov = [params objectForKey:@"Cover"];
+    [coverImage release];
+    coverImage = [cov retain];
+    
+    [self saveUUID:[params objectForKey:@"UUID"]];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

@@ -78,6 +78,7 @@ static NSString* const JSON_PARAM_ALBUMS = @"Albums";
 static NSString* const JSON_PARAM_EPISODES = @"Episodes";
 static NSString* const JSON_PARAM_ALBUM = @"Album";
 static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
+static NSString* const JSON_PARAM_COVER = @"Cover";
 static NSString* const JSON_PARAM_BALANCE = @"Balance";
 static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
 static NSString* const JSON_PARAM_UUID = @"UUID";
@@ -208,7 +209,8 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
             switch (errCode) {            
                 case 0:
                     sessionKey = [(NSString*)[jsonResult objectForKey:JSON_PARAM_SESSION_KEY] retain];
-                    [receiver performSelectorOnMainThread:@selector(loggedIn) withObject:nil waitUntilDone:YES];                    
+                    NSDictionary * dic = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER], nil] forKeys:[NSArray arrayWithObjects:@"Cover", nil]];
+                    [receiver performSelectorOnMainThread:@selector(loggedIn:) withObject:dic waitUntilDone:YES];                    
                     break;
                 case 1:
                     [receiver performSelectorOnMainThread:@selector(loginFailed) withObject:nil waitUntilDone:YES];
@@ -248,14 +250,18 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
                     NSString* uuid = [jsonResult objectForKey:JSON_PARAM_UUID];                
                     if (uuid)
                     {
-                        [receiver performSelectorOnMainThread:@selector(registred:) withObject:uuid waitUntilDone:YES];                    
+                        NSDictionary * dic = [NSDictionary 
+                                              dictionaryWithObjects:[NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER], uuid, nil]
+                                              forKeys:[NSArray arrayWithObjects:@"Cover", @"UUID", nil]];
+                        [receiver performSelectorOnMainThread:@selector(registred:) withObject:dic waitUntilDone:YES];                    
                     }
                     else
                     {
                         NSLog(@"Server didn't sent uuid with new registration");
-                    }                    
-                    sessionKey = [(NSString*)[jsonResult objectForKey:JSON_PARAM_SESSION_KEY] retain];                
-                    [receiver performSelectorOnMainThread:@selector(loggedIn) withObject:nil waitUntilDone:YES];
+                    }
+                    NSDictionary * dic = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER], nil] forKeys:[NSArray arrayWithObjects:@"Cover", nil]];
+                    sessionKey = [(NSString*)[jsonResult objectForKey:JSON_PARAM_SESSION_KEY] retain];
+                    [receiver performSelectorOnMainThread:@selector(loggedIn:) withObject:dic waitUntilDone:YES];
                     break;
                 }
                 case 1:
