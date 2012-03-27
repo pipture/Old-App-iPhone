@@ -297,6 +297,10 @@ static PiptureAppDelegate *instance;
     }
 }
 
+- (NSString*)getCoverImage {
+    return coverImage;
+}
+
 -(void)loggedIn:(NSDictionary*)params
 {
     NSString * cov = [params objectForKey:@"Cover"];

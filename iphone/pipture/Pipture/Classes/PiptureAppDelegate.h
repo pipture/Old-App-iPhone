@@ -84,6 +84,7 @@
 - (void)putSubtitlesState:(BOOL)hidden;
 - (BOOL)getSubtitlesState;
 
+- (NSString*)getCoverImage;
 
 - (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo tag:(int)screenId delegate:(id<WelcomeScreenProtocol>)delegate;
 

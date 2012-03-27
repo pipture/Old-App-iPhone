@@ -199,7 +199,7 @@
 }
 
 - (void)startBlinkTimer {
-    [NSTimer scheduledTimerWithTimeInterval:.8 target:self selector:@selector(updateBlink:) userInfo:nil repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:.3 target:self selector:@selector(updateBlink:) userInfo:nil repeats:YES];
 }
 
 

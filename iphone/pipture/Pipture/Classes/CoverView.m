@@ -89,6 +89,14 @@
 - (void)prepareWith:(id<HomeScreenDelegate>)parent {
     allowBubble = NO;
     self.delegate = parent;
+    
+    NSString *cover = [[PiptureAppDelegate instance] getCoverImage];
+    if (cover) {
+        CGRect rect = CGRectMake(0, 0, coverContainer.frame.size.width, coverContainer.frame.size.height);
+        AsyncImageView *imageView = [[[AsyncImageView alloc] initWithFrame:rect] autorelease];
+        [coverContainer addSubview:imageView];
+        [imageView loadImageFromURL:[NSURL URLWithString:cover] withDefImage:[UIImage imageNamed:@"cover-channel.jpg"] spinner:AsyncImageSpinnerType_Big localStore:YES force:NO asButton:NO target:nil selector:nil];
+    }
 }
 
 - (void)dealloc {
