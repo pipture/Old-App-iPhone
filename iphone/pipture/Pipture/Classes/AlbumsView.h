@@ -20,7 +20,7 @@
     ScrollingHintPopupController *scrollingHintController;
     BOOL needToUpdate_;
 }
-
+- (void)updateStatuses;
 - (void)updateAlbums:(NSArray *)albums;
 - (void)prepareWith:(id<HomeScreenDelegate>)parent;
 

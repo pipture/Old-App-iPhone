@@ -50,12 +50,14 @@ def getTimeslots (request):
         response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
     timeslots_json = []
 
-    today = datetime.datetime.utcnow()
-    sec_utc_now = calendar.timegm(today.timetuple())
-    today_utc = datetime.datetime.utcfromtimestamp(sec_utc_now)
-    timedelta_1 = datetime.timedelta(days=settings.ACTIVE_DAYS_TIMESLOTS)
-    tomorrow = today_utc + timedelta_1
-    yesterday = today_utc - timedelta_1
+    today = datetime.datetime.today();
+    sec_utc_now = calendar.timegm(today.utcnow().timetuple())
+    #today_utc = datetime.datetime.utcfromtimestamp(sec_utc_now)
+    #timedelta_1 = datetime.timedelta(days=settings.ACTIVE_DAYS_TIMESLOTS)
+    #tomorrow = today_utc + timedelta_1
+    ##yesterday = today_utc - timedelta_1
+    yesterday = datetime.datetime(today.year, today.month, today.day)
+    tomorrow = datetime.datetime(today.year, today.month, today.day, 23, 59, 59)
 
     from restserver.pipture.models import TimeSlots
 

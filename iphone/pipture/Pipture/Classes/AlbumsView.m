@@ -104,6 +104,12 @@
     [scrollingHintController onScrollContentChanged];
 }
 
+- (void)updateStatuses {
+    for (int i = 0; i < albumsItemsArray.count; i++) {
+        AlbumItemViewController * item = [albumsItemsArray objectAtIndex:i];
+        [item updateStatus];
+    }
+}
 
 - (void)updateAlbums:(NSArray *)albums{
     BOOL needToUpdate = NO;

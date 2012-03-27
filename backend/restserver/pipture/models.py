@@ -241,7 +241,11 @@ class TimeSlots(models.Model):
 
     @property
     def complexName(self):
-        return "%s, A%s, %s - %s" % (self.AlbumId.SeriesId.Title, self.AlbumId.Title, self.StartDate, self.EndDate)
+        from restserver.pipture.middleware import threadlocals
+        from restserver.pipture.admin import from_utc_to_local_time
+        user = threadlocals.get_current_user()
+        user_tz = user.get_profile().timezone
+        return "%s, A%s, %s - %s (%s - %s)" % (self.AlbumId.SeriesId.Title, self.AlbumId.Title, self.StartDate, self.EndDate,  from_utc_to_local_time (user_tz, self.StartTime), from_utc_to_local_time (user_tz, self.EndTime))
 
     
     def __unicode__(self):

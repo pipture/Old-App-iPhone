@@ -157,6 +157,8 @@
 - (void)updateAlbums {
     if ([albumsView needToUpdate]) {
         [[[PiptureAppDelegate instance] model] getAlbumsForReciever:self];
+    } else {
+        [albumsView updateStatuses];
     }
 }
 

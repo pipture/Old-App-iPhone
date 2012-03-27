@@ -21,4 +21,6 @@
 @property (retain, nonatomic) NSObject<HomeScreenDelegate>* delegate;
 @property (retain, nonatomic) IBOutlet UIImageView *episodesIndicator;
 
+- (void)updateStatus;
+
 @end

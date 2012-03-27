@@ -44,6 +44,20 @@
     return savedDate >= updateDate;
 }
 
+- (void)updateStatus {
+    switch (album.status) {
+        case AlbumStatus_Normal:
+            episodesIndicator.hidden = [self haveNewEpisodes];
+            tagLabel.text = @""; break;
+        case AlbumStatus_CommingSoon: 
+            episodesIndicator.hidden = YES;
+            tagLabel.text = @"COMING SOON"; break;
+        case AlbumStatus_Premiere:
+            episodesIndicator.hidden = YES;
+            tagLabel.text = @"PREMIERE"; break;
+    }
+}
+
 -(void)setAlbum:(Album *)newAlbum {
     BOOL new = newAlbum != nil && newAlbum != album;
     if (new) {
@@ -65,22 +79,11 @@
         CGRect tagRect = tagLabel.frame;
         tagLabel.frame = CGRectMake(tagRect.origin.x, labelRect.origin.y + labelRect.size.height + 2, tagRect.size.width, tagRect.size.height);
         tagLabel.text = @"";
-        switch (album.status) {
-            case AlbumStatus_Normal:
-                episodesIndicator.hidden = [self haveNewEpisodes];
-                tagLabel.text = @""; break;
-            case AlbumStatus_CommingSoon: 
-                episodesIndicator.hidden = YES;
-                tagLabel.text = @"COMING SOON"; break;
-            case AlbumStatus_Premiere:
-                episodesIndicator.hidden = YES;
-                tagLabel.text = @"PREMIERE"; break;
-        }
+        [self updateStatus];
     }
 }
 
 - (void)showDetails:(id)sender {
-    episodesIndicator.hidden = YES;
     [delegate showAlbumDetails:album];    
 }
 
