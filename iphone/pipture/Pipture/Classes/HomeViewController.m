@@ -600,6 +600,8 @@
 }
 
 - (void)openDetails:(BOOL)withNavigation album:(Album*)album timeslotId:(NSInteger)timeslotId {
+    [[PiptureAppDelegate instance] putHomescreenState:HomeScreenMode_Cover];
+    
     NSLog(@"details open");
     self.navigationItem.title = @"Back";
     NSLog(@"%@", self.navigationController.visibleViewController.class);

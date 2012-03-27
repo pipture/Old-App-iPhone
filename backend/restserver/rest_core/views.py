@@ -843,7 +843,7 @@ def getSearchResult (request):
     appendeditems = []
     
     response["Episodes"] = []
-    
+    counter = 0
     for episode in allepisodes:
         try:
             appendeditems.index(episode.EpisodeId)
@@ -858,6 +858,9 @@ def getSearchResult (request):
                                    "SquareThumbnail": (episode.SquareThumbnail._get_url()).split('?')[0]
                                    })
             appendeditems.append(episode.EpisodeId)
+            counter = counter + 1
+            
+        if counter == 100: break;
 
     return HttpResponse (json.dumps(response))
 

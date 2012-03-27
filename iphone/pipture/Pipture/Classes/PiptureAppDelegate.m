@@ -683,7 +683,12 @@ NSInteger networkActivityIndecatorCount;
     HomeViewController * vc = [self getHomeView];
     if (vc) {
         switch ([sender tag]) {
-            case TABBARITEM_CHANNEL: [vc setHomeScreenMode:HomeScreenMode_Last]; break;
+            case TABBARITEM_CHANNEL: 
+                if ([channelButton imageForState:UIControlStateNormal] != [UIImage imageNamed:@"nav-button-channel-active.png"]) {
+                    [vc setHomeScreenMode:HomeScreenMode_Last]; 
+                }
+                break;
+                
             case TABBARITEM_LIBRARY: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
         }
         

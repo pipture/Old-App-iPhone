@@ -167,13 +167,13 @@ def index(request, u_url):
     
     video_url = video_url.replace("https://", "http://")
     
-    if mobileBrowser(request):
+    #if mobileBrowser(request):
         #template_h = 'video_mobile.html'
-        template_h = 'mobilepage.html'
-    else:
+    template_h = 'mobilepage.html'
+    #else:
         #template_h = 'video_mobile.html'
         #template_h = 'video_desktop.html'
-        template_h = 'webpage2.html'
+    #    template_h = 'webpage2.html'
  
     text_m = urs_instance.Text
     message_empty = len(text_m) == 0
