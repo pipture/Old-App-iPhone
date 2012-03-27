@@ -91,7 +91,7 @@
     self.delegate = parent;
     
     NSString *cover = [[PiptureAppDelegate instance] getCoverImage];
-    if (cover) {
+    if (cover && cover.length > 0) {
         CGRect rect = CGRectMake(0, 0, coverContainer.frame.size.width, coverContainer.frame.size.height);
         AsyncImageView *imageView = [[[AsyncImageView alloc] initWithFrame:rect] autorelease];
         [coverContainer addSubview:imageView];
