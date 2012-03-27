@@ -626,7 +626,7 @@
 						<string key="NSFrame">{{16, 95}, {288, 288}}</string>
 						<reference key="NSSuperview" ref="730948647"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
+						<reference key="NSNextKeyView" ref="449669602"/>
 						<string key="NSReuseIdentifierKey">_NS:196</string>
 						<reference key="IBUIBackgroundColor" ref="574625973"/>
 						<int key="IBUIContentMode">5</int>
@@ -902,7 +902,7 @@
 							<string key="NSClassName">NSImage</string>
 							<string key="NSResourceName">button-purchases-inactive.png</string>
 						</object>
-						<object class="IBUIFontDescription" key="IBUIFontDescription">
+						<object class="IBUIFontDescription" key="IBUIFontDescription" id="847393968">
 							<int key="type">2</int>
 							<double key="pointSize">13</double>
 						</object>
@@ -945,6 +945,29 @@
 				</object>
 				<reference key="IBUIFontDescription" ref="291193503"/>
 				<reference key="IBUIFont" ref="818211076"/>
+			</object>
+			<object class="IBUIButton" id="425550840">
+				<reference key="NSNextResponder"/>
+				<int key="NSvFlags">292</int>
+				<string key="NSFrameSize">{60, 29}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
+				<reference key="NSNextKeyView"/>
+				<string key="NSReuseIdentifierKey">_NS:225</string>
+				<bool key="IBUIOpaque">NO</bool>
+				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+				<int key="IBUIContentHorizontalAlignment">0</int>
+				<int key="IBUIContentVerticalAlignment">0</int>
+				<string key="IBUINormalTitle">Store</string>
+				<reference key="IBUIHighlightedTitleColor" ref="824961962"/>
+				<reference key="IBUINormalTitleColor" ref="824961962"/>
+				<reference key="IBUINormalTitleShadowColor" ref="812085847"/>
+				<object class="NSCustomResource" key="IBUINormalBackgroundImage">
+					<string key="NSClassName">NSImage</string>
+					<string key="NSResourceName">button-black-up.png</string>
+				</object>
+				<reference key="IBUIFontDescription" ref="847393968"/>
+				<reference key="IBUIFont" ref="401594211"/>
 			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -1029,6 +1052,14 @@
 						<reference key="destination" ref="1052174820"/>
 					</object>
 					<int key="connectionID">162</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">storeButton</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="425550840"/>
+					</object>
+					<int key="connectionID">165</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
@@ -1265,6 +1296,15 @@
 						<int key="IBEventType">7</int>
 					</object>
 					<int key="connectionID">163</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">storeAction:</string>
+						<reference key="source" ref="425550840"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">166</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1598,6 +1638,11 @@
 						<reference key="object" ref="1052174820"/>
 						<reference key="parent" ref="0"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">164</int>
+						<reference key="object" ref="425550840"/>
+						<reference key="parent" ref="0"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -1637,6 +1682,8 @@
 					<string>158.IBPluginDependency</string>
 					<string>161.IBPluginDependency</string>
 					<string>161.IBUIButtonInspectorSelectedStateConfigurationMetadataKey</string>
+					<string>164.IBPluginDependency</string>
+					<string>164.IBUIButtonInspectorSelectedStateConfigurationMetadataKey</string>
 					<string>55.IBPluginDependency</string>
 					<string>56.CustomClassName</string>
 					<string>56.IBPluginDependency</string>
@@ -1703,6 +1750,8 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<real value="0.0"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<real value="0.0"/>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>ScheduleView</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -1745,7 +1794,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">163</int>
+			<int key="maxID">166</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1925,9 +1974,11 @@
 							<string>flipAction:</string>
 							<string>scheduleAction:</string>
 							<string>searchAction:</string>
+							<string>storeAction:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1940,6 +1991,7 @@
 							<string>flipAction:</string>
 							<string>scheduleAction:</string>
 							<string>searchAction:</string>
+							<string>storeAction:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1953,6 +2005,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">searchAction:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">storeAction:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 						</object>
@@ -1969,6 +2025,7 @@
 							<string>scheduleEnhancer</string>
 							<string>scheduleView</string>
 							<string>searchButton</string>
+							<string>storeButton</string>
 							<string>tabbarContainer</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1980,6 +2037,7 @@
 							<string>UIButton</string>
 							<string>UIView</string>
 							<string>ScheduleView</string>
+							<string>UIButton</string>
 							<string>UIButton</string>
 							<string>UIView</string>
 						</object>
@@ -1996,6 +2054,7 @@
 							<string>scheduleEnhancer</string>
 							<string>scheduleView</string>
 							<string>searchButton</string>
+							<string>storeButton</string>
 							<string>tabbarContainer</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -2030,6 +2089,10 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">searchButton</string>
+								<string key="candidateClassName">UIButton</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">storeButton</string>
 								<string key="candidateClassName">UIButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
@@ -2170,6 +2233,7 @@
 				<string>arrow-prev.png</string>
 				<string>background.png</string>
 				<string>button-all-active.png</string>
+				<string>button-black-up.png</string>
 				<string>button-flip-back.png</string>
 				<string>button-info-down.png</string>
 				<string>button-info.png</string>
@@ -2192,6 +2256,7 @@
 				<string>{14, 19}</string>
 				<string>{320, 480}</string>
 				<string>{99, 30}</string>
+				<string>{60, 29}</string>
 				<string>{65, 35}</string>
 				<string>{23, 23}</string>
 				<string>{23, 23}</string>

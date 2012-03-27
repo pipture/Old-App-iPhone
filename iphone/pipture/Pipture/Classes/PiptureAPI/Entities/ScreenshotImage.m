@@ -11,9 +11,11 @@
 @implementation ScreenshotImage
 
 static NSString* const JSON_PARAM_IMAGE_URL = @"URL";
+static NSString* const JSON_PARAM_IMAGE_URLLQ = @"URLLQ";
 static NSString* const JSON_PARAM_IMAGE_DESCRIPTION = @"Description";
 
 @synthesize imageURL;
+@synthesize imageURLLQ;
 @synthesize imageDescription;
 
 -(id)initWithJSON:(NSDictionary*)jsonData
@@ -22,6 +24,7 @@ static NSString* const JSON_PARAM_IMAGE_DESCRIPTION = @"Description";
     if (self) {        
 
         self.imageURL = [jsonData objectForKey:JSON_PARAM_IMAGE_URL];
+        self.imageURLLQ = [jsonData objectForKey:JSON_PARAM_IMAGE_URLLQ];
         self.imageDescription = [jsonData objectForKey:JSON_PARAM_IMAGE_DESCRIPTION];
     }
     return self;
@@ -29,14 +32,9 @@ static NSString* const JSON_PARAM_IMAGE_DESCRIPTION = @"Description";
 }
 
 - (void)dealloc {
-    if (imageURL)
-    {
-        [imageURL release];    
-    }
-    if (imageDescription)
-    {
-        [imageDescription release];
-    }
+    [imageURL release];
+    [imageURLLQ release];
+    [imageDescription release];
     [super dealloc];
 }
 @end

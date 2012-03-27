@@ -77,6 +77,7 @@ static NSString* const JSON_PARAM_VIDEO_SUBS = @"Subs";
 static NSString* const JSON_PARAM_ALBUMS = @"Albums";
 static NSString* const JSON_PARAM_EPISODES = @"Episodes";
 static NSString* const JSON_PARAM_ALBUM = @"Album";
+static NSString* const JSON_PARAM_TRAILER = @"Trailer";
 static NSString* const JSON_PARAM_SESSION_KEY = @"SessionKey";
 static NSString* const JSON_PARAM_COVER = @"Cover";
 static NSString* const JSON_PARAM_BALANCE = @"Balance";
@@ -397,7 +398,9 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
 
 -(BOOL)getSearchResults:(NSString*)query receiver:(NSObject<SearchResultReceiver>*)receiver {
     
-    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_SEARCH_RESULT_FOR_REQUEST, query]];
+    NSString * req = [NSString stringWithFormat:GET_SEARCH_RESULT_FOR_REQUEST, query];
+    
+    NSURL* url = [self buildURLWithRequest:[req stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url callback:^(NSDictionary* jsonResult, DataRequestError* error){
         
@@ -433,7 +436,7 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];
-    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy]; 
+    request.retryStrategy = [DataRequestRetryStrategyFactory createEasyStrategy]; 
     return [request startExecute];
 }
 

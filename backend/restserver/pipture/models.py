@@ -142,10 +142,18 @@ class Albums(models.Model):
 class AlbumScreenshotGallery(models.Model):
     AlbumId = models.ForeignKey (Albums)
     Description = models.CharField (help_text='Unique description for screenshot.',  max_length=100)
-    Screenshot = S3EnabledFileField (upload_to=u'documents/') 
+    Screenshot = S3EnabledFileField (upload_to=u'documents/')
+    ScreenshotLow = S3EnabledFileField (upload_to=u'documents/', blank=True) 
 
     @property
     def ScreenshotURL(self):
+        return (self.Screenshot._get_url()).split('?')[0]
+    
+    @property
+    def ScreenshotURLLQ(self):
+        if self.ScreenshotLow != None and self.ScreenshotLow.name != "":
+            return (self.ScreenshotLow._get_url()).split('?')[0]
+        
         return (self.Screenshot._get_url()).split('?')[0]  
 
     def __unicode__(self):
@@ -377,7 +385,7 @@ class PiptureSettings(models.Model):
 class PipUsers(models.Model):
     UserUID= models.CharField (max_length=36, primary_key=True, default=uuid.uuid1)
     Token = models.CharField (unique=True, max_length=36, default=uuid.uuid1)
-    RegDate = models.DateField(auto_now_add=True)
+    RegDate = models.DateField(default=datetime.datetime.now)
     Balance = models.DecimalField(default=Decimal('0'), max_digits=10, decimal_places=0)
     
     def __unicode__(self):
@@ -415,7 +423,7 @@ class PurchaseItems(models.Model):
 
 class UserPurchasedItems(models.Model):
     UserPurchasedItemsId = models.AutoField (primary_key=True)
-    Date = models.DateField(auto_now_add=True)
+    Date = models.DateField(default=datetime.datetime.now)
     UserId = models.ForeignKey (PipUsers, editable=False)
     PurchaseItemId = models.ForeignKey (PurchaseItems, editable=False)
     ItemId = models.CharField (editable=False, max_length=100)
@@ -459,7 +467,7 @@ class Transactions(models.Model):
     UserId = models.ForeignKey (PipUsers, editable=False)
     ProductId = models.ForeignKey (AppleProducts, editable=False)
     AppleTransactionId = models.CharField (unique=True, max_length=36)
-    Timestamp = models.DateField(auto_now_add=True)
+    Timestamp = models.DateField(default=datetime.datetime.now)
     Cost = models.DecimalField(editable=False,  max_digits=7, decimal_places=4)
     ViewsCount = models.IntegerField()
     
@@ -515,7 +523,7 @@ class SendMessage(models.Model):
     Url = models.CharField(max_length=36, primary_key=True, default=urlenc)
     UserId = models.ForeignKey (PipUsers)
     Text = models.CharField (max_length=200)
-    Timestamp = models.DateTimeField(auto_now_add=True)
+    Timestamp = models.DateTimeField(default=datetime.datetime.now)
     LinkId = models.IntegerField (db_index=True)
     LinkType=  models.CharField(db_index=True, max_length=1, choices=LINKTYPE_CHOICES)
     UserName = models.CharField (max_length=200)

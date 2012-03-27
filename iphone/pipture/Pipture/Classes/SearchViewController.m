@@ -36,6 +36,12 @@
 
 #pragma mark - View lifecycle
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
@@ -243,6 +249,7 @@
 
 -(void)dataRequestFailed:(DataRequestError*)error
 {
+    noresultPrompt.hidden = (episodes.count > 0);
     //[[[PiptureAppDelegate instance] networkErrorAlerter] showStandardAlertForError:error];    
 }
 

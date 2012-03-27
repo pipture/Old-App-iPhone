@@ -708,12 +708,13 @@ def getAlbumDetail (request):
         else:
             album = timeslot.AlbumId
 
+    album_json = album_json_by_id (album)
     
-    response['Album'] = album_json_by_id (album)
+    response['Album'] = album_json 
         
     trailer = album.TrailerId
     
-    response["Trailer"] ={"Type": "Trailer", "TrailerId": trailer.TrailerId, 
+    album_json["Trailer"] ={"Type": "Trailer", "TrailerId": trailer.TrailerId, 
                                "Title": trailer.Title, "Line1": trailer.Line1,
                                "Line2": trailer.Line2,
                                "SquareThumbnail": (trailer.SquareThumbnail._get_url()).split('?')[0]}
@@ -1258,7 +1259,7 @@ def getAlbumScreenshotByEpisodeId (EpisodeId):
         return HttpResponse (json.dumps(response))
     else:
         for screenshot in screenshots:
-            response["Screenshots"].append ({"URL": screenshot.ScreenshotURL, "Description": screenshot.Description})
+            response["Screenshots"].append ({"URL": screenshot.ScreenshotURL, "URLLQ": screenshot.ScreenshotURLLQ, "Description": screenshot.Description})
         return HttpResponse (json.dumps(response))
 
 def getAlbumScreenshots (request):

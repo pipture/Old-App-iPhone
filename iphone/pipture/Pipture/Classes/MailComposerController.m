@@ -95,7 +95,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     if (screenshotImage_)
     {
         screenshotName.text = screenshotImage_.imageDescription;
-        url = screenshotImage_.imageURL;
+        url = screenshotImage_.imageURLLQ;
     }
     else
     {
@@ -292,7 +292,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         [defaultScreenshotImage_ release];
         defaultScreenshotImage_ = [[ScreenshotImage alloc] init];
         defaultScreenshotImage_.imageDescription = @"Default";
-        defaultScreenshotImage_.imageURL = playlistItem.emailScreenshot;
+        defaultScreenshotImage_.imageURLLQ = playlistItem.emailScreenshot;
 
 
         [screenshotImages_ release];
@@ -504,7 +504,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     NSString * newUrl = [[endPoint substringToIndex:endPoint.length - 1] stringByAppendingString:url];
     
     [htmlData replaceOccurrencesOfString:HTML_MACROS_MESSAGE_URL withString:newUrl options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
-    [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
+    [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:screenshotImage_ ? screenshotImage_.imageURLLQ : self.playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
     
     NSString * nameField = nameTextField.text;
     if (nameField.length >= 32) {

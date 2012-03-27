@@ -32,6 +32,7 @@
 - (IBAction)scheduleAction:(id)sender;
 - (IBAction)flipAction:(id)sender;
 - (IBAction)searchAction:(id)sender;
+- (IBAction)storeAction:(id)sender;
 
 @property (retain, nonatomic) IBOutlet UIView *tabbarContainer;
 @property (retain, nonatomic) IBOutlet UIButton *flipButton;
@@ -42,5 +43,6 @@
 @property (retain, nonatomic) IBOutlet UIView *scheduleEnhancer;
 @property (retain, nonatomic) IBOutlet UIView *flipEnhancer;
 @property (retain, nonatomic) IBOutlet UIButton *searchButton;
+@property (retain, nonatomic) IBOutlet UIButton *storeButton;
 
 @end

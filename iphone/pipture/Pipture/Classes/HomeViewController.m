@@ -32,6 +32,7 @@
 @synthesize scheduleEnhancer;
 @synthesize flipEnhancer;
 @synthesize searchButton;
+@synthesize storeButton;
 
 
 #pragma mark - View lifecycle
@@ -259,6 +260,10 @@
     UIBarButtonItem* search = [[UIBarButtonItem alloc] initWithCustomView:searchButton];    
     self.navigationItem.rightBarButtonItem = search;
     [search release];
+    
+    UIBarButtonItem* store = [[UIBarButtonItem alloc] initWithCustomView:storeButton];    
+    self.navigationItem.leftBarButtonItem = store;
+    [store release];
 
     [self setHomeScreenMode:[[PiptureAppDelegate instance] getHomescreenState]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onViewsPurchased:) name:VIEWS_PURCHASED_NOTIFICATION object:nil]; 
@@ -283,6 +288,7 @@
     [self setScheduleEnhancer:nil];
     [self setFlipEnhancer:nil];
     [self setSearchButton:nil];
+    [self setStoreButton:nil];
     [super viewDidUnload];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -359,7 +365,7 @@
     [self resetScheduleTimer];
     [self stopTimer];
     
-    self.navigationItem.title = @"Back";
+    //self.navigationItem.title = @"Back";
     [super viewDidDisappear:animated];
 }
 
@@ -383,6 +389,7 @@
     [flipEnhancer release];
 
     [searchButton release];
+    [storeButton release];
     [super dealloc];
 }
 
@@ -424,6 +431,10 @@
     [self.navigationController pushViewController:search animated:YES];
     [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
     [search release];
+}
+
+- (IBAction)storeAction:(id)sender {
+    [[PiptureAppDelegate instance] onStoreClick:sender];
 }
 
 - (void)createFlipAnimation {
