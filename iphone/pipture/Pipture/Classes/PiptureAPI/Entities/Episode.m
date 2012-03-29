@@ -20,6 +20,7 @@
 @synthesize senderToReceiver;
 @synthesize episodeNo;
 @synthesize episodeEmailScreenshot;
+@synthesize episodeEmailScreenshotLQ;
 
 static NSString* const JSON_PARAM_EPISODE_ID = @"EpisodeId";
 static NSString* const JSON_PARAM_EPISODE_TITLE = @"Title";
@@ -35,6 +36,7 @@ static NSString* const JSON_PARAM_SERIES_TITLE = @"SeriesTitle";
 static NSString* const JSON_PARAM_ALBUM_TITLE = @"AlbumTitle";
 static NSString* const JSON_PARAM_ALBUM_SEASON = @"AlbumSeason";
 static NSString* const JSON_PARAM_ALBUM_EMAIL_SCREENSHOT = @"AlbumSquareThumbnail";
+static NSString* const JSON_PARAM_ALBUM_EMAIL_SCREENSHOTLQ = @"AlbumSquareThumbnailLQ";
 
 
 static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
@@ -50,6 +52,7 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
     [subject release];
     [senderToReceiver release];
     [episodeNo release];
+    [episodeEmailScreenshotLQ release];
     [episodeEmailScreenshot release];
     [internalAlbum release];
     [super dealloc];

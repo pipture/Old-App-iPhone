@@ -90,12 +90,18 @@
     allowBubble = NO;
     self.delegate = parent;
     
+    if (coverContainer.subviews.count > 0)
+        [[coverContainer.subviews objectAtIndex:0] removeFromSuperview];
+    
     NSString *cover = [[PiptureAppDelegate instance] getCoverImage];
+    CGRect rect = CGRectMake(0, 0, coverContainer.frame.size.width, coverContainer.frame.size.height);
     if (cover && cover.length > 0) {
-        CGRect rect = CGRectMake(0, 0, coverContainer.frame.size.width, coverContainer.frame.size.height);
         AsyncImageView *imageView = [[[AsyncImageView alloc] initWithFrame:rect] autorelease];
         [coverContainer addSubview:imageView];
-        [imageView loadImageFromURL:[NSURL URLWithString:cover] withDefImage:[UIImage imageNamed:@"cover-channel.jpg"] spinner:AsyncImageSpinnerType_Big localStore:YES force:NO asButton:NO target:nil selector:nil];
+        [imageView loadImageFromURL:[NSURL URLWithString:cover] withDefImage:nil spinner:AsyncImageSpinnerType_Big localStore:YES force:NO asButton:NO target:nil selector:nil];
+    } else {
+        UIImageView * imageView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cover-channel.jpg"]] autorelease];
+        [coverContainer addSubview:imageView];
     }
 }
 

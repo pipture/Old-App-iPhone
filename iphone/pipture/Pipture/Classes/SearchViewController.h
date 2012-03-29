@@ -21,8 +21,10 @@
 @property (retain, nonatomic) IBOutlet UITableView *videosTable;
 @property (retain, nonatomic) IBOutlet UITableViewCell *dividerCell;
 @property (retain, nonatomic) IBOutlet UITableViewCell *videoCell;
+@property (retain, nonatomic) IBOutlet UIButton *libraryBack;
 
 @property (retain, nonatomic) NSArray * episodes;
 
 - (IBAction)clearAction:(id)sender;
+- (IBAction)backAction:(id)sender;
 @end

@@ -106,7 +106,7 @@
 -(void)openPiptureStore;
 -(void)closePiptureStore;
 
-- (void)showModalBusy:(void (^)(void))completion;
+- (void)showModalBusyWithBigSpinner:(BOOL)spinner completion:(void (^)(void))completion;
 - (void)dismissModalBusy;
 
 - (void)showError:(NSString*)title message:(NSString*)message;

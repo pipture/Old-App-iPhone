@@ -23,6 +23,7 @@
 @synthesize videosTable;
 @synthesize dividerCell;
 @synthesize videoCell;
+@synthesize libraryBack;
 @synthesize episodes;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -49,6 +50,10 @@
     
     self.navigationItem.titleView = searchView;
     self.noresultPrompt.hidden = YES;
+
+    UIBarButtonItem* back = [[UIBarButtonItem alloc] initWithCustomView:libraryBack];
+    self.navigationItem.leftBarButtonItem = back;
+    [back release];
     
     asyncImageViews = [[NSMutableDictionary alloc] init];
 }
@@ -63,6 +68,7 @@
     [self setVideosTable:nil];
     [self setDividerCell:nil];
     [self setVideoCell:nil];
+    [self setLibraryBack:nil];
     [super viewDidUnload];
 }
 
@@ -192,11 +198,16 @@
     [videosTable release];
     [dividerCell release];
     [videoCell release];
+    [libraryBack release];
     [super dealloc];
 }
 
 - (IBAction)clearAction:(id)sender {
     searchField.text = @"";
+}
+
+- (IBAction)backAction:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark TextDield delegate

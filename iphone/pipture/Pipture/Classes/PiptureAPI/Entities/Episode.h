@@ -25,6 +25,7 @@
 @property(retain, nonatomic) NSString *senderToReceiver;
 @property(retain, nonatomic) NSString *episodeNo;
 @property(retain, nonatomic) NSString *episodeEmailScreenshot;
+@property(retain, nonatomic) NSString *episodeEmailScreenshotLQ;
 
 @property(readonly, nonatomic) Album* album;
 

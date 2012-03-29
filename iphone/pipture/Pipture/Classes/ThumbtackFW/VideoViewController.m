@@ -90,7 +90,7 @@
 
 - (void)setupSubsButton:(BOOL)state {
     subtitlesView.hidden = !state;
-    if (state) {
+    if (!state) {
         [subsButton setImage:[UIImage imageNamed:@"subtitle-button.png"] forState:UIControlStateNormal];
         [subsButton setImage:[UIImage imageNamed:@"subtitle-button-press.png"] forState:UIControlStateHighlighted];
     } else {
@@ -184,6 +184,8 @@
         controlsHidden = YES;
         [self updateControlsAnimated:YES];
     }
+    
+    controlsHideTimer = nil;
 }
 
 

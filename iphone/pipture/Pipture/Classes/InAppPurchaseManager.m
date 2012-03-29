@@ -216,7 +216,7 @@
         [purchase run];
         [purchase release];
     } else {
-        [[PiptureAppDelegate instance] showModalBusy:^{
+        [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:YES completion:^{
             NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
             SKPayment *payment = [SKPayment paymentWithProductIdentifier:productId];
             [[SKPaymentQueue defaultQueue] addPayment:payment];
@@ -228,7 +228,7 @@
     
     TRACK_EVENT(@"PurchaseAlbum", @"Start album purchasing");
     
-    [[PiptureAppDelegate instance] showModalBusy:^{
+    [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:YES completion:^{
         SKPayment *payment = [SKPayment paymentWithProductIdentifier:appleProductId];
         [[SKPaymentQueue defaultQueue] addPayment:payment];
     }];

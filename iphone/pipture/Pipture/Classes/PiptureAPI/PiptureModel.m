@@ -187,6 +187,7 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
 
 -(void)cancelCurrentRequest
 {
+    NSLog(@"Cancel current req!");
     [dataRequestFactory_ cancelCurrentRequest];
 }
 

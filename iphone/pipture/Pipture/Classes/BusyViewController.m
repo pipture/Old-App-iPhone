@@ -9,5 +9,14 @@
 #import "BusyViewController.h"
 
 @implementation BusyViewController
+@synthesize spinner;
 
+- (void)dealloc {
+    [spinner release];
+    [super dealloc];
+}
+- (void)viewDidUnload {
+    [self setSpinner:nil];
+    [super viewDidUnload];
+}
 @end

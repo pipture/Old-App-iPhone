@@ -61,6 +61,8 @@ id<DataRequestManager> requestManager_;
             }
         }             
         callback_(dctData, err);
+    } else {
+        NSLog(@"Req was cancelled!");
     }
 }
 

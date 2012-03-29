@@ -286,10 +286,13 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 }
 
--(void)viewDidAppear:(BOOL)animated{
-    self.view.frame = CGRectMake(0, -64, 320, 480);    
-    [super viewDidAppear:animated];
+-(void)viewDidLayoutSubviews {
+    if (self.view.frame.origin.y == 0)
+        self.view.frame = CGRectMake(0, -64, 320, 480);
+}
 
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -307,7 +310,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 -(void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+   // [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
 }
 
 - (void)viewDidUnload

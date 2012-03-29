@@ -257,18 +257,13 @@ static PiptureAppDelegate *instance;
     
     HomeViewController * vc = [self getHomeView];
     if (vc) {
+        [vc.coverView prepareWith:vc];
         [vc.albumsView setNeedToUpdate];
     }
 }
 
 -(void) processAuthentication
 {
-    if (loggedIn)
-    {
-        [self unsuspendPlayer];
-        
-        return;
-    }
     if (registrationRequired)
     {
         [model_ registerWithReceiver:self];
@@ -307,20 +302,24 @@ static PiptureAppDelegate *instance;
     [coverImage release];
     coverImage = [cov retain];
     
-    loggedIn = YES;
-    
-    UITapGestureRecognizer * tapVRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
-    [refreshTapZone addGestureRecognizer:tapVRec];
-    [tapVRec release];
-    
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
-    
-    [self.window setRootViewController:homeNavigationController];
-    [self.window bringSubviewToFront:tabView];
-    
-    [self.window makeKeyAndVisible];
-    self.backgroundImage.hidden = YES;
-    [self getHomeView];
+    if (loggedIn) {
+        [self unsuspendPlayer];
+    } else {
+        loggedIn = YES;
+        
+        UITapGestureRecognizer * tapVRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+        [refreshTapZone addGestureRecognizer:tapVRec];
+        [tapVRec release];
+        
+        [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+        
+        [self.window setRootViewController:homeNavigationController];
+        [self.window bringSubviewToFront:tabView];
+        
+        [self.window makeKeyAndVisible];
+        self.backgroundImage.hidden = YES;
+        [self getHomeView];
+    }
     [Appirater appLaunched:YES];
 }
 
@@ -730,13 +729,17 @@ NSInteger networkActivityIndecatorCount;
     return tabbarView.frame.size.height - 8;  
 }
 
-- (void)showModalBusy:(void (^)(void))completion {
+- (void)showModalBusyWithBigSpinner:(BOOL)spinner completion:(void (^)(void))completion {
     //[[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
     //[[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
     [[self window] addSubview:busyView.view];
     [busyView loadView];
-    [[self window] bringSubviewToFront:busyView.view];    
+    if (!spinner) {
+        busyView.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
+    }
+        
+    [[self window] bringSubviewToFront:busyView.view];
     completion();
 }
 

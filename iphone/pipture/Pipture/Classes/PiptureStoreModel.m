@@ -27,7 +27,7 @@
         newAlbums_ = [[NSMutableArray alloc] initWithCapacity:20];
         BUY_PRODUCT_ID = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumBuyProductId"] retain];
         PASS_PRODUCT_ID = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumPassProductId"] retain];        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAlbumPurchased) name:ALBUM_PURCHASED_NOTIFICATION object:nil];          
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAlbumPurchased) name:ALBUM_PURCHASED_NOTIFICATION object:nil];
     }
     return self;
 }
@@ -123,7 +123,7 @@
         [newAlbums_ removeAllObjects];
         [newAlbums_ addObjectsFromArray:albums];
         if ([purchaseMgr canMakePurchases]) {
-            [[PiptureAppDelegate instance] showModalBusy:^{
+            [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:NO completion:^{
                 [purchaseMgr requestProductsWithIds:[self appleProductIds:newAlbums_] delegate:self];
             }];
         } else if (SHOW_STORE_WHEN_CANT_MAKE_PURCHASES) {

@@ -505,9 +505,9 @@ def to_uuid(value):
         raise TypeError("Unrecognized type for UUID, got '%s'" %
                       (type(value).__name__))
 
-def uuid2shortid(uuid):
+def uuid2shortid():
     from base64 import b64encode
-    return b64encode(to_uuid(uuid).bytes, '-_')[:-2]
+    return b64encode(to_uuid(uuid.uuid4()).bytes, '-_')[:-2]
         
 class SendMessage(models.Model):
 
@@ -517,11 +517,12 @@ class SendMessage(models.Model):
     )
 
     try:
-        urlenc = uuid2shortid(uuid.uuid4())
+        urlenc = uuid2shortid
     except Exception as e:
-        urlenc = uuid.uuid4()
+        urlenc = uuid.uuid4
 
     Url = models.CharField(max_length=36, primary_key=True, default=urlenc)
+    #Url = models.CharField(max_length=36, primary_key=True, default=uuid.uuid4)
     UserId = models.ForeignKey (PipUsers)
     Text = models.CharField (max_length=200)
     Timestamp = models.DateTimeField(default=datetime.datetime.now)

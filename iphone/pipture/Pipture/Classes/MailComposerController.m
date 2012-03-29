@@ -256,7 +256,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
             [self sendMessageURLRequest];
         } else
         {
-            NSString*alertmessage = [NSString stringWithFormat:@"Debit %d views and open Mail?",numberOfViews,nil ];
+            int purchViews = numberOfViews;
+            Episode * ep = (Episode*)playlistItem_;
+            purchViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)?purchViews - DEFAULT_NUMBER_OF_VIEWS:purchViews;
+            
+            NSString*alertmessage = [NSString stringWithFormat:@"Debit %d views and open Mail?",purchViews,nil ];
             
             UIAlertView *alertView =[[UIAlertView alloc] initWithTitle:@"Confirm Message" message:alertmessage delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];  
             [alertView show];
@@ -283,6 +287,22 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     return playlistItem_;
 }
 
+- (void)viewUpdate:(PlaylistItem*)playlistItem {
+    numberOfViews = DEFAULT_NUMBER_OF_VIEWS;
+    
+    if (playlistItem.class == [Episode class]) {
+        Episode * ep = (Episode*)playlistItem;
+        numberOfViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)?DEFAULT_NUMBER_OF_VIEWS:1;
+    }
+    infiniteViews = (playlistItem.class == [Trailer class]);
+    if (self.view) {
+        [self displayNumberOfViewsTextField];
+        [self displayInfiniteViewsRadioButtons];
+        [self setInfiniteRadiobutonsVisiblity];
+        [self displayScreenshot];
+    }
+}
+
 -(void)setPlaylistItem:(PlaylistItem*)playlistItem
 {
     PlaylistItem*it = playlistItem_;
@@ -293,6 +313,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         defaultScreenshotImage_ = [[ScreenshotImage alloc] init];
         defaultScreenshotImage_.imageDescription = @"Default";
         defaultScreenshotImage_.imageURLLQ = playlistItem.emailScreenshot;
+        defaultScreenshotImage_.imageURL = playlistItem.emailScreenshot;
 
 
         [screenshotImages_ release];
@@ -305,21 +326,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         
         screenshotImage_ = [defaultScreenshotImage_ retain];    
         
-        numberOfViews = DEFAULT_NUMBER_OF_VIEWS;
-        
-        if (playlistItem.class == [Episode class]) {
-            Episode * ep = (Episode*)playlistItem;
-            numberOfViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)?DEFAULT_NUMBER_OF_VIEWS:1;
-        }
-        infiniteViews = (playlistItem.class == [Trailer class]);
-        if (self.view) {
-            [self displayNumberOfViewsTextField];
-            [self displayInfiniteViewsRadioButtons];
-            [self setInfiniteRadiobutonsVisiblity];
-            [self displayScreenshot];
-        }
-        
     }
+    
+    [self viewUpdate:playlistItem];
 
     [it release];
 

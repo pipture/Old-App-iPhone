@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface BusyViewController : UIViewController
+@property (retain, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 
 @end

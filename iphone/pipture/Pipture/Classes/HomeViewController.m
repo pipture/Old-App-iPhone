@@ -267,12 +267,18 @@
 
     [self setHomeScreenMode:[[PiptureAppDelegate instance] getHomescreenState]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onViewsPurchased:) name:VIEWS_PURCHASED_NOTIFICATION object:nil]; 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAlbumPurchased:) name:ALBUM_PURCHASED_NOTIFICATION object:nil];
 }
 
 - (void) onViewsPurchased:(NSNotification *) notification {
     if (homeScreenMode == HomeScreenMode_Albums) {
         [albumsView showScrollingHintIfNeeded];
     }
+}
+
+- (void) onAlbumPurchased:(NSNotification *) notification {
+    [albumsView setNeedToUpdate];
+    [self updateAlbums];
 }
 
 

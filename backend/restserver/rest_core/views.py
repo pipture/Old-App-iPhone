@@ -52,12 +52,13 @@ def getTimeslots (request):
 
     today = datetime.datetime.today();
     sec_utc_now = calendar.timegm(today.utcnow().timetuple())
-    #today_utc = datetime.datetime.utcfromtimestamp(sec_utc_now)
+    today_utc = datetime.datetime.utcfromtimestamp(sec_utc_now)
     #timedelta_1 = datetime.timedelta(days=settings.ACTIVE_DAYS_TIMESLOTS)
-    #tomorrow = today_utc + timedelta_1
+    timedelta_1 = datetime.timedelta(days=1)
+    tomorrow = today_utc + timedelta_1
     ##yesterday = today_utc - timedelta_1
     yesterday = datetime.datetime(today.year, today.month, today.day)
-    tomorrow = datetime.datetime(today.year, today.month, today.day, 23, 59, 59)
+    #tomorrow = datetime.datetime(today.year, today.month, today.day, 23, 59, 59)
 
     from restserver.pipture.models import TimeSlots
 
