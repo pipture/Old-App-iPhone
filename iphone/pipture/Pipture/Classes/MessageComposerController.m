@@ -61,6 +61,12 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+-(void)onErase
+{
+    [mailComposerController_ setMessageText:@""];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -101,7 +107,14 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
     [bottomBar addGestureRecognizer:singleFingerDTap];
     [singleFingerDTap release];
     
-    UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
+    UIBarButtonItem* cancelButton = nil;
+    NSString * msg = [mailComposerController_ getMessageText];
+    if (msg && msg.length > 0) {
+        cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Erase" style:UIBarButtonItemStylePlain target:self action:@selector(onErase)];
+    } else {
+        cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
+    }
+    
     self.navigationItem.leftBarButtonItem = cancelButton;
     [cancelButton release];
     

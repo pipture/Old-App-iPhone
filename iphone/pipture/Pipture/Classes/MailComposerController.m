@@ -427,7 +427,13 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (void)keyboardWillHide:(NSNotification *)notif
 {
+    //self.view.exclusiveTouch = YES;
     [self fixScrollOffsetIfNeeded];
+}
+
+- (void)keyboardDidlHide:(NSNotification *)notif
+{
+    //self.view.exclusiveTouch = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -442,6 +448,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [super viewWillAppear:animated];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidlHide:) name:UIKeyboardDidHideNotification object:self.view.window]; 
     
     if (message_ && [message_ length] > 0 ) {
         editMessageLabel.text = @"Edit Message";

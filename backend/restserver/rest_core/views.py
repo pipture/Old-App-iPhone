@@ -495,6 +495,9 @@ def fill_albums_response(user_id, sallable):
         purchased_albums_list = get_purchased_album_list(userid = user_id)
         
         for album in albums_list:
+            if album.HiddenAlbum:
+                continue
+            
             album_each = {}
             album_each['AlbumId'] = album.AlbumId
             album_each['Thumbnail'] =  (album.Thumbnail._get_url()).split('?')[0]
@@ -533,7 +536,7 @@ def fill_albums_response(user_id, sallable):
             return None, {"ErrorCode": "2", "ErrorDescription": "There is internal error: %s." % (e)}
         
         for album in albums_list:
-            if not albumid_inlist(albumid=album.AlbumId, lister=purchased_albums_list):
+            if not albumid_inlist(albumid=album.AlbumId, lister=purchased_albums_list) and not album.HiddenAlbum:
                 album_each = {}            
                 album_each['AlbumId'] = album.AlbumId
                 album_each['Cover'] =  (album.CloseUpBackground._get_url()).split('?')[0]

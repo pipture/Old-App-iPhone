@@ -82,6 +82,13 @@
         }
     }
     
+    [filteredAlbums sortUsingComparator:^NSComparisonResult(AlbumItemViewController * obj1, AlbumItemViewController * obj2) {
+        Album* alb2 = obj1.album;
+        Album* alb1 = obj2.album;
+        
+        return [alb1.updateDate compare:alb2.updateDate];
+    } ];
+    
         
     CGRect rect = self.frame;
     
