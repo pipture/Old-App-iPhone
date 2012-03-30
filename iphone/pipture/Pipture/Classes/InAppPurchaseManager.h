@@ -18,6 +18,7 @@
 
 @interface InAppPurchaseManager : NSObject <SKProductsRequestDelegate, SKPaymentTransactionObserver, UIAlertViewDelegate>
 {
+    BOOL isInProcess;
     SKProduct *creditsProduct;
     SKProductsRequest *productsRequest;
 }
@@ -29,5 +30,7 @@
 - (BOOL)canMakePurchases;
 - (void)purchaseCredits;
 - (void)purchaseAlbum:(NSString*)appleProductId;
+
+- (BOOL)isInProcess;
 
 @end

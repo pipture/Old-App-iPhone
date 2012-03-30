@@ -161,8 +161,8 @@ def index(request, u_url):
                     response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
                     return HttpResponse (json.dumps(response))'''
  
-            urs_instance.ViewsCount = urs_instance.ViewsCount + 1
-            urs_instance.save()
+            #urs_instance.ViewsCount = urs_instance.ViewsCount + 1
+            #urs_instance.save()
             request.session["Pipture"+u_url] = storeDateTime(float(todaySeconds()))
     
     video_url = video_url.replace("https://", "http://")
@@ -190,8 +190,9 @@ def index(request, u_url):
         
           
     data = {'video_url': video_url,
+            'message_id': u_url,
+            'user_id': urs_instance.UserId.UserUID,
             'image_url': urs_instance.ScreenshotURL,
-            'text_1': "%s..." % (text_m[0:int(len(text_m)/3)]),
             'text_2': text_m,
             'views_limit': limit,
             'views_count': urs_instance.ViewsCount,

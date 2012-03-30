@@ -251,7 +251,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [[PiptureAppDelegate instance] putUserName:nameTextField.text];
     
     if (self.playlistItem) {
-        if (playlistItem_.class == [Trailer class] || numberOfViews <= NOT_CONFIRMABLE_NUMBER_OF_VIEWS)
+        [self sendMessageURLRequest];
+        
+        /*if (playlistItem_.class == [Trailer class] || numberOfViews <= NOT_CONFIRMABLE_NUMBER_OF_VIEWS)
         {
             [self sendMessageURLRequest];
         } else
@@ -260,23 +262,24 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
             Episode * ep = (Episode*)playlistItem_;
             purchViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)?purchViews - DEFAULT_NUMBER_OF_VIEWS:purchViews;
             
+        
             NSString*alertmessage = [NSString stringWithFormat:@"Debit %d views and open Mail?",purchViews,nil ];
             
             UIAlertView *alertView =[[UIAlertView alloc] initWithTitle:@"Confirm Message" message:alertmessage delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];  
             [alertView show];
             [alertView release];
             
-        }
+        }*/
         
     }
     
 }
 
--(void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
+/*-(void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
         [self sendMessageURLRequest];
     }
-}
+}*/
 
 -(void)setInfiniteRadiobutonsVisiblity {
     infiniteRadioButtonsGroupView.hidden = !(playlistItem_.class == [Trailer class]);
@@ -427,13 +430,13 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (void)keyboardWillHide:(NSNotification *)notif
 {
-    //self.view.exclusiveTouch = YES;
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     [self fixScrollOffsetIfNeeded];
 }
 
-- (void)keyboardDidlHide:(NSNotification *)notif
+- (void)keyboardDidHide:(NSNotification *)notif
 {
-    //self.view.exclusiveTouch = NO;
+    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -448,7 +451,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [super viewWillAppear:animated];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidlHide:) name:UIKeyboardDidHideNotification object:self.view.window]; 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:self.view.window]; 
     
     if (message_ && [message_ length] > 0 ) {
         editMessageLabel.text = @"Edit Message";
@@ -732,6 +735,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([[UIApplication sharedApplication] isIgnoringInteractionEvents]) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        return;
+    }
+    
     if ([self calcCellRow:indexPath] == MESSAGE_CELL_ROW) {
         
         MessageComposerController* mcctrl = [[MessageComposerController alloc] initWithNibName:@"MessageComposer" bundle:nil mailComposerController:self];
@@ -753,7 +761,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         [self.navigationController pushViewController:asctrl animated:YES];
         [asctrl release];
     }    
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
 }
 
 - (IBAction)onTableThumbUp:(UIPanGestureRecognizer*)gestureRecognizer

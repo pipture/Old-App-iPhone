@@ -1,6 +1,7 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=640">
     <title>PIPTURE VIDEO MESSAGE</title>
@@ -13,13 +14,13 @@
     <link rel="stylesheet" type="text/css" media="screen,print" href="{{MEDIA_URL}}webpage_files/webpage.css">
     <!--[if lt IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='{{MEDIA_URL}}webpage_files/webpageIE.css'/><![endif]-->
     <!--[if gte IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='{{MEDIA_URL}}webpage_files/IE8.css'/><![endif]-->
-    <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebSite.js"></script>
+    <!--<script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebSite.js"></script> 
     <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebImage.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/webpage.js"></script>
+    <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/webpage.js"></script>-->
     <link href="{{MEDIA_URL}}webpage_files/webpageMoz.css" type="text/css" rel="stylesheet">
     </head>
 
-  <body style="background: none repeat scroll 0% 0% rgb(0, 0, 0); margin: 0pt;" onload="onPageLoad();">
+  <body style="background: none repeat scroll 0% 0% rgb(0, 0, 0); margin: 0pt;">
     <div style="text-align: center; ">
       <div style="margin-bottom: 0px; margin-left: auto; margin-right: auto; margin-top: 0px; overflow: hidden; position: relative; word-wrap: break-word;  background: rgb(0, 0, 0); text-align: left; width: 960px; " id="body_content">
         <div style="float: left; margin-left: 0px; position: relative; width: 960px; z-index: 0; " id="nav_layer">
@@ -174,7 +175,7 @@
           <div id="id12" style="height: 54px; left: 802px; position: absolute; top: 349px; width: 121px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_121_54" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
-                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_7">{{views_count}}</p>
+                <p id="viewcounter" style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_7">{{views_count}}</p>
               </div>
             </div>
           </div>
@@ -210,9 +211,33 @@
 <script type="text/javascript">
 jQuery(document).ready(function(){
 
-	jQuery('video,audio').mediaelementplayer({videoWidth: 400, videoHeight: 600, features: ['playpause','progress','volume']});
-
+	jQuery('video,audio').mediaelementplayer({
+		videoWidth: 400, 
+		videoHeight: 600, 
+		features: ['playpause','progress','volume'],
+		});
+	
+	$('#video').bind('play',
+		function (e) {
+		    if(!e) { 
+		    	e = window.event;
+		    }
+		    $.post("/manage/update_views/", 
+		    	{
+		    		"msg_id": "{{ message_id }}",
+		    		"usr_id": "{{ user_id }}", 
+		    	},
+		    	function(data) {
+					views = $.parseJSON(data);
+					newCntr = views['Result']['new_counter'];
+					$("#viewcounter").text(newCntr);
+				}
+			);
+		}
+	);
 });
+
+
 
 </script>
 

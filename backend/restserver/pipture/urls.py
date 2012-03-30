@@ -15,5 +15,6 @@ urlpatterns = patterns('',
                        (r'^get_album_videos/', pipture_view.get_album_videos),
                        #(r'^get_trailers/', pipture_view.get_trailers),
                        (r'^set_timeslot/', pipture_view.set_timeslot),
+                       (r'^update_views/', pipture_view.update_views),
                        (r'', pipture_view.index),
                        )

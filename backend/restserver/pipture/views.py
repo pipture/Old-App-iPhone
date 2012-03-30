@@ -14,6 +14,7 @@ from restserver.pipture.models import Trailers
 from restserver.pipture.models import Episodes
 from restserver.pipture.models import TimeSlotVideos
 from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.csrf import csrf_exempt
 
 @staff_member_required
 def index (request):
@@ -156,6 +157,36 @@ def set_timeslot (request):
 
     else:
         return HttpResponse("There is POST method only.")
+
+@csrf_exempt
+def update_views (request):
+    if request.method == 'POST':
+        message_id = request.POST.get("msg_id")
+        user_id = request.POST.get("usr_id")
+
+        response = {}
+        
+        from restserver.pipture.models import SendMessage
+        
+        try:
+            urs_instance = SendMessage.objects.get(Url=message_id)
+        except SendMessage.DoesNotExist:
+            response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Url not found"}
+            return HttpResponse (json.dumps(response))
+        
+        if urs_instance.UserId.UserUID != user_id:
+            response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Url not found"}
+            return HttpResponse (json.dumps(response))
+        
+        urs_instance.ViewsCount = urs_instance.ViewsCount + 1
+        urs_instance.save()
+        
+        response["Result"] = {"new_counter": urs_instance.ViewsCount }
+        return HttpResponse (json.dumps(response))
+
+    else:
+        return HttpResponse("There is POST method only.")
+
 
 #----------------actual----------------------------
 

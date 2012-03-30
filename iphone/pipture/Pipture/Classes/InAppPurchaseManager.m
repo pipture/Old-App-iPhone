@@ -10,6 +10,7 @@
 #import "PiptureAppDelegate.h"
 
 @interface PurchaseSession : NSObject<PurchaseDelegate, UIAlertViewDelegate> {
+    BOOL inProcess;
     NSString*transaction_;
     NSString*receipt_;
     NSString*appleProductId_;
@@ -43,6 +44,7 @@
 }
 
 -(void)runRaw {
+    inProcess = YES;
     [[[PiptureAppDelegate instance] model] buyCredits:transaction_ withData:receipt_ receiver:self];    
 }
 
@@ -83,6 +85,7 @@
             
             [self release];
     }
+    inProcess = NO;
 }
 
 #pragma mark PurchaseReceiver methods
@@ -198,6 +201,10 @@
     return [SKPaymentQueue canMakePayments];
 } 
 
+- (BOOL)isInProcess {
+    return isInProcess;
+}
+
 //
 // kick off the upgrade transaction
 //
@@ -206,7 +213,7 @@
     TRACK_EVENT(@"Purchase", @"Start credits purchasing");
     
     NSArray * purchase = [[PiptureAppDelegate instance] getInAppPurchases];
-    
+    isInProcess = YES;
     if (purchase && purchase.count == 2) {
         NSString * transactionId = [purchase objectAtIndex:0];
         NSString * base64 = [purchase objectAtIndex:1];
@@ -227,7 +234,7 @@
 - (void)purchaseAlbum:(NSString*)appleProductId {
     
     TRACK_EVENT(@"PurchaseAlbum", @"Start album purchasing");
-    
+    isInProcess = YES;
     [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:YES completion:^{
         SKPayment *payment = [SKPayment paymentWithProductIdentifier:appleProductId];
         [[SKPaymentQueue defaultQueue] addPayment:payment];
@@ -292,6 +299,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         [[PiptureAppDelegate instance] dismissModalBusy];
         NSLog(@"InApp transaction failed!");
     }
+    
+    isInProcess = NO;
 } 
 
 //

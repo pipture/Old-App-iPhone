@@ -264,6 +264,10 @@ static PiptureAppDelegate *instance;
 
 -(void) processAuthentication
 {
+    if ([purchases isInProcess]) {
+        return;
+    }
+    
     if (registrationRequired)
     {
         [model_ registerWithReceiver:self];
