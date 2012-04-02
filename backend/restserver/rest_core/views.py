@@ -783,10 +783,12 @@ def getSearchResult (request):
     allalbums = []
     allepisodes = []
     
-    word_search = searchquery #r'\b('+ searchquery +r')\b'
+    #word_search = r'\b'+ searchquery +r'\b'
+    #word_search = r'\bhandsome\b'
+    word_search = r'[[:<:]]'+ searchquery +'[[:>:]]'
     
     try:
-        series = Series.objects.filter(Title__regex=word_search)
+        series = Series.objects.filter(Title__iregex=word_search)
     except Exception as e:
         pass
     else:
@@ -801,12 +803,12 @@ def getSearchResult (request):
     searchalbums_desc = None
     searchalbums_cred = None
     try:
-        searchalbums_desc = Albums.objects.filter(Description__regex=word_search)
+        searchalbums_desc = Albums.objects.filter(Description__iregex=word_search)
     except Exception as e:
         pass
     
     try:
-        searchalbums_cred = Albums.objects.filter(Credits__regex=word_search)
+        searchalbums_cred = Albums.objects.filter(Credits__iregex=word_search)
     except Exception as e:
         pass
     
@@ -827,17 +829,17 @@ def getSearchResult (request):
     episodes_keys = None
     
     try:
-        episodes_title = Episodes.objects.filter(Title__regex=word_search) 
+        episodes_title = Episodes.objects.filter(Title__iregex=word_search) 
     except Exception as e:
         pass
                 
     try:
-        episodes_subj = Episodes.objects.filter(Subject__regex=word_search) 
+        episodes_subj = Episodes.objects.filter(Subject__iregex=word_search) 
     except Exception as e:
         pass            
     
     try:
-        episodes_keys = Episodes.objects.filter(Keywords__regex=word_search) 
+        episodes_keys = Episodes.objects.filter(Keywords__iregex=word_search) 
     except Exception as e:
         pass
     
@@ -1258,7 +1260,7 @@ def sendMessage (request):
         from restserver.pipture.models import PiptureSettings
         vhost = PiptureSettings.objects.all()[0].VideoHost
             
-        response['MessageURL'] = "%s/%s/" % (vhost, u_url)
+        response['MessageURL'] = "%s/%s" % (vhost, u_url)
         response['Balance'] = "%s" % (purchaser.Balance)
         return HttpResponse (json.dumps(response))
     else:

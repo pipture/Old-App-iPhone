@@ -79,6 +79,10 @@
             }
             if ((scanPosition == SubRipScanPositionTimes) && (!actionAlreadyTaken)) {
                 NSArray *times = [line componentsSeparatedByString:@" --> "];
+                if (times.count < 2) {
+                    *stop = YES;
+                    return;
+                }
                 NSString *beginning = [times objectAtIndex:0];
                 NSString *ending = [times objectAtIndex:1];
                 

@@ -52,7 +52,7 @@ class Videos(models.Model):
 class Trailers(models.Model):
     TrailerId = models.AutoField(primary_key=True)
     VideoId = models.ForeignKey (Videos, verbose_name="Video for the trailer")
-    Title = models.CharField (unique=True, max_length=100)
+    Title = models.CharField (max_length=100)
     Line1 = models.CharField (blank=True, max_length=500)
     Line2 = models.CharField (blank=True, max_length=500)
     SquareThumbnail = S3EnabledFileField (upload_to=u'documents/', verbose_name="Screenshot")
@@ -175,7 +175,7 @@ class AlbumScreenshotGallery(models.Model):
 
 class Episodes(models.Model):
     EpisodeId = models.AutoField (primary_key=True)
-    Title = models.CharField (unique=True, max_length=100)
+    Title = models.CharField (max_length=100)
     VideoId = models.ForeignKey (Videos, verbose_name='Video for episode')
     AlbumId = models.ForeignKey (Albums, verbose_name='Album for episode')
     CloseUpThumbnail = S3EnabledFileField (verbose_name='Video Thumbnail', upload_to=u'documents/')
