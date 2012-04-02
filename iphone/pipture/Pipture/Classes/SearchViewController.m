@@ -40,6 +40,8 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [searchField resignFirstResponder];
+    
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
 }
 

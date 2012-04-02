@@ -38,6 +38,9 @@
 }
 
 -(BOOL)haveNewEpisodes {
+    if (album.episodes.count == 0)
+        return NO;
+    
     NSInteger savedDate = [[PiptureAppDelegate instance] getUpdateTimeForAlbumId:album.albumId];
     NSInteger updateDate = [album.updateDate timeIntervalSince1970];
     
@@ -53,7 +56,7 @@
             episodesIndicator.hidden = YES;
             tagLabel.text = @"COMING SOON"; break;
         case AlbumStatus_Premiere:
-            episodesIndicator.hidden = YES;
+            episodesIndicator.hidden = [self haveNewEpisodes];
             tagLabel.text = @"PREMIERE"; break;
     }
 }

@@ -160,7 +160,7 @@ def set_timeslot (request):
 
 @csrf_exempt
 def update_views (request):
-    if request.method == 'POST':
+    '''if request.method == 'POST':
         message_id = request.POST.get("msg_id")
         user_id = request.POST.get("usr_id")
 
@@ -185,8 +185,9 @@ def update_views (request):
         return HttpResponse (json.dumps(response))
 
     else:
-        return HttpResponse("There is POST method only.")
-
+        return HttpResponse("There is POST method only.")'''
+    
+    return HttpResponse("Error")
 
 #----------------actual----------------------------
 

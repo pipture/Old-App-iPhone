@@ -46,7 +46,9 @@
 @property (retain, nonatomic) IBOutlet UIView *infiniteRadioButtonsGroupView;
 @property (retain, nonatomic) LibraryCardController *cardSectionViewController;
 @property (retain, nonatomic) IBOutlet UILabel *editMessageLabel;
+@property (retain, nonatomic) IBOutlet UIButton *cancelButton;
 
+- (IBAction)onCancel:(id)sender;
 - (IBAction)onRadioButtonTap:(id)sender;
 - (IBAction)onConfirmMessageTap:(id)sender;
 

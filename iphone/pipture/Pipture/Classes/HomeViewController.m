@@ -300,7 +300,7 @@
 }
 
 - (void)setFullScreenMode {
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
     [UIApplication sharedApplication].statusBarHidden = NO;
     [self.navigationController setNavigationBarHidden:YES animated:NO];

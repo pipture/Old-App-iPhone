@@ -33,6 +33,7 @@
 
 @implementation ScreenshotsReceiverWraper
 
+
 -(void)screenshotsNotSupported {
     [wrappedObject_ screenshotsNotSupported];
 }
@@ -68,6 +69,7 @@
 @synthesize toSectionView;
 @synthesize cardSectionViewController;
 @synthesize editMessageLabel;
+@synthesize cancelButton;
 @synthesize emptyCell;
 @synthesize numberOfViewsTextField;
 @synthesize timeslotId;
@@ -121,6 +123,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
 }
 
+- (void)deselectRows {
+    NSIndexPath* selection = [self.layoutTableView indexPathForSelectedRow];
+    if (selection)
+        [self.layoutTableView deselectRowAtIndexPath:selection animated:YES];
+}
+
 #pragma mark - View lifecycle
 
 //method to move the view up/down whenever the keyboard is shown/dismissed
@@ -140,9 +148,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 {
     [super viewDidLoad];
         
-    UIBarButtonItem* cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];        
-    self.navigationItem.rightBarButtonItem = cancelButton;
-    [cancelButton release];    
+    UIBarButtonItem* cancelBarButton = [[UIBarButtonItem alloc] initWithCustomView:cancelButton];
+    self.navigationItem.rightBarButtonItem = cancelBarButton;
+    [cancelBarButton release];    
     
     self.navigationItem.title = @"New Message";
     
@@ -181,7 +189,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     return YES;
 }
 
--(void)onCancel
+-(void)onCancel:(id)sender
 {
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
     //[self dismissModalViewControllerAnimated:YES];
@@ -360,6 +368,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self setMaxViewsLabel:nil];
     [self setInfiniteRadioButtonsGroupView:nil];
     [self setEditMessageLabel:nil];
+    [self setCancelButton:nil];
     [super viewDidUnload];
 }
 
@@ -471,6 +480,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [self deselectRows];
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil]; 
@@ -502,6 +512,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [maxViewsLabel release];
     [infiniteRadioButtonsGroupView release];
     [editMessageLabel release];
+    [cancelButton release];
     [super dealloc];
 }
 
@@ -611,7 +622,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 #define MESSAGE_CELL_ROW 1
 #define SCREENSHOT_CELL_ROW 2
 #define FROM_CELL_ROW 3
-
 
 - (NSInteger)calcCellRow:(NSIndexPath*)indexPath
 {
@@ -761,7 +771,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         [self.navigationController pushViewController:asctrl animated:YES];
         [asctrl release];
     }    
-    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (IBAction)onTableThumbUp:(UIPanGestureRecognizer*)gestureRecognizer
@@ -775,6 +785,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (IBAction)onTableTap:(id)sender {
+    [self deselectRows];
     [nameTextField resignFirstResponder];
     [numberOfViewsTextField resignFirstResponder];    
 }

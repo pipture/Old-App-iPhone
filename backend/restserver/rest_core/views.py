@@ -669,8 +669,6 @@ def getAlbumDetail (request):
     album_id = request.GET.get('AlbumId', None)
     timeslot_id = request.GET.get('TimeslotId', None)
     include_episodes = request.GET.get('IncludeEpisodes', None)
-
-    
     
     if (album_id and timeslot_id):
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is AlbumId and TimeslotId. Should be only one."}
@@ -751,6 +749,16 @@ def getAlbumDetail (request):
 
     return HttpResponse (json.dumps(response))
 
+def enlarge_list(list_data, append_data):
+    if list_data == None or append_data == None:
+        return
+    
+    try:
+        check_iter = iter(append_data)
+        list_data.extend(append_data)
+    except TypeError, te:
+        list_data.append(append_data)
+
 def getSearchResult (request):
     keys = request.GET.keys()
     response = {}
@@ -775,8 +783,10 @@ def getSearchResult (request):
     allalbums = []
     allepisodes = []
     
+    word_search = searchquery #r'\b('+ searchquery +r')\b'
+    
     try:
-        series = Series.objects.filter(Title__icontains=searchquery)
+        series = Series.objects.filter(Title__regex=word_search)
     except Exception as e:
         pass
     else:
@@ -786,25 +796,22 @@ def getSearchResult (request):
             except Exception as e:
                 pass
             else:
-                allalbums.extend(seralbums)
+                enlarge_list(list_data=allalbums, append_data=seralbums)
                 
     searchalbums_desc = None
     searchalbums_cred = None
     try:
-        searchalbums_desc = Albums.objects.filter(Description__icontains=searchquery)
+        searchalbums_desc = Albums.objects.filter(Description__regex=word_search)
     except Exception as e:
         pass
     
     try:
-        searchalbums_cred = Albums.objects.filter(Credits__icontains=searchquery)
+        searchalbums_cred = Albums.objects.filter(Credits__regex=word_search)
     except Exception as e:
         pass
     
-    if searchalbums_desc != None:
-        allalbums.extend(searchalbums_desc)
-        
-    if searchalbums_cred != None:
-        allalbums.extend(searchalbums_cred)
+    enlarge_list(list_data=allalbums, append_data=searchalbums_desc)
+    enlarge_list(list_data=allalbums, append_data=searchalbums_cred)
     
     if allalbums != 0:
         for album in allalbums:
@@ -813,45 +820,54 @@ def getSearchResult (request):
             except Exception as e:
                 pass
             else:
-                allepisodes.extend(albepisodes)
+                enlarge_list(list_data=allepisodes, append_data=albepisodes)
     
     episodes_title = None
     episodes_subj = None
     episodes_keys = None
     
     try:
-        episodes_title = Episodes.objects.filter(Title__icontains=searchquery) 
+        episodes_title = Episodes.objects.filter(Title__regex=word_search) 
     except Exception as e:
         pass
                 
     try:
-        episodes_subj = Episodes.objects.filter(Subject__icontains=searchquery) 
+        episodes_subj = Episodes.objects.filter(Subject__regex=word_search) 
     except Exception as e:
         pass            
     
     try:
-        episodes_keys = Episodes.objects.filter(Keywords__icontains=searchquery) 
+        episodes_keys = Episodes.objects.filter(Keywords__regex=word_search) 
     except Exception as e:
         pass
     
-    if episodes_title != None:
-        allepisodes.extend(episodes_title)
-
-    if episodes_subj != None:
-        allepisodes.extend(episodes_subj)
-        
-    if episodes_keys != None:
-        allepisodes.extend(episodes_keys)
-                
+    enlarge_list(list_data=allepisodes, append_data=episodes_title)
+    enlarge_list(list_data=allepisodes, append_data=episodes_subj)
+    enlarge_list(list_data=allepisodes, append_data=episodes_keys)
     
     appendeditems = []
     
     response["Episodes"] = []
     counter = 0
+    
+    today = datetime.datetime.utcnow()
+    sec_utc_now = calendar.timegm(today.timetuple())
+    today_utc = datetime.date.fromtimestamp(sec_utc_now)
+            
     for episode in allepisodes:
         try:
             appendeditems.index(episode.EpisodeId)
         except Exception as e:
+            #hide episodes from hidden albums
+            if episode.AlbumId.HiddenAlbum: 
+                appendeditems.append(episode.EpisodeId)
+                continue
+            
+            #hide not released episodes            
+            if not is_episode_on_air (episode, today_utc):
+                appendeditems.append(episode.EpisodeId)
+                continue
+            
             #no item, append
             response["Episodes"].append({"Type": "Episode", "EpisodeId": episode.EpisodeId, 
                                    "Title": episode.Title, "Script": episode.Script,
@@ -1187,7 +1203,7 @@ def sendMessage (request):
             from restserver.pipture.models import PiptureSettings
             vhost = PiptureSettings.objects.all()[0].VideoHost
             
-            response['MessageURL'] = "%s/%s/" % (vhost, u_url)
+            response['MessageURL'] = "%s/%s" % (vhost, u_url)
             response['Balance'] = "%s" % (purchaser.Balance)
             return HttpResponse (json.dumps(response))
 

@@ -3,28 +3,28 @@ a:link    {
   	color: rgb(71, 157, 250);
   	line-height: 17px;
   	opacity: 1.00;
-  	text-decoration: underline;
+  	text-decoration: none;
 } 
 a:visited {
   /* Applies to all visited links */
   	color: rgb(88, 77, 77);
     line-height: 17px;
     opacity: 1.00;
-    text-decoration: underline;
+    text-decoration: none;
 } 
 a:hover   {
   /* Applies to links under the pointer */
   	color: rgb(71, 157, 250);
   	line-height: 17px;
   	opacity: 1.00;
-  	text-decoration: underline;
+  	text-decoration: none;
 } 
 a:active  {
   /* Applies to activated links */
   	color: rgb(71, 157, 250);
   	line-height: 17px;
     opacity: 1.00;
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 .paragraph_style {
@@ -165,7 +165,7 @@ a:active  {
     color: rgb(71, 157, 250);
     line-height: 17px;
     opacity: 1.00;
-    text-decoration: underline;
+    text-decoration: none;
 }
 .style_4 {
     font-family: 'Arial-BoldMT', 'Arial', sans-serif;

@@ -443,18 +443,13 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
 
 -(BOOL)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId withQuality:(NSNumber*)videoQuality receiver:(NSObject<VideoURLReceiver>*)receiver
 {
-    if (videoQuality.intValue == 0 && [playListItem isVideoUrlLoaded])
-    {
-        [receiver videoURLReceived:playListItem];
-        return YES;
-    } 
-    else if (videoQuality.intValue == 1 && [playListItem isVideoUrlLQLoaded])
-    {
-        [receiver videoURLReceived:playListItem];
-        return YES;
+    BOOL needToUpdate = timeslotId == 0;
+    
+    if (!needToUpdate) {
+        needToUpdate = (videoQuality.intValue == 0 && ![playListItem isVideoUrlLoaded]) || (videoQuality.intValue == 1 && ![playListItem isVideoUrlLQLoaded]);
     }
-    else
-    {
+    
+    if (needToUpdate) {
         NSURL* url = timeslotId ? 
             [self buildURLWithRequest:[NSString stringWithFormat:GET_VIDEO_FROM_TIMESLOT_REQUEST,[playListItem videoKeyName],[NSNumber numberWithInt:[playListItem videoKeyValue]],timeslotId, videoQuality]]:
             [self buildURLWithRequest:[NSString stringWithFormat:GET_VIDEO_REQUEST, [playListItem videoKeyName],[NSNumber numberWithInt:[playListItem videoKeyValue]],[NSNumber numberWithBool:forceBuy], videoQuality]];
@@ -521,8 +516,10 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         }
         return [request startExecute];
 
-    }    
-    
+    } else {
+        [receiver videoURLReceived:playListItem];
+        return YES;
+    }
 }
 
 -(BOOL)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver {

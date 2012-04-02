@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponse
 
 import json
+from pipture.models import Trailers
 # list of mobile User Agents
 mobile_uas = [
     'w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
@@ -86,6 +87,7 @@ def index(request, u_url):
         return HttpResponse (json.dumps(response))
 
     from restserver.pipture.models import Episodes
+    from restserver.pipture.models import Trailers
 
     show_shortinfo = True
     try:
@@ -98,10 +100,16 @@ def index(request, u_url):
         try:
             #video = Episodes.objects.select_related(depth=1).get(EpisodeId=id)
             video = Episodes.objects.get(EpisodeId=id)
+            album = video.AlbumId
         except Episodes.DoesNotExist as e:
             return None, "There is no episode with id %s" % (id)
     else:
-        show_shortinfo = False
+        try:
+            video = Trailers.objects.get(TrailerId=id)
+            album = Albums.objects.get(TrailerId=urs_instance.LinkId)
+        except Episodes.DoesNotExist as e:
+            show_shortinfo = False
+        
 
     disclaimer = ''
     seriesname = ''
@@ -111,13 +119,14 @@ def index(request, u_url):
     cover_pic = ''
     
     if show_shortinfo:
-        album = video.AlbumId
-        
         cover_pic = (album.Thumbnail._get_url()).split('?')[0]
         disclaimer = album.WebPageDisclaimer
         seriesname = album.SeriesId.Title
         title = video.Title
-        info_line = "Season %s, Album %s, Video %s" % (album.Season, album.Title, video.EpisodeNo)
+        if urs_instance.LinkType == "E":
+            info_line = "Season %s, Album %s, Video %s" % (album.Season, album.Title, video.EpisodeNo)
+        else:
+            info_line = "Season %s, Album %s" % (album.Season, album.Title)
         from django.db.models import Min
         res = Episodes.objects.filter(AlbumId=album).aggregate(Min('DateReleased'))
         min_date = res['DateReleased__min']
@@ -161,8 +170,8 @@ def index(request, u_url):
                     response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
                     return HttpResponse (json.dumps(response))'''
  
-            #urs_instance.ViewsCount = urs_instance.ViewsCount + 1
-            #urs_instance.save()
+            urs_instance.ViewsCount = urs_instance.ViewsCount + 1
+            urs_instance.save()
             request.session["Pipture"+u_url] = storeDateTime(float(todaySeconds()))
     
     video_url = video_url.replace("https://", "http://")

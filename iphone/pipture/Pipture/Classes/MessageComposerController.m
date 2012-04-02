@@ -14,6 +14,7 @@
 @synthesize bottomBar;
 @synthesize counterView;
 @synthesize doneButton;
+@synthesize closeButton;
 
 static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
 
@@ -107,19 +108,21 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
     [bottomBar addGestureRecognizer:singleFingerDTap];
     [singleFingerDTap release];
     
-    UIBarButtonItem* cancelButton = nil;
     NSString * msg = [mailComposerController_ getMessageText];
+    
+    UIBarButtonItem* cancelBarButton = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
+    self.navigationItem.leftBarButtonItem = cancelBarButton;
+    [cancelBarButton release];
+    
     if (msg && msg.length > 0) {
-        cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Erase" style:UIBarButtonItemStylePlain target:self action:@selector(onErase)];
+        [closeButton setTitle:@"Erase" forState:UIControlStateNormal];
+        [closeButton addTarget:self action:@selector(onErase) forControlEvents:UIControlEventTouchUpInside];
     } else {
-        cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
+        [closeButton setTitle:@"Cancel" forState:UIControlStateNormal];
+        [closeButton addTarget:self action:@selector(onCancel) forControlEvents:UIControlEventTouchUpInside];
     }
     
-    self.navigationItem.leftBarButtonItem = cancelButton;
-    [cancelButton release];
-    
     UIBarButtonItem* doneBarButton = [[UIBarButtonItem alloc] initWithCustomView:doneButton];
-    //[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(onDone)];
     self.navigationItem.rightBarButtonItem = doneBarButton;
     [doneBarButton release];
     
@@ -141,6 +144,7 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
     [self setBottomBar:nil];
     [self setCounterView:nil];
     [self setDoneButton:nil];
+    [self setCloseButton:nil];
     [super viewDidUnload];
 }
 
@@ -156,6 +160,7 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
     [bottomBar release];
     [counterView release];
     [doneButton release];
+    [closeButton release];
     [super dealloc];
 }
 
