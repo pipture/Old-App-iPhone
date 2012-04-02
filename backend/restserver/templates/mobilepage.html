@@ -16,17 +16,17 @@
     <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebSite.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebImage.js"></script>
     <script type="text/javascript">
-    jQuery(document).ready(function(){
+    /* jQuery(document).ready(function(){
 
 		var video = document.getElementById('video');
 			video.addEventListener('click',function(){
   			video.play();
 		},false);
-	});
+	});*/
     	
     </script>
   </head>
-  <body style="background: rgb(0, 0, 0); margin: 0pt; " onload="onPageLoad();">
+  <body style="background: rgb(0, 0, 0); margin: 0pt; ">
     <div style="text-align: center; ">
       <div style="margin-bottom: 0px; margin-left: auto; margin-right: auto; margin-top: 0px; overflow: hidden; position: relative; word-wrap: break-word;  background: rgb(0, 0, 0); text-align: left; width: 400px; " id="body_content">
         <div style="float: left; margin-left: 0px; position: relative; width: 400px; z-index: 0; " id="nav_layer">
@@ -45,19 +45,6 @@
             </div>
           </div>
 
-          <div style="height: 600px; width: 400px;  height: 600px; left: -2px; position: absolute; top: 224px; width: 400px; z-index: 1; " class="tinyText">
-            <div style="position: relative; width: 400px; ">
-            	{% if message_blocked %}
-            	<img src="{{image_url}}" width="400" height="600" alt="" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px;">
-            	{% else %}
-              	<video id="video" autobuffer width="400" height="600" poster="{{image_url}}" controls="controls">
-              		<source src="{{ video_url }}">
-              			
-              	</video>
-              	{% endif %}
-            </div>
-          </div>
-          
           <div id="id4" style="height: 56px; left: 20px; position: absolute; top: 75px; width: 249px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
             <div class="text-content graphic_textbox_layout_style_default_External_249_56" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
@@ -67,50 +54,7 @@
             </div>
           </div>
 
-		{% if show_info %}
-		  <div id="id1" style="height: 230px; left: -3px; position: absolute; top: 913px; width: 403px; z-index: 1; " class="style_SkipStroke shape-with-text">
-            <div class="text-content graphic_shape_layout_style_default_External_403_230" style="padding: 0px; ">
-              <div class="graphic_shape_layout_style_default"></div>
-            </div>
-          </div>
-          
-          <div style="height: 200px; width: 380px;  height: 200px; left: 7px; position: absolute; top: 926px; width: 380px; z-index: 1; " class="tinyText">
-            <div style="position: relative; width: 380px; ">
-              <img src="{{MEDIA_URL}}webpage_files/shapeimage_1.png" alt="" style="height: 200px; left: 0px; position: absolute; top: 0px; width: 380px; " />
-            </div>
-          </div>
-
-          <div id="id5" style="height: 108px; left: 132px; position: absolute; top: 996px; width: 205px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
-            <div class="text-content style_External_205_108" style="padding: 0px; ">
-              <div class="style_2">
-                <p style="padding-top: 0pt; " class="paragraph_style_2">About the video:<br /></p>
-                <p class="paragraph_style_3">{{ title }}<br /></p>
-                <p class="paragraph_style_3">{{ seriesname }}<br /></p>
-                <p class="paragraph_style_3">{{ info_line }} <br /></p>
-                <p style="padding-bottom: 0pt; " class="paragraph_style_3">{{ released_date }}</p>
-              </div>
-            </div>
-          </div>
-
-          <div id="id6" style="height: 58px; left: 132px; position: absolute; top: 951px; width: 215px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
-            <div class="text-content graphic_textbox_layout_style_default_External_215_58" style="padding: 0px; ">
-              <div class="graphic_textbox_layout_style_default">
-                <p style="padding-top: 0pt; " class="paragraph_style_4">Did you see the series {{seriesname}} on
-                	<a href="http://itunes.apple.com/us/collection/apple-apps/id25204?fcId=489239905&mt=8&v0=WWW-NAUS-STAPG-GAMESAPPS-PROMO"> 
-                		<span class="style_3">Pipture</span></a>?  <br />
-                </p>
-                	
-                <p style="padding-bottom: 0pt; " class="paragraph_style_4">{{ disclaimer }}</p>
-              </div>
-            </div>
-          </div>
-
-          <div style="height: 150px; width: 89px;  height: 150px; left: 26px; position: absolute; top: 952px; width: 89px; z-index: 1; " class="tinyText">
-            <div style="position: relative; width: 89px; ">
-              <img src="{{ cover_pic }}" alt="" style="height: 150px; left: 0px; position: absolute; top: 0px; width: 89px; " />
-            </div>
-          </div>
-       	{% endif %}
+		
 
           <div style="height: 30px; width: 250px;  height: 30px; left: 149px; position: absolute; top: 17px; width: 250px; z-index: 1; " class="tinyText">
             <div style="position: relative; width: 250px; ">
@@ -140,59 +84,129 @@
             </div>
           </div>
 
-          <div id="id10" style="height: 27px; left: -3px; position: absolute; top: 880px; width: 402px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
-            <div class="text-content graphic_textbox_layout_style_default_External_402_27" style="padding: 0px; ">
-              <div class="graphic_textbox_layout_style_default">
-                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_6">At {{views_limit}} views, this video will have reached its maximum views.</p>
-              </div>
-            </div>
-          </div>
+          
 
-          <div id="id11" style="height: 54px; left: 273px; position: absolute; top: 841px; width: 121px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
-            <div class="text-content graphic_textbox_layout_style_default_External_121_54" style="padding: 0px; ">
-              <div class="graphic_textbox_layout_style_default">
-                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_7">{{views_count}}</p>
-              </div>
-            </div>
-          </div>
+          
+
+		<div style="width: 403px;  height: auto; position: absolute; top: 125px; z-index: 1;" class="tinyText">
+		  	<table cellpadding="0" cellspacing="0" class="noborder">
+		  		{% if message_blocked %}
+		  			<tr><td width="403" height="44">
+			          <div id="id9" style="height: 44px; left: 0px; z-index: 1; " class="style_SkipStroke_4m shape-with-text">
+			            <div class="text-content graphic_textbox_layout_style_default_External_399_44" style="padding: 0px; ">
+			              <div class="graphic_textbox_layout_style_default">
+			                <p style="padding-top: 0pt; " class="paragraph_style_8m">VIDEO NO LONGER ACCESSIBLE<br /></p>
+			                <p style="padding-bottom: 0pt; " class="paragraph_style_9m">It has reached the maximum amount of views</p>
+			              </div>
+			            </div>
+			          </div>
+			        </td></tr>
+			        <tr><td width="403" height="600">
+			        	<img src="{{image_url}}" width="400" height="600" alt="" style="height: 600px; left: 0px; width: 400px;">
+			        </td></tr>
+			    {% else %}
+			    	<tr><td width="403" height="600">
+			        	<video id="video" autobuffer width="400" height="600" poster="{{image_url}}" controls="controls">
+		              		<source src="{{ video_url }}">
+		              	</video>
+		            </td></tr>
+			    {% endif %}
+			    <tr><td width="403" height="54">
+				    <div id="id11" style="height: 54px; width: 403px; z-index: 1; text-align: right;" class="style_SkipStroke_3 shape-with-text">
+			            <div class="text-content graphic_textbox_layout_style_default_External_121_54" style="padding: 0px; ">
+			              <div class="graphic_textbox_layout_style_default">
+			                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_7">{{views_count}}</p>
+			              </div>
+			            </div>
+			        </div>
+       			</td></tr>
+       			<tr><td width="403" height="27">
+       				<div id="id10" style="height: 27px; width: 402px; z-index: 1; text-align: right;" class="style_SkipStroke_3 shape-with-text">
+			            <div class="text-content graphic_textbox_layout_style_default_External_402_27" style="padding: 0px; ">
+			              <div class="graphic_textbox_layout_style_default">
+			                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_6">At {{views_limit}} views, this video will have reached its maximum views.</p>
+			              </div>
+			            </div>
+		          	</div>
+		        </td></tr>
+		        {% if show_info %}
+		          <tr><td width="403" height="230">
+		          	<div style="width: 403px;  height: auto; z-index: 1;" class="tinyText">
+		  				<table cellpadding="0" cellspacing="0" class="noborder">
+		  					<tr><td width="403" height="230">
+					  			<div id="id1" style="height: 230px; width: 403px; z-index: 1; " class="style_SkipStroke shape-with-text">
+						            <div class="text-content graphic_shape_layout_style_default_External_403_230" style="padding: 0px; ">
+						              <div class="graphic_shape_layout_style_default"></div>
+						            </div>
+						          </div>
+						          
+						          <div style="height: 200px; width: 380px;  left: 9px; top: -215px; z-index: 1; position: relative; " class="tinyText">
+						            <div style="position: relative; width: 380px; ">
+						              <img src="{{MEDIA_URL}}webpage_files/shapeimage_1.png" alt="" style="height: 200px; width: 380px; " />
+						            </div>
+						          </div>
+						
+								  <div style="height: 150px; width: 89px;  height: 150px; left: 26px; position: relative; top: -390px; width: 89px; z-index: 1; " class="tinyText">
+						            <div style="position: relative; width: 89px; ">
+						              <img src="{{ cover_pic }}" alt="" style="height: 150px; left: 0px; position: relative; top: 0px; width: 89px; " />
+						            </div>
+						          </div>
+						
+						          <div id="id5" style="height: 108px; left: 132px; position: relative; top: -500px; width: 205px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
+						            <div class="text-content style_External_205_108" style="padding: 0px; ">
+						              <div class="style_2">
+						                <p style="padding-top: 0pt; " class="paragraph_style_2">About the video:<br /></p>
+						                <p class="paragraph_style_3">{{ title }}<br /></p>
+						                <p class="paragraph_style_3">{{ seriesname }}<br /></p>
+						                <p class="paragraph_style_3">{{ info_line }} <br /></p>
+						                <p style="padding-bottom: 0pt; " class="paragraph_style_3">{{ released_date }}</p>
+						              </div>
+						            </div>
+						          </div>
+						
+						          <div id="id6" style="height: 58px; left: 132px; position: relative; top: -650px; width: 215px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
+						            <div class="text-content graphic_textbox_layout_style_default_External_215_58" style="padding: 0px; ">
+						              <div class="graphic_textbox_layout_style_default">
+						                <p style="padding-top: 0pt; " class="paragraph_style_4">Did you see the series {{seriesname}} on
+						                	<a href="http://itunes.apple.com/us/collection/apple-apps/id25204?fcId=489239905&mt=8&v0=WWW-NAUS-STAPG-GAMESAPPS-PROMO"> 
+						                		<span class="style_3">Pipture</span></a>?  <br />
+						                </p>
+						                	
+						                <p style="padding-bottom: 0pt; " class="paragraph_style_4">{{ disclaimer }}</p>
+						              </div>
+						            </div>
+						          </div>
+						
+						          
+						         </td></tr>
+						    </table>
+						</div>
+					</td></tr>
+		       	{% endif %}
+		        
+        	</table>
+        </div>
 
 		{% if not message_empty %}
-		  <div style="width: 403px;  height: auto; position: absolute; top: 135px; z-index: 1;" class="tinyText">
-		  	<table cellpadding="0" cellspacing="0" class="noborder">
-		  		<tr><td width="403" height="12" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_top.png">
+			{% if message_blocked %}
+			<div style="width: 403px;  height: auto; position: absolute; top: 170px; z-index: 1;" class="tinyText">
+			{% else %}
+			<div style="width: 403px;  height: auto; position: absolute; top: 125px; z-index: 1;" class="tinyText">
+			{% endif %}
+				<table cellpadding="0" cellspacing="0" class="noborder">	
+		  		<tr><td width="403" height="11" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_top.png">
 		  		<tr><td width="403" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_middle.png">
 		  			{% autoescape off %}
                 		<p style="padding-bottom: 0pt; padding-top: 0pt; "  class="Body">{{text_2}}</p>
                 	{% endautoescape %}
 		  		</td></tr>
 		  		<tr><td width="403" height="57" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_bottom.png">
-		  	</table>
-            <!--<div style="position: relative; width: 402px; ">
+		  		</table>
+			</div>
+			  	<!--<div style="position: relative; width: 402px; ">
               <img src="{{MEDIA_URL}}webpage_files/shapeimage_8m.png" alt="" style="height: 117px; left: 0px; margin-top: -1px; position: absolute; top: 0px; width: 403px; " />
             </div>-->
-          </div>
-        {% endif %}
-
-         <!-- <div id="id12" style="height: 148px; left: 11px; position: absolute; top: 176px; width: 361px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
-            <div class="text-content graphic_textbox_layout_style_default_External_361_48" style="padding: 0px; vertical-align:middle;">
-              <div class="graphic_textbox_layout_style_default1">
-              	{% autoescape off %}
-                <p style="padding-bottom: 0pt; padding-top: 0pt; "  class="Body">{{text_2}}</p>
-                {% endautoescape %}
-              </div>
-            </div>
-         </div> -->
-          
-          {% if message_blocked %}
-          <div id="id9" style="height: 44px; left: 0px; position: absolute; top: 125px; width: 399px; z-index: 1; " class="style_SkipStroke_4m shape-with-text">
-            <div class="text-content graphic_textbox_layout_style_default_External_399_44" style="padding: 0px; ">
-              <div class="graphic_textbox_layout_style_default">
-                <p style="padding-top: 0pt; " class="paragraph_style_8m">VIDEO NO LONGER ACCESSIBLE<br /></p>
-                <p style="padding-bottom: 0pt; " class="paragraph_style_9m">It has reached the maximum amount of views</p>
-              </div>
-            </div>
-          </div>
-          {% endif %}
+       {% endif %}
           
           <div style="height: 1200px; line-height: 1200px; " class="spacer"> </div>
         </div>

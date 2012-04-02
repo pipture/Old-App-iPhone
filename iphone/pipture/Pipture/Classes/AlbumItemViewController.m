@@ -38,25 +38,25 @@
 }
 
 -(BOOL)haveNewEpisodes {
-    if (album.episodes.count == 0)
+    if (album.episodes != nil && album.episodes.count == 0)
         return NO;
     
     NSInteger savedDate = [[PiptureAppDelegate instance] getUpdateTimeForAlbumId:album.albumId];
     NSInteger updateDate = [album.updateDate timeIntervalSince1970];
     
-    return savedDate >= updateDate;
+    return savedDate < updateDate;
 }
 
 - (void)updateStatus {
     switch (album.status) {
         case AlbumStatus_Normal:
-            episodesIndicator.hidden = [self haveNewEpisodes];
+            episodesIndicator.hidden = ![self haveNewEpisodes];
             tagLabel.text = @""; break;
         case AlbumStatus_CommingSoon: 
             episodesIndicator.hidden = YES;
             tagLabel.text = @"COMING SOON"; break;
         case AlbumStatus_Premiere:
-            episodesIndicator.hidden = [self haveNewEpisodes];
+            episodesIndicator.hidden = ![self haveNewEpisodes];
             tagLabel.text = @"PREMIERE"; break;
     }
 }

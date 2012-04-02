@@ -137,44 +137,44 @@ def index(request, u_url):
 
     video_url = ''
     message_blocked = True
-    if not obsolete_url:
-        video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
+
+    if urs_instance.ViewsCount < urs_instance.ViewsLimit or urs_instance.ViewsLimit == -1:
         message_blocked = False
-    else:
-        if urs_instance.ViewsCount < urs_instance.ViewsLimit or urs_instance.ViewsLimit == -1:
-            video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
-            message_blocked = False
+        
+    if not message_blocked:
+        video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
+        video_url = video_url.replace("https://", "http://")
+     
+    if obsolete_url:
+        urs_instance.ViewsCount = urs_instance.ViewsCount + 1
+        urs_instance.save()
+        request.session["Pipture"+u_url] = storeDateTime(float(todaySeconds()))
             
-            #remove purchasing
-            '''if urs_instance.LinkType == 'E':
-                from restserver.pipture.models import PipUsers
-        
-                try:
-                    purchaser = urs_instance.UserId #PipUsers.objects.get(Token=urs_instance.UserId.)
-                except PipUsers.DoesNotExist:
-                    response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
-                    return HttpResponse (json.dumps(response))
-        
+        #remove purchasing
+        '''if urs_instance.LinkType == 'E':
+            from restserver.pipture.models import PipUsers
     
-                from restserver.pipture.models import PurchaseItems
-                from restserver.pipture.models import UserPurchasedItems
-                SEND_EP = PurchaseItems.objects.get(Description="SendEpisode")
-                
-                #TODO: show inficcient funds message
-                if (purchaser.Balance - SEND_EP.Price) >= 0:
-                    new_p = UserPurchasedItems(UserId=purchaser, ItemId=urs_instance.LinkId, PurchaseItemId = SEND_EP, ItemCost=SEND_EP.Price)
-                    new_p.save()
-                    purchaser.Balance = Decimal (purchaser.Balance - SEND_EP.Price)
-                    purchaser.save()
-                else:
-                    response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
-                    return HttpResponse (json.dumps(response))'''
- 
-            urs_instance.ViewsCount = urs_instance.ViewsCount + 1
-            urs_instance.save()
-            request.session["Pipture"+u_url] = storeDateTime(float(todaySeconds()))
+            try:
+                purchaser = urs_instance.UserId #PipUsers.objects.get(Token=urs_instance.UserId.)
+            except PipUsers.DoesNotExist:
+                response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+                return HttpResponse (json.dumps(response))
     
-    video_url = video_url.replace("https://", "http://")
+
+            from restserver.pipture.models import PurchaseItems
+            from restserver.pipture.models import UserPurchasedItems
+            SEND_EP = PurchaseItems.objects.get(Description="SendEpisode")
+            
+            #TODO: show inficcient funds message
+            if (purchaser.Balance - SEND_EP.Price) >= 0:
+                new_p = UserPurchasedItems(UserId=purchaser, ItemId=urs_instance.LinkId, PurchaseItemId = SEND_EP, ItemCost=SEND_EP.Price)
+                new_p.save()
+                purchaser.Balance = Decimal (purchaser.Balance - SEND_EP.Price)
+                purchaser.save()
+            else:
+                response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
+                return HttpResponse (json.dumps(response))'''
+    
     
     if mobileBrowser(request):
         #template_h = 'video_mobile.html'
