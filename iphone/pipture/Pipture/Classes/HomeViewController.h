@@ -20,6 +20,7 @@
     
     NSTimer *changeTimer;
     NSTimer *updateTimer;
+    NSTimer *blinkTimer;
     
     ScheduleModel* scheduleModel;
     

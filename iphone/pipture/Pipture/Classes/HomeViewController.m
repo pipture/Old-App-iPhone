@@ -193,14 +193,21 @@
         default: break;
     }
     
-    if (firecount == 5) {
-        [timer invalidate];
+    if (firecount >= 5) {
+        [scheduleView setTitleColor:[UIColor blackColor]];
+        
+        [blinkTimer invalidate];
+        blinkTimer = nil;
+        
         firecount = 0;
     }
 }
 
 - (void)startBlinkTimer {
-    [NSTimer scheduledTimerWithTimeInterval:.3 target:self selector:@selector(updateBlink:) userInfo:nil repeats:YES];
+    [blinkTimer invalidate];
+    blinkTimer = nil;
+    
+    blinkTimer = [NSTimer scheduledTimerWithTimeInterval:.3 target:self selector:@selector(updateBlink:) userInfo:nil repeats:YES];
 }
 
 

@@ -146,8 +146,9 @@ def index(request, u_url):
         video_url = video_url.replace("https://", "http://")
      
     if obsolete_url:
-        urs_instance.ViewsCount = urs_instance.ViewsCount + 1
-        urs_instance.save()
+        if urs_instance.ViewsCount < urs_instance.ViewsLimit or urs_instance.ViewsLimit == -1:
+            urs_instance.ViewsCount = urs_instance.ViewsCount + 1
+            urs_instance.save()
         request.session["Pipture"+u_url] = storeDateTime(float(todaySeconds()))
             
         #remove purchasing

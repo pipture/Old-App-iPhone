@@ -759,13 +759,9 @@ Lg</string>
 				<reference key="IBUIHighlightedTitleColor" ref="1019703577"/>
 				<reference key="IBUINormalTitleColor" ref="1019703577"/>
 				<reference key="IBUINormalTitleShadowColor" ref="488830688"/>
-				<object class="NSCustomResource" key="IBUIHighlightedBackgroundImage">
-					<string key="NSClassName">NSImage</string>
-					<string key="NSResourceName">special-close-button-pushed.png</string>
-				</object>
 				<object class="NSCustomResource" key="IBUINormalBackgroundImage">
 					<string key="NSClassName">NSImage</string>
-					<string key="NSResourceName">special-close-button.png</string>
+					<string key="NSResourceName">button-black-up.png</string>
 				</object>
 				<object class="IBUIFontDescription" key="IBUIFontDescription">
 					<int key="type">2</int>
@@ -1236,7 +1232,7 @@ Lg</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<real value="0.0"/>
+					<real value="1"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -1474,19 +1470,17 @@ Lg</string>
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>blue-button-bottom-pushed.png</string>
 				<string>blue-button-bottom.png</string>
+				<string>button-black-up.png</string>
 				<string>message_screenshot_frame.png</string>
 				<string>radio-button.png</string>
-				<string>special-close-button-pushed.png</string>
-				<string>special-close-button.png</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>{296, 40}</string>
 				<string>{296, 40}</string>
+				<string>{60, 29}</string>
 				<string>{100, 145}</string>
 				<string>{22, 22}</string>
-				<string>{60, 30}</string>
-				<string>{60, 30}</string>
 			</object>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">933</string>
