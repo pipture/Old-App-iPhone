@@ -173,7 +173,7 @@
 				<string key="IBUINormalTitle">Done</string>
 				<reference key="IBUIHighlightedTitleColor" ref="655365078"/>
 				<reference key="IBUINormalTitleColor" ref="655365078"/>
-				<object class="NSColor" key="IBUINormalTitleShadowColor" id="79822784">
+				<object class="NSColor" key="IBUINormalTitleShadowColor" id="177383839">
 					<int key="NSColorSpace">3</int>
 					<bytes key="NSWhite">MC41AA</bytes>
 				</object>
@@ -189,22 +189,23 @@
 					<string key="NSClassName">NSImage</string>
 					<string key="NSResourceName">button-blue.png</string>
 				</object>
-				<object class="IBUIFontDescription" key="IBUIFontDescription" id="4666292">
+				<object class="IBUIFontDescription" key="IBUIFontDescription" id="52400960">
 					<int key="type">2</int>
 					<double key="pointSize">13</double>
 				</object>
-				<object class="NSFont" key="IBUIFont" id="302181062">
+				<object class="NSFont" key="IBUIFont" id="22770945">
 					<string key="NSName">Helvetica-Bold</string>
 					<double key="NSSize">13</double>
 					<int key="NSfFlags">16</int>
 				</object>
 			</object>
-			<object class="IBUIButton" id="896191366">
+			<object class="IBUIButton" id="836860869">
 				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<string key="NSFrameSize">{60, 30}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
+				<reference key="NSNextKeyView"/>
 				<string key="NSReuseIdentifierKey">_NS:225</string>
 				<bool key="IBUIOpaque">NO</bool>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -213,7 +214,7 @@
 				<string key="IBUINormalTitle">Close</string>
 				<reference key="IBUIHighlightedTitleColor" ref="655365078"/>
 				<reference key="IBUINormalTitleColor" ref="655365078"/>
-				<reference key="IBUINormalTitleShadowColor" ref="79822784"/>
+				<reference key="IBUINormalTitleShadowColor" ref="177383839"/>
 				<object class="NSCustomResource" key="IBUIHighlightedBackgroundImage">
 					<string key="NSClassName">NSImage</string>
 					<string key="NSResourceName">special-close-button-pushed.png</string>
@@ -222,8 +223,8 @@
 					<string key="NSClassName">NSImage</string>
 					<string key="NSResourceName">special-close-button.png</string>
 				</object>
-				<reference key="IBUIFontDescription" ref="4666292"/>
-				<reference key="IBUIFont" ref="302181062"/>
+				<reference key="IBUIFontDescription" ref="52400960"/>
+				<reference key="IBUIFont" ref="22770945"/>
 			</object>
 		</array>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -272,7 +273,7 @@
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">closeButton</string>
 						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="896191366"/>
+						<reference key="destination" ref="836860869"/>
 					</object>
 					<int key="connectionID">19</int>
 				</object>
@@ -292,15 +293,6 @@
 						<int key="IBEventType">7</int>
 					</object>
 					<int key="connectionID">17</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">onClose:</string>
-						<reference key="source" ref="896191366"/>
-						<reference key="destination" ref="372490531"/>
-						<int key="IBEventType">3</int>
-					</object>
-					<int key="connectionID">20</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -362,7 +354,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">18</int>
-						<reference key="object" ref="896191366"/>
+						<reference key="object" ref="836860869"/>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Close button</string>
 					</object>

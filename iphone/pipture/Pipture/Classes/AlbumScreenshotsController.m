@@ -128,6 +128,8 @@
         [asctrl release];
     }
     screenshotContollers = mscreenshotContollers;
+    
+    self.navigationItem.title = @"Select Photo";
 }
 
 -(void)imagePressed:(id)albumScreenshotController

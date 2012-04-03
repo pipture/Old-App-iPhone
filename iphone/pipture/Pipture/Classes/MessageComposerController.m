@@ -126,6 +126,7 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
     self.navigationItem.rightBarButtonItem = doneBarButton;
     [doneBarButton release];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:self.view.window]; 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
 }
 
@@ -164,11 +165,20 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
     [super dealloc];
 }
 
+- (NSTimeInterval)keyboardAnimationDurationForNotification:(NSNotification*)notification
+{
+    NSDictionary* info = [notification userInfo];
+    NSValue* value = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    NSTimeInterval duration = 0;
+    [value getValue:&duration];
+    return duration;
+}
+
 //method to move the view up/down whenever the keyboard is shown/dismissed
--(void)resizeViews:(BOOL)shrink
+-(void)resizeViews:(BOOL)shrink duration:(NSTimeInterval)duration
 {
     [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0.2]; // if you want to slide up the view
+    [UIView setAnimationDuration:duration]; // if you want to slide up the view
     
     CGRect bottomBarRect = bottomBar.frame;
     CGRect messageRect = textView.frame;
@@ -187,10 +197,16 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
     [UIView commitAnimations];
 }
 
+- (void)keyboardWillShow:(NSNotification *)notif
+{
+    [self setEmptyMessagePlaceholderIfNeeded];
+    [self resizeViews:YES duration:[self keyboardAnimationDurationForNotification:notif]];
+}
+
 - (void)keyboardWillHide:(NSNotification *)notif
 {
     [self setEmptyMessagePlaceholderIfNeeded];
-    [self resizeViews:NO];
+    [self resizeViews:NO duration:[self keyboardAnimationDurationForNotification:notif]];
 }
 
 
@@ -198,7 +214,7 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
 {
     if ([sender isEqual:textView])
     {        
-        [self resizeViews:YES];
+        //[self resizeViews:YES];
         if ([self isPlaceholderInMessage]) {
             textView.text = @"";
             textView.textColor = [UIColor darkTextColor];

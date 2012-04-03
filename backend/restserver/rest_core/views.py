@@ -431,7 +431,7 @@ def get_album_status (album, get_date_only=False):
     min_date = min_date or datetime.datetime(1970, 1, 1, 00, 00)
     
     max_date = resmax['DateReleased__max']
-    max_date = max_date or datetime.datetime.now()
+    max_date = max_date or datetime.datetime(1970, 1, 1, 00, 00)
     
     secmin = local_date_time_date_time_to_UTC_sec(min_date)
     secmax = local_date_time_date_time_to_UTC_sec(max_date)
