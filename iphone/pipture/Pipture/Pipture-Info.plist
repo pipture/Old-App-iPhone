@@ -43,11 +43,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1.7</string>
+	<string>1.0.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>30</string>
+	<string>31</string>
 	<key>CreditesProductId</key>
 	<string>com.pipture.Pipture.credits</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -92,9 +92,9 @@
 	<string>deactivateMessageViews?</string>
 	<key>Rest Send message</key>
 	<string>sendMessage</string>
-	<key>Rest end point martin</key>
-	<string>http://ec2-67-202-31-72.compute-1.amazonaws.com/</string>
 	<key>Rest end point</key>
+	<string>http://ec2-67-202-31-72.compute-1.amazonaws.com/</string>
+	<key>Rest end point debian</key>
 	<string>http://ec2-23-20-20-219.compute-1.amazonaws.com/</string>
 	<key>Rest end point local</key>
 	<string>http://192.168.9.129:8001/</string>
