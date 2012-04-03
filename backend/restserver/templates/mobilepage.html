@@ -101,10 +101,16 @@
 			            </div>
 			          </div>
 			        </td></tr>
+			       {% if not message_empty %}
+			       	<tr><td width="403" height="30"></td></tr>
+			       {% endif %}
 			        <tr><td width="403" height="600">
 			        	<img src="{{image_url}}" width="400" height="600" alt="" style="height: 600px; left: 0px; width: 400px;">
 			        </td></tr>
 			    {% else %}
+			       {% if not message_empty %}
+			       	<tr><td width="403" height="30"></td></tr>
+			       {% endif %}
 			    	<tr><td width="403" height="600">
 			        	<video id="video" autobuffer width="400" height="600" poster="{{image_url}}" controls="controls">
 		              		<source src="{{ video_url }}">
@@ -168,7 +174,7 @@
 						            <div class="text-content graphic_textbox_layout_style_default_External_215_58" style="padding: 0px; ">
 						              <div class="graphic_textbox_layout_style_default">
 						                <p style="padding-top: 0pt; " class="paragraph_style_4">Did you see the series {{seriesname}} on
-						                	<a href="http://itunes.apple.com/us/collection/apple-apps/id25204?fcId=489239905&mt=8&v0=WWW-NAUS-STAPG-GAMESAPPS-PROMO"> 
+						                	<a href="http://itunes.apple.com/us/collection/apple-apps/id25204?fcId=489239905&amp;mt=8&v0=WWW-NAUS-STAPG-GAMESAPPS-PROMO"> 
 						                		<span class="style_3">Pipture</span></a>?  <br />
 						                </p>
 						                	
@@ -194,18 +200,15 @@
 			<div style="width: 403px;  height: auto; position: absolute; top: 125px; z-index: 1;" class="tinyText">
 			{% endif %}
 				<table cellpadding="0" cellspacing="0" class="noborder">	
-		  		<tr><td width="403" height="11" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_top.png">
-		  		<tr><td width="403" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_middle.png">
-		  			{% autoescape off %}
-                		<p style="padding-bottom: 0pt; padding-top: 0pt; "  class="Body">{{text_2}}</p>
-                	{% endautoescape %}
-		  		</td></tr>
-		  		<tr><td width="403" height="57" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_bottom.png">
+			  		<tr><td width="403" height="10" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_top.png">
+			  		<tr><td width="403" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_middle.png" >
+			  			{% autoescape off %}
+	                		<p class="Body">{{text_2}}</p>
+	                	{% endautoescape %}
+			  		</td></tr>
+			  		<tr><td width="403" height="57" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_bottom.png">
 		  		</table>
 			</div>
-			  	<!--<div style="position: relative; width: 402px; ">
-              <img src="{{MEDIA_URL}}webpage_files/shapeimage_8m.png" alt="" style="height: 117px; left: 0px; margin-top: -1px; position: absolute; top: 0px; width: 403px; " />
-            </div>-->
        {% endif %}
           
           <div style="height: 1200px; line-height: 1200px; " class="spacer"> </div>

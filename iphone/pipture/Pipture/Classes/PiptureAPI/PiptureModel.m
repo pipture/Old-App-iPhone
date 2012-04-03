@@ -226,6 +226,7 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
     request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
+    [request blockCancel];
     [request startExecute];
 
 }
@@ -279,6 +280,7 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
     request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
+    [request blockCancel];
     [request startExecute];
        
 }
@@ -1073,9 +1075,11 @@ BOOL needInvokeCallback;
 {
     @synchronized(self)
     {
-        needInvokeCallback = NO;
-        [current setCanceled];
-        current = nil;
+        if (current.cancellable) {
+            needInvokeCallback = NO;
+            [current setCanceled];
+            current = nil;
+        }
     }
 }
 

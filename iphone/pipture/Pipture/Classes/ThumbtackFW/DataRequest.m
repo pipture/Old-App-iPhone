@@ -81,6 +81,7 @@ id<DataRequestManager> requestManager_;
     self = [super init];
     if (self)
     {
+        cancellable = YES;
         canceled = NO;
         callback_ = [callback copy];
         url_ = [url retain];
@@ -216,9 +217,16 @@ id<DataRequestManager> requestManager_;
     if (tCo) [tCo release];
     [self hideProgress];
 }
+- (void)blockCancel {
+    cancellable = NO;
+}
 
 - (void)setCanceled {
     canceled = YES;
+}
+
+- (BOOL)cancellable {
+    return cancellable;
 }
 
 @end

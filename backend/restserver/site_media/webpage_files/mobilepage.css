@@ -328,13 +328,10 @@ a:active  {
     letter-spacing: 0;
     line-height: 20px;
     margin: 0px 10px;
-    opacity: 1.00;
-    padding-bottom: 0px;
-    padding-top: 0px;
+    padding-bottom: 5px;
+    padding-top: 5px;
     text-align: left;
     text-decoration: none;
-    text-indent: 0px;
-    text-transform: none;
 }
 .graphic_image_style_default_SkipStroke {
     background: transparent;
