@@ -43,16 +43,22 @@
 -(BOOL)showAlertForError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate tag:(NSInteger)tag cancelButtonTitle:(NSString*)cancelButtonTitle otherButtonTitles:(NSString*)otherButtonTitles,...{
     NSString * title = nil;
     NSString * message = nil;
+    NSInteger newTag = tag;
     switch (error.errorCode)
     {
-        case DRErrorNoInternet:
-            title = @"No Internet Connection";
-            message = @"Turn Off Airplane Mode or Use Wi-Fi to Access Data";
-            break;
         case DRErrorCouldNotConnectToServer:            
+        case DRErrorNoInternet:
+            title = @"Turn Off Airplane Mode or Use Wi-Fi to Access Data";
+            message = @"";
+            
+            if (tag == MY_ALERT_TAG) {
+                newTag = MY_ALERT_TAG + 100;
+            }
+            break;
+/*        case DRErrorCouldNotConnectToServer:            
             title = @"Server Connection Error";
             message = @"Try again later";            
-            break;            
+            break;            */
         case DRErrorInvalidResponse:
             title = @"Server communication problem";
             message = @"Invalid response from server!";            
@@ -87,7 +93,14 @@
             va_end(vargs);
         }
         
-        requestIssuesAlert.tag = tag;
+        switch (error.errorCode) {
+            case DRErrorCouldNotConnectToServer:
+            case DRErrorNoInternet:
+                [requestIssuesAlert addButtonWithTitle:@"Settings"];
+                break;
+        }
+        
+        requestIssuesAlert.tag = newTag;
         result = [self showAlert:requestIssuesAlert wrappedDelegate:(delegate == self ? nil : delegate)];
         [requestIssuesAlert release];        
     }
@@ -124,11 +137,37 @@
     }
 }
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
-    if (wrappedDelegate && [wrappedDelegate respondsToSelector:@selector(alertView:didDismissWithButtonIndex:)]) {
-        [wrappedDelegate alertView:alertView didDismissWithButtonIndex:buttonIndex];
+    if (alertView.tag == MY_ALERT_TAG + 200) {
+        if (wrappedDelegate && [wrappedDelegate respondsToSelector:@selector(alertView:didDismissWithButtonIndex:)]) {
+            alertView.tag = MY_ALERT_TAG;
+            [wrappedDelegate alertView:alertView didDismissWithButtonIndex:buttonIndex];
+        }
+    } else if (alertView.tag == MY_ALERT_TAG + 100) {
+        switch (buttonIndex) {
+            case 0: {
+                
+                UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Pipture is currently unavailable. Please check your Internet connection, or go to www.pipture.com/support for more information." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                requestIssuesAlert.tag = MY_ALERT_TAG + 200;
+                [requestIssuesAlert show];
+                [requestIssuesAlert release];
+            }
+                break;
+            case 1:
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs://"]];
+                break;    
+            default:
+                break;
+        }
+    } else {
+        if (wrappedDelegate && [wrappedDelegate respondsToSelector:@selector(alertView:didDismissWithButtonIndex:)]) {
+            [wrappedDelegate alertView:alertView didDismissWithButtonIndex:buttonIndex];
+        }
     }
-    [wrappedDelegate release];
-    wrappedDelegate = nil;            
+    
+    if (alertView.tag != MY_ALERT_TAG + 100) {
+        [wrappedDelegate release];
+        wrappedDelegate = nil;
+    }
     [self freeAlertShowing];
 }
  

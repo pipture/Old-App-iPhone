@@ -56,7 +56,7 @@
             episodesIndicator.hidden = YES;
             tagLabel.text = @"COMING SOON"; break;
         case AlbumStatus_Premiere:
-            episodesIndicator.hidden = ![self haveNewEpisodes];
+            episodesIndicator.hidden = YES;
             tagLabel.text = @"PREMIERE"; break;
     }
 }
