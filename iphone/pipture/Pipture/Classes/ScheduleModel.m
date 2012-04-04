@@ -81,9 +81,12 @@
     [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
 }
 
--(void)timeslotsReceived:(NSArray *)timeslots {
+-(void)timeslotsReceived:(NSDictionary *)params {
     @synchronized(self)
     {
+        [[PiptureAppDelegate instance] setCover:[params objectForKey:@"Cover"]];
+        NSArray * timeslots = [params objectForKey:@"Timeslots"];
+        
         BOOL timeslotsChanged = (timeslots_.count != timeslots.count);
         if (!timeslotsChanged)
         {

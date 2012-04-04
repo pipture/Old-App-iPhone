@@ -60,7 +60,7 @@
 }
 
 -(void)showHintIfNeeded {
-    self.shownForEventName = nil;
+    //self.shownForEventName = nil;
     if (showOnViewsPurchase && [[PiptureAppDelegate instance] userPurchasedViewsSinceAppStart])
     {
         NSString* eventName = [self generateFullEventName:VIEWS_PURCHASED_EVENT_NAME];

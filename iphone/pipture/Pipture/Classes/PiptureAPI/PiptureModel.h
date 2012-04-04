@@ -40,7 +40,7 @@
 @end
 
 @protocol TimeslotsReceiver <PiptureModelDelegate>
--(void)timeslotsReceived:(NSArray*)timeslots;
+-(void)timeslotsReceived:(NSDictionary*)timeslots;
 @end
 
 @protocol PlaylistReceiver <PiptureModelDelegate>

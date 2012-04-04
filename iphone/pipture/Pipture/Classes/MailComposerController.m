@@ -705,7 +705,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         case 1:
             return @"Message";
         case 2:
-            return @"Screenshot selection";
+            return @"Video Thumbnail";
         case 3:
             return @"From";                                                
         case 4:

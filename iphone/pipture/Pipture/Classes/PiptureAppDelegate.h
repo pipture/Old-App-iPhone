@@ -123,4 +123,6 @@
 - (NSArray*)getInAppPurchases;
 - (void)clearInAppPurchases;
 
+- (void)setCover:(NSString*)cover;
+
 @end

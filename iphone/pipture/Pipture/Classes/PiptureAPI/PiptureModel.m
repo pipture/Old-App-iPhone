@@ -327,7 +327,15 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
                                       return  [[[Timeslot alloc] initWithJSON:jsonIT serverTimeDelta:serverTimeDelta] autorelease];
                                       
                                   } itemName:@"Timeslot"] retain];
-            [receiver performSelectorOnMainThread:@selector(timeslotsReceived:) withObject:timeslots waitUntilDone:YES];
+            
+            NSDictionary * dic = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
+                                                                      [jsonResult objectForKey:JSON_PARAM_COVER],
+                                                                      [NSNumber numberWithFloat:serverTimeDelta],
+                                                                      timeslots,
+                                                                      nil] forKeys:
+                                  [NSArray arrayWithObjects:@"Cover", @"Delta", @"Timeslots", nil]];
+            
+            [receiver performSelectorOnMainThread:@selector(timeslotsReceived:) withObject:dic waitUntilDone:YES];
             [timeslots release];            
         }
         

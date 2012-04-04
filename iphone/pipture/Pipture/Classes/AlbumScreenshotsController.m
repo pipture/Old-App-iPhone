@@ -129,7 +129,7 @@
     }
     screenshotContollers = mscreenshotContollers;
     
-    self.navigationItem.title = @"Select Photo";
+    self.navigationItem.title = @"Select Thumbnail";
 }
 
 -(void)imagePressed:(id)albumScreenshotController

@@ -267,8 +267,10 @@ static PiptureAppDelegate *instance;
     if ([purchases isInProcess]) {
         return;
     }
-    
-    if (registrationRequired)
+    if (loggedIn) {
+        [self unsuspendPlayer];
+    } 
+    else if (registrationRequired)
     {
         [model_ registerWithReceiver:self];
     } 
@@ -300,11 +302,15 @@ static PiptureAppDelegate *instance;
     return coverImage;
 }
 
--(void)loggedIn:(NSDictionary*)params
-{
-    NSString * cov = [params objectForKey:@"Cover"];
+- (void)setCover:(NSString*)cover {
+    NSString * cov = cover;
     [coverImage release];
     coverImage = [cov retain];
+}
+
+-(void)loggedIn:(NSDictionary*)params
+{
+    [self setCover:[params objectForKey:@"Cover"]];
     
     if (loggedIn) {
         [self unsuspendPlayer];
@@ -335,9 +341,7 @@ static PiptureAppDelegate *instance;
 
 -(void)registred:(NSDictionary*)params
 {
-    NSString * cov = [params objectForKey:@"Cover"];
-    [coverImage release];
-    coverImage = [cov retain];
+    [self setCover:[params objectForKey:@"Cover"]];
     
     [self saveUUID:[params objectForKey:@"UUID"]];
 }

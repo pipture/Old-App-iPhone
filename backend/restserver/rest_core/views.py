@@ -102,6 +102,7 @@ def getTimeslots (request):
         timeslots_json.append(slot)
     response['Timeslots'] = timeslots_json
     response['CurrentTime'] = sec_utc_now
+    response['Cover'] = get_cover()
     return HttpResponse (json.dumps(response))
         
 def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
@@ -618,7 +619,7 @@ def getSellableAlbums (request):
     return HttpResponse (json.dumps(response))
 
 
-def album_json_by_id (album):
+def album_json_by_id (album, purch_list):
     
     album_json = {}
     album_json['AlbumId'] = album.AlbumId
@@ -630,7 +631,19 @@ def album_json_by_id (album):
     album_json['Description'] = album.Description
     album_json['Rating'] = album.Rating
     album_json['Credits'] = album.Credits
-    album_json['ReleaseDate'], album_json['UpdateDate'] = get_album_status (album, get_date_only=True) 
+    album_json['ReleaseDate'], album_json['UpdateDate'] = get_album_status (album, get_date_only=True)
+    
+            
+    if albumid_inlist(albumid=album.AlbumId, lister=purch_list):
+        album_json['SellStatus'] = 100
+    else:
+        if album.PurchaseStatus == 'P':
+            album_json['SellStatus'] = 1
+        elif album.PurchaseStatus == 'B':
+            album_json['SellStatus'] = 2
+        else:
+            album_json['SellStatus'] = 0
+ 
     return album_json
 
 
@@ -665,6 +678,12 @@ def getAlbumDetail (request):
         return HttpResponse (json.dumps(response))
     else:
         response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
+
+    key = request.GET.get('Key', None)
+    if key == None:
+        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        return HttpResponse (json.dumps(response))
+
 
     album_id = request.GET.get('AlbumId', None)
     timeslot_id = request.GET.get('TimeslotId', None)
@@ -710,7 +729,8 @@ def getAlbumDetail (request):
         else:
             album = timeslot.AlbumId
 
-    album_json = album_json_by_id (album)
+    purchased_albums_list = get_purchased_album_list(userid = key)
+    album_json = album_json_by_id (album, purchased_albums_list)
     
     response['Album'] = album_json 
         

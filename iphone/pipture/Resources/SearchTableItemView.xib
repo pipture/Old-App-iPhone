@@ -67,7 +67,7 @@
 								<string key="NSFrame">{{70, 8}, {238, 21}}</string>
 								<reference key="NSSuperview" ref="500686576"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="288719409"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:328</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -154,28 +154,12 @@
 								<int key="IBUITag">1</int>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							</object>
-							<object class="IBUIImageView" id="288719409">
-								<reference key="NSNextResponder" ref="500686576"/>
-								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{21, 31}, {24, 24}}</string>
-								<reference key="NSSuperview" ref="500686576"/>
-								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="28625549"/>
-								<string key="NSReuseIdentifierKey">_NS:567</string>
-								<bool key="IBUIUserInteractionEnabled">NO</bool>
-								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<object class="NSCustomResource" key="IBUIImage">
-									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">play-video.png</string>
-								</object>
-							</object>
 							<object class="IBUIButton" id="149128314">
 								<reference key="NSNextResponder" ref="500686576"/>
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{254, 1}, {64, 84}}</string>
 								<reference key="NSSuperview" ref="500686576"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:225</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<int key="IBUITag">6</int>
@@ -269,7 +253,6 @@
 							<reference ref="28625549"/>
 							<reference ref="235968197"/>
 							<reference ref="769321404"/>
-							<reference ref="288719409"/>
 							<reference ref="149128314"/>
 						</array>
 						<reference key="parent" ref="0"/>
@@ -302,12 +285,6 @@
 						<reference key="parent" ref="113319794"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">9</int>
-						<reference key="object" ref="288719409"/>
-						<reference key="parent" ref="113319794"/>
-						<string key="objectName">Play Icon</string>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">10</int>
 						<reference key="object" ref="149128314"/>
 						<reference key="parent" ref="113319794"/>
@@ -328,7 +305,6 @@
 				<string key="6.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="7.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="8.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<string key="9.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
@@ -341,20 +317,24 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">SearchViewController</string>
 					<string key="superclassName">UIViewController</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">clearAction:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">clearAction:</string>
-						<object class="IBActionInfo" key="NS.object.0">
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="backAction:">id</string>
+						<string key="clearAction:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="backAction:">
+							<string key="name">backAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="clearAction:">
 							<string key="name">clearAction:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-					</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="clearButton">UIButton</string>
 						<string key="dividerCell">UITableViewCell</string>
+						<string key="libraryBack">UIButton</string>
 						<string key="noresultPrompt">UILabel</string>
 						<string key="searchField">UITextField</string>
 						<string key="searchView">UIView</string>
@@ -369,6 +349,10 @@
 						<object class="IBToOneOutletInfo" key="dividerCell">
 							<string key="name">dividerCell</string>
 							<string key="candidateClassName">UITableViewCell</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="libraryBack">
+							<string key="name">libraryBack</string>
+							<string key="candidateClassName">UIButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="noresultPrompt">
 							<string key="name">noresultPrompt</string>
@@ -404,7 +388,6 @@
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="button-send-episode.png">{24, 20}</string>
-			<string key="play-video.png">{24, 23}</string>
 			<string key="selected.png">{320, 89}</string>
 			<string key="thumbnail-default-table.png">{60, 88}</string>
 		</dictionary>
