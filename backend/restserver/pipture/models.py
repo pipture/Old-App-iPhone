@@ -236,17 +236,20 @@ class TimeSlots(models.Model):
     
     @property
     def StartTimeUTC(self):
-        cur_date = datetime.date.today()
-        utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, self.StartTime.hour, self.StartTime.minute, self.StartTime.second)
-        res_date = time.mktime(utc_time.timetuple())
-        return res_date
+        #res_now = self.now_seconds()
+        res_sdate = self.get_startTime()
+        return res_sdate
+        
 
     @property
     def EndTimeUTC(self):
-        cur_date = datetime.date.today()
-        utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, self.EndTime.hour, self.EndTime.minute, self.EndTime.second)
-        res_date = time.mktime(utc_time.timetuple())
-        return res_date
+        res_edate = self.get_endTime()
+        res_sdate = self.get_startTime()
+        
+        if res_edate <= res_sdate:
+            res_edate = res_edate + 86400 #tomorrow AM time
+        
+        return res_edate
 
     @property
     def complexName(self):
@@ -276,10 +279,22 @@ class TimeSlots(models.Model):
     
     def is_in_time_period(self):
         now = self.now_seconds()
-        if (self.StartTimeUTC < now < self.EndTimeUTC):
+        if (now < self.EndTimeUTC and now > self.StartTimeUTC):
             return True
         else:
             return False
+    
+    def get_startTime(self):
+        cur_date = datetime.date.today()
+        utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, self.StartTime.hour, self.StartTime.minute, self.StartTime.second)
+        res_date = time.mktime(utc_time.timetuple())
+        return res_date
+    
+    def get_endTime(self):
+        cur_date = datetime.date.today()
+        utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, self.EndTime.hour, self.EndTime.minute, self.EndTime.second)
+        res_date = time.mktime(utc_time.timetuple())
+        return res_date
     
     def is_current (self):
         return (self.is_in_date_period() & self.is_in_time_period())

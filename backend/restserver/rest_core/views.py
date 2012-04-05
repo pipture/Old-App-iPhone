@@ -99,6 +99,10 @@ def getTimeslots (request):
         else:
             slot["TimeslotStatus"] = 0
         
+        
+        #if wait_next_ts:
+            
+        
         timeslots_json.append(slot)
     response['Timeslots'] = timeslots_json
     response['CurrentTime'] = sec_utc_now
@@ -310,7 +314,13 @@ def getVideo (request):
                     response['VideoURL'] = video_url
                     response['Subs'] = readSubtitles(subs_url=subs_url)
                     response['Balance'] = "%s" % (purchaser.Balance)
-                    return HttpResponse (json.dumps(response))
+                    try:
+                        http_resp = HttpResponse (json.dumps(response)) 
+                    except:
+                        purchaser.Balance = Decimal (purchaser.Balance + WATCH_EP.Price)
+                        purchaser.save()
+                        
+                    return http_resp
                 else:
                     response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
                     return HttpResponse (json.dumps(response))
@@ -1091,7 +1101,14 @@ def buy (request):
         purchaser.Balance = Decimal (purchaser.Balance + Decimal(apple_product.ViewsCount * apple_product_quantity))
         purchaser.save()
         response["Balance"] = "%s" % (purchaser.Balance)
-        return HttpResponse (json.dumps(response))
+        
+        try:
+            http_resp = HttpResponse (json.dumps(response)) 
+        except:
+            purchaser.Balance = Decimal (purchaser.Balance - Decimal(apple_product.ViewsCount * apple_product_quantity))
+            purchaser.save()
+            
+        return http_resp
  
     else:
         #check for album pass or buy prefix
@@ -1282,7 +1299,14 @@ def sendMessage (request):
             
         response['MessageURL'] = "%s/%s" % (vhost, u_url)
         response['Balance'] = "%s" % (purchaser.Balance)
-        return HttpResponse (json.dumps(response))
+        
+        try:
+            http_resp = HttpResponse (json.dumps(response)) 
+        except:
+            purchaser.Balance = Decimal (purchaser.Balance + message_cost)
+            purchaser.save()
+            
+        return http_resp
     else:
         response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
         return HttpResponse (json.dumps(response))
@@ -1468,4 +1492,11 @@ def deactivateMessageViews (request):
             
     response["Restored"] = "%s" % group
     response["Balance"] = "%s" % (purchaser.Balance)
-    return HttpResponse (json.dumps(response))
+    
+    try:
+        http_resp = HttpResponse (json.dumps(response)) 
+    except:
+        purchaser.Balance = Decimal (purchaser.Balance - group)
+        purchaser.save()
+        
+    return http_resp
