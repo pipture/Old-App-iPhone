@@ -73,7 +73,7 @@
             
             if (0 == rng.location) {
                 title = @"Album was purchased";
-                message = @"You should repeat buy this album again. Second try will be free for you";
+                message = @"You should repeat buy this album again. Second try will free for you";
             } else {
                 title = @"Views was purchased";
                 message = @"Information was stored and will be confirmed at the next buying attempt";
@@ -341,6 +341,10 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
         
         TRACK_EVENT(@"Purchase", @"Credits purchasing cancelled by user");
+        
+        UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase cancelled" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [requestIssuesAlert show];
+        [requestIssuesAlert release];
     }
 } 
 

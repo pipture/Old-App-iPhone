@@ -37,6 +37,8 @@ def mobileBrowser(request):
 
 import datetime
 import time
+import calendar
+
 from decimal import Decimal
 from base64 import b64encode
 from base64 import b64decode
@@ -133,7 +135,7 @@ def index(request, u_url):
         min_date = min_date or datetime.datetime(1970, 1, 1, 00, 00)
         released_date = min_date.strftime('Released in %h %d, %Y')
         
-    sent_date = urs_instance.Timestamp.strftime('%B %d at %I:%M%p')
+    sent_date = calendar.timegm(urs_instance.Timestamp.timetuple()) #urs_instance.Timestamp.strftime('%B %d at %I:%M%p')
 
     video_url = ''
     message_blocked = True

@@ -239,11 +239,11 @@
         UILabel * fromto = (UILabel*)[cell viewWithTag:4];
         UILabel * counter = (UILabel*)[cell viewWithTag:5];
         
-        AsyncImageView* imageView = [asyncImageViews objectForKey:slot.closeUpThumbnail];
+        AsyncImageView* imageView = [asyncImageViews objectForKey:slot.episodeNo];
         if (imageView == nil) {
             imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, placeholder.frame.size.width, placeholder.frame.size.height)] autorelease];            
             [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small localStore:YES asButton:NO target:nil selector:nil];
-            [asyncImageViews setObject:imageView forKey:slot.closeUpThumbnail];            
+            [asyncImageViews setObject:imageView forKey:slot.episodeNo];            
         }
         
         UIView* cur = placeholder.subviews.count ? [placeholder.subviews objectAtIndex:0] : nil;
@@ -303,8 +303,11 @@
     if (indexPath.section != 0) {
         if (indexPath.row %2 == 0) {
             Episode * episode = [album.episodes objectAtIndex:indexPath.row / 2];
-            [[PiptureAppDelegate instance] getVideoURL:episode forTimeslotId:nil receiver:self];
+            NSArray * playlist = [NSArray arrayWithObject:episode];
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
+            [[PiptureAppDelegate instance] showVideo:playlist noNavi:YES timeslotId:nil];        
+            //[[PiptureAppDelegate instance] getVideoURL:episode forTimeslotId:nil receiver:self];
+            
         }
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

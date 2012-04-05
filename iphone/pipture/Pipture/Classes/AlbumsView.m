@@ -42,17 +42,16 @@
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     libraryCardController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardB3" bundle:nil];
-    [scrollView addSubview:libraryCardController.view];
-    [scrollView addSubview:albumsFilterView];
-    CGRect rect = libraryCardController.view.frame;
-    rect.origin = CGPointMake(0, 0);    
-    libraryCardController.view.frame = rect;
-    rect = albumsFilterView.frame;
-    rect.origin = CGPointMake(115, 0);
-    albumsFilterView.frame = rect;
-    libraryCardHeight = libraryCardController.view.frame.size.height;
-
     
+    CGRect rect = libraryCardController.view.frame;
+    libraryCardController.view.frame = CGRectMake(0, 0, rect.size.width, rect.size.height);
+    libraryCardHeight = libraryCardController.view.frame.size.height;
+    [scrollView addSubview:libraryCardController.view];
+    
+    rect = albumsFilterView.frame;
+    albumsFilterView.frame = CGRectMake(115, 0, rect.size.width, rect.size.height);
+    [scrollView addSubview:albumsFilterView];
+
     for (UITapGestureRecognizer*gr in allAlbumsButtonEnchancer.gestureRecognizers) {
         [allAlbumsButtonEnchancer removeGestureRecognizer:gr];
     }

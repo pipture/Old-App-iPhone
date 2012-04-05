@@ -619,7 +619,7 @@ NSInteger networkActivityIndecatorCount;
 
 - (void)showInsufficientFunds;
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Access Denied" message:@"Watch 100 broadcast videos for as little as $0.99 with the Library Card" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue",nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Library Card" message:@"Add Views to your card to complete this action." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue",nil];
     alert.tag = INSUFFICIENT_FUND_ALERT;
     [alert show];
     [alert release];

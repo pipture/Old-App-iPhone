@@ -286,18 +286,26 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 }
 
--(void)viewDidLayoutSubviews {
+- (void)fixLayout {
     if (self.view.frame.origin.y == 0)
         self.view.frame = CGRectMake(0, -64, 320, 480);
 }
 
+-(void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self fixLayout];
+}
+
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    [self fixLayout];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     
     [super viewWillAppear:animated];
+    [self fixLayout];
+    
     [self displayLibraryCard];
     [self updateAlbums];
     [model updateAlbums];

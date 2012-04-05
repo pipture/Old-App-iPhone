@@ -5,26 +5,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     
-    <meta name="Generator" content="iWeb 3.0.4" />
-    <meta name="iWeb-Build" content="local-build-20120222" />
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
     <meta name="viewport" content="width=400" />
     <title>PIPTURE VIDEO MESSAGE</title>
     <link rel="stylesheet" type="text/css" media="screen,print" href="{{MEDIA_URL}}webpage_files/mobilepage.css" />
+    <script src="{{MEDIA_URL}}date.js"></script>
+    <script src="{{MEDIA_URL}}jquery.js"></script>
     <!--[if lt IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='{{MEDIA_URL}}mobilepage_files/mobilepageIE.css'/><![endif]-->
     <!--[if gte IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='Media/IE8.css'/><![endif]-->
-    <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebSite.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebImage.js"></script>
-    <script type="text/javascript">
-    /* jQuery(document).ready(function(){
-
-		var video = document.getElementById('video');
-			video.addEventListener('click',function(){
-  			video.play();
-		},false);
-	});*/
-    	
-    </script>
+    <!--<script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebSite.js"></script>
+    <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebImage.js"></script>-->
   </head>
   <body style="background: rgb(0, 0, 0); margin: 0pt; ">
     <div style="text-align: center; ">
@@ -49,7 +39,7 @@
             <div class="text-content graphic_textbox_layout_style_default_External_249_56" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
                 <p style="padding-top: 0pt; " class="paragraph_style"><span class="style">From</span> <span class="style_1">{{from}}</span><br /></p>
-                <p style="padding-bottom: 0pt; " class="paragraph_style_1">{{sent_date}}</p>
+                <p id="sentdate" style="padding-bottom: 0pt; " class="paragraph_style_1"></p>
               </div>
             </div>
           </div>
@@ -218,5 +208,26 @@
         </div>
       </div>
     </div>
+    
+    <script type="text/javascript">
+    	    	
+    	function onLoadDoc() {
+    		
+ 			var video = document.getElementById('video');
+ 			if (video) {
+				video.addEventListener('click',function(){
+	  				video.play();
+				},false);
+			}
+		
+			var d1 = new Date({{sent_date}}*1000);
+			dstr = d1.toString('MMMM dd') + ' at ' + d1.toString('hh:mmtt');
+			var sentdate = document.getElementById('sentdate');
+			sentdate.innerHTML = dstr;   
+		}
+     	window.onload = onLoadDoc;
+     	
+    </script>
+    
   </body>
 </html>

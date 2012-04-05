@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=640">
     <title>PIPTURE VIDEO MESSAGE</title>
 
+	<script src="{{MEDIA_URL}}date.js"></script>
     <script src="{{MEDIA_URL}}jquery.js"></script>
     <script src="{{MEDIA_URL}}mediaelement-and-player.js"></script>
     <link rel="stylesheet" href="{{MEDIA_URL}}mediaelementplayer.css" />
@@ -84,7 +85,7 @@
             <div class="text-content graphic_textbox_layout_style_default_External_249_95" style="padding: 0px; ">
               <div class="graphic_textbox_layout_style_default">
                 <p style="padding-top: 0pt; " class="paragraph_style"><span class="style">From</span> <span class="style_1">{{from}}</span><br></p>
-                <p style="padding-bottom: 0pt; " class="paragraph_style_1">{{sent_date}}</p>
+                <p id="sentdate" style="padding-bottom: 0pt;" class="paragraph_style_1"></p>
               </div>
             </div>
           </div>
@@ -217,24 +218,9 @@ jQuery(document).ready(function(){
 		features: ['playpause','progress','volume'],
 		});
 	
-	/*$('#video').bind('play',
-		function (e) {
-		    if(!e) { 
-		    	e = window.event;
-		    }
-		    $.post("/manage/update_views/", 
-		    	{
-		    		"msg_id": "{{ message_id }}",
-		    		"usr_id": "{{ user_id }}", 
-		    	},
-		    	function(data) {
-					views = $.parseJSON(data);
-					newCntr = views['Result']['new_counter'];
-					$("#viewcounter").text(newCntr);
-				}
-			);
-		}
-	);*/
+	var d1 = new Date({{sent_date}}*1000);
+	dstr = d1.toString('MMMM dd') + ' at ' + d1.toString('hh:mmtt');
+	jQuery("#sentdate").text(dstr);
 });
 
 

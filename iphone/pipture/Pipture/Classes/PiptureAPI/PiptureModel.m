@@ -714,6 +714,7 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];
     request.retryStrategy = [DataRequestRetryStrategyFactory createEasyStrategy];//for implementation more robust payments
+    [request blockCancel];
     return [request startExecute];
     
 }
@@ -760,6 +761,7 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];
     request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
+    [request blockCancel];
     return [request startExecute];
     
     
@@ -960,6 +962,7 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];
     request.retryStrategy = [DataRequestRetryStrategyFactory createEasyStrategy];
+    [request blockCancel];
     return [request startExecute];
 }
 
