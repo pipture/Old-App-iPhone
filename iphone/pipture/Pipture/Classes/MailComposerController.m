@@ -22,8 +22,9 @@
 #define VIEWS_EDITING_SCROLL_OFFSET 470
 
 #define MAX__NUMBER_OF_VIEWS 100
-#define DEFAULT_NUMBER_OF_VIEWS 10
-#define NOT_CONFIRMABLE_NUMBER_OF_VIEWS 10
+#define FREE_NUMBER_OF_VIEWS 10
+#define DEFAULT_NUMBER_OF_VIEWS 1
+#define NOT_CONFIRMABLE_NUMBER_OF_VIEWS 50
 
 @interface ScreenshotsReceiverWraper : NSObject<ScreenshotCollectionReceiver> {
     NSObject<ScreenshotCollectionReceiver>* wrappedObject_;
@@ -259,35 +260,34 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [[PiptureAppDelegate instance] putUserName:nameTextField.text];
     
     if (self.playlistItem) {
-        [self sendMessageURLRequest];
-        
-        /*if (playlistItem_.class == [Trailer class] || numberOfViews <= NOT_CONFIRMABLE_NUMBER_OF_VIEWS)
+        if (playlistItem_.class == [Trailer class])
         {
             [self sendMessageURLRequest];
         } else
         {
             int purchViews = numberOfViews;
             Episode * ep = (Episode*)playlistItem_;
-            purchViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)?purchViews - DEFAULT_NUMBER_OF_VIEWS:purchViews;
+            purchViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)?purchViews - FREE_NUMBER_OF_VIEWS:purchViews;
             
-        
-            NSString*alertmessage = [NSString stringWithFormat:@"Debit %d views and open Mail?",purchViews,nil ];
-            
-            UIAlertView *alertView =[[UIAlertView alloc] initWithTitle:@"Confirm Message" message:alertmessage delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];  
-            [alertView show];
-            [alertView release];
-            
-        }*/
-        
+            if (purchViews < NOT_CONFIRMABLE_NUMBER_OF_VIEWS) {
+                [self sendMessageURLRequest];
+            } else {
+                NSString*alertmessage = [NSString stringWithFormat:@"Debit %d views?",purchViews,nil ];
+                
+                UIAlertView *alertView =[[UIAlertView alloc] initWithTitle:@"Confirm Message" message:alertmessage delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];  
+                [alertView show];
+                [alertView release];
+            }            
+        }
     }
     
 }
 
-/*-(void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
+-(void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
         [self sendMessageURLRequest];
     }
-}*/
+}
 
 -(void)setInfiniteRadiobutonsVisiblity {
     infiniteRadioButtonsGroupView.hidden = !(playlistItem_.class == [Trailer class]);
@@ -300,13 +300,16 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (void)viewUpdate:(PlaylistItem*)playlistItem {
     numberOfViews = DEFAULT_NUMBER_OF_VIEWS;
-    
-    if (playlistItem.class == [Episode class]) {
-        Episode * ep = (Episode*)playlistItem;
-        numberOfViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)?DEFAULT_NUMBER_OF_VIEWS:1;
-    }
     infiniteViews = (playlistItem.class == [Trailer class]);
     if (self.view) {
+        maxViewsLabel.text = @"100 max.";
+        if (playlistItem.class == [Episode class]) {
+            Episode * ep = (Episode*)playlistItem;
+            if (ep.album.sellStatus == AlbumSellStatus_Purchased) {
+                maxViewsLabel.text = @"100 max. Send up to 10 for free.";
+            }
+        }
+        
         [self displayNumberOfViewsTextField];
         [self displayInfiniteViewsRadioButtons];
         [self setInfiniteRadiobutonsVisiblity];

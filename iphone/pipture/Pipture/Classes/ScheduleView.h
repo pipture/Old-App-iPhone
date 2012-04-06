@@ -42,6 +42,8 @@ enum TimeslotsMode{
 - (void)playingNowPanelVisible:(BOOL)visible animation:(BOOL)anim;
 - (void)playingSoonPanelVisible:(BOOL)visible animation:(BOOL)anim;
 
+- (void)hideAllPanels;
+
 - (IBAction)showDetail:(id)sender;
 - (IBAction)prevAction:(id)sender;
 - (IBAction)nextAction:(id)sender;

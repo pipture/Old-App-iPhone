@@ -74,6 +74,13 @@
     [self panel:psPanel visible:visible animation:anim];
 }
 
+- (void)hideAllPanels {
+    [self playingSoonPanelVisible:NO animation:NO];
+    [self playingNowPanelVisible:NO animation:NO];
+    [self navigationPanelVisible:NO animation:NO];
+}
+
+
 - (IBAction)showDetail:(id)sender {
     int page = [self getPageNumber];
     
@@ -345,10 +352,10 @@
 }
 
 - (void)setTimeslotsMode:(enum TimeslotsMode)mode {
+    timeslotsMode = mode;
     if (mode == TimeslotsMode_PlayingNow) {
         [self scrollToCurrentTimeslot];
     }
-    timeslotsMode = mode;
     
     [self redraw];
 }

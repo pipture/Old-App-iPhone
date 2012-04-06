@@ -470,6 +470,10 @@
         
         //flip to cover or back to PN
         
+        if (mode == HomeScreenMode_PlayingNow && homeScreenMode == HomeScreenMode_Cover) {
+            [scheduleView hideAllPanels];
+        }
+        
         BOOL flipAction = NO;
         if ((mode == HomeScreenMode_Cover && homeScreenMode == HomeScreenMode_PlayingNow)||
             ((mode == HomeScreenMode_PlayingNow || mode == HomeScreenMode_Schedule) && homeScreenMode == HomeScreenMode_Cover)||
@@ -536,10 +540,10 @@
                 [[PiptureAppDelegate instance] putHomescreenState:mode];
                 
                 break;
-            case HomeScreenMode_Schedule: 
-                    [tabbarContainer addSubview:scheduleView];
-                    if (flipAction) [UIView commitAnimations];
-                    [scheduleModel updateTimeslots];
+            case HomeScreenMode_Schedule:
+                [tabbarContainer addSubview:scheduleView];
+                if (flipAction) [UIView commitAnimations];
+                [scheduleModel updateTimeslots];
                 
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule-done.png"] forState:UIControlStateNormal];
                 [scheduleButton setTitle:@"Done" forState:UIControlStateNormal];

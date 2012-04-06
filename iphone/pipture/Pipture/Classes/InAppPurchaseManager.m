@@ -287,6 +287,10 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
     if (wasSuccessful)
     {
+        UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase confirmed." message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [requestIssuesAlert show];
+        [requestIssuesAlert release];
+        
         NSString * base64 = [self base64Encoding:transaction.transactionReceipt];
         
         PurchaseSession* purchase = [[PurchaseSession alloc] initWithReceipt:base64 appleProductId:[transaction payment].productIdentifier transactionId:transaction.transactionIdentifier];                
@@ -296,6 +300,10 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }
     else
     {
+        UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase cancelled." message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [requestIssuesAlert show];
+        [requestIssuesAlert release];
+        
         [[PiptureAppDelegate instance] dismissModalBusy];
         NSLog(@"InApp transaction failed!");
     }
@@ -341,10 +349,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
         
         TRACK_EVENT(@"Purchase", @"Credits purchasing cancelled by user");
-        
-        UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase cancelled" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [requestIssuesAlert show];
-        [requestIssuesAlert release];
     }
 } 
 
