@@ -604,7 +604,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (void) onNewBalance:(NSNotification *) notification {
-    [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
+    if (layoutTableView.contentOffset.x > MESSAGE_EDITING_SCROLL_OFFSET) {
+        [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
+    }
     [self showScrollingHintIfNeeded];
 }
 

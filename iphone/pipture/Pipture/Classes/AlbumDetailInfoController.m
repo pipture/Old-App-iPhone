@@ -369,6 +369,11 @@
 }
 
 -(void)setLibraryCardVisibility:(BOOL)visibility withAnimation:(BOOL)animation {
+    if (libraryCardVisible == visibility || (!visibility && videosTable.contentOffset.y > libraryCardHeight)) {
+        libraryCardVisible = visibility;
+        return;
+    }    
+    
     if (animation) {
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:0.2]; // if you want to slide up the view
