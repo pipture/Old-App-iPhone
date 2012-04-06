@@ -183,18 +183,12 @@
     UIColor * col = (firecount++ % 2 != 0)?[UIColor colorWithRed:0.2 green:0.67 blue:0.95 alpha:1]:[UIColor blackColor];
     
 
-    switch (homeScreenMode) {
-        case HomeScreenMode_Cover:  
-            [coverView setTitleColor:col];
-            break;
-        case HomeScreenMode_PlayingNow:        
-            [scheduleView setTitleColor:col];
-            break;
-        default: break;
-    }
+    [coverView setTitleColor:col];
+    [scheduleView setTitleColor:col];
     
     if (firecount >= 5) {
         [scheduleView setTitleColor:[UIColor blackColor]];
+        [coverView setTitleColor:[UIColor blackColor]];
         
         [blinkTimer invalidate];
         blinkTimer = nil;

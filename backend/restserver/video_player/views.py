@@ -123,12 +123,13 @@ def index(request, u_url):
     if show_shortinfo:
         cover_pic = (album.Thumbnail._get_url()).split('?')[0]
         disclaimer = album.WebPageDisclaimer
-        seriesname = album.SeriesId.Title
         title = video.Title
         if urs_instance.LinkType == "E":
+            seriesname = album.SeriesId.Title
             info_line = "Season %s, Album %s, Video %s" % (album.Season, album.Title, video.EpisodeNo)
         else:
-            info_line = "Season %s, Album %s" % (album.Season, album.Title)
+            seriesname = video.Line2
+            info_line = video.Line1
         from django.db.models import Min
         res = Episodes.objects.filter(AlbumId=album).aggregate(Min('DateReleased'))
         min_date = res['DateReleased__min']

@@ -120,6 +120,7 @@ class Albums(models.Model):
     WebPageDisclaimer = models.CharField (max_length=100, verbose_name='Webpage Disclaimer')
     PurchaseStatus = models.CharField(db_index=True, max_length=1, choices=PURCHASETYPE_CHOICES, verbose_name='In-App purchases status')
     HiddenAlbum = models.BooleanField(verbose_name='Album hidden:', default=False)
+    TopAlbum = models.BooleanField(verbose_name='Album highlighted:', default=False)
 
     @property
     def complexName(self):

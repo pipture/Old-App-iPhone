@@ -435,21 +435,35 @@ def get_album_status (album, get_date_only=False):
     from restserver.pipture.models import PiptureSettings
     from restserver.pipture.models import Episodes
 
+    date_utc_now = datetime.datetime.utcnow()#.date()
+    episodes = Episodes.objects.filter(AlbumId=album)
     
-    resmin = Episodes.objects.filter(AlbumId=album).aggregate(Min('DateReleased'))
+    min_date = datetime.datetime(3970, 1, 1, 00, 00)
+    max_date = datetime.datetime(1970, 1, 1, 00, 00)
+    for episode in episodes:
+        if episode.DateReleased < min_date:
+            min_date = episode.DateReleased
+            
+        if episode.DateReleased > max_date and episode.DateReleased < date_utc_now:
+            max_date = episode.DateReleased
+
+    if album.TopAlbum:
+        max_date = datetime.datetime(3970, 1, 1, 00, 00)
+    
+    '''resmin = Episodes.objects.filter(AlbumId=album).aggregate(Min('DateReleased'))
     resmax = Episodes.objects.filter(AlbumId=album).aggregate(Max('DateReleased'))
     min_date = resmin['DateReleased__min']
     min_date = min_date or datetime.datetime(1970, 1, 1, 00, 00)
     
     max_date = resmax['DateReleased__max']
-    max_date = max_date or datetime.datetime(1970, 1, 1, 00, 00)
+    max_date = max_date or datetime.datetime(1970, 1, 1, 00, 00)'''
     
     secmin = local_date_time_date_time_to_UTC_sec(min_date)
     secmax = local_date_time_date_time_to_UTC_sec(max_date)
     if get_date_only:
         return secmin, secmax
     if not min_date: return secmin, secmax, 1#"NORMAL" It means that albums hasn't any episodes 
-    date_utc_now = datetime.datetime.utcnow()#.date()
+
     if min_date > date_utc_now: return secmin, secmax, 3#"COMMING SOON"
     premiere_days = PiptureSettings.objects.all()[0].PremierePeriod
     timedelta_4 = datetime.timedelta(days=premiere_days)

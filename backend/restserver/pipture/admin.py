@@ -160,7 +160,7 @@ class AlbumsAdmin(admin.ModelAdmin):
      
     fieldsets = [
         ('Related objects', {'fields': ['SeriesId', 'TrailerId']}),
-        ('Information', {'fields': ['Description', 'Season', 'Title', 'Rating', 'Credits', 'WebPageDisclaimer', 'PurchaseStatus', 'HiddenAlbum']}),
+        ('Information', {'fields': ['Description', 'Season', 'Title', 'Rating', 'Credits', 'WebPageDisclaimer', 'PurchaseStatus', 'HiddenAlbum', 'TopAlbum']}),
         ('Pictures:', {'fields': ['Cover', 'Thumbnail', 'CloseUpBackground', 'SquareThumbnail']}),
     ]
     
