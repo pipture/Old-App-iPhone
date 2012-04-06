@@ -122,6 +122,7 @@ def index(request, u_url):
     
     if show_shortinfo:
         cover_pic = (album.Thumbnail._get_url()).split('?')[0]
+        cover_pic = cover_pic.replace("https://", "http://")
         disclaimer = album.WebPageDisclaimer
         title = video.Title
         if urs_instance.LinkType == "E":
@@ -147,7 +148,7 @@ def index(request, u_url):
     if not message_blocked:
         video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
         video_url = video_url.replace("https://", "http://")
-     
+      
     if obsolete_url:
         if urs_instance.ViewsCount < urs_instance.ViewsLimit or urs_instance.ViewsLimit == -1:
             urs_instance.ViewsCount = urs_instance.ViewsCount + 1
@@ -200,12 +201,13 @@ def index(request, u_url):
         text_m = urlize(text=text_m)
         
     #for grp in grps:
-        
+    image_url = urs_instance.ScreenshotURL    
+    image_url = image_url.replace("https://", "http://")
           
     data = {'video_url': video_url,
             'message_id': u_url,
             'user_id': urs_instance.UserId.UserUID,
-            'image_url': urs_instance.ScreenshotURL,
+            'image_url': image_url,
             'text_2': text_m,
             'views_limit': limit,
             'views_count': urs_instance.ViewsCount,

@@ -485,11 +485,11 @@
             [videosButton setBackgroundImage:[UIImage imageNamed:@"button-videos-active.png"] forState:UIControlStateHighlighted];
             break;
         case DetailAlbumViewType_Videos:
-            [self showScrollingHintIfNeeded];
-            
             videosTable.frame = rect;
             [subViewContainer addSubview:videosTable];
             [videosTable reloadData];
+
+            [self showScrollingHintIfNeeded];
             
             int theight = self.videosTable.contentSize.height;
             int sheight = subViewContainer.frame.size.height;

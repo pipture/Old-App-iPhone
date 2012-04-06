@@ -42,8 +42,7 @@
 
 -(void)addMeToScroll {
     CGRect rect = self.view.frame;
-    rect.origin = origin;
-    self.view.frame = rect;
+    self.view.frame = CGRectMake(origin.x, origin.y, rect.size.width, rect.size.height);
     [scrollView addSubview:self.view];
     [scrollView bringSubviewToFront:self.view];
     shown = YES;
@@ -66,8 +65,8 @@
         NSString* eventName = [self generateFullEventName:VIEWS_PURCHASED_EVENT_NAME];
         if (
         ![ScrollingHintPopupController checkHintWasUsedForEvent:eventName]) {
-            [self addMeToScroll];
             hintMessageLabel.text = @"Pull down to see your balance";
+            [self addMeToScroll];
             self.shownForEventName = eventName;
             return;
         }
