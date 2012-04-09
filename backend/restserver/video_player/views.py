@@ -84,11 +84,8 @@ def index(request, u_url):
         return HttpResponse (json.dumps(response))
  
     isMobile = mobileBrowser(request)
-    v_q = 0
-    if isMobile:
-        v_q = 1
- 
-    video_instance, error = get_video_url_from_episode_or_trailer (id=urs_instance.LinkId, type_r=urs_instance.LinkType, video_q=v_q, is_url=False)
+    
+    video_instance, error = get_video_url_from_episode_or_trailer (id=urs_instance.LinkId, type_r=urs_instance.LinkType, video_q=0, is_url=False)
     if error:
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
         return HttpResponse (json.dumps(response))
@@ -151,7 +148,11 @@ def index(request, u_url):
         message_blocked = False
         
     if not message_blocked:
-        video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
+        if isMobile:
+            video_url, subs_url, error = get_video_url_from_episode_or_trailer (id=urs_instance.LinkId, type_r=urs_instance.LinkType, video_q=1, is_url=True)
+        else:
+            video_url = (video_instance.VideoUrl._get_url()).split('?')[0]
+            
         video_url = video_url.replace("https://", "http://")
       
     if obsolete_url:
