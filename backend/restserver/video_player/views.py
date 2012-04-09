@@ -83,7 +83,12 @@ def index(request, u_url):
         response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Url not found"}
         return HttpResponse (json.dumps(response))
  
-    video_instance, error = get_video_url_from_episode_or_trailer (id=urs_instance.LinkId, type_r=urs_instance.LinkType, video_q=0, is_url=False)
+    isMobile = mobileBrowser(request)
+    v_q = 0
+    if isMobile:
+        v_q = 1
+ 
+    video_instance, error = get_video_url_from_episode_or_trailer (id=urs_instance.LinkId, type_r=urs_instance.LinkType, video_q=v_q, is_url=False)
     if error:
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
         return HttpResponse (json.dumps(response))
@@ -181,7 +186,7 @@ def index(request, u_url):
                 return HttpResponse (json.dumps(response))'''
     
     
-    if mobileBrowser(request):
+    if isMobile:
         #template_h = 'video_mobile.html'
         template_h = 'mobilepage.html'
     else:
