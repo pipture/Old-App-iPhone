@@ -20,6 +20,7 @@
 @property (retain, nonatomic) IBOutlet UILabel *titleLabel;
 @property (retain, nonatomic) IBOutlet UILabel *priceLabel;
 @property (retain, nonatomic) IBOutlet UIView *navigationPanel;
+@property (retain, nonatomic) IBOutlet UIView *progressView;
 
 - (IBAction)onCloseTap:(id)sender;
 - (IBAction)onLibraryCardTap:(id)sender;

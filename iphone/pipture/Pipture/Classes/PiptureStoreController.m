@@ -17,6 +17,7 @@
 @synthesize titleLabel;
 @synthesize priceLabel;
 @synthesize navigationPanel;
+@synthesize progressView;
 
 
 static NSString* const activeImage = @"active-librarycard.png";
@@ -237,11 +238,13 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (void) onAlbumsUpdate:(NSNotification *) notification {
+    progressView.hidden = YES;
     [self updateAlbums];
 }
 
 
 - (void) onNewBalance:(NSNotification *) notification {
+    progressView.hidden = YES;
     [self displayLibraryCard];
 }
 
@@ -269,6 +272,8 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
+    
+    progressView.hidden = YES;
     
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     singleFingerTap.cancelsTouchesInView = NO;
@@ -330,6 +335,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     [self setPriceLabel:nil];
     [self setNavigationPanel:nil];
     [self setScrollView:nil];
+    [self setProgressView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -345,10 +351,12 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     [coverItems release];
     [self unsubscribeModel];
     [model release];
+    [progressView release];
     [super dealloc];
 }
 
 - (IBAction)onLibraryCardTap:(id)sender {
+    progressView.hidden = NO;
     [[PiptureAppDelegate instance] buyViews];
 }
 
@@ -374,6 +382,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (IBAction)onBuyButton:(id)sender {
+    progressView.hidden = NO;
     [model buyAlbumAtPage:[self getPageNumber]];
 }
 

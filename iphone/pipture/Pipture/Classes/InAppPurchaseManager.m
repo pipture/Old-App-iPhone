@@ -306,6 +306,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         
         [[PiptureAppDelegate instance] dismissModalBusy];
         NSLog(@"InApp transaction failed!");
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];
     }
     
     isInProcess = NO;
@@ -349,6 +351,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
         
         TRACK_EVENT(@"Purchase", @"Credits purchasing cancelled by user");
+        [[NSNotificationCenter defaultCenter] postNotificationName:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];
     }
 } 
 

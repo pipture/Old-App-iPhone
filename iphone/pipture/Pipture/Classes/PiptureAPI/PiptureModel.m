@@ -319,7 +319,7 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
                 // Time is taken for delivering this message so real server time is later. But it's ok for our purpose of 
                 // scheduling next timeslot updates
                 NSDate* serverTime = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]];
-                serverTimeDelta = [serverTime timeIntervalSinceDate:[NSDate dateWithTimeIntervalSinceNow:0]];
+                serverTimeDelta = [serverTime timeIntervalSinceDate:[NSDate dateWithTimeIntervalSinceNow:10]];
             }
             
             NSArray* timeslots = [[PiptureModel parseItems:jsonResult jsonArrayParamName:JSON_PARAM_TIMESLOTS itemCreator:^(NSDictionary*jsonIT)
