@@ -758,6 +758,11 @@
         self.playlist = playlistItems;
         
         [self initVideo];
+    } else {
+        NSLog(@"Empty playlist");
+        [self goBack];
+        
+        SHOW_ERROR(@"Playing failed", @"Playlist is empty!");
     }
 }
 
