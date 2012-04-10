@@ -53,6 +53,7 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) IBOutlet UINavigationBar *navigationFake;
 @property (retain, nonatomic) IBOutlet UINavigationItem *navigationItemFake;
 @property (retain, nonatomic) IBOutlet UITableViewCell *emptyCell;
+@property (retain, nonatomic) IBOutlet UIView *progressView;
 
 @property (retain, nonatomic) LibraryCardController *cardSectionViewController;
 

@@ -45,5 +45,6 @@
 @property (retain, nonatomic) IBOutlet UIView *flipEnhancer;
 @property (retain, nonatomic) IBOutlet UIButton *searchButton;
 @property (retain, nonatomic) IBOutlet UIButton *storeButton;
+@property (retain, nonatomic) IBOutlet UIView *progressView;
 
 @end

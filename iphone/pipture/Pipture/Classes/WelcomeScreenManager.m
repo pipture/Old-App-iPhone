@@ -62,7 +62,16 @@
     titleLabel.text = title;
     
     [messageLabel setTextWithVerticalResize:message];
+
     
+    if (!logo) {
+        CGRect r = okButton.frame;
+        int pos = 100 + messageLabel.frame.size.height;
+        int hhh = (parentView.frame.size.height - pos)/2;
+        pos += hhh/2;
+        pos -= r.size.height/2;
+        okButton.frame = CGRectMake(r.origin.x, pos, r.size.width, r.size.height);
+    }
     
     [okButton addTarget:self action:@selector(okPressed:) forControlEvents:UIControlEventTouchUpInside];
     

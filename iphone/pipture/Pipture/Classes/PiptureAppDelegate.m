@@ -626,6 +626,8 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (void)buyViews {
+    [[NSNotificationCenter defaultCenter] postNotificationName:BUY_VIEWS_NOTIFICATION object:nil];    
+    
     if ([purchases canMakePurchases]) {
         [purchases purchaseCredits];
     } else {
@@ -745,6 +747,9 @@ NSInteger networkActivityIndecatorCount;
     [busyView loadView];
     if (!spinner) {
         busyView.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
+        busyView.spinner.hidden = NO;
+    } else {
+        busyView.spinner.hidden = YES;
     }
         
     [[self window] bringSubviewToFront:busyView.view];

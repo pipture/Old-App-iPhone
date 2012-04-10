@@ -10,6 +10,7 @@
 #import "DataRequestError.h"
 
 #define NEW_BALANCE_NOTIFICATION @"PiptureNewBalanceNotification"
+#define BUY_VIEWS_NOTIFICATION @"PiptureBuyViewsNotification"
 @interface NetworkErrorAlerter : NSObject <UIAlertViewDelegate>{
     BOOL isAlertShowing;
     id<UIAlertViewDelegate> wrappedDelegate;    

@@ -71,6 +71,7 @@
 @synthesize cardSectionViewController;
 @synthesize editMessageLabel;
 @synthesize cancelButton;
+@synthesize progressView;
 @synthesize emptyCell;
 @synthesize numberOfViewsTextField;
 @synthesize timeslotId;
@@ -173,6 +174,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     screenshotCell.accessoryType = UITableViewCellAccessoryNone;
     
     lastScreenshotView = nil;
+    progressView.hidden = YES;
 
     
     nameTextField.text = [[PiptureAppDelegate instance] getUserName];  
@@ -182,6 +184,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardA7" bundle:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBuyViews:) name:BUY_VIEWS_NOTIFICATION object:nil]; 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:nil]; 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:VIEWS_PURCHASED_NOTIFICATION object:nil];   
 }
 
@@ -372,6 +376,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self setInfiniteRadioButtonsGroupView:nil];
     [self setEditMessageLabel:nil];
     [self setCancelButton:nil];
+    [self setProgressView:nil];
     [super viewDidUnload];
 }
 
@@ -516,6 +521,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [infiniteRadioButtonsGroupView release];
     [editMessageLabel release];
     [cancelButton release];
+    [progressView release];
     [super dealloc];
 }
 
@@ -606,8 +612,13 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [[[PiptureAppDelegate instance] networkErrorAlerter] showStandardAlertForError:error];
 }
 
+- (void) onBuyViews:(NSNotification *) notification {
+    progressView.hidden = NO;
+}
+
 - (void) onNewBalance:(NSNotification *) notification {
-    if (layoutTableView.contentOffset.x > MESSAGE_EDITING_SCROLL_OFFSET) {
+    progressView.hidden = YES;
+   if (layoutTableView.contentOffset.x > MESSAGE_EDITING_SCROLL_OFFSET) {
         [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
     }
     [self showScrollingHintIfNeeded];

@@ -33,6 +33,7 @@
 @synthesize flipEnhancer;
 @synthesize searchButton;
 @synthesize storeButton;
+@synthesize progressView;
 
 
 #pragma mark - View lifecycle
@@ -266,12 +267,26 @@
     self.navigationItem.leftBarButtonItem = store;
     [store release];
 
+    progressView.hidden = YES;
+    
     [self setHomeScreenMode:[[PiptureAppDelegate instance] getHomescreenState]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBuyViews:) name:BUY_VIEWS_NOTIFICATION object:nil]; 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onViewsPurchased:) name:VIEWS_PURCHASED_NOTIFICATION object:nil]; 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAlbumPurchased:) name:ALBUM_PURCHASED_NOTIFICATION object:nil];
 }
 
+- (void) onBuyViews:(NSNotification *) notification {
+    progressView.hidden = NO;
+}
+
+- (void) onNewBalance:(NSNotification *) notification {
+    progressView.hidden = YES;
+}
+
 - (void) onViewsPurchased:(NSNotification *) notification {
+    progressView.hidden = YES;
     if (homeScreenMode == HomeScreenMode_Albums) {
         [albumsView showScrollingHintIfNeeded];
     }
@@ -296,6 +311,7 @@
     [self setFlipEnhancer:nil];
     [self setSearchButton:nil];
     [self setStoreButton:nil];
+    [self setProgressView:nil];
     [super viewDidUnload];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -397,6 +413,7 @@
 
     [searchButton release];
     [storeButton release];
+    [progressView release];
     [super dealloc];
 }
 
@@ -557,7 +574,7 @@
             case HomeScreenMode_Albums:
                 [[PiptureAppDelegate instance] 
                  showWelcomeScreenWithTitle:@"About Pipture Library"                                                 
-                 message:@"Add views to your Library Card and gain\naccess to the entire collection of videos that\nhave already been broadcast on Pipture.\n\nEach time you watch or send a video, a\n view will be deducted from your card. You\nget unlimited views if you purchase Albums.\n\nTo add 100 views, which is at $0.99, or only\n $0.0099 per view, click the Store button at the top left in the Library. Enjoy!" 
+                 message:@"Add Views to your Library Card and gain\naccess to the entire collection of videos that\nhave already been broadcast on Pipture.\n\nEach time you watch or send a video, a\n View will be deducted from your card. You\nget unlimited views if you purchase Albums.\n\nTo add 100 Views, which is at $0.99, or only\n $0.0099 per view, click the Store button at the top left in the Library. Enjoy!" 
                  storeKey:@"LibraryWelcomeShown" image:NO tag:WELCOMESCREEN_LIBRARY delegate:self];
                 
                 [tabbarContainer addSubview:albumsView];

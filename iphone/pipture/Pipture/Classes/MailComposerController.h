@@ -47,6 +47,7 @@
 @property (retain, nonatomic) LibraryCardController *cardSectionViewController;
 @property (retain, nonatomic) IBOutlet UILabel *editMessageLabel;
 @property (retain, nonatomic) IBOutlet UIButton *cancelButton;
+@property (retain, nonatomic) IBOutlet UIView *progressView;
 
 - (IBAction)onCancel:(id)sender;
 - (IBAction)onRadioButtonTap:(id)sender;

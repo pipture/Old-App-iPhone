@@ -105,12 +105,14 @@
     if (0 == rng.location) {
         [[PiptureAppDelegate instance] setUserPurchasedAlbumSinceAppStart:YES];                
         [[NSNotificationCenter defaultCenter] postNotificationName:ALBUM_PURCHASED_NOTIFICATION object:nil];
+        NSString * albPurch = [NSString stringWithFormat:@"Album purchased: %@", appleProductId_];
+        TRACK_EVENT(@"PurchaseAlbum", albPurch);
     } else {
         [[PiptureAppDelegate instance] setUserPurchasedViewsSinceAppStart:YES];        
         [[NSNotificationCenter defaultCenter] postNotificationName:VIEWS_PURCHASED_NOTIFICATION object:nil];
-        
+        TRACK_EVENT(@"Purchase", @"100 Views purchased");
     }
-    TRACK_EVENT(@"Purchase", @"100 Views purchased");
+    
     [self release];    
 }
 
@@ -233,7 +235,8 @@
 
 - (void)purchaseAlbum:(NSString*)appleProductId {
     
-    TRACK_EVENT(@"PurchaseAlbum", @"Start album purchasing");
+    NSString * albPurch = [NSString stringWithFormat:@"Album purchased: %@", appleProductId];
+    TRACK_EVENT(@"PurchaseAlbum", albPurch);
     isInProcess = YES;
     [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:YES completion:^{
         SKPayment *payment = [SKPayment paymentWithProductIdentifier:appleProductId];

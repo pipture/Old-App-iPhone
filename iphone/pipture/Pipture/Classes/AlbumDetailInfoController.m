@@ -43,6 +43,7 @@
 @synthesize purchasedInfoView;
 @synthesize cardSectionViewController;
 @synthesize emptyCell;
+@synthesize progressView;
 
 
 #pragma mark - View lifecycle
@@ -144,9 +145,12 @@
     cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardB8" bundle:nil];
     libraryCardHeight = cardSectionViewController.view.frame.size.height;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBuyViews:) name:BUY_VIEWS_NOTIFICATION object:nil]; 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:nil]; 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:VIEWS_PURCHASED_NOTIFICATION object:nil]; 
     
     detailsReceived = NO;
+    progressView.hidden = YES;
     
     asyncImageViews = [[NSMutableDictionary alloc] init];    
     [self tabChanged:detailsButton];
@@ -173,6 +177,7 @@
     [self setCardSectionViewController:nil];
     [self setEmptyCell:nil];
     [self setPurchasedInfoView:nil];
+    [self setProgressView:nil];
     [super viewDidUnload];
 }
 
@@ -198,6 +203,7 @@
     [cardSectionViewController release];
     [purchasedInfoView release];
     [scrollingHintController release];
+    [progressView release];
     [super dealloc];
 }
 
@@ -433,7 +439,12 @@
     SHOW_ERROR(@"Playing failed", @"Authentication failed");
 }
 
+- (void) onBuyViews:(NSNotification *) notification {
+    progressView.hidden = NO;
+}
+
 - (void) onNewBalance:(NSNotification *) notification {
+    progressView.hidden = YES;
     if (viewType == DetailAlbumViewType_Videos) {
         [self showScrollingHintIfNeeded];
     }
