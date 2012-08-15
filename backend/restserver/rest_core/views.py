@@ -957,14 +957,19 @@ def update_pip_user (pipUsersEmail, password):
 
 def get_cover():
     from restserver.pipture.models import PiptureSettings
-    pipture_settings = PiptureSettings.objects.all()[0]
-    cover = pipture_settings.Cover
-    if cover.name is None or cover.name == "":
+    try:
+        album = PiptureSettings.objects.all()[0].Album
+        cover = PiptureSettings.objects.all()[0].Cover
+    except IndexError:
+        album = None
+        cover = None
+        
+    if cover is None or cover.name is None or cover.name == "":
         cover = ""
     else:
         cover = (cover._get_url()).split('?')[0]
 
-    return cover, pipture_settings.Album
+    return cover, album
 
 @csrf_exempt
 def register(request):
