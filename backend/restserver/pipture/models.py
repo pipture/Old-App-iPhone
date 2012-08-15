@@ -10,6 +10,7 @@ from django.db import models
 #from django.db.models import F
 #from django.conf import settings
 #from django.core.exceptions import ValidationError
+from django.db.models.deletion import SET_NULL
 from django.db.models.signals import post_save, post_syncdb
 #from django.contrib import admin
 #from django.contrib.contenttypes.models import ContentType
@@ -380,8 +381,8 @@ class TimeSlotVideos(models.Model):
 
 class PiptureSettings(models.Model):
     PremierePeriod = models.IntegerField(help_text='Count of days after premiere', verbose_name="Premiere period")
-    Album = models.ForeignKey(Albums, null=True)
     Cover = S3EnabledFileField(upload_to=u'documents/', verbose_name="Upload cover image here", blank=True)
+    Album = models.ForeignKey(Albums, null=True, on_delete=SET_NULL)
     VideoHost = models.CharField(verbose_name="Enter URL for video messages", max_length=100)
 
     def validate_unique(self, exclude = None):
