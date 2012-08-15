@@ -1,12 +1,16 @@
-from django.db import models
-from django.conf import settings
-from boto.s3.connection import S3Connection
-from boto.s3.key import Key
-from django.core.files.storage import FileSystemStorage
-from django.core.files import File
 import os
 
-def get_sha1_from_file (content):
+from django.db import models
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+from django.core.files import File
+
+from boto.s3.connection import S3Connection
+from boto.s3.key import Key
+#from south.modelsinspector import add_introspection_rules
+
+
+def get_sha1_from_file(content):
     try:
         import hashlib
         h = hashlib.sha1()
@@ -15,6 +19,7 @@ def get_sha1_from_file (content):
     except Exception as e:
         return (None, e)
     return (hash, None)
+
 
 class S3Storage(FileSystemStorage):
     def __init__(self, bucket=None, location=None, base_url=None):
@@ -31,32 +36,32 @@ class S3Storage(FileSystemStorage):
         class S3File(File):
             def __init__(self, key):
                 self.key = key
-            
+
             def size(self):
                 return self.key.size
-            
+
             def read(self, *args, **kwargs):
                 return self.key.read(*args, **kwargs)
-            
+
             def write(self, content):
                 self.key.set_contents_from_string(content)
-            
+
             def close(self):
                 self.key.close()
-                
+
         return S3File(Key(self.bucket, name))
 
     def _save(self, name, content):
-        
+
         fileName, fileExtension = os.path.splitext(name)
-           
+
         sha1_hash, error_code = get_sha1_from_file (content)
         if error_code:
             content.close()
             raise error_code
         else:
             name = "%s%s" % (sha1_hash,fileExtension)
-        
+
         key = Key(self.bucket, name)
         if hasattr(content, 'temporary_file_path'):
             content = content.temporary_file_path()
@@ -86,17 +91,40 @@ class S3Storage(FileSystemStorage):
 
     def url(self, name):
         return Key(self.bucket, name).generate_url(100000)
-    
+
     def get_available_name(self, name):
         return name
-        
+
 
 class S3EnabledFileField(models.FileField):
-    def __init__(self, bucket=settings.DEFAULT_BUCKET, verbose_name=None, name=None, upload_to='', storage=None, **kwargs):
+    def __init__(self, bucket=None, verbose_name=None,
+                 name=None, upload_to='', storage=None, **kwargs):
+        if bucket is None:
+            bucket = settings.DEFAULT_BUCKET
+
         if settings.USE_AMAZON_S3:
-            self.connection = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+            self.connection = S3Connection(settings.AWS_ACCESS_KEY_ID,
+                                           settings.AWS_SECRET_ACCESS_KEY)
             if not self.connection.lookup(bucket):
                 self.connection.create_bucket(bucket)
             self.bucket = self.connection.get_bucket(bucket)
             storage = S3Storage(self.bucket)
-        super(S3EnabledFileField, self).__init__(verbose_name, name, upload_to, storage, **kwargs)  
+        super(S3EnabledFileField, self).__init__(
+                verbose_name, name, upload_to, storage, **kwargs
+            )
+
+#
+#s3_file_rules = [
+#    (
+#        (S3EnabledFileField, ),
+#        [],
+#        {
+#            "null": ["null", {"default": False}],
+#            "blank": ["blank", {"default": False}],
+#        }
+#    )
+#]
+#
+#add_introspection_rules(
+#        s3_file_rules, ('^restserver\.s3\.s3FileField\.S3EnabledFileField',)
+#    )

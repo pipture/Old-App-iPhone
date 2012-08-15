@@ -1,20 +1,21 @@
-from django.shortcuts import render_to_response, redirect
-from django.template.context import RequestContext
-from django.core.context_processors import csrf
-from django.http import HttpResponse
 import json
 #import os
 
-from django.conf import settings
+#from django.shortcuts import render_to_response, redirect
+#from django.template.context import RequestContext
+#from django.core.context_processors import csrf
+from django.http import HttpResponse
+#from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.csrf import csrf_exempt
 
-from restserver.pipture.models import Series 
+from restserver.pipture.models import Series
 from restserver.pipture.models import Albums
 from restserver.pipture.models import TimeSlots
 from restserver.pipture.models import Trailers
 from restserver.pipture.models import Episodes
 from restserver.pipture.models import TimeSlotVideos
-from django.contrib.admin.views.decorators import staff_member_required
-from django.views.decorators.csrf import csrf_exempt
+
 
 @staff_member_required
 def index (request):
@@ -25,7 +26,7 @@ def index (request):
             'albums': Albums.objects.all(),
             'trailers': Trailers.objects.all()}
     return render_to_response('TimeSlotManage.html', data,
-                                       context_instance=RequestContext(request))'''        
+                                       context_instance=RequestContext(request))'''
 
 #----------------actual----------------------------
 
@@ -68,20 +69,20 @@ def get_trailer_title_by_id (id):
     except:
         return None
     else:
-        return trailer.complexName    
+        return trailer.complexName
 
-@staff_member_required    
+@staff_member_required
 def get_timeslot_videos(request):
     if request.method != 'GET':
         return HttpResponse ("There is GET method only.")
-        
+
     chosen_timeslot = request.GET.get('chosen_timeslot', None)
     if not chosen_timeslot:
         return HttpResponse ("There is no chosen_timeslot in params.")
-    
+
 
     timeslot = get_timeslot_entity_by_id(chosen_timeslot)
-    
+
     if not timeslot:
         result = "There is no timeslots for chosen_timeslot in params."
     else:
@@ -98,16 +99,19 @@ def get_timeslot_videos(request):
 
 @staff_member_required
 def get_album_videos(request):
+    """
+
+    """
     if request.method != 'GET':
         return HttpResponse ("There is GET method only.")
-        
+
     chosen_album = request.GET.get('chosen_album', None)
     if not chosen_album:
         return chosen_album ("There is no chosen_album in params.")
-    
+
 
     album = get_album_entity_by_id(chosen_album)
-    
+
     if not album:
         result = "There is no album for chosen_album in params."
     else:
@@ -123,9 +127,9 @@ def set_timeslot (request):
     if request.method == 'POST':
         searches = request.POST.lists()
         result_json = None
-        
+
         for (k, v) in searches:
-            if k == u'csrfmiddlewaretoken': 
+            if k == u'csrfmiddlewaretoken':
                 continue
             elif k == u'result_json':
                 try:
@@ -133,7 +137,7 @@ def set_timeslot (request):
                 except Exception as e:
                     return HttpResponse ("There is internal error %s (%s)." % (e, type (e)))
 
-        
+
         if not result_json:
             return HttpResponse("Nothing to add.")
         result = json.loads(result_json)
@@ -152,7 +156,7 @@ def set_timeslot (request):
                 video.save()
             except Exception as e:
                 return HttpResponse ("There is internal error %s (%s)." % (e, type (e)))
-        
+
         return HttpResponse("TimeSlot was saved.")
 
     else:
@@ -165,28 +169,28 @@ def update_views (request):
         user_id = request.POST.get("usr_id")
 
         response = {}
-        
+
         from restserver.pipture.models import SendMessage
-        
+
         try:
             urs_instance = SendMessage.objects.get(Url=message_id)
         except SendMessage.DoesNotExist:
             response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Url not found"}
             return HttpResponse (json.dumps(response))
-        
+
         if urs_instance.UserId.UserUID != user_id:
             response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Url not found"}
             return HttpResponse (json.dumps(response))
-        
+
         urs_instance.ViewsCount = urs_instance.ViewsCount + 1
         urs_instance.save()
-        
+
         response["Result"] = {"new_counter": urs_instance.ViewsCount }
         return HttpResponse (json.dumps(response))
 
     else:
         return HttpResponse("There is POST method only.")'''
-    
+
     return HttpResponse("Error")
 
 #----------------actual----------------------------
@@ -199,17 +203,17 @@ def get_all_series ():
         return None
     else:
         return dict([(series.SeriesId, series.Title) for series in all_series])
-        
+
 def get_all_series_get (request):
-    return HttpResponse (json.dumps(get_all_series()))    
-    
+    return HttpResponse (json.dumps(get_all_series()))
+
 
 def get_series_entity_by_id(id):
     try:
         id = int(id)
     except:
         return None
-    
+
     try:
         series = Series.objects.get(series_id=id)
     except:
@@ -223,9 +227,9 @@ def set_new_album_post (request):
         searches = request.POST.lists()
         new_album = None
         chosen_series = None
-        
+
         for (k, v) in searches:
-            if k == u'csrfmiddlewaretoken': 
+            if k == u'csrfmiddlewaretoken':
                 continue
             elif k == u'chosen_series':
                 try:
@@ -237,7 +241,7 @@ def set_new_album_post (request):
                     new_album = str(v[0]).strip()
                 except Exception as e:
                     return HttpResponse ("There is internal error %s (%s)." % (e, type (e)))
-        
+
         if not new_album:
             return HttpResponse("Nothing to add.")
         elif not chosen_series:
@@ -247,7 +251,7 @@ def set_new_album_post (request):
             return HttpResponse("There is no : %s series." % (chosen_series))
         (albums, error) = get_albums_from_series(chosen_series)
         if error:
-            return HttpResponse("There is error: %s." % (error)) 
+            return HttpResponse("There is error: %s." % (error))
 
         for id, items in albums.items():
             if items == new_album:
@@ -262,20 +266,20 @@ def set_new_album_post (request):
     else:
         return HttpResponse("There is POST method only.")
 
-@staff_member_required    
+@staff_member_required
 def set_new_series_post (request):
     if request.method == 'POST':
         searches = request.POST.lists()
         new_series = ""
         for (k, v) in searches:
-            if k == u'csrfmiddlewaretoken': 
+            if k == u'csrfmiddlewaretoken':
                 continue
             elif k == u'new_series':
                 try:
                     new_series = str(v[0]).strip()
                 except Exception as e:
                     return HttpResponse ("There is internal error %s (%s)." % (e, type (e)))
-        
+
         if not new_series:
             return HttpResponse("Nothing to add.")
         all_series = get_all_series()
@@ -298,25 +302,25 @@ def get_albums_by_series_get (request):
         searches = request.GET.lists()
         chosen_series = None
         for (k, v) in searches:
-            if k == u'csrfmiddlewaretoken': 
+            if k == u'csrfmiddlewaretoken':
                 continue
             elif k == u'chosen_series':
                 try:
                     chosen_series = int(v[0])
                 except Exception as e:
                     return HttpResponse ("There is internal error %s (%s)." % (e, type (e)))
-        
+
         if not chosen_series:
             return HttpResponse("Nothing to refresh, there is no 'chosen_series'.")
         (albums, error) = get_albums_from_series(chosen_series)
         if error:
-            return HttpResponse("There is error: %s." % (error)) 
+            return HttpResponse("There is error: %s." % (error))
         else:
             return HttpResponse(json.dumps(albums))
-            
+
     else:
         return HttpResponse("There is GET method only.")
-    
+
 def get_albums_from_series (series_id):
     '''returns (result, error)'''
     try:

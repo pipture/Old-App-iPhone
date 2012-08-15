@@ -16,7 +16,7 @@ MANAGERS = ADMINS
 
 #there is a settings for local DB (sqlite)
 #lower: from settings_staging import *
-#There is overwriting DATABASES section 
+#There is overwriting DATABASES section
 
 DATABASES = {
     'default': {
@@ -82,7 +82,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'restserver.pipture.middleware.threadlocals.LocalUserMiddleware',
-    
 )
 
 ROOT_URLCONF = 'restserver.urls'
@@ -91,19 +90,18 @@ TEMPLATE_DIRS = (
     os.path.join(APP_DIR, 'templates'),
 )
 
-
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-     'django.contrib.admin',
-     'restserver.s3',
-     'restserver.rest_core',
-     'restserver.pipture',
-     'django.contrib.admindocs',
-     #'restserver.south',
+    'django.contrib.admin',
+    'restserver.s3',
+    'restserver.rest_core',
+    'restserver.pipture',
+    'django.contrib.admindocs',
+#    'restserver.south',
 )
 
 AUTH_PROFILE_MODULE = 'pipture.UserProfile'

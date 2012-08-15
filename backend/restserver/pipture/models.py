@@ -1,29 +1,28 @@
 # -*- coding: utf-8 -*-
 
-from django.db import models
-from django.db.models import F
-
-from restserver.s3.s3FileField import S3EnabledFileField
-from restserver.rest_core.views import local_date_time_date_time_to_UTC_sec
 import datetime
 import time
 import calendar
-
-
+import uuid
 from decimal import Decimal
-from django.conf import settings
-from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save
-from django.contrib import admin
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
 
+from django.db import models
+#from django.db.models import F
+#from django.conf import settings
+#from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save, post_syncdb
+#from django.contrib import admin
+#from django.contrib.contenttypes.models import ContentType
+#from django.contrib.contenttypes import generic
 from django.shortcuts import render_to_response, redirect
 from django.template.context import RequestContext
-from django.core.context_processors import csrf
-from django.http import HttpResponse
+#from django.core.context_processors import csrf
+#from django.http import HttpResponse
+from django.contrib.auth.models import User
 
-import uuid
+from restserver.s3.s3FileField import S3EnabledFileField
+#from restserver.rest_core.views import local_date_time_date_time_to_UTC_sec
+
 
 class Videos(models.Model):
     VideoId = models.AutoField (primary_key=True)
@@ -40,15 +39,12 @@ class Videos(models.Model):
 
     class Admin ():
         pass
-    
-    
+
     class Meta:
         verbose_name = "Video"
         verbose_name_plural = "Videos"
 
 
-
-            
 class Trailers(models.Model):
     TrailerId = models.AutoField(primary_key=True)
     VideoId = models.ForeignKey (Videos, verbose_name="Video for the trailer")
@@ -69,16 +65,16 @@ class Trailers(models.Model):
 
     class Admin:
         pass
-    
+
     class Meta:
         verbose_name = "Trailer"
         verbose_name_plural = "Trailers"
         ordering = ['Title', 'Line1', 'Line2']
 
-    def delete (self):        
+    def delete (self):
         return "You couldn't delete video. It maybe in timeslot."
-        
-        
+
+
 class Series(models.Model):
     SeriesId = models.AutoField (primary_key=True)
     Title = models.CharField (unique=True, max_length=100)
@@ -96,15 +92,15 @@ class Series(models.Model):
         verbose_name = "Series"
         verbose_name_plural = "Series"
         ordering = ['Title']
-        
-    
+
+
 class Albums(models.Model):
     PURCHASETYPE_CHOICES = (
         ('N', 'Not for sale'),
         ('P', 'Album pass'),
         ('B', 'Buy album'),
-    )    
-    
+    )
+
     AlbumId = models.AutoField (primary_key=True)
     SeriesId = models.ForeignKey (Series, verbose_name='Series for Album')
     TrailerId = models.ForeignKey (Trailers, verbose_name='Trailer for Album')
@@ -113,7 +109,7 @@ class Albums(models.Model):
     Title = models.CharField (max_length=100)
     Rating = models.CharField (max_length=100)
     Credits = models.CharField (blank=True, max_length=500)
-    Cover = S3EnabledFileField (upload_to=u'documents/', verbose_name='Landscape') 
+    Cover = S3EnabledFileField (upload_to=u'documents/', verbose_name='Landscape')
     Thumbnail = S3EnabledFileField (upload_to=u'documents/', verbose_name='Cover Thumbnail')
     CloseUpBackground = S3EnabledFileField (verbose_name='Cover', upload_to=u'documents/')
     SquareThumbnail = S3EnabledFileField (verbose_name='Default Screenshot', upload_to=u'documents/')
@@ -137,7 +133,7 @@ class Albums(models.Model):
 
     class Meta:
         verbose_name = "Album"
-        verbose_name_plural = "Albums"    
+        verbose_name_plural = "Albums"
         ordering = ['SeriesId__Title', 'Season', 'Title']
 
 
@@ -145,18 +141,18 @@ class AlbumScreenshotGallery(models.Model):
     AlbumId = models.ForeignKey (Albums)
     Description = models.CharField (help_text='Unique description for screenshot.',  max_length=100)
     Screenshot = S3EnabledFileField (upload_to=u'documents/')
-    ScreenshotLow = S3EnabledFileField (upload_to=u'documents/', blank=True) 
+    ScreenshotLow = S3EnabledFileField (upload_to=u'documents/', blank=True)
 
     @property
     def ScreenshotURL(self):
         return (self.Screenshot._get_url()).split('?')[0]
-    
+
     @property
     def ScreenshotURLLQ(self):
         if self.ScreenshotLow != None and self.ScreenshotLow.name != "":
             return (self.ScreenshotLow._get_url()).split('?')[0]
-        
-        return (self.Screenshot._get_url()).split('?')[0]  
+
+        return (self.Screenshot._get_url()).split('?')[0]
 
     def __unicode__(self):
         return "Album: %s; Screenshot: %s." % (self.AlbumId.Description, self.Description)
@@ -191,7 +187,7 @@ class Episodes(models.Model):
     @property
     def complexName (self):
         return "%s, S%s, A%s, E%s ,%s" %(self.AlbumId.SeriesId.Title, self.AlbumId.Season, self.AlbumId.Title, self.episodeNoInt, self.Title)
-    
+
     @property
     def episodeNoInt(self):
         return '%0*d' % (4, self.EpisodeNo)
@@ -207,10 +203,10 @@ class Episodes(models.Model):
 
     class Meta:
         verbose_name = "Episode"
-        verbose_name_plural = "Episodes"  
-        ordering = ['AlbumId__SeriesId__Title', 'AlbumId__Season', 'AlbumId__Title', 'EpisodeNo',  'Title']  
-        
-    def delete (self):        
+        verbose_name_plural = "Episodes"
+        ordering = ['AlbumId__SeriesId__Title', 'AlbumId__Season', 'AlbumId__Title', 'EpisodeNo',  'Title']
+
+    def delete (self):
         return "You couldn't delete video. It maybe in timeslot."
 
 
@@ -222,34 +218,34 @@ class TimeSlots(models.Model):
     EndTime = models.TimeField(verbose_name="End time")
     AlbumId = models.ForeignKey (Albums, verbose_name="Choose timeslot album")
     ScheduleDescription = models.CharField (blank=True, max_length=50, verbose_name="Schedule description")
-   
+
     @property
     def StartDateUTC(self):
         utc_time = datetime.datetime(self.StartDate.year, self.StartDate.month, self.StartDate.day)
         res_date = time.mktime(utc_time.timetuple())
-        return res_date 
-    
+        return res_date
+
     @property
     def EndDateUTC(self):
         utc_time = datetime.datetime(self.EndDate.year, self.EndDate.month, self.EndDate.day, 23, 59, 59)
         res_date = time.mktime(utc_time.timetuple())
-        return res_date  
-    
+        return res_date
+
     @property
     def StartTimeUTC(self):
         #res_now = self.now_seconds()
         res_sdate = self.get_startTime()
         return res_sdate
-        
+
 
     @property
     def EndTimeUTC(self):
         res_edate = self.get_endTime()
         res_sdate = self.get_startTime()
-        
+
         if res_edate <= res_sdate:
             res_edate = res_edate + 86400 #tomorrow AM time
-        
+
         return res_edate
 
     @property
@@ -260,59 +256,59 @@ class TimeSlots(models.Model):
         user_tz = user.get_profile().timezone
         return "%s, A%s, %s - %s (%s - %s)" % (self.AlbumId.SeriesId.Title, self.AlbumId.Title, self.StartDate, self.EndDate,  from_utc_to_local_time (user_tz, self.StartTime), from_utc_to_local_time (user_tz, self.EndTime))
 
-    
+
     def __unicode__(self):
         return self.complexName
 
     def __str__(self):
         return self.complexName
-    
+
     def now_seconds(self):
         today = datetime.datetime.utcnow()
         return calendar.timegm(today.timetuple())
-    
+
     def is_in_date_period(self):
         now = self.now_seconds()
         if (self.StartDateUTC < now < self.EndDateUTC):
             return True
         else:
             return False
-    
+
     def is_in_time_period(self):
         now = self.now_seconds()
         if (now < self.EndTimeUTC and now > self.StartTimeUTC):
             return True
         else:
             return False
-    
+
     def get_startTime(self):
         cur_date = datetime.date.today()
         utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, self.StartTime.hour, self.StartTime.minute, self.StartTime.second)
         res_date = time.mktime(utc_time.timetuple())
         return res_date
-    
+
     def get_endTime(self):
         cur_date = datetime.date.today()
         utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, self.EndTime.hour, self.EndTime.minute, self.EndTime.second)
         res_date = time.mktime(utc_time.timetuple())
         return res_date
-    
+
     def is_current (self):
         return (self.is_in_date_period() & self.is_in_time_period())
-        
+
     def manager_call(self, request):
         data = {'chosen_timeslot': self.TimeSlotsId,
                 'albums': Albums.objects.all(),
                 'trailers': Trailers.objects.all()}
-        return render_to_response('tsinline.html', data, context_instance=RequestContext(request)) 
-        
+        return render_to_response('tsinline.html', data, context_instance=RequestContext(request))
+
     @staticmethod
     def timeslot_is_current (timeslot_id):
         try:
             timeslot_id = int (timeslot_id)
         except:
             return False
-        
+
         #today = datetime.datetime.utcnow()
         #sec_utc_now = calendar.timegm(today.timetuple())
         #today_utc = datetime.datetime.utcfromtimestamp(sec_utc_now)
@@ -324,14 +320,15 @@ class TimeSlots(models.Model):
             return False
         else:
             return timeslot.is_current()
-        
+
     class Admin:
         pass
 
     class Meta:
         verbose_name = "Time slot"
-        verbose_name_plural = "Time slots"    
+        verbose_name_plural = "Time slots"
         ordering = ['AlbumId__SeriesId__Title', 'AlbumId__Title', 'StartTime']
+
 
 class TimeSlotVideos(models.Model):
 
@@ -339,7 +336,7 @@ class TimeSlotVideos(models.Model):
         ('E', 'Episodes'),
         ('T', 'Trailer'),
     )
-    
+
     TimeSlotVideosId = models.AutoField (primary_key=True)
     TimeSlotsId = models.ForeignKey (TimeSlots)
     Order = models.IntegerField()
@@ -347,8 +344,7 @@ class TimeSlotVideos(models.Model):
     #LinkId = models.ForeignKey (Videos)
     LinkType=  models.CharField(db_index=True, max_length=1, choices=LINKTYPE_CHOICES)
     AutoMode = models.IntegerField(max_length=1)
-    
-    
+
     @staticmethod
     def is_contain_id (timeslot_id, video_id, video_type):
         try:
@@ -356,7 +352,7 @@ class TimeSlotVideos(models.Model):
             video_id = int (video_id)
         except:
             return False
-        
+
         try:
             timeslot = TimeSlots.objects.get(TimeSlotsId=timeslot_id)
             is_contain = TimeSlotVideos.objects.filter(TimeSlotsId=timeslot,LinkType=video_type, LinkId= video_id)
@@ -367,7 +363,6 @@ class TimeSlotVideos(models.Model):
                 return True
             else:
                 return False
-
 
     def __unicode__(self):
         return "%s" % (self.TimeSlotVideosId)
@@ -380,11 +375,13 @@ class TimeSlotVideos(models.Model):
 
     class Meta:
         verbose_name = u"Video in time slot"
-        verbose_name_plural = u"Videos in time slot"        
+        verbose_name_plural = u"Videos in time slot"
+
 
 class PiptureSettings(models.Model):
     PremierePeriod = models.IntegerField(help_text='Count of days after premiere', verbose_name="Premiere period")
-    Cover = S3EnabledFileField (upload_to=u'documents/', verbose_name="Upload cover image here", blank=True)
+    Album = models.ForeignKey(Albums, null=True)
+    Cover = S3EnabledFileField(upload_to=u'documents/', verbose_name="Upload cover image here", blank=True)
     VideoHost = models.CharField(verbose_name="Enter URL for video messages", max_length=100)
 
     def validate_unique(self, exclude = None):
@@ -392,20 +389,20 @@ class PiptureSettings(models.Model):
         if PiptureSettings.objects.count() == 1 and self.id != PiptureSettings.objects.all()[0].id:
             raise ValidationError({NON_FIELD_ERRORS: ["There can be only one!"]})
 
-            
     class Admin:
         pass
 
     class Meta:
         verbose_name = "Pipture setting"
         verbose_name_plural = "Pipture settings"
-        
+
+
 class PipUsers(models.Model):
     UserUID= models.CharField (max_length=36, primary_key=True, default=uuid.uuid1)
     Token = models.CharField (unique=True, max_length=36, default=uuid.uuid1)
     RegDate = models.DateField(default=datetime.datetime.now)
     Balance = models.DecimalField(default=Decimal('0'), max_digits=10, decimal_places=0)
-    
+
     def __unicode__(self):
         return "%s" % (self.UserUID)
 
@@ -417,14 +414,15 @@ class PipUsers(models.Model):
 
     class Meta:
         verbose_name = "Pipture User"
-        verbose_name_plural = "Pipture Users"    
+        verbose_name_plural = "Pipture Users"
         ordering = ['RegDate']
+
 
 class PurchaseItems(models.Model):
     PurchaseItemId = models.AutoField (primary_key=True)
     Description = models.CharField (max_length=100, editable=False, verbose_name="Internal purchase description")
     Price = models.DecimalField( max_digits=7, decimal_places=0)
-    
+
     def __unicode__(self):
         return "%s" % (self.Description)
 
@@ -436,7 +434,7 @@ class PurchaseItems(models.Model):
 
     class Meta:
         verbose_name = "Purchase Item"
-        verbose_name_plural = "Purchase Items"    
+        verbose_name_plural = "Purchase Items"
 
 
 class UserPurchasedItems(models.Model):
@@ -446,7 +444,7 @@ class UserPurchasedItems(models.Model):
     PurchaseItemId = models.ForeignKey (PurchaseItems, editable=False)
     ItemId = models.CharField (editable=False, max_length=100)
     ItemCost = models.DecimalField(editable=False, max_digits=7, decimal_places=0)
-    
+
     def __unicode__(self):
         return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemId)
 
@@ -458,7 +456,8 @@ class UserPurchasedItems(models.Model):
 
     class Meta:
         verbose_name = "User Purchased Item"
-        verbose_name_plural = "User Purchased Items"    
+        verbose_name_plural = "User Purchased Items"
+
 
 class AppleProducts(models.Model):
     AppleProductId = models.AutoField (primary_key=True)
@@ -466,7 +465,7 @@ class AppleProducts(models.Model):
     Description = models.CharField (max_length=100)
     Price = models.DecimalField( max_digits=7, decimal_places=4)
     ViewsCount = models.IntegerField()
-    
+
     def __unicode__(self):
         return "%s" % (self.Description)
 
@@ -478,7 +477,8 @@ class AppleProducts(models.Model):
 
     class Meta:
         verbose_name = "Apple Product"
-        verbose_name_plural = "Apple Products"    
+        verbose_name_plural = "Apple Products"
+
 
 class Transactions(models.Model):
     TransactionId = models.AutoField (primary_key=True)
@@ -488,7 +488,7 @@ class Transactions(models.Model):
     Timestamp = models.DateField(default=datetime.datetime.now)
     Cost = models.DecimalField(editable=False,  max_digits=7, decimal_places=4)
     ViewsCount = models.IntegerField()
-    
+
     def __unicode__(self):
         return "%s: %s - %s" % (self.Timestamp, self.UserId.UserUID, self.ProductId.Description)
 
@@ -500,13 +500,13 @@ class Transactions(models.Model):
 
     class Meta:
         verbose_name = "Transaction"
-        verbose_name_plural = "Transactions"    
+        verbose_name_plural = "Transactions"
         ordering = ['Timestamp']
 
 
 def to_uuid(value):
     from uuid import UUID
-    
+
     if isinstance(value, UUID) or value is None:
         return value
     elif isinstance(value, basestring):
@@ -525,7 +525,8 @@ def to_uuid(value):
 def uuid2shortid():
     from base64 import b64encode
     return b64encode(to_uuid(uuid.uuid4()).bytes, '-_')[:-2]
-        
+
+
 class SendMessage(models.Model):
 
     LINKTYPE_CHOICES = (
@@ -554,72 +555,70 @@ class SendMessage(models.Model):
 
     class Meta:
         verbose_name = "Sent Message"
-        verbose_name_plural = "Sent Messages"    
+        verbose_name_plural = "Sent Messages"
         ordering = ['-Timestamp']
 
-from django.contrib.auth.models import User
 
 US_TIMEZONES = (
-                ('America/New_York', 'America/New_York'), 
-                ('America/Detroit', 'America/Detroit'), 
-                ('America/Kentucky/Louisville', 'America/Kentucky/Louisville'), 
-                ('America/Kentucky/Monticello', 'America/Kentucky/Monticello'), 
-                ('America/Indiana/Indianapolis', 'America/Indiana/Indianapolis'), 
-                ('America/Indiana/Vincennes', 'America/Indiana/Vincennes'), 
-                ('America/Indiana/Winamac', 'America/Indiana/Winamac'), 
-                ('America/Indiana/Marengo', 'America/Indiana/Marengo'), 
-                ('America/Indiana/Petersburg', 'America/Indiana/Petersburg'), 
-                ('America/Indiana/Vevay', 'America/Indiana/Vevay'), 
-                ('America/Chicago', 'America/Chicago'), 
-                ('America/Indiana/Tell_City', 'America/Indiana/Tell_City'), 
-                ('America/Indiana/Knox', 'America/Indiana/Knox'), 
-                ('America/Menominee', 'America/Menominee'), 
-                ('America/North_Dakota/Center', 'America/North_Dakota/Center'), 
-                ('America/North_Dakota/New_Salem', 'America/North_Dakota/New_Salem'), 
-                ('America/North_Dakota/Beulah', 'America/North_Dakota/Beulah'), 
-                ('America/Denver', 'America/Denver'), 
-                ('America/Boise', 'America/Boise'), 
-                ('America/Shiprock', 'America/Shiprock'), 
-                ('America/Phoenix', 'America/Phoenix'), 
-                ('America/Los_Angeles', 'America/Los_Angeles'), 
-                ('America/Anchorage', 'America/Anchorage'), 
-                ('America/Juneau', 'America/Juneau'), 
-                ('America/Sitka', 'America/Sitka'), 
-                ('America/Yakutat', 'America/Yakutat'), 
-                ('America/Nome', 'America/Nome'), 
-                ('America/Adak', 'America/Adak'), 
-                ('America/Metlakatla', 'America/Metlakatla'), 
+                ('America/New_York', 'America/New_York'),
+                ('America/Detroit', 'America/Detroit'),
+                ('America/Kentucky/Louisville', 'America/Kentucky/Louisville'),
+                ('America/Kentucky/Monticello', 'America/Kentucky/Monticello'),
+                ('America/Indiana/Indianapolis', 'America/Indiana/Indianapolis'),
+                ('America/Indiana/Vincennes', 'America/Indiana/Vincennes'),
+                ('America/Indiana/Winamac', 'America/Indiana/Winamac'),
+                ('America/Indiana/Marengo', 'America/Indiana/Marengo'),
+                ('America/Indiana/Petersburg', 'America/Indiana/Petersburg'),
+                ('America/Indiana/Vevay', 'America/Indiana/Vevay'),
+                ('America/Chicago', 'America/Chicago'),
+                ('America/Indiana/Tell_City', 'America/Indiana/Tell_City'),
+                ('America/Indiana/Knox', 'America/Indiana/Knox'),
+                ('America/Menominee', 'America/Menominee'),
+                ('America/North_Dakota/Center', 'America/North_Dakota/Center'),
+                ('America/North_Dakota/New_Salem', 'America/North_Dakota/New_Salem'),
+                ('America/North_Dakota/Beulah', 'America/North_Dakota/Beulah'),
+                ('America/Denver', 'America/Denver'),
+                ('America/Boise', 'America/Boise'),
+                ('America/Shiprock', 'America/Shiprock'),
+                ('America/Phoenix', 'America/Phoenix'),
+                ('America/Los_Angeles', 'America/Los_Angeles'),
+                ('America/Anchorage', 'America/Anchorage'),
+                ('America/Juneau', 'America/Juneau'),
+                ('America/Sitka', 'America/Sitka'),
+                ('America/Yakutat', 'America/Yakutat'),
+                ('America/Nome', 'America/Nome'),
+                ('America/Adak', 'America/Adak'),
+                ('America/Metlakatla', 'America/Metlakatla'),
                 ('Pacific/Honolulu', 'Pacific/Honolulu'),
                 ('Asia/Omsk', 'Asia/Omsk'),
-                 
                 )
 
-class UserProfile(User):  
-    user = models.OneToOneField(User, editable=False)  
+
+class UserProfile(User):
+    user = models.OneToOneField(User, editable=False)
     #other fields here
     timezone = timezone = models.CharField(max_length=50, default='America/New_York', choices = US_TIMEZONES)
 
-    def __str__(self):  
+    def __str__(self):
         return "%s's profile" % self.user
 
-def create_user_profile(sender, instance, created, **kwargs):  
-    if created:  
-        profile, created = UserProfile.objects.get_or_create(user=instance)  
 
-post_save.connect(create_user_profile, sender=User) 
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        profile, created = UserProfile.objects.get_or_create(user=instance)
 
 def install(**kwargs):
-    
+
     if PurchaseItems.objects.count() == 0:
-        PurchaseItems(Description="WatchEpisode", Price=Decimal('1')).save()   
+        PurchaseItems(Description="WatchEpisode", Price=Decimal('1')).save()
         PurchaseItems( Description="SendEpisode", Price=Decimal('1')).save()
         PurchaseItems( Description="Album", Price=Decimal('0')).save()
-    
+
 
     if AppleProducts.objects.count() == 0:
-        AppleProducts(ProductId="com.pipture.Pipture.credits", Description = "Pipture credits.", Price=Decimal('0.99'), ViewsCount=(100)).save()   
-   
+        AppleProducts(ProductId="com.pipture.Pipture.credits", Description = "Pipture credits.", Price=Decimal('0.99'), ViewsCount=(100)).save()
+
     return
 
-from django.db.models.signals import post_syncdb
+post_save.connect(create_user_profile, sender=User)
 post_syncdb.connect(install)

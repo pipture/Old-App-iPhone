@@ -211,7 +211,8 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
             switch (errCode) {            
                 case 0:
                     sessionKey = [(NSString*)[jsonResult objectForKey:JSON_PARAM_SESSION_KEY] retain];
-                    NSDictionary * dic = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER], nil] forKeys:[NSArray arrayWithObjects:@"Cover", nil]];
+                    NSDictionary * dic = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER], nil] 
+                                                                     forKeys:[NSArray arrayWithObjects:@"Cover", nil]];
                     [receiver performSelectorOnMainThread:@selector(loggedIn:) withObject:dic waitUntilDone:YES];                    
                     break;
                 case 1:

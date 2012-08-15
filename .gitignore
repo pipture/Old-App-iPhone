@@ -3,3 +3,17 @@
 pipture/Pipture.xcodeproj/xcuserdata/imac.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
 pipture/Pipture.xcodeproj/xcuserdata/imac.xcuserdatad/xcschemes/Pipture.xcscheme
 pipture/Pipture.xcodeproj/xcuserdata/imac.xcuserdatad/xcschemes/xcschememanagement.plist
+.project
+.pydevproject
+.Python
+org.eclipse.core.resources.prefs
+settings_staging.py
+*.pyc
+*.swp
+*.swo
+*.db
+backend/bin/
+backend/lib/
+backend/include/
+backend/.idea/
+backend/restserver/.idea/
