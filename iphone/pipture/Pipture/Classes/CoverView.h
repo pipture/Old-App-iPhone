@@ -24,7 +24,7 @@
 
 @property (assign, nonatomic) id<HomeScreenDelegate> delegate;
 
-@property (retain, nonatomic) IBOutlet UIView *coverContainer;
+@property (retain, nonatomic) IBOutlet UIButton *coverContainer;
 @property (retain, nonatomic) IBOutlet UIView *coverPanel;
 @property (retain, nonatomic) IBOutlet UIButton *coverButton;
 @property (retain, nonatomic) IBOutlet UIButton *detailButton;

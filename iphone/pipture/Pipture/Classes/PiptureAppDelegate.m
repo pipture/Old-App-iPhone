@@ -39,6 +39,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize networkErrorAlerter = networkErrorAlerter_;
 @synthesize userPurchasedViewsSinceAppStart;
 @synthesize userPurchasedAlbumSinceAppStart;
+@synthesize albumForCover;
 
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
@@ -60,6 +61,7 @@ static PiptureAppDelegate *instance;
 - (void)dealloc
 {
     [coverImage release];
+    [albumForCover release];
     [networkErrorAlerter_ release];
     [wifiConnection release];
     [welcomeScreen release];
@@ -308,9 +310,14 @@ static PiptureAppDelegate *instance;
     coverImage = [cov retain];
 }
 
+- (void)setAlbumForCoverFromJSON:(NSDictionary *)album {
+    albumForCover = [[Album alloc] initWithJSON:album];
+}
+
 -(void)loggedIn:(NSDictionary*)params
 {
     [self setCover:[params objectForKey:@"Cover"]];
+    [self setAlbumForCoverFromJSON:[params objectForKey:@"Album"]];
     
     if (loggedIn) {
         [self unsuspendPlayer];

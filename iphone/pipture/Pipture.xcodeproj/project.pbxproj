@@ -1332,6 +1332,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = "Thumbtack Technology";
 			};
 			buildConfigurationList = 38989CD8147A631E004DE1E0 /* Build configuration list for PBXProject "Pipture" */;
 			compatibilityVersion = "Xcode 3.2";

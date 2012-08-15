@@ -461,6 +461,11 @@
     [[PiptureAppDelegate instance] onStoreClick:sender];
 }
 
+- (IBAction)tapOnCover:(id)sender {
+    PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
+    [self showAlbumDetails:appDelegate.albumForCover];
+}
+
 - (void)createFlipAnimation {
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.5];
