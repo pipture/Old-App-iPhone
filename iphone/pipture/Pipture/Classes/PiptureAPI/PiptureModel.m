@@ -296,7 +296,15 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
 
 -(BOOL)getTimeslotsFromCurrentWithMaxCount:(NSInteger)maxCount receiver:(NSObject<TimeslotsReceiver>*)receiver
 {
-    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_CURRENT_TIMESLOTS_REQUEST, [NSNumber numberWithInt:maxCount]]];
+    NSDateFormatter *date_formater=[[NSDateFormatter alloc]init];
+    [date_formater setDateFormat:@"Z"];
+    NSString * tz=[date_formater stringFromDate:[NSDate date]];
+    
+    NSURL* url = [
+                  self buildURLWithRequest:[NSString stringWithFormat:GET_CURRENT_TIMESLOTS_REQUEST,
+                                           [NSNumber numberWithInt:maxCount],
+                                           [NSString stringWithString:(NSString *)tz]]
+                  ];
     
     return [self getTimeslotsWithURL:url receiver:receiver];
 }
