@@ -969,7 +969,9 @@ def get_cover():
     else:
         cover = (cover._get_url()).split('?')[0]
 
-    return cover, album_json_by_id(pipture_settings.Album, None)
+    album = pipture_settings.Album
+    album = album and album_json_by_id(album, None)
+    return cover, album
 
 @csrf_exempt
 def register(request):

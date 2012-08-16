@@ -34,7 +34,6 @@
 - (IBAction)flipAction:(id)sender;
 - (IBAction)searchAction:(id)sender;
 - (IBAction)storeAction:(id)sender;
-- (IBAction)tapOnCover:(id)sender;
 
 @property (retain, nonatomic) IBOutlet UIView *tabbarContainer;
 @property (retain, nonatomic) IBOutlet UIButton *flipButton;

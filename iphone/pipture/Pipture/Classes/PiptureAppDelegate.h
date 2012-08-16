@@ -125,6 +125,6 @@
 - (void)clearInAppPurchases;
 
 - (void)setCover:(NSString*)cover;
-- (void)setAlbumForCoverFromJSON:(NSDictionary*)album;
+- (void)setAlbumForCoverFromJSON:(id)album;
 
 @end

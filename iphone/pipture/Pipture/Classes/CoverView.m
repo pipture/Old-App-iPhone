@@ -78,6 +78,13 @@
     [self updateTimeSlotInfo:currentTimeslot];
 }
 
+-(void)hotNewsCoverClicked {
+    Album *album = [PiptureAppDelegate instance].albumForCover;
+    if (album) {
+        [self.delegate showAlbumDetails:album];
+    }
+}
+
 - (IBAction)coverClick:(id)sender {
     [self.delegate doFlip];
 }
@@ -98,7 +105,14 @@
     if (cover && cover.length > 0) {
         AsyncImageView *imageView = [[[AsyncImageView alloc] initWithFrame:rect] autorelease];
         [coverContainer addSubview:imageView];
-        [imageView loadImageFromURL:[NSURL URLWithString:cover] withDefImage:nil spinner:AsyncImageSpinnerType_Big localStore:YES force:NO asButton:NO target:nil selector:nil];
+        [imageView loadImageFromURL:[NSURL URLWithString:cover] 
+                       withDefImage:nil 
+                            spinner:AsyncImageSpinnerType_Big 
+                         localStore:YES 
+                              force:NO 
+                           asButton:YES 
+                             target:self 
+                           selector:@selector(hotNewsCoverClicked)];
     } else {
         UIImageView * imageView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cover-channel.jpg"]] autorelease];
         [coverContainer addSubview:imageView];

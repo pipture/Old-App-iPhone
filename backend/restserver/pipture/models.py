@@ -382,7 +382,7 @@ class TimeSlotVideos(models.Model):
 class PiptureSettings(models.Model):
     PremierePeriod = models.IntegerField(help_text='Count of days after premiere', verbose_name="Premiere period")
     Cover = S3EnabledFileField(upload_to=u'documents/', verbose_name="Upload cover image here", blank=True)
-    Album = models.ForeignKey(Albums, null=True, on_delete=SET_NULL)
+    Album = models.ForeignKey(Albums, blank=True, null=True, on_delete=SET_NULL)
     VideoHost = models.CharField(verbose_name="Enter URL for video messages", max_length=100)
 
     def validate_unique(self, exclude = None):

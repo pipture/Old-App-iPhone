@@ -310,8 +310,10 @@ static PiptureAppDelegate *instance;
     coverImage = [cov retain];
 }
 
-- (void)setAlbumForCoverFromJSON:(NSDictionary *)album {
-    albumForCover = [[Album alloc] initWithJSON:album];
+- (void)setAlbumForCoverFromJSON:(id)album {
+    if (album != [NSNull null]) {
+        albumForCover = [[Album alloc] initWithJSON:album];
+    }
 }
 
 -(void)loggedIn:(NSDictionary*)params

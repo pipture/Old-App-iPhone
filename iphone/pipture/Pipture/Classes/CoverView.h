@@ -18,13 +18,14 @@
 - (void)prepareWith:(id<HomeScreenDelegate>)parent;
 - (void)updateTimeSlotInfo:(Timeslot*)timeslot;
 - (void)allowShowBubble:(BOOL)allow;
+- (void)hotNewsCoverClicked;
 
 - (IBAction)coverClick:(id)sender;
 - (IBAction)detailsClick:(id)sender;
 
 @property (assign, nonatomic) id<HomeScreenDelegate> delegate;
 
-@property (retain, nonatomic) IBOutlet UIButton *coverContainer;
+@property (retain, nonatomic) IBOutlet UIView *coverContainer;
 @property (retain, nonatomic) IBOutlet UIView *coverPanel;
 @property (retain, nonatomic) IBOutlet UIButton *coverButton;
 @property (retain, nonatomic) IBOutlet UIButton *detailButton;
