@@ -290,7 +290,7 @@ class TimeSlots(models.Model):
     @property
     def complexName(self):
         from restserver.pipture.middleware import threadlocals
-        from restserver.pipture.admin import from_utc_to_local_time
+#        from restserver.pipture.admin import from_utc_to_local_time
         user = threadlocals.get_current_user()
         user_tz = user.get_profile().timezone
         return "%s, A%s, %s - %s (%s - %s)" % (self.AlbumId.SeriesId.Title,
@@ -309,16 +309,14 @@ class TimeSlots(models.Model):
         today = datetime.datetime.utcnow()
         return calendar.timegm(today.timetuple())
 
-    def is_in_date_period(self):
-        now = self.now_seconds()
-        if self.StartDateUTC < now < self.EndDateUTC:
+    def is_in_date_period(self, local_time):
+        if (self.StartDateUTC < local_time < self.EndDateUTC):
             return True
         else:
             return False
 
-    def is_in_time_period(self):
-        now = self.now_seconds()
-        if self.EndTimeUTC > now > self.StartTimeUTC:
+    def is_in_time_period(self, local_time):
+        if (local_time < self.EndTimeUTC and local_time > self.StartTimeUTC):
             return True
         else:
             return False
@@ -337,8 +335,8 @@ class TimeSlots(models.Model):
         res_date = time.mktime(utc_time.timetuple())
         return res_date
 
-    def is_current(self):
-        return self.is_in_date_period() & self.is_in_time_period()
+    def is_current (self, local_time):
+        return (self.is_in_date_period(local_time) & self.is_in_time_period(local_time))
 
     def manager_call(self, request):
         data = {'chosen_timeslot': self.TimeSlotsId,
@@ -349,23 +347,18 @@ class TimeSlots(models.Model):
                                   context_instance=RequestContext(request))
 
     @staticmethod
-    def timeslot_is_current(timeslot_id):
+    def timeslot_is_current (timeslot_id, sec_local_now):
         try:
             timeslot_id = int(timeslot_id)
         except ValueError:
             return False
 
-        #today = datetime.datetime.utcnow()
-        #sec_utc_now = calendar.timegm(today.timetuple())
-        #today_utc = datetime.datetime.utcfromtimestamp(sec_utc_now)
-        #timedelta_1 = datetime.timedelta(days=settings.ACTIVE_DAYS_TIMESLOTS)
-        #tomorrow = today_utc + timedelta_1
         try:
             timeslot = TimeSlots.objects.get(TimeSlotsId=timeslot_id)
         except TimeSlots.DoesNotExist:
             return False
         else:
-            return timeslot.is_current()
+            return timeslot.is_current(sec_local_now)
 
     class Admin:
         pass

@@ -43,25 +43,25 @@ def from_local_to_utc_datetime (tz, dtime):
     utc_time = user_tz.normalize(user_tz.localize(local_time)).astimezone(pytz.utc)
     return datetime.datetime(utc_time.year, utc_time.month, utc_time.day, utc_time.hour, utc_time.minute, utc_time.second)
 
-def from_local_to_utc_time (tz, time):
-    if (time == None):
-        return None
-    
-    user_tz = pytz.timezone(tz)
-    cur_date = datetime.date.today()
-    utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, time.hour, time.minute, time.second)
-    local_time = user_tz.normalize(user_tz.localize(utc_time)).astimezone(pytz.utc)
-    return datetime.time(local_time.hour, local_time.minute, local_time.second)
+#def from_local_to_utc_time (tz, time):
+#    if (time == None):
+#        return None
+#    
+#    user_tz = pytz.timezone(tz)
+#    cur_date = datetime.date.today()
+#    utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, time.hour, time.minute, time.second)
+#    local_time = user_tz.normalize(user_tz.localize(utc_time)).astimezone(pytz.utc)
+#    return datetime.time(local_time.hour, local_time.minute, local_time.second)
 
-def from_utc_to_local_time (tz, time):
-    if (time == None):
-        return None
-    
-    user_tz = pytz.timezone(tz)
-    cur_date = datetime.date.today()
-    utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, time.hour, time.minute, time.second)
-    local_time = pytz.utc.normalize(pytz.utc.localize(utc_time)).astimezone(user_tz)
-    return datetime.time(local_time.hour, local_time.minute, local_time.second)
+#def from_utc_to_local_time (tz, time):
+#    if (time == None):
+#        return None
+#    
+#    user_tz = pytz.timezone(tz)
+#    cur_date = datetime.date.today()
+#    utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day, time.hour, time.minute, time.second)
+#    local_time = pytz.utc.normalize(pytz.utc.localize(utc_time)).astimezone(user_tz)
+#    return datetime.time(local_time.hour, local_time.minute, local_time.second)
 
 def from_utc_to_local_datetime (tz, dtime):
     if (dtime == None):
@@ -123,17 +123,17 @@ class TimeSlotsAdmin(ButtonableModelAdmin):
         
     def save_model(self, request, obj, form, change):
         user_tz = request.user.get_profile().timezone
-        obj.StartTime = from_local_to_utc_time (user_tz, obj.StartTime)
-        obj.EndTime = from_local_to_utc_time (user_tz, obj.EndTime)
+#        obj.StartTime = from_local_to_utc_time (user_tz, obj.StartTime)
+#        obj.EndTime = from_local_to_utc_time (user_tz, obj.EndTime)
         obj.save()
     
     def get_form(self, request, obj=None, **kwargs):
         user_tz = request.user.get_profile().timezone
 
         form = super(self.__class__, self).get_form(request, obj, **kwargs)
-        if obj != None:
-            obj.StartTime = from_utc_to_local_time (user_tz, obj.StartTime)
-            obj.EndTime = from_utc_to_local_time (user_tz, obj.EndTime)
+#        if obj != None:
+#            obj.StartTime = from_utc_to_local_time (user_tz, obj.StartTime)
+#            obj.EndTime = from_utc_to_local_time (user_tz, obj.EndTime)
         return form    
 
 

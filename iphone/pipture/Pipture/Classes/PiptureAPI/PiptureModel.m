@@ -15,9 +15,11 @@
 @interface PiptureModel(Private)
 
 -(NSURL*)buildURLWithRequest:(NSString*)request;
--(NSURL*)buildURLWithRequest:(NSString*)request sendAPIVersion:(BOOL)sendAPIVersion
-                     sendKey:(BOOL)sendKey;
--(BOOL)getTimeslotsWithURL:(NSURL*)url 
+-(NSURL*)buildURLWithRequest:(NSString*)request
+              sendAPIVersion:(BOOL)sendAPIVersion
+                     sendKey:(BOOL)sendKey 
+                sendTimezone:(BOOL)timeZone;
+-(BOOL)getTimeslotsWithURL:(NSURL*)url
                   receiver:(NSObject<TimeslotsReceiver>*)receiver;
 
 + (NSMutableArray *)parseItems:(NSDictionary *)jsonResult
@@ -74,6 +76,7 @@ static NSString* const REST_PARAM_TIMESLOT_ID = @"TimeslotId";
 static NSString* const REST_PARAM_SCREENSHOT_IMAGE = @"ScreenshotURL";
 static NSString* const REST_PARAM_USER_NAME = @"UserName";
 static NSString* const REST_PARAM_PERIOD = @"Period";
+static NSString* const REST_PARAM_TIMEZONE = @"tz";
 
 static NSString* const JSON_PARAM_CURRENT_TIME = @"CurrentTime";
 static NSString* const JSON_PARAM_TIMESLOTS = @"Timeslots";
@@ -205,7 +208,8 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
 {
     NSURL* url = [self buildURLWithRequest:LOGIN_REQUEST 
                             sendAPIVersion:NO
-                                   sendKey:NO];
+                                   sendKey:NO
+                              sendTimezone:NO];
     
     NSString*params = [NSString stringWithFormat:@"%@=%@&%@=%@",
                        REST_PARAM_API, API_VERSION, REST_PARAM_UUID, uuid];
@@ -255,11 +259,13 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
 
 -(void)registerWithReceiver:(NSObject<AuthenticationDelegate> *)receiver
 {
-    NSURL* url = [self buildURLWithRequest:REGISTER_REQUEST 
+    NSURL* url = [self buildURLWithRequest:REGISTER_REQUEST
                             sendAPIVersion:NO 
-                                   sendKey:NO];
+                                   sendKey:NO
+                              sendTimezone:NO];
     
-    NSString*params = [NSString stringWithFormat:@"%@=%@", REST_PARAM_API,API_VERSION];
+    NSString*params = [NSString stringWithFormat:@"%@=%@", 
+                       REST_PARAM_API, API_VERSION];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url 
                                                              postParams:params 
@@ -337,7 +343,7 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
 -(BOOL)getTimeslotsFromCurrentWithMaxCount:(NSInteger)maxCount 
                                   receiver:(NSObject<TimeslotsReceiver>*)receiver
 {
-    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_CURRENT_TIMESLOTS_REQUEST, 
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_CURRENT_TIMESLOTS_REQUEST,
                                             [NSNumber numberWithInt:maxCount]]];
     
     return [self getTimeslotsWithURL:url receiver:receiver];
@@ -398,7 +404,6 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
 -(BOOL)getPlaylistForTimeslot:(NSNumber*)timeslotId
                      receiver:(NSObject<PlaylistReceiver>*)receiver
 {
-    
     NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_PLAYLIST_FOR_TIMESLOT_REQUEST,timeslotId]];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url 
@@ -788,9 +793,10 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
          withData:(NSString*)receiptData 
          receiver:(NSObject<PurchaseDelegate>*)receiver
 {    
-    NSURL* url = [self buildURLWithRequest:GET_BUY_REQUEST 
+    NSURL* url = [self buildURLWithRequest:GET_BUY_REQUEST
                             sendAPIVersion:NO 
-                                   sendKey:NO];    
+                                   sendKey:NO
+                              sendTimezone:NO];
     
     NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@", 
                         REST_PARAM_API,
@@ -927,7 +933,7 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         viewsCount:(NSNumber*)viewsCount 
           receiver:(NSObject<SendMessageDelegate> *)receiver
 {
-    NSURL* url = [self buildURLWithRequest:SEND_MESSAGE_REQUEST sendAPIVersion:NO sendKey:NO];    
+    NSURL* url = [self buildURLWithRequest:SEND_MESSAGE_REQUEST sendAPIVersion:NO sendKey:NO sendTimezone:NO];
     
     NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%d&%@=%@&%@=%@&%@=%@&%@=%@", 
                         REST_PARAM_API, 
@@ -1271,9 +1277,10 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
     
 }
 
--(NSURL*)buildURLWithRequest:(NSString*)request 
+-(NSURL*)buildURLWithRequest:(NSString*)request
               sendAPIVersion:(BOOL)sendAPIVersion 
-                     sendKey:(BOOL)sendKey
+                     sendKey:(BOOL)sendKey 
+                sendTimezone:(BOOL)timeZone
 {
     NSString * finalURL = request;
     if (sendAPIVersion)
@@ -1287,6 +1294,16 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         finalURL = [finalURL stringByAppendingFormat:[NSString stringWithFormat:@"&%@=%@",
                                                       REST_PARAM_SESSION_KEY, sessionKey]];
     }
+
+    if (timeZone)
+    {
+        NSDateFormatter *date_formater=[[NSDateFormatter alloc]init];
+        finalURL = [finalURL stringByAppendingFormat:[NSString stringWithFormat:@"&%@=%@",
+                                                      REST_PARAM_TIMEZONE,
+                                                      [NSString stringWithString:(NSString *) [[date_formater timeZone] name]]]];
+        [date_formater release];
+    }
+
     NSURL * url = [NSURL URLWithString:[END_POINT_URL stringByAppendingString:finalURL]];
     return url;
     
@@ -1295,8 +1312,9 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
 -(NSURL*)buildURLWithRequest:(NSString*)request
 {   
     return [self buildURLWithRequest:request 
-                      sendAPIVersion:YES
-                             sendKey:YES];
+                      sendAPIVersion:YES 
+                             sendKey:YES 
+                        sendTimezone:YES];
 }
 
 - (NSString*)getEndPoint {

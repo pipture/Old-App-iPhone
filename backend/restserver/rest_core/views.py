@@ -4,6 +4,7 @@ from django.template.context import RequestContext
 from django.http import HttpResponse
 import json
 import datetime
+import pytz
 import calendar
 import uuid
 
@@ -48,17 +49,28 @@ def getTimeslots (request):
         return HttpResponse (json.dumps(response))
     else:
         response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
+    if "tz" not in keys:
+        response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is no timezone parameter."}
+        return HttpResponse (json.dumps(response))
+    else:
+        tz = request.GET.get("tz")
+        try:
+            local_tz = pytz.timezone(tz)
+        except pytz.exceptions.UnknownTimeZoneError, e:
+            response["Error"] = {"ErrorCode": "888", "ErrorDescription": "Unknown timezone."}
+            return HttpResponse (json.dumps(response))
+            
     timeslots_json = []
 
-    today = datetime.datetime.today();
-    sec_utc_now = calendar.timegm(today.utcnow().timetuple())
-    today_utc = datetime.datetime.utcfromtimestamp(sec_utc_now)
-    #timedelta_1 = datetime.timedelta(days=settings.ACTIVE_DAYS_TIMESLOTS)
-    timedelta_1 = datetime.timedelta(days=1)
-    tomorrow = today_utc + timedelta_1
-    ##yesterday = today_utc - timedelta_1
-    yesterday = datetime.datetime(today.year, today.month, today.day)
-    #tomorrow = datetime.datetime(today.year, today.month, today.day, 23, 59, 59)
+    today_utc = datetime.datetime.utcnow();
+    sec_utc_now = calendar.timegm(today_utc.timetuple())
+    timedelta = datetime.timedelta(days=1)
+
+    # local time
+    today = today_utc.replace(tzinfo=pytz.UTC).astimezone(local_tz).replace(tzinfo=None)
+    sec_utc_now = calendar.timegm(today.timetuple())
+    tomorrow = today + timedelta
+    yesterday = today - timedelta
 
     from restserver.pipture.models import TimeSlots
 
@@ -89,7 +101,7 @@ def getTimeslots (request):
         slot["Title"] = ts.AlbumId.SeriesId.Title
         slot["AlbumId"] = ts.AlbumId.AlbumId
         slot["CloseupBackground"] = (ts.AlbumId.CloseUpBackground._get_url()).split('?')[0]
-        if ts.is_current():
+        if ts.is_current(sec_utc_now):
             slot["TimeslotStatus"] = 2
             current_ts = True
         elif wait_next_ts and (current_ts or ts.StartTimeUTC > sec_utc_now):
@@ -189,6 +201,16 @@ def getVideo (request):
         return HttpResponse (json.dumps(response))
     else:
         response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
+    if "tz" not in keys:
+        response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is no timezone parameter."}
+        return HttpResponse (json.dumps(response))
+    else:
+        tz = request.GET.get("tz")
+        try:
+            local_tz = pytz.timezone(tz)
+        except pytz.exceptions.UnknownTimeZoneError, e:
+            response["Error"] = {"ErrorCode": "888", "ErrorDescription": "Unknown timezone."}
+            return HttpResponse (json.dumps(response))
 
     if "q" not in keys:
         video_quality = 0
@@ -197,6 +219,9 @@ def getVideo (request):
 
     if video_quality > 1:
         video_quality = 1
+        
+    local_today = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC).astimezone(local_tz).replace(tzinfo=None)
+    sec_local_now = calendar.timegm(local_today.timetuple())
 
     timeslot_id = request.GET.get('TimeslotId', None)
     episode_id = request.GET.get('EpisodeId', None)
@@ -261,7 +286,7 @@ def getVideo (request):
             #containid = TimeSlotVideos.is_contain_id (timeslot_id, trailer_id, video_type)'''
 
         containid = True
-        if TimeSlots.timeslot_is_current(timeslot_id) and containid:
+        if TimeSlots.timeslot_is_current(timeslot_id, sec_local_now) and containid:
             video_url, subs_url, error = get_video_url_from_episode_or_trailer (id = episode_id or trailer_id, type_r = video_type, video_q=video_quality)
             if error:
                 response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
@@ -357,6 +382,16 @@ def getPlaylist (request):
     except Exception as e:
         response["Error"] = {"ErrorCode": "2", "ErrorDescription": "TimeslotId is not integer."}
         return HttpResponse (json.dumps(response))
+    if "tz" not in keys:
+        response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is no timezone parameter."}
+        return HttpResponse (json.dumps(response))
+    else:
+        tz = request.GET.get("tz")
+        try:
+            local_tz = pytz.timezone(tz)
+        except pytz.exceptions.UnknownTimeZoneError, e:
+            response["Error"] = {"ErrorCode": "888", "ErrorDescription": "Unknown timezone."}
+            return HttpResponse (json.dumps(response))
 
     from restserver.pipture.models import TimeSlots
     from restserver.pipture.models import TimeSlotVideos
@@ -366,9 +401,12 @@ def getPlaylist (request):
     except Exception as e:
         response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is no timeslot with id %s" % (timeslot_id)}
         return HttpResponse (json.dumps(response))
-
-    today = datetime.datetime.utcnow()
+    
+    today = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC).astimezone(local_tz).replace(tzinfo=None)
     sec_utc_now = calendar.timegm(today.timetuple())
+
+#    today = datetime.datetime.utcnow()
+#    sec_utc_now = calendar.timegm(today.timetuple())
     if timeslot.StartTimeUTC > sec_utc_now:
         response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Timeslot in future"}
         return HttpResponse (json.dumps(response))
