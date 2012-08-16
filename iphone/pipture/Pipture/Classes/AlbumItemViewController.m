@@ -52,13 +52,16 @@
         case AlbumStatus_Wrong:
         case AlbumStatus_Normal:
             episodesIndicator.hidden = ![self haveNewEpisodes];
-            tagLabel.text = @""; break;
+            tagLabel.text = @""; 
+            break;
         case AlbumStatus_CommingSoon: 
             episodesIndicator.hidden = YES;
-            tagLabel.text = @"COMING SOON"; break;
+            tagLabel.text = @"COMING SOON";
+            break;
         case AlbumStatus_Premiere:
             episodesIndicator.hidden = YES;
-            tagLabel.text = @"PREMIERE"; break;
+            tagLabel.text = @"PREMIERE";
+            break;
     }
 }
 
@@ -70,18 +73,30 @@
     
         CGRect rect = thumbnailButton.frame;
     
-        AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
+        AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0,
+                                                                                       rect.size.width, 
+                                                                                       rect.size.height)] autorelease];
         
         [thumbnailButton addSubview:imageView];
         
-        [imageView loadImageFromURL:[NSURL URLWithString:album.thumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small  localStore:YES force:NO asButton:YES target:self selector:@selector(showDetails:)];
+        [imageView loadImageFromURL:[NSURL URLWithString:album.thumbnail] 
+                       withDefImage:nil 
+                            spinner:AsyncImageSpinnerType_Small  
+                         localStore:YES 
+                              force:NO 
+                           asButton:YES 
+                             target:self 
+                           selector:@selector(showDetails:)];
         
-        
-        [titleLabel setTextWithVerticalResize:album.series.title lineBreakMode:UILineBreakModeTailTruncation];
+        [titleLabel setTextWithVerticalResize:album.series.title 
+                                lineBreakMode:UILineBreakModeTailTruncation];
         
         CGRect labelRect = titleLabel.frame;
         CGRect tagRect = tagLabel.frame;
-        tagLabel.frame = CGRectMake(tagRect.origin.x, labelRect.origin.y + labelRect.size.height + 2, tagRect.size.width, tagRect.size.height);
+        tagLabel.frame = CGRectMake(tagRect.origin.x, 
+                                    labelRect.origin.y + labelRect.size.height + 2, 
+                                    tagRect.size.width, 
+                                    tagRect.size.height);
         tagLabel.text = @"";
         [self updateStatus];
     }

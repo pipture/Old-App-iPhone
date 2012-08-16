@@ -97,10 +97,19 @@
     self.album = album_;
     
     CGRect rect = posterPlaceholder.frame;
-    AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)] autorelease];
+    AsyncImageView * imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, 
+                                                                                   rect.size.width, 
+                                                                                   rect.size.height)]
+                                  autorelease];
     [posterPlaceholder addSubview:imageView];
     
-    [imageView loadImageFromURL:[NSURL URLWithString:album.cover] withDefImage:nil spinner:AsyncImageSpinnerType_Small localStore:YES asButton:NO target:nil selector:nil];
+    [imageView loadImageFromURL:[NSURL URLWithString:album.cover] 
+                   withDefImage:nil
+                        spinner:AsyncImageSpinnerType_Small
+                     localStore:YES
+                       asButton:NO
+                         target:nil
+                       selector:nil];
     
     credits = [[NSMutableArray alloc] initWithCapacity:20];
     
@@ -143,7 +152,8 @@
     }
     
     if (relDate) {
-        [text setTextWithVerticalResize:[NSString stringWithFormat:@"Rating: %@, Released: %@", album.rating, relDate]];
+        [text setTextWithVerticalResize:[NSString stringWithFormat:@"Rating: %@, Released: %@", 
+                                         album.rating, relDate]];
     } else {
         [text setTextWithVerticalResize:[NSString stringWithFormat:@"Rating: %@", album.rating]];
     }
@@ -156,7 +166,10 @@
         size.width += text.frame.origin.x + 10;
         size.height = text.frame.origin.y;
         UIImage * image = [UIImage imageNamed:@"comingsoon.png"];
-        UIImageView * cs = [[UIImageView alloc] initWithFrame:CGRectMake(size.width, size.height, image.size.width, image.size.height)];
+        UIImageView * cs = [[UIImageView alloc] initWithFrame:CGRectMake(size.width, 
+                                                                         size.height, 
+                                                                         image.size.width,
+                                                                         image.size.height)];
         [cs setImage:image];
         [credits addObject:cs];
         [cs release];
@@ -176,7 +189,9 @@
     [text release];
     
     for (AlbumCredit* credit in album.credits) {
-        top = [self addSection:top sectionName:credit.name sectionData:credit.content];
+        top = [self addSection:top
+                   sectionName:credit.name 
+                   sectionData:credit.content];
     }
     
     self.contentSize = CGSizeMake(self.frame.size.width, top);

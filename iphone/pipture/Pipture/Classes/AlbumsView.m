@@ -81,7 +81,8 @@
         }
     }
     
-    [filteredAlbums sortUsingComparator:^NSComparisonResult(AlbumItemViewController * obj1, AlbumItemViewController * obj2) {
+    [filteredAlbums sortUsingComparator:^NSComparisonResult(AlbumItemViewController * obj1,
+                                                            AlbumItemViewController * obj2) {
         Album* alb2 = obj1.album;
         Album* alb1 = obj2.album;
         
@@ -93,7 +94,8 @@
     
     int rows = ([filteredAlbums count] + (3 - 1)) / 3;
     int hightRows = MAX(2, rows);
-    scrollView.contentSize = CGSizeMake(rect.size.width, ITEM_HEIGHT * hightRows + libraryCardHeight + OFFSET_FROM_LIB_CARD + 8); 
+    scrollView.contentSize = CGSizeMake(rect.size.width,
+                                        ITEM_HEIGHT * hightRows + libraryCardHeight + OFFSET_FROM_LIB_CARD + 8); 
     
     int i = 0;
     
@@ -102,7 +104,10 @@
             if (i >= [filteredAlbums count])
                 break;
             AlbumItemViewController * item = [filteredAlbums objectAtIndex:i++];
-            item.view.frame = CGRectMake(MARGIN_RIGHT + (x * ITEM_WIDTH), libraryCardHeight + OFFSET_FROM_LIB_CARD + (y * ITEM_HEIGHT), ITEM_WIDTH, ITEM_HEIGHT);
+            item.view.frame = CGRectMake(MARGIN_RIGHT + (x * ITEM_WIDTH), 
+                                         libraryCardHeight + OFFSET_FROM_LIB_CARD + (y * ITEM_HEIGHT), 
+                                         ITEM_WIDTH,
+                                         ITEM_HEIGHT);
             [scrollView addSubview:item.view];
         }
     }
@@ -148,7 +153,8 @@
     
     if (needToUpdate) {
         for (int i = 0; i < albums.count; i++) {
-            AlbumItemViewController * item = [[AlbumItemViewController alloc] initWithNibName:@"AlbumItemView" bundle:nil];
+            AlbumItemViewController * item = [[AlbumItemViewController alloc] initWithNibName:@"AlbumItemView"
+                                                                                       bundle:nil];
             [item loadView];
             item.delegate = delegate;
         
@@ -189,7 +195,8 @@
         [self setLibraryCardVisibility:YES withAnimation:YES];
     } else if (libraryCardVisible)
     {
-        [self setLibraryCardVisibility:(scrollView.contentOffset.y < libraryCardHeight / 2) withAnimation:YES];
+        [self setLibraryCardVisibility:(scrollView.contentOffset.y < libraryCardHeight / 2) 
+                         withAnimation:YES];
     } 
     
 }
@@ -198,7 +205,8 @@
     [self fixLibraryCardOffsetIfNeeded];
 }
 
--(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView
+                 willDecelerate:(BOOL)decelerate {
     [self fixLibraryCardOffsetIfNeeded];    
 }
 
@@ -229,13 +237,17 @@
 
 - (IBAction)onAlbumFilterButtonTouch:(id)sender {
     if (sender == allAlbumsButton) {
-        [allAlbumsButton setBackgroundImage:[UIImage imageNamed:@"button-all-active.png"] forState:UIControlStateNormal];
-        [purchasedAlbumsButton setBackgroundImage:[UIImage imageNamed:@"button-purchases-inactive.png"] forState:UIControlStateNormal];       
+        [allAlbumsButton setBackgroundImage:[UIImage imageNamed:@"button-all-active.png"] 
+                                   forState:UIControlStateNormal];
+        [purchasedAlbumsButton setBackgroundImage:[UIImage imageNamed:@"button-purchases-inactive.png"]
+                                         forState:UIControlStateNormal];       
         [self filterOnPurchasedAlbums:NO];
     }
     else if (sender == purchasedAlbumsButton) {
-        [allAlbumsButton setBackgroundImage:[UIImage imageNamed:@"button-all-inactive.png"] forState:UIControlStateNormal];
-        [purchasedAlbumsButton setBackgroundImage:[UIImage imageNamed:@"button-purchases-active.png"] forState:UIControlStateNormal];        
+        [allAlbumsButton setBackgroundImage:[UIImage imageNamed:@"button-all-inactive.png"] 
+                                   forState:UIControlStateNormal];
+        [purchasedAlbumsButton setBackgroundImage:[UIImage imageNamed:@"button-purchases-active.png"] 
+                                         forState:UIControlStateNormal];        
         [self filterOnPurchasedAlbums:YES];        
     }
 }
@@ -248,7 +260,11 @@
 -(void)showScrollingHintIfNeeded {
     
     if (!scrollingHintController) {
-        scrollingHintController = [[ScrollingHintPopupController alloc] initWithNibName:@"ScrollHintPopup" bundle:nil screenName:@"B3" scrollView:scrollView origin:CGPointMake(0, libraryCardHeight + 8)];
+        scrollingHintController = [[ScrollingHintPopupController alloc] initWithNibName:@"ScrollHintPopup" 
+                                                                                 bundle:nil 
+                                                                             screenName:@"B3"
+                                                                             scrollView:scrollView 
+                                                                                 origin:CGPointMake(0, libraryCardHeight + 8)];
         scrollingHintController.showOnAlbumPurchase = YES;
         scrollingHintController.showOnViewsPurchase = YES;        
     }

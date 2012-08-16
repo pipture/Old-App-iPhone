@@ -22,12 +22,14 @@
 - (id)init {
     self = [super init];
     if (self) {    
-        
         albums_ = [[NSMutableArray alloc] initWithCapacity:20];
         newAlbums_ = [[NSMutableArray alloc] initWithCapacity:20];
         BUY_PRODUCT_ID = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumBuyProductId"] retain];
         PASS_PRODUCT_ID = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumPassProductId"] retain];        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAlbumPurchased) name:ALBUM_PURCHASED_NOTIFICATION object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(onAlbumPurchased)
+                                                     name:ALBUM_PURCHASED_NOTIFICATION
+                                                   object:nil];
     }
     return self;
 }
@@ -65,10 +67,10 @@
 -(NSString*) appleProductIdForAlbum:(Album*)album {
     switch (album.sellStatus) {
         case AlbumSellStatus_Buy:
-            return [NSString stringWithFormat:BUY_PRODUCT_ID,album.albumId]; 
+            return [NSString stringWithFormat:BUY_PRODUCT_ID, album.albumId]; 
             break;
         case AlbumSellStatus_Pass:
-            return [NSString stringWithFormat:PASS_PRODUCT_ID,album.albumId];            
+            return [NSString stringWithFormat:PASS_PRODUCT_ID, album.albumId];            
             break;            
         default:
             return @"";
@@ -123,12 +125,15 @@
         [newAlbums_ removeAllObjects];
         [newAlbums_ addObjectsFromArray:albums];
         if ([purchaseMgr canMakePurchases]) {
-            [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:NO completion:^{
-                [purchaseMgr requestProductsWithIds:[self appleProductIds:newAlbums_] delegate:self];
+            [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:NO 
+                                                            completion:^{
+                [purchaseMgr requestProductsWithIds:[self appleProductIds:newAlbums_]
+                                           delegate:self];
             }];
         } else if (SHOW_STORE_WHEN_CANT_MAKE_PURCHASES) {
             [self setFakePrices];
-            [[NSNotificationCenter defaultCenter] postNotificationName:SELLABLE_ALBUMS_UPDATE_NOTIFICATION object:self];                
+            [[NSNotificationCenter defaultCenter] postNotificationName:SELLABLE_ALBUMS_UPDATE_NOTIFICATION
+                                                                object:self];                
         }
     }      
 }
@@ -145,7 +150,8 @@
 
 #pragma mark SKProductsRequestDelegate methods 
 
-- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
+- (void)productsRequest:(SKProductsRequest *)request 
+     didReceiveResponse:(SKProductsResponse *)response
 {    
     @synchronized(self)
     {    
@@ -163,7 +169,8 @@
         }
         [albums_ removeAllObjects];
         [albums_ addObjectsFromArray:newAlbums_];        
-        [[NSNotificationCenter defaultCenter] postNotificationName:SELLABLE_ALBUMS_UPDATE_NOTIFICATION object:self];                
+        [[NSNotificationCenter defaultCenter] postNotificationName:SELLABLE_ALBUMS_UPDATE_NOTIFICATION
+                                                            object:self];                
         [[PiptureAppDelegate instance] dismissModalBusy];
     }
 }

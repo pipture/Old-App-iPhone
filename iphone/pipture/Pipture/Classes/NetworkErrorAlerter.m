@@ -37,10 +37,18 @@
 }
     
 -(BOOL)showStandardAlertForError:(DataRequestError*)error {
-    return [self showAlertForError:error delegate:self tag:MY_ALERT_TAG cancelButtonTitle:@"OK" otherButtonTitles:nil ];    
+    return [self showAlertForError:error 
+                          delegate:self 
+                               tag:MY_ALERT_TAG
+                 cancelButtonTitle:@"OK" 
+                 otherButtonTitles:nil];    
 }
 
--(BOOL)showAlertForError:(DataRequestError*)error delegate:(id<UIAlertViewDelegate>)delegate tag:(NSInteger)tag cancelButtonTitle:(NSString*)cancelButtonTitle otherButtonTitles:(NSString*)otherButtonTitles,...{
+-(BOOL)showAlertForError:(DataRequestError*)error 
+                delegate:(id<UIAlertViewDelegate>)delegate 
+                     tag:(NSInteger)tag
+       cancelButtonTitle:(NSString*)cancelButtonTitle
+       otherButtonTitles:(NSString*)otherButtonTitles,... {
     NSString * title = nil;
     NSString * message = nil;
     NSInteger newTag = tag;
@@ -79,7 +87,11 @@
     BOOL result = NO;
     if (title != nil && message != nil) {
         
-        UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
+        UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:title
+                                                                      message:message 
+                                                                     delegate:self 
+                                                            cancelButtonTitle:cancelButtonTitle
+                                                            otherButtonTitles:nil];
         if (otherButtonTitles) {
             [requestIssuesAlert addButtonWithTitle:otherButtonTitles];            
             va_list vargs;
@@ -101,7 +113,8 @@
         }
         
         requestIssuesAlert.tag = newTag;
-        result = [self showAlert:requestIssuesAlert wrappedDelegate:(delegate == self ? nil : delegate)];
+        result = [self showAlert:requestIssuesAlert 
+                 wrappedDelegate:(delegate == self ? nil : delegate)];
         [requestIssuesAlert release];        
     }
     return result;    
@@ -109,7 +122,8 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (wrappedDelegate && [wrappedDelegate respondsToSelector:@selector(alertView:clickedButtonAtIndex:)]) {
-        [wrappedDelegate alertView:alertView clickedButtonAtIndex:buttonIndex];
+        [wrappedDelegate alertView:alertView 
+              clickedButtonAtIndex:buttonIndex];
     }
 }
 
@@ -146,7 +160,11 @@
         switch (buttonIndex) {
             case 0: {
                 
-                UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Pipture is currently unavailable. Please check your Internet connection, or go to www.pipture.com/support for more information." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Error" 
+                                                                              message:@"Pipture is currently unavailable. Please check your Internet connection, or go to www.pipture.com/support for more information." 
+                                                                             delegate:self 
+                                                                    cancelButtonTitle:@"OK"
+                                                                    otherButtonTitles:nil];
                 requestIssuesAlert.tag = MY_ALERT_TAG + 200;
                 [requestIssuesAlert show];
                 [requestIssuesAlert release];

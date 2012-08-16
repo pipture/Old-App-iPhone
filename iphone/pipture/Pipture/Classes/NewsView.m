@@ -29,7 +29,9 @@
     status.textColor = color;
 }
 
-- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+- (void)animationDidStop:(NSString *)animationID
+                finished:(NSNumber *)finished 
+                 context:(void *)context {
     coverPanel.hidden = coverPanel.alpha == 0.0;
 }
 
@@ -52,18 +54,23 @@
         UILabel * status = (UILabel*)[coverPanel viewWithTag:2];
         
         if (title) title.text = timeslot.title;
-        if (status)status.text= [TimeslotFormatter formatTimeslot:timeslot ignoreStatus:NO];
+        if (status)status.text= [TimeslotFormatter formatTimeslot:timeslot 
+                                                     ignoreStatus:NO];
 
         switch (timeslot.timeslotStatus) {
             case TimeslotStatus_Current:
                 coverPanelVisible = YES;
-                [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable.png"] forState:UIControlStateNormal];
-                [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable-down.png"] forState:UIControlStateHighlighted];
+                [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable.png"] 
+                             forState:UIControlStateNormal];
+                [coverButton setImage:[UIImage imageNamed:@"case-schedule-clickable-down.png"] 
+                             forState:UIControlStateHighlighted];
                 break;
             case TimeslotStatus_Next:
                 coverPanelVisible = YES;
-                [coverButton setImage:[UIImage imageNamed:@"case-schedule-noshow-clickable.png"] forState:UIControlStateNormal];
-                [coverButton setImage:[UIImage imageNamed:@"case-schedule-noshow-clickable-down.png"] forState:UIControlStateHighlighted];
+                [coverButton setImage:[UIImage imageNamed:@"case-schedule-noshow-clickable.png"] 
+                             forState:UIControlStateNormal];
+                [coverButton setImage:[UIImage imageNamed:@"case-schedule-noshow-clickable-down.png"] 
+                             forState:UIControlStateHighlighted];
                 break;
             default:
                 coverPanelVisible = NO;
@@ -96,17 +103,26 @@
     //prepare scrollView
     self.delegate = parent;
         
-    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, 
+                                        scrollView.frame.size.height);
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     scrollView.pagingEnabled = NO;
     
-    [self placeViewController:[[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil] withTitle:@""];
-    [self placeViewController:[[NewsCategoryViewController alloc] initWithNibName:@"NewsCategoryViewController" bundle:nil] withTitle:@"title1"];
-    [self placeViewController:[[NewsCategoryViewController alloc] initWithNibName:@"NewsCategoryViewController" bundle:nil] withTitle:@"title2"];
-    [self placeViewController:[[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil] withTitle:@""];
+    [self placeViewController:[[CoverViewController alloc] 
+                               initWithNibName:@"CoverViewController" bundle:nil] 
+                    withTitle:@""];
+    [self placeViewController:[[NewsCategoryViewController alloc] 
+                               initWithNibName:@"NewsCategoryViewController" bundle:nil]
+                    withTitle:@"title1"];
+    [self placeViewController:[[NewsCategoryViewController alloc] 
+                               initWithNibName:@"NewsCategoryViewController" bundle:nil] 
+                    withTitle:@"title2"];
+    [self placeViewController:[[EditNewsViewController alloc] 
+                               initWithNibName:@"EditNewsViewController" bundle:nil] 
+                    withTitle:@""];
 }
 
 - (void)dealloc {
@@ -119,7 +135,8 @@
     [super dealloc];
 }
 
-- (void)placeViewController:(UIViewController<NewsViewSectionDelegate>*)controller withTitle:(NSString *)title {
+- (void)placeViewController:(UIViewController<NewsViewSectionDelegate>*)controller
+                  withTitle:(NSString *)title {
     [controller setHomeScreenDelegate:self.delegate];
     
     CGSize rect = scrollView.contentSize;
@@ -132,7 +149,7 @@
         rect.height += controller.view.frame.size.height;
     }
     scrollView.contentSize = rect;
-    controller.view.frame = CGRectMake(0, pos, rect.width, controller.view.frame.size.height);
+    controller.view.frame = CGRectMake(0, pos,rect.width, controller.view.frame.size.height);
     [scrollView addSubview:controller.view];
     
     [controller prepare:title];

@@ -202,13 +202,21 @@
     [blinkTimer invalidate];
     blinkTimer = nil;
     
-    blinkTimer = [NSTimer scheduledTimerWithTimeInterval:.3 target:self selector:@selector(updateBlink:) userInfo:nil repeats:YES];
+    blinkTimer = [NSTimer scheduledTimerWithTimeInterval:.3 
+                                                  target:self 
+                                                selector:@selector(updateBlink:) 
+                                                userInfo:nil 
+                                                 repeats:YES];
 }
 
 
 - (void)startTimer:(float)interval {
     [self stopTimer];
-    updateTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:scheduleModel selector:@selector(updateTimeslots) userInfo:nil repeats:YES];
+    updateTimer = [NSTimer scheduledTimerWithTimeInterval:interval 
+                                                   target:scheduleModel 
+                                                 selector:@selector(updateTimeslots) 
+                                                 userInfo:nil 
+                                                  repeats:YES];
 }
 
 - (void)scheduleTimeslotChange {
@@ -217,8 +225,14 @@
     NSDate * scheduleTime = [scheduleModel nextTimeslotChange]; 
     if (scheduleTime)
     {
-        changeTimer = [[[NSTimer alloc] initWithFireDate:scheduleTime interval:TIMESLOT_CHANGE_POLL_INTERVAL target:scheduleModel selector:@selector(updateTimeslots) userInfo:nil repeats:YES] autorelease];
-        [[NSRunLoop currentRunLoop] addTimer:changeTimer forMode:NSDefaultRunLoopMode];
+        changeTimer = [[[NSTimer alloc] initWithFireDate:scheduleTime 
+                                                interval:TIMESLOT_CHANGE_POLL_INTERVAL 
+                                                  target:scheduleModel
+                                                selector:@selector(updateTimeslots)
+                                                userInfo:nil 
+                                                 repeats:YES] autorelease];
+        [[NSRunLoop currentRunLoop] addTimer:changeTimer 
+                                     forMode:NSDefaultRunLoopMode];
         NSLog(@"Scheduled to: %@", scheduleTime);        
     }
     else
@@ -247,11 +261,13 @@
                                                  name:NEW_TIMESLOTS_NOTIFICATION
                                                object:scheduleModel];
 
-    UITapGestureRecognizer * tapFRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    UITapGestureRecognizer * tapFRec = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                               action:@selector(tapResponder:)];
     [flipEnhancer addGestureRecognizer:tapFRec];
     [tapFRec release];
     
-    UITapGestureRecognizer * tapSRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    UITapGestureRecognizer * tapSRec = [[UITapGestureRecognizer alloc] initWithTarget:self 
+                                                                               action:@selector(tapResponder:)];
     [scheduleEnhancer addGestureRecognizer:tapSRec];
     [tapSRec release];
         
@@ -271,10 +287,22 @@
     
     [self setHomeScreenMode:[[PiptureAppDelegate instance] getHomescreenState]];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBuyViews:) name:BUY_VIEWS_NOTIFICATION object:nil]; 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onViewsPurchased:) name:VIEWS_PURCHASED_NOTIFICATION object:nil]; 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAlbumPurchased:) name:ALBUM_PURCHASED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onBuyViews:) 
+                                                 name:BUY_VIEWS_NOTIFICATION
+                                               object:nil]; 
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(onNewBalance:) 
+                                                 name:NEW_BALANCE_NOTIFICATION 
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(onViewsPurchased:)
+                                                 name:VIEWS_PURCHASED_NOTIFICATION
+                                               object:nil]; 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onAlbumPurchased:)
+                                                 name:ALBUM_PURCHASED_NOTIFICATION
+                                               object:nil];
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
@@ -439,8 +467,12 @@
 
 - (IBAction)flipAction:(id)sender {
     switch (homeScreenMode) {
-        case HomeScreenMode_Cover: [self setHomeScreenMode:HomeScreenMode_PlayingNow]; break;
-        case HomeScreenMode_PlayingNow: [self setHomeScreenMode:HomeScreenMode_Cover]; break;
+        case HomeScreenMode_Cover: 
+            [self setHomeScreenMode:HomeScreenMode_PlayingNow]; 
+            break;
+        case HomeScreenMode_PlayingNow: 
+            [self setHomeScreenMode:HomeScreenMode_Cover];
+            break;
         default: break;
     }
 }
@@ -451,7 +483,8 @@
     [scheduleView scrollToCurPage];
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
         
-    SearchViewController* search = [[SearchViewController alloc] initWithNibName:@"SearchController" bundle:nil];
+    SearchViewController* search = [[SearchViewController alloc] initWithNibName:@"SearchController" 
+                                                                          bundle:nil];
     [self.navigationController pushViewController:search animated:YES];
     [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
     [search release];
@@ -465,7 +498,9 @@
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.5];
     
-    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:tabbarContainer cache:YES];
+    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft 
+                           forView:tabbarContainer
+                             cache:YES];
 }
 
 - (void)setHomeScreenMode:(enum HomeScreenMode)mode {
@@ -509,7 +544,10 @@
                 [[PiptureAppDelegate instance] 
                  showWelcomeScreenWithTitle:@"Welcome to Pipture."
                  message:@"Enjoy watching scheduled video programs\nshot specifically for smartphones users\nand send hilarious video messages\nperformed by great talents." 
-                 storeKey:@"AppWelcomeShown" image:YES tag:WELCOMESCREEN_COVER delegate:self];
+                 storeKey:@"AppWelcomeShown" 
+                 image:YES 
+                 tag:WELCOMESCREEN_COVER 
+                 delegate:self];
                 
                 [tabbarContainer addSubview:newsView];
                 if (flipAction) [UIView commitAnimations];
@@ -518,9 +556,12 @@
                 
                 [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
                 [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_CHANNEL];
-                [flipButton setImage:[UIImage imageNamed:@"button-flip.png"] forState:UIControlStateNormal];
-                [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] forState:UIControlStateNormal];
-                [scheduleButton setTitle:@"Schedule" forState:UIControlStateNormal];
+                [flipButton setImage:[UIImage imageNamed:@"button-flip.png"] 
+                            forState:UIControlStateNormal];
+                [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"]
+                                          forState:UIControlStateNormal];
+                [scheduleButton setTitle:@"Schedule" 
+                                forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
 
                 [scheduleModel updateTimeslots];
@@ -541,9 +582,12 @@
                 [scheduleView setTimeslotsMode:TimeslotsMode_PlayingNow];
 
                 [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_CHANNEL];
-                [flipButton setImage:[UIImage imageNamed:@"button-flip-back.png"] forState:UIControlStateNormal];
-                [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] forState:UIControlStateNormal];
-                [scheduleButton setTitle:@"Schedule" forState:UIControlStateNormal];
+                [flipButton setImage:[UIImage imageNamed:@"button-flip-back.png"] 
+                            forState:UIControlStateNormal];
+                [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] 
+                                          forState:UIControlStateNormal];
+                [scheduleButton setTitle:@"Schedule" 
+                                forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
 
                 [scheduleView scrollToPlayingNow];
@@ -556,16 +600,22 @@
                 if (flipAction) [UIView commitAnimations];
                 [scheduleModel updateTimeslots];
                 
-                [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule-done.png"] forState:UIControlStateNormal];
-                [scheduleButton setTitle:@"Done" forState:UIControlStateNormal];
+                [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule-done.png"] 
+                                          forState:UIControlStateNormal];
+                [scheduleButton setTitle:@"Done" 
+                                forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
                 [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
                 
                 homeScreenMode = mode;
                 
                 switch (scheduleView.timeslotsMode) {
-                    case TimeslotsMode_PlayingNow: [scheduleView setTimeslotsMode:TimeslotsMode_Schedule]; break;
-                    case TimeslotsMode_PlayingNow_Fullscreen: [scheduleView setTimeslotsMode:TimeslotsMode_Schedule_Fullscreen]; break;
+                    case TimeslotsMode_PlayingNow:
+                        [scheduleView setTimeslotsMode:TimeslotsMode_Schedule]; 
+                        break;
+                    case TimeslotsMode_PlayingNow_Fullscreen:
+                        [scheduleView setTimeslotsMode:TimeslotsMode_Schedule_Fullscreen];
+                        break;
                     default:break;    
                 }
 
@@ -575,7 +625,10 @@
                 [[PiptureAppDelegate instance] 
                  showWelcomeScreenWithTitle:@"About Pipture Library"                                                 
                  message:@"Add Views to your Library Card and gain\naccess to the entire collection of videos that\nhave already been broadcast on Pipture.\n\nEach time you watch or send a video, a\n View will be deducted from your card. You\nget unlimited views if you purchase Albums.\n\nTo add 100 Views, which is at $0.99, or only\n $0.0099 per view, click the Store button at the top left in the Library. Enjoy!" 
-                 storeKey:@"LibraryWelcomeShown" image:NO tag:WELCOMESCREEN_LIBRARY delegate:self];
+                 storeKey:@"LibraryWelcomeShown" 
+                 image:NO 
+                 tag:WELCOMESCREEN_LIBRARY 
+                 delegate:self];
                 
                 [tabbarContainer addSubview:albumsView];
                 [albumsView setLibraryCardVisibility:NO withAnimation:NO];
@@ -617,7 +670,9 @@
     
     if (slot) {
         [scheduleView scrollToCurPage];
-        [[PiptureAppDelegate instance] showVideo:nil noNavi:NO timeslotId:[NSNumber numberWithInt:slot.timeslotId]];
+        [[PiptureAppDelegate instance] showVideo:nil
+                                          noNavi:NO 
+                                      timeslotId:[NSNumber numberWithInt:slot.timeslotId]];
 /*        reqTimeslotId = slot.timeslotId;
         [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];*/
     }
@@ -627,7 +682,9 @@
     return redrawDiscarding;
 }
 
-- (void)openDetails:(BOOL)withNavigation album:(Album*)album timeslotId:(NSInteger)timeslotId {
+- (void)openDetails:(BOOL)withNavigation 
+              album:(Album*)album 
+         timeslotId:(NSInteger)timeslotId {
     [[PiptureAppDelegate instance] putHomescreenState:HomeScreenMode_Cover];
     
     NSLog(@"details open");
@@ -638,7 +695,8 @@
         [scheduleView scrollToCurPage];
         [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
         
-        AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" bundle:nil];
+        AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" 
+                                                                                      bundle:nil];
         adic.withNavigationBar = withNavigation;
         adic.album = album;
         adic.timeslotId = timeslotId;

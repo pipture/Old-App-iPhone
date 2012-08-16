@@ -76,7 +76,8 @@
 
 - (void)sendButtonTouchDown:(UIButton*)button {
     //UIControlEventTouchDown|UIControlEventTouchUpInside|UIControlEventTouchUpOutside
-    [button setImage:[UIImage imageNamed:SEND_VIDEO_PRESSED_ICON] forState:UIControlStateHighlighted];
+    [button setImage:[UIImage imageNamed:SEND_VIDEO_PRESSED_ICON]
+            forState:UIControlStateHighlighted];
     //UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
     //NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];
     //[videosTable selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
@@ -84,18 +85,22 @@
 
 
 - (void)sendButtonTouchUpInside:(UIButton*)button {
-    [button setImage:[UIImage imageNamed:SEND_VIDEO_ICON] forState:UIControlStateHighlighted];    
+    [button setImage:[UIImage imageNamed:SEND_VIDEO_ICON] 
+            forState:UIControlStateHighlighted];    
     UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
     NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];        
     NSInteger row = [indexPath row];
     Episode * episode = [episodes objectAtIndex:row/2];
-    [[PiptureAppDelegate instance] openMailComposer:episode timeslotId:nil fromViewController:self];    
+    [[PiptureAppDelegate instance] openMailComposer:episode
+                                         timeslotId:nil 
+                                 fromViewController:self];    
     //[videosTable deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 - (void)sendButtonTouchUpOutside:(UIButton*)button {
     
-    [button setImage:[UIImage imageNamed:SEND_VIDEO_ICON] forState:UIControlStateHighlighted];    
+    [button setImage:[UIImage imageNamed:SEND_VIDEO_ICON]
+            forState:UIControlStateHighlighted];    
     //UITableViewCell*lcell = (UITableViewCell*)button.superview.superview;
     //NSIndexPath*indexPath = [videosTable indexPathForCell:lcell];    
     //[videosTable deselectRowAtIndexPath:indexPath animated:NO];
@@ -114,8 +119,17 @@
         
         AsyncImageView* imageView = [asyncImageViews objectForKey:slot.closeUpThumbnail];
         if (imageView == nil) {
-            imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, placeholder.frame.size.width, placeholder.frame.size.height)] autorelease];            
-            [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] withDefImage:nil spinner:AsyncImageSpinnerType_Small localStore:YES asButton:NO target:nil selector:nil];
+            imageView = [[[AsyncImageView alloc] initWithFrame:CGRectMake(0, 0, 
+                                                                          placeholder.frame.size.width,
+                                                                          placeholder.frame.size.height)] 
+                         autorelease];            
+            [imageView loadImageFromURL:[NSURL URLWithString:slot.closeUpThumbnail] 
+                           withDefImage:nil
+                                spinner:AsyncImageSpinnerType_Small
+                             localStore:YES 
+                               asButton:NO 
+                                 target:nil 
+                               selector:nil];
             [asyncImageViews setObject:imageView forKey:slot.closeUpThumbnail];            
         }
         
@@ -131,7 +145,8 @@
     }
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString * const kNorCellID = @"NorCellID";
     static NSString * const kDivCellID = @"DivCellID";
     
@@ -142,7 +157,9 @@
         if (cell == nil) {
             NSLog(@"load table item");
             
-            [[NSBundle mainBundle] loadNibNamed:@"SearchTableItemView" owner:self options:nil];
+            [[NSBundle mainBundle] loadNibNamed:@"SearchTableItemView" 
+                                          owner:self
+                                        options:nil];
             cell = videoCell;
             videoCell = nil;
             
@@ -158,7 +175,9 @@
         cell = [tableView dequeueReusableCellWithIdentifier:kDivCellID];
         if (cell == nil) {
             NSLog(@"load table divider");
-            [[NSBundle mainBundle] loadNibNamed:@"SearchDividerView" owner:self options:nil];
+            [[NSBundle mainBundle] loadNibNamed:@"SearchDividerView" 
+                                          owner:self 
+                                        options:nil];
             cell = dividerCell;
             dividerCell = nil;
         }
@@ -170,7 +189,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row %2 == 0) {
         Episode * episode = [episodes objectAtIndex:indexPath.row / 2];
-        [[PiptureAppDelegate instance] getVideoURL:episode forTimeslotId:nil receiver:self];
+        [[PiptureAppDelegate instance] getVideoURL:episode 
+                                     forTimeslotId:nil
+                                          receiver:self];
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -219,7 +240,8 @@
     [textField resignFirstResponder];
     if (textField.text.length > 0) {
         //TODO: start search
-        [[[PiptureAppDelegate instance] model] getSearchResults:textField.text receiver:self];
+        [[[PiptureAppDelegate instance] model] getSearchResults:textField.text
+                                                       receiver:self];
     }
     return YES;    
 }
@@ -235,7 +257,9 @@
 
 -(void)videoURLReceived:(PlaylistItem*)playlistItem {
     NSArray * playlist = [NSArray arrayWithObject:playlistItem];
-    [[PiptureAppDelegate instance] showVideo:playlist noNavi:YES timeslotId:nil];        
+    [[PiptureAppDelegate instance] showVideo:playlist 
+                                      noNavi:YES
+                                  timeslotId:nil];        
 }
 
 -(void)authenticationFailed {

@@ -95,7 +95,8 @@ static PiptureAppDelegate *instance;
     if (self) {
         instance = self;
         model_ = [[PiptureModel alloc] init];
-        busyView = [[BusyViewController alloc] initWithNibName:@"PurchaseBusyView" bundle:nil];
+        busyView = [[BusyViewController alloc] initWithNibName:@"PurchaseBusyView"
+                                                        bundle:nil];
         purchases = [[InAppPurchaseManager alloc] init];
         networkErrorAlerter_ = [[NetworkErrorAlerter alloc] init];
         [purchases loadStore];        
@@ -128,7 +129,9 @@ static PiptureAppDelegate *instance;
 }
 
 - (NSString*)documentsDirectory {
-    NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, 
+                                                             NSUserDomainMask, 
+                                                             YES);
     return [savePaths objectAtIndex:0];
 }
 
@@ -141,7 +144,8 @@ static PiptureAppDelegate *instance;
     unsigned long long int documentsFolderSize = 0;
     for (NSString * path in directoryEnumerator) 
     {
-        NSDictionary * documentFileAttributes = [manager attributesOfItemAtPath:[documentsDirectory stringByAppendingPathComponent:path] error:nil];
+        NSDictionary * documentFileAttributes = [manager attributesOfItemAtPath:[documentsDirectory stringByAppendingPathComponent:path] 
+                                                                          error:nil];
         documentsFolderSize += [documentFileAttributes fileSize];
     }
     
@@ -152,7 +156,8 @@ static PiptureAppDelegate *instance;
         for (NSString * path in directoryEnumerator) 
         {
             NSString * filePath = [documentsDirectory stringByAppendingPathComponent:path];
-            NSDictionary * documentFileAttributes = [manager attributesOfItemAtPath:filePath error:nil];
+            NSDictionary * documentFileAttributes = [manager attributesOfItemAtPath:filePath 
+                                                                              error:nil];
             unsigned long long fileSize = [documentFileAttributes fileSize];
             NSDate * modifDate = [documentFileAttributes fileModificationDate];
             
@@ -161,7 +166,8 @@ static PiptureAppDelegate *instance;
             if ([modifDate laterDate:yesterday] == yesterday &&
                 [manager removeItemAtPath:filePath error:nil]) {
                 
-                NSLog(@"deleted file: %@, with size:%llu, with modif: %@", filePath, fileSize, modifDate);
+                NSLog(@"deleted file: %@, with size:%llu, with modif: %@",
+                      filePath, fileSize, modifDate);
                 documentsFolderSize -= fileSize;
                 
                 if (documentsFolderSize <= (limit - limit*.1) || documentsFolderSize <= 0) {
@@ -170,7 +176,8 @@ static PiptureAppDelegate *instance;
             }
         }
         
-        NSLog(@"Doc filesize after cleaning: %llu, limit %d", documentsFolderSize, limit);
+        NSLog(@"Doc filesize after cleaning: %llu, limit %d", 
+              documentsFolderSize, limit);
     }
 }
 
@@ -209,12 +216,14 @@ static PiptureAppDelegate *instance;
 
 - (void)saveUUID:(NSString*)uuid
 {
-    [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:UUID_KEY];
+    [[NSUserDefaults standardUserDefaults] setObject:uuid 
+                                              forKey:UUID_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)putSubtitlesState:(BOOL)state {
-    [[NSUserDefaults standardUserDefaults] setBool:state forKey:SUBSSTATE_KEY];
+    [[NSUserDefaults standardUserDefaults] setBool:state
+                                            forKey:SUBSSTATE_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -224,7 +233,8 @@ static PiptureAppDelegate *instance;
 }
 
 - (void)putHomescreenState:(int)state {
-    [[NSUserDefaults standardUserDefaults] setInteger:state forKey:HOMESCREENSTATE_KEY];
+    [[NSUserDefaults standardUserDefaults] setInteger:state 
+                                               forKey:HOMESCREENSTATE_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -234,7 +244,8 @@ static PiptureAppDelegate *instance;
 }
 
 - (void)putUserName:(NSString*)name {
-    [[NSUserDefaults standardUserDefaults] setObject:name forKey:USERNAME_KEY];
+    [[NSUserDefaults standardUserDefaults] setObject:name 
+                                              forKey:USERNAME_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -243,12 +254,14 @@ static PiptureAppDelegate *instance;
 }
 
 - (void)putUpdateTimeForAlbumId:(NSInteger)albumId updateDate:(NSInteger)date {
-    [[NSUserDefaults standardUserDefaults] setInteger:date forKey:[NSString stringWithFormat:@"album%d", albumId]];
+    [[NSUserDefaults standardUserDefaults] setInteger:date 
+                                               forKey:[NSString stringWithFormat:@"album%d", albumId]];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (NSInteger)getUpdateTimeForAlbumId:(NSInteger)albumId {
-    return [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"album%d", albumId]];
+    return [[NSUserDefaults standardUserDefaults]
+            integerForKey:[NSString stringWithFormat:@"album%d", albumId]];
 }
 
 
@@ -326,7 +339,8 @@ static PiptureAppDelegate *instance;
     } else {
         loggedIn = YES;
         
-        UITapGestureRecognizer * tapVRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+        UITapGestureRecognizer * tapVRec = [[UITapGestureRecognizer alloc] initWithTarget:self 
+                                                                                   action:@selector(tapResponder:)];
         [refreshTapZone addGestureRecognizer:tapVRec];
         [tapVRec release];
         
@@ -401,7 +415,10 @@ static PiptureAppDelegate *instance;
     
     // Observe the kNetworkReachabilityChangedNotification. When that notification is posted, the
     // method "reachabilityChanged" will be called. 
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(connectionChanged:) name:kReachabilityChangedNotification object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(connectionChanged:)
+                                                 name:kReachabilityChangedNotification 
+                                               object: nil];
     
     wifiConnection = [[NetworkConnectionInformer testConnection] retain];
 	[wifiConnection startNotifier];
@@ -423,11 +440,13 @@ static PiptureAppDelegate *instance;
     [animation setDuration:0.5];
     [animation setType:kCATransitionMoveIn];
     [animation setSubtype:kCATransitionFromTop];
-    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [animation setTimingFunction:[CAMediaTimingFunction
+                                  functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     
     [self.window setRootViewController:homeNavigationController];
     
-    [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+    [[self.window layer] addAnimation:animation 
+                               forKey:@"SwitchToView1"];
     
     [self.window bringSubviewToFront:tabView];
 }
@@ -446,9 +465,11 @@ static PiptureAppDelegate *instance;
         [animation setDuration:0.5];
         [animation setType:kCATransitionMoveIn];
         [animation setSubtype:kCATransitionFromTop];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        [animation setTimingFunction:[CAMediaTimingFunction
+                                      functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
         [self.window setRootViewController:piptureStoreNavigationController];
-        [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+        [[self.window layer] addAnimation:animation
+                                   forKey:@"SwitchToView1"];
         
     }    
 }
@@ -460,7 +481,8 @@ static PiptureAppDelegate *instance;
         [animation setDuration:0.5];
         [animation setType:kCATransitionReveal];
         [animation setSubtype:kCATransitionFromBottom];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        [animation setTimingFunction:[CAMediaTimingFunction 
+                                      functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
         
         
         [self.window setRootViewController:homeNavigationController];
@@ -477,7 +499,9 @@ static PiptureAppDelegate *instance;
 }
 
 
-- (void)openMailComposer:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId fromViewController:(UIViewController*)viewController
+- (void)openMailComposer:(PlaylistItem*)playlistItem 
+              timeslotId:(NSNumber*)timeslotId
+      fromViewController:(UIViewController*)viewController
 {
 
     if (![self mailComposerVisible] && [MFMailComposeViewController canSendMail] && playlistItem)
@@ -486,12 +510,15 @@ static PiptureAppDelegate *instance;
         [animation setDuration:0.5];
         [animation setType:kCATransitionMoveIn];
         [animation setSubtype:kCATransitionFromTop];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        [animation setTimingFunction:[CAMediaTimingFunction 
+                                      functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
         
         UIViewController* prevViewController = self.window.rootViewController;
         [self.window setRootViewController:mailComposerNavigationController];
         [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
-        [mailComposerNavigationController prepareMailComposer:playlistItem timeslot:timeslotId prevViewController:prevViewController];        
+        [mailComposerNavigationController prepareMailComposer:playlistItem
+                                                     timeslot:timeslotId 
+                                           prevViewController:prevViewController];        
         
     }
                 
@@ -505,7 +532,8 @@ static PiptureAppDelegate *instance;
         [animation setDuration:0.5];
         [animation setType:kCATransitionReveal];
         [animation setSubtype:kCATransitionFromBottom];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        [animation setTimingFunction:[CAMediaTimingFunction 
+                                      functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
 
         
         [self.window setRootViewController:mailComposerNavigationController.prevViewController];
@@ -526,7 +554,8 @@ static PiptureAppDelegate *instance;
     [animation setDuration:0.5];
     [animation setType:kCATransitionMoveIn];
     [animation setSubtype:kCATransitionFromTop];
-    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [animation setTimingFunction:[CAMediaTimingFunction 
+                                  functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     
     videoViewController.timeslotId = timeslotId;
     videoViewController.playlist = playlist;
@@ -538,7 +567,8 @@ static PiptureAppDelegate *instance;
     
     if (playlist.count == 0) {
         [model_ cancelCurrentRequest];
-        [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:timeslotId receiver:videoViewController];
+        [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:timeslotId 
+                                                             receiver:videoViewController];
     } else {
         [videoViewController initVideo];
     }
@@ -558,12 +588,17 @@ static PiptureAppDelegate *instance;
     return hasHighResScreen;
 }
 
-- (BOOL)getVideoURL:(PlaylistItem*)item forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver {
-    
-    
-    NSNumber * quality = [NSNumber numberWithInt:(curConnection == NetworkConnection_Cellular || ![self isHighResolutionDevice])?1:0];
+- (BOOL)getVideoURL:(PlaylistItem*)item 
+      forTimeslotId:(NSNumber*)timeslotId 
+           receiver:(NSObject<VideoURLReceiver>*)receiver {
+    NSNumber * quality = [NSNumber numberWithInt:(curConnection == NetworkConnection_Cellular ||
+                                                  ![self isHighResolutionDevice]) ? 1 : 0];
         
-    return [model_ getVideoURL:item forceBuy:YES forTimeslotId:timeslotId withQuality:quality receiver:receiver];
+    return [model_ getVideoURL:item
+                      forceBuy:YES
+                 forTimeslotId:timeslotId
+                   withQuality:quality
+                      receiver:receiver];
 }
 
 NSInteger networkActivityIndecatorCount;
@@ -606,7 +641,11 @@ NSInteger networkActivityIndecatorCount;
 
 
 - (void)showError:(NSString *)title message:(NSString *)message {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title
+                                                     message:message
+                                                    delegate:nil 
+                                           cancelButtonTitle:@"OK" 
+                                           otherButtonTitles:nil];
     [alert show];
     [alert release]; 
 }
@@ -628,14 +667,19 @@ NSInteger networkActivityIndecatorCount;
 
 - (void)showInsufficientFunds;
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Library Card" message:@"Add Views to your card to complete this action." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue",nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Library Card"
+                                                    message:@"Add Views to your card to complete this action."
+                                                   delegate:self
+                                          cancelButtonTitle:@"Cancel" 
+                                          otherButtonTitles:@"Continue", nil];
     alert.tag = INSUFFICIENT_FUND_ALERT;
     [alert show];
     [alert release];
 }
 
 - (void)buyViews {
-    [[NSNotificationCenter defaultCenter] postNotificationName:BUY_VIEWS_NOTIFICATION object:nil];    
+    [[NSNotificationCenter defaultCenter] postNotificationName:BUY_VIEWS_NOTIFICATION 
+                                                        object:nil];    
     
     if ([purchases canMakePurchases]) {
         [purchases purchaseCredits];
@@ -718,7 +762,9 @@ NSInteger networkActivityIndecatorCount;
     }
 }
 
-- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+- (void)animationDidStop:(NSString *)animationID 
+                finished:(NSNumber *)finished 
+                 context:(void *)context {
     tabView.hidden = tabView.alpha == 0.0;
 }
 
@@ -732,9 +778,15 @@ NSInteger networkActivityIndecatorCount;
         [UIView setAnimationDuration:0.3];
     }
     if (!visible)
-        tabView.frame = CGRectMake(0, self.window.frame.size.height, rect.size.width, tabView.frame.size.height);
+        tabView.frame = CGRectMake(0, 
+                                   self.window.frame.size.height, 
+                                   rect.size.width, 
+                                   tabView.frame.size.height);
     else
-        tabView.frame = CGRectMake(0, self.window.frame.size.height - tabView.frame.size.height, rect.size.width, tabView.frame.size.height);
+        tabView.frame = CGRectMake(0, 
+                                   self.window.frame.size.height - tabView.frame.size.height, 
+                                   rect.size.width, 
+                                   tabView.frame.size.height);
     
     if (slide) {
         [UIView setAnimationDelegate:self];
@@ -770,9 +822,20 @@ NSInteger networkActivityIndecatorCount;
     //[[[self window] rootViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)showWelcomeScreenWithTitle:(NSString*)title message:(NSString*)message storeKey:(NSString*)key image:(BOOL)logo tag:(int)screenId delegate:(id<WelcomeScreenProtocol>)delegate{
+- (void)showWelcomeScreenWithTitle:(NSString*)title
+                           message:(NSString*)message
+                          storeKey:(NSString*)key 
+                             image:(BOOL)logo 
+                               tag:(int)screenId 
+                          delegate:(id<WelcomeScreenProtocol>)delegate{
     
-    [welcomeScreen showWelcomeScreenWithTitle:title message:message storeKey:key image:logo parent:self.window tag:screenId delegate:delegate];    
+    [welcomeScreen showWelcomeScreenWithTitle:title
+                                      message:message 
+                                     storeKey:key 
+                                        image:logo 
+                                       parent:self.window 
+                                          tag:screenId 
+                                     delegate:delegate];    
 }
 
 - (NetworkConnection)networkConnection {
@@ -800,7 +863,11 @@ NSInteger networkActivityIndecatorCount;
 #pragma mark BalanceReceiver methods
 
 -(void)dataRequestFailed:(DataRequestError*)error {
-    [networkErrorAlerter_ showAlertForError:error delegate:self tag:GENERAL_ALERT cancelButtonTitle:@"OK" otherButtonTitles:nil]; 
+    [networkErrorAlerter_ showAlertForError:error 
+                                   delegate:self
+                                        tag:GENERAL_ALERT
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil]; 
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)newBalance {

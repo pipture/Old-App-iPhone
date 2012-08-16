@@ -36,12 +36,16 @@
             case TimeslotStatus_Current:
                 return @"Watch the Series Now!";
             case TimeslotStatus_Next:            
-                return [NSString stringWithFormat: @"Watch the Series at %@", [TimeslotFormatter representTime:timeslot.startTime]]; 
+                return [NSString stringWithFormat: @"Watch the Series at %@",
+                        [TimeslotFormatter representTime:timeslot.startTime]]; 
             default:
                 break;
         }        
     }        
-    return [NSString stringWithFormat:@"%@ %@ to %@",timeslot.scheduleDescription, [self representTime:timeslot.startTime],[self representTime:timeslot.endTime]];                
+    return [NSString stringWithFormat: @"%@ %@ to %@",
+            timeslot.scheduleDescription,
+            [self representTime:timeslot.startTime],
+            [self representTime:timeslot.endTime]];                
 }
 
 @end

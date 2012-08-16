@@ -49,7 +49,9 @@
     return scheduleTime;
 }
 
-- (NSInteger)findCurrentTimeslotIndex:(NSArray*)lTimeslots orNext:(BOOL)orNext orLast:(BOOL)orLast
+- (NSInteger)findCurrentTimeslotIndex:(NSArray*)lTimeslots
+                               orNext:(BOOL)orNext
+                               orLast:(BOOL)orLast
 {
     int index = -1;
     for (int i = 0; i < lTimeslots.count; i++) {
@@ -102,7 +104,8 @@
         {
             [timeslots_ removeAllObjects];
             [timeslots_ addObjectsFromArray:timeslots];
-            [[NSNotificationCenter defaultCenter] postNotificationName:NEW_TIMESLOTS_NOTIFICATION object:self];
+            [[NSNotificationCenter defaultCenter] postNotificationName:NEW_TIMESLOTS_NOTIFICATION
+                                                                object:self];
                         
         }
     }        
@@ -115,24 +118,30 @@
 }
 
 - (BOOL)pageInRange:(int)page {
-    return (timeslots_ != nil && timeslots_.count > 0 && page >= 0 && page < timeslots_.count);
+    return (timeslots_ != nil && timeslots_.count > 0 && 
+            page >= 0 && page < timeslots_.count);
 }
 
 
 - (NSInteger) currentOrNextTimeslotIndex
 {
-    return [self findCurrentTimeslotIndex:timeslots_ orNext:YES orLast:NO];
+    return [self findCurrentTimeslotIndex:timeslots_ 
+                                   orNext:YES 
+                                   orLast:NO];
 }
 
 - (NSInteger) currentOrNextOrLastTimeslotIndex
 {
-    return [self findCurrentTimeslotIndex:timeslots_ orNext:YES orLast:YES];
-
+    return [self findCurrentTimeslotIndex:timeslots_ 
+                                   orNext:YES
+                                   orLast:YES];
 }
 
 - (Timeslot*) currentTimeslot
 {
-    NSInteger page = [self findCurrentTimeslotIndex:timeslots_ orNext:NO orLast:NO];
+    NSInteger page = [self findCurrentTimeslotIndex:timeslots_
+                                             orNext:NO
+                                             orLast:NO];
     return page < 0 ? nil : [self timeslotForPage:page];    
 }
 

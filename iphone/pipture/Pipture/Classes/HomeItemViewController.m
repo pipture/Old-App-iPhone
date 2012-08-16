@@ -37,14 +37,23 @@
     AsyncImageView * imageView = (AsyncImageView*)[coverPlaceholder viewWithTag:1212];
     
     if (!imageView) {
-        CGRect frame = CGRectMake(0, 0, coverPlaceholder.frame.size.width, coverPlaceholder.frame.size.height);
+        CGRect frame = CGRectMake(0, 0, 
+                                  coverPlaceholder.frame.size.width, 
+                                  coverPlaceholder.frame.size.height);
         
         imageView = [[[AsyncImageView alloc] initWithFrame:frame] autorelease];
         imageView.tag = 1212;
         [coverPlaceholder addSubview:imageView];
     }
 
-    [imageView loadImageFromURL:url withDefImage:nil spinner:AsyncImageSpinnerType_Big localStore:YES force:NO asButton:NO target:nil selector:nil];
+    [imageView loadImageFromURL:url 
+                   withDefImage:nil 
+                        spinner:AsyncImageSpinnerType_Big 
+                     localStore:YES 
+                          force:NO 
+                       asButton:NO 
+                         target:nil
+                       selector:nil];
 }
 
 @end

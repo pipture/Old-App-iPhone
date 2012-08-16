@@ -219,13 +219,15 @@
     scheduleModel_ = [scheduleModel retain];    
     [oldMod release];
     
-    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, 
+                                        scrollView.frame.size.height);
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     
-    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
+    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self 
+                                                                                      action:@selector(tapResponder:)];
     singleFingerTap.cancelsTouchesInView = NO;
     [self.scrollView addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];
@@ -266,7 +268,8 @@
             [coverItems addObject:[NSNull null]];
         }
         
-        scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * coverItems.count, scrollView.frame.size.height);
+        scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * coverItems.count, 
+                                            scrollView.frame.size.height);
         //remove deprecated data
         while (timeslotsCount < scrollView.subviews.count) {
             [[scrollView.subviews lastObject] removeFromSuperview];

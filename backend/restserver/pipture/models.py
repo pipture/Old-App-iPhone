@@ -609,38 +609,38 @@ class SendMessage(models.Model):
 
 
 US_TIMEZONES = (
-                ('America/New_York', 'America/New_York'),
-                ('America/Detroit', 'America/Detroit'),
-                ('America/Kentucky/Louisville', 'America/Kentucky/Louisville'),
-                ('America/Kentucky/Monticello', 'America/Kentucky/Monticello'),
-                ('America/Indiana/Indianapolis', 'America/Indiana/Indianapolis'),
-                ('America/Indiana/Vincennes', 'America/Indiana/Vincennes'),
-                ('America/Indiana/Winamac', 'America/Indiana/Winamac'),
-                ('America/Indiana/Marengo', 'America/Indiana/Marengo'),
-                ('America/Indiana/Petersburg', 'America/Indiana/Petersburg'),
-                ('America/Indiana/Vevay', 'America/Indiana/Vevay'),
-                ('America/Chicago', 'America/Chicago'),
-                ('America/Indiana/Tell_City', 'America/Indiana/Tell_City'),
-                ('America/Indiana/Knox', 'America/Indiana/Knox'),
-                ('America/Menominee', 'America/Menominee'),
-                ('America/North_Dakota/Center', 'America/North_Dakota/Center'),
-                ('America/North_Dakota/New_Salem', 'America/North_Dakota/New_Salem'),
-                ('America/North_Dakota/Beulah', 'America/North_Dakota/Beulah'),
-                ('America/Denver', 'America/Denver'),
-                ('America/Boise', 'America/Boise'),
-                ('America/Shiprock', 'America/Shiprock'),
-                ('America/Phoenix', 'America/Phoenix'),
-                ('America/Los_Angeles', 'America/Los_Angeles'),
-                ('America/Anchorage', 'America/Anchorage'),
-                ('America/Juneau', 'America/Juneau'),
-                ('America/Sitka', 'America/Sitka'),
-                ('America/Yakutat', 'America/Yakutat'),
-                ('America/Nome', 'America/Nome'),
-                ('America/Adak', 'America/Adak'),
-                ('America/Metlakatla', 'America/Metlakatla'),
-                ('Pacific/Honolulu', 'Pacific/Honolulu'),
-                ('Asia/Omsk', 'Asia/Omsk'),
-                )
+        ('America/New_York', 'America/New_York'),
+        ('America/Detroit', 'America/Detroit'),
+        ('America/Kentucky/Louisville', 'America/Kentucky/Louisville'),
+        ('America/Kentucky/Monticello', 'America/Kentucky/Monticello'),
+        ('America/Indiana/Indianapolis', 'America/Indiana/Indianapolis'),
+        ('America/Indiana/Vincennes', 'America/Indiana/Vincennes'),
+        ('America/Indiana/Winamac', 'America/Indiana/Winamac'),
+        ('America/Indiana/Marengo', 'America/Indiana/Marengo'),
+        ('America/Indiana/Petersburg', 'America/Indiana/Petersburg'),
+        ('America/Indiana/Vevay', 'America/Indiana/Vevay'),
+        ('America/Chicago', 'America/Chicago'),
+        ('America/Indiana/Tell_City', 'America/Indiana/Tell_City'),
+        ('America/Indiana/Knox', 'America/Indiana/Knox'),
+        ('America/Menominee', 'America/Menominee'),
+        ('America/North_Dakota/Center', 'America/North_Dakota/Center'),
+        ('America/North_Dakota/New_Salem', 'America/North_Dakota/New_Salem'),
+        ('America/North_Dakota/Beulah', 'America/North_Dakota/Beulah'),
+        ('America/Denver', 'America/Denver'),
+        ('America/Boise', 'America/Boise'),
+        ('America/Shiprock', 'America/Shiprock'),
+        ('America/Phoenix', 'America/Phoenix'),
+        ('America/Los_Angeles', 'America/Los_Angeles'),
+        ('America/Anchorage', 'America/Anchorage'),
+        ('America/Juneau', 'America/Juneau'),
+        ('America/Sitka', 'America/Sitka'),
+        ('America/Yakutat', 'America/Yakutat'),
+        ('America/Nome', 'America/Nome'),
+        ('America/Adak', 'America/Adak'),
+        ('America/Metlakatla', 'America/Metlakatla'),
+        ('Pacific/Honolulu', 'Pacific/Honolulu'),
+        ('Asia/Omsk', 'Asia/Omsk'),
+    )
 
 
 class UserProfile(User):
@@ -664,7 +664,6 @@ def install(**kwargs):
         PurchaseItems(Description="WatchEpisode", Price=Decimal('1')).save()
         PurchaseItems( Description="SendEpisode", Price=Decimal('1')).save()
         PurchaseItems( Description="Album", Price=Decimal('0')).save()
-
 
     if not AppleProducts.objects.count():
         AppleProducts(ProductId="com.pipture.Pipture.credits",
