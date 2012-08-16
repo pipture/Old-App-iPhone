@@ -259,7 +259,7 @@ static PiptureAppDelegate *instance;
     
     HomeViewController * vc = [self getHomeView];
     if (vc) {
-        [vc.coverView prepareWith:vc];
+        [vc.newsView prepareWith:vc];
         [vc.albumsView setNeedToUpdate];
     }
 }

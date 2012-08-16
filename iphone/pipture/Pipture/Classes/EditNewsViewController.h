@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HomeScreenDelegate.h"
 
-@interface EditNewsViewController : UIViewController
-
+@interface EditNewsViewController : UIViewController<NewsViewSectionDelegate>
+@property (assign, nonatomic) id<HomeScreenDelegate> delegate;
+- (IBAction)editClick:(id)sender;
 @end

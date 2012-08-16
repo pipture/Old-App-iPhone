@@ -6,17 +6,19 @@
 //  Copyright (c) 2011 Thumbtack Technology Inc. All rights reserved.
 //
 
-#import "CoverView.h"
+#import "NewsView.h"
 #import "Timeslot.h"
 #import "PiptureAppDelegate.h"
 #import "TimeslotFormatter.h"
+#import "CoverViewController.h"
+#import "EditNewsViewController.h"
 
-@implementation CoverView
-@synthesize coverContainer;
+@implementation NewsView
 @synthesize coverPanel;
 @synthesize coverButton;
 @synthesize detailButton;
 @synthesize delegate;
+@synthesize scrollView;
 @synthesize currentTimeslot;
 
 #pragma mark - View lifecycle
@@ -78,13 +80,6 @@
     [self updateTimeSlotInfo:currentTimeslot];
 }
 
--(void)hotNewsCoverClicked {
-    Album *album = [PiptureAppDelegate instance].albumForCover;
-    if (album) {
-        [self.delegate showAlbumDetails:album];
-    }
-}
-
 - (IBAction)coverClick:(id)sender {
     [self.delegate doFlip];
 }
@@ -97,36 +92,47 @@
     allowBubble = NO;
     self.delegate = parent;
     
-    if (coverContainer.subviews.count > 0)
-        [[coverContainer.subviews objectAtIndex:0] removeFromSuperview];
+    //prepare scrollView
+    self.delegate = parent;
+        
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
+    scrollView.showsHorizontalScrollIndicator = NO;
+    scrollView.showsVerticalScrollIndicator = NO;
+    scrollView.scrollsToTop = NO;
+    scrollView.delegate = self;
+    scrollView.pagingEnabled = NO;
     
-    NSString *cover = [[PiptureAppDelegate instance] getCoverImage];
-    CGRect rect = CGRectMake(0, 0, coverContainer.frame.size.width, coverContainer.frame.size.height);
-    if (cover && cover.length > 0) {
-        AsyncImageView *imageView = [[[AsyncImageView alloc] initWithFrame:rect] autorelease];
-        [coverContainer addSubview:imageView];
-        [imageView loadImageFromURL:[NSURL URLWithString:cover] 
-                       withDefImage:nil 
-                            spinner:AsyncImageSpinnerType_Big 
-                         localStore:YES 
-                              force:NO 
-                           asButton:YES 
-                             target:self 
-                           selector:@selector(hotNewsCoverClicked)];
-    } else {
-        UIImageView * imageView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cover-channel.jpg"]] autorelease];
-        [coverContainer addSubview:imageView];
-    }
+    [self placeViewController:[[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil]];
+    [self placeViewController:[[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]];
 }
 
 - (void)dealloc {
     [currentTimeslot release];
-    [coverContainer release];
     [coverPanel release];
     [coverButton release];
     [detailButton release];
     
+    [scrollView release];
     [super dealloc];
+}
+
+- (void)placeViewController:(UIViewController<NewsViewSectionDelegate>*)controller {
+    [controller setHomeScreenDelegate:self.delegate];
+    
+    CGSize rect = scrollView.contentSize;
+    int pos = 0;
+    if (scrollView.subviews.count == 0) {
+        pos = 0;
+        rect.height = controller.view.frame.size.height;
+    } else {
+        pos = rect.height;
+        rect.height += controller.view.frame.size.height;
+    }
+    scrollView.contentSize = rect;
+    controller.view.frame = CGRectMake(0, pos, rect.width, controller.view.frame.size.height);
+    [scrollView addSubview:controller.view];
+    
+    [controller prepare];
 }
 
 @end

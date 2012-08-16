@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CoverView.h"
+#import "NewsView.h"
 #import "ScheduleView.h"
 #import "HomeScreenDelegate.h"
 #import "AlbumsView.h"
@@ -39,7 +39,7 @@
 @property (retain, nonatomic) IBOutlet UIButton *flipButton;
 @property (retain, nonatomic) IBOutlet UIButton *scheduleButton;
 @property (retain, nonatomic) IBOutlet ScheduleView *scheduleView;
-@property (retain, nonatomic) IBOutlet CoverView *coverView;
+@property (retain, nonatomic) IBOutlet NewsView *newsView;
 @property (retain, nonatomic) IBOutlet AlbumsView *albumsView;
 @property (retain, nonatomic) IBOutlet UIView *scheduleEnhancer;
 @property (retain, nonatomic) IBOutlet UIView *flipEnhancer;

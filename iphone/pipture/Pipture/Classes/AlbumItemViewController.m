@@ -49,6 +49,7 @@
 
 - (void)updateStatus {
     switch (album.status) {
+        case AlbumStatus_Wrong:
         case AlbumStatus_Normal:
             episodesIndicator.hidden = ![self haveNewEpisodes];
             tagLabel.text = @""; break;

@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HomeScreenDelegate.h"
 
-@interface CoverViewController : UIViewController
+@interface CoverViewController : UIViewController<NewsViewSectionDelegate>
+@property (assign, nonatomic) id<HomeScreenDelegate> delegate;
+@property (retain, nonatomic) IBOutlet UIView *placeHolder;
+
+- (void)prepare;
 
 @end

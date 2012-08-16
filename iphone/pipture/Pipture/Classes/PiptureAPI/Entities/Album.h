@@ -11,6 +11,7 @@
 #import "Trailer.h"
 
 enum AlbumStatus{
+    AlbumStatus_Wrong = 0,
     AlbumStatus_Normal = 1,
     AlbumStatus_Premiere = 2,
     AlbumStatus_CommingSoon = 3,    

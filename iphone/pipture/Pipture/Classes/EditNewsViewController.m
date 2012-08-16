@@ -13,6 +13,7 @@
 @end
 
 @implementation EditNewsViewController
+@synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -40,4 +41,15 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (void)prepare {
+    
+}
+
+
+-(void)setHomeScreenDelegate:(id<HomeScreenDelegate>) hsDelegate {
+    self.delegate = hsDelegate;
+}
+
+- (IBAction)editClick:(id)sender {
+}
 @end
