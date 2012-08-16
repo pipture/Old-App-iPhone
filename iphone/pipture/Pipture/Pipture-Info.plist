@@ -69,7 +69,7 @@
 	<key>Rest Get balance</key>
 	<string>getBalance?</string>
 	<key>Rest Get current timeslots</key>
-	<string>getTimeslots?max=%@&amp;tz=%@</string>
+	<string>getTimeslots?max=%@</string>
 	<key>Rest Get playlist</key>
 	<string>getPlaylist?TimeslotId=%@</string>
 	<key>Rest Get search result</key>
@@ -93,11 +93,11 @@
 	<key>Rest Send message</key>
 	<string>sendMessage</string>
 	<key>Rest end point</key>
-	<string>http://192.168.9.85:8000/</string>
+	<string>http://ec2-67-202-31-72.compute-1.amazonaws.com/</string>
 	<key>Rest end point debian</key>
 	<string>http://ec2-23-20-20-219.compute-1.amazonaws.com/</string>
 	<key>Rest end point local</key>
-	<string>http://ec2-67-202-31-72.compute-1.amazonaws.com/</string>
+	<string>http://192.168.9.129:8001/</string>
 	<key>UIPrerenderedIcon</key>
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>
