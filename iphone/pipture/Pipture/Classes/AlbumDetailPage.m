@@ -127,7 +127,7 @@
     
     NSString *relDate = nil;
     switch (album.status) {
-        case 0:
+        case AlbumStatus_Wrong:
         case AlbumStatus_Normal:
             if (album.releaseDate) {
                 NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];

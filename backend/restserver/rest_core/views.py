@@ -995,18 +995,20 @@ def update_pip_user (pipUsersEmail, password):
 
 def get_cover():
     from restserver.pipture.models import PiptureSettings
+
     try:
-        album = PiptureSettings.objects.all()[0].Album
-        cover = PiptureSettings.objects.all()[0].Cover
+        pipture_settings = PiptureSettings.objects.all()[0]
     except IndexError:
-        album = None
-        cover = None
-        
-    if cover is None or cover.name is None or cover.name == "":
+        return "", 0
+
+    cover = pipture_settings.Cover
+    if cover is None or not cover.name:
         cover = ""
     else:
         cover = (cover._get_url()).split('?')[0]
 
+    album = pipture_settings.Album
+    album = album and album_json_by_id(album, None)
     return cover, album
 
 @csrf_exempt
@@ -1015,6 +1017,7 @@ def register(request):
         return HttpResponse ("There is POST method only.")
 
     keys = request.POST.keys()
+    print request.POST
     response = {}
     if "API" not in keys:
         response["Error"] = {"ErrorCode": "666", "ErrorDescription": "There is no API parameter."}
@@ -1032,7 +1035,7 @@ def register(request):
     user = PipUsers()
     user.save()
 
-    response['Cover'] = get_cover()
+    response['Cover'], response['Album'] = get_cover()
     response["SessionKey"] = "%s" % (user.Token)
     response["UUID"] = "%s" % (user.UserUID)
     return HttpResponse (json.dumps(response))
@@ -1072,9 +1075,7 @@ def login(request):
         pipUsersUID.save()
         token = pipUsersUID.Token
 
-        cover, album = get_cover()
-        response['Cover'] = cover
-        response['Album'] = album
+        response['Cover'], response['Album'] = get_cover()
         response["SessionKey"] = "%s" % token
         return HttpResponse(json.dumps(response))
 

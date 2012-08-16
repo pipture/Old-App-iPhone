@@ -27,13 +27,13 @@
 @synthesize flipButton;
 @synthesize scheduleButton;
 @synthesize scheduleView;
-@synthesize coverView;
 @synthesize albumsView;
 @synthesize scheduleEnhancer;
 @synthesize flipEnhancer;
 @synthesize searchButton;
 @synthesize storeButton;
 @synthesize progressView;
+@synthesize newsView;
 
 
 #pragma mark - View lifecycle
@@ -184,12 +184,12 @@
     UIColor * col = (firecount++ % 2 != 0)?[UIColor colorWithRed:0.2 green:0.67 blue:0.95 alpha:1]:[UIColor blackColor];
     
 
-    [coverView setTitleColor:col];
+    [newsView setTitleColor:col];
     [scheduleView setTitleColor:col];
     
     if (firecount >= 5) {
         [scheduleView setTitleColor:[UIColor blackColor]];
-        [coverView setTitleColor:[UIColor blackColor]];
+        [newsView setTitleColor:[UIColor blackColor]];
         
         [blinkTimer invalidate];
         blinkTimer = nil;
@@ -256,7 +256,7 @@
     [tapSRec release];
         
     [scheduleView prepareWith:self scheduleModel:scheduleModel];
-    [coverView prepareWith:self];
+    [newsView prepareWith:self];
     [albumsView prepareWith:self];
     
     UIBarButtonItem* search = [[UIBarButtonItem alloc] initWithCustomView:searchButton];    
@@ -301,7 +301,7 @@
 - (void)viewDidUnload
 {
     [self setScheduleView:nil];
-    [self setCoverView:nil];
+    [self setNewsView:nil];
     [self setTabbarContainer:nil];
     [self setFlipButton:nil];
     [self setScheduleButton:nil];
@@ -400,7 +400,7 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [scheduleView release];
-    [coverView release];
+    [newsView release];
     [tabbarContainer release];
     [flipButton release];
     [scheduleButton release];
@@ -511,7 +511,7 @@
                  message:@"Enjoy watching scheduled video programs\nshot specifically for smartphones users\nand send hilarious video messages\nperformed by great talents." 
                  storeKey:@"AppWelcomeShown" image:YES tag:WELCOMESCREEN_COVER delegate:self];
                 
-                [tabbarContainer addSubview:coverView];
+                [tabbarContainer addSubview:newsView];
                 if (flipAction) [UIView commitAnimations];
 
                 [self setFullScreenMode];
@@ -677,7 +677,7 @@
         [self scheduleTimeslotChange];
     }
     [scheduleView updateTimeslots];        
-    [coverView updateTimeSlotInfo:[scheduleModel currentOrNextTimeslot]];
+    [newsView updateTimeSlotInfo:[scheduleModel currentOrNextTimeslot]];
     [self powerButtonEnable];
 }
 
@@ -696,7 +696,7 @@
 -(void)weclomeScreenDidDissmis:(int)tag {
     switch (tag) {
         case WELCOMESCREEN_COVER:
-            [coverView allowShowBubble:YES];
+            [newsView allowShowBubble:YES];
             break;
         case WELCOMESCREEN_LIBRARY:
             break;

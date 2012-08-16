@@ -36,11 +36,11 @@
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UINavigationControllerDelegate, UIAlertViewDelegate>
 {
-    NSString * coverImage;
+    NSString *coverImage;
     int balance;
-    InAppPurchaseManager * purchases;
+    InAppPurchaseManager *purchases;
     NetworkConnection curConnection;
-    NetworkConnectionInformer * wifiConnection;
+    NetworkConnectionInformer *wifiConnection;
 }
 
 @property (assign, nonatomic) BOOL userPurchasedViewsSinceAppStart;
@@ -54,7 +54,7 @@
 @property (retain, nonatomic) IBOutlet UIButton *powerButton;
 @property (retain, nonatomic) IBOutlet UIView *refreshTapZone;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
-@property (retain, nonatomic) IBOutlet UINavigationController * homeNavigationController;
+@property (retain, nonatomic) IBOutlet UINavigationController *homeNavigationController;
 
 @property (retain, nonatomic) IBOutlet UINavigationController *piptureStoreNavigationController;
 @property (retain, nonatomic) IBOutlet VideoViewController *videoViewController;
@@ -67,6 +67,7 @@
 @property (retain, nonatomic) IBOutlet WelcomeScreenManager *welcomeScreen;
 @property (readonly, nonatomic) NSInteger tabViewBaseHeight;
 @property (readonly, nonatomic) NetworkErrorAlerter* networkErrorAlerter;
+@property (readonly, nonatomic) Album *albumForCover;
 
 +(PiptureAppDelegate*) instance;
 
@@ -124,5 +125,6 @@
 - (void)clearInAppPurchases;
 
 - (void)setCover:(NSString*)cover;
+- (void)setAlbumForCoverFromJSON:(id)album;
 
 @end
