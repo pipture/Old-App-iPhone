@@ -13,6 +13,7 @@
 +(NSString*)representTime:(NSDate*)date {
     
     NSCalendar *cal = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    [cal setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
     NSDateComponents *comp = [cal components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:date];
     NSInteger hour = comp.hour % 12;
     if (hour == 0) 
