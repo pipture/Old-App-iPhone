@@ -1,18 +1,20 @@
 //
-//  EditNewsViewController.m
+//  NewsCategoryViewController.m
 //  Pipture
 //
 //  Created by Vladimir on 16.08.12.
 //  Copyright (c) 2012 Thumbtack Technology. All rights reserved.
 //
 
-#import "EditNewsViewController.h"
+#import "NewsCategoryViewController.h"
 
-@interface EditNewsViewController ()
+@interface NewsCategoryViewController ()
 
 @end
 
-@implementation EditNewsViewController
+@implementation NewsCategoryViewController
+@synthesize itemContainer;
+@synthesize categoryTitle;
 @synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -32,6 +34,8 @@
 
 - (void)viewDidUnload
 {
+    [self setCategoryTitle:nil];
+    [self setItemContainer:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -41,15 +45,23 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (void)prepare:(NSString *) title {
-    
+- (void)dealloc {
+    [categoryTitle release];
+    [itemContainer release];
+    [super dealloc];
 }
-
 
 -(void)setHomeScreenDelegate:(id<HomeScreenDelegate>) hsDelegate {
     self.delegate = hsDelegate;
 }
 
-- (IBAction)editClick:(id)sender {
+- (void)prepare:(NSString *) title {
+    self.categoryTitle.text = title;
+    
+    for (int i = 0; i < 3; i++) {
+        //TODO: fill items
+    }
+    
 }
+
 @end

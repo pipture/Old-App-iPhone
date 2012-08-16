@@ -1,5 +1,5 @@
 //
-//  CoverViewController.h
+//  NewsCategoryViewController.h
 //  Pipture
 //
 //  Created by Vladimir on 16.08.12.
@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "HomeScreenDelegate.h"
 
-@interface CoverViewController : UIViewController<NewsViewSectionDelegate>
+@interface NewsCategoryViewController : UIViewController<NewsViewSectionDelegate>
 @property (assign, nonatomic) id<HomeScreenDelegate> delegate;
-@property (retain, nonatomic) IBOutlet UIView *placeHolder;
-
+@property (retain, nonatomic) IBOutlet UIView *itemContainer;
+@property (retain, nonatomic) IBOutlet UILabel *categoryTitle;
 @end

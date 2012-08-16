@@ -18,7 +18,7 @@
 - (void)prepareWith:(id<HomeScreenDelegate>)parent;
 - (void)updateTimeSlotInfo:(Timeslot*)timeslot;
 - (void)allowShowBubble:(BOOL)allow;
-- (void)placeViewController:(UIViewController*)controller;
+- (void)placeViewController:(UIViewController<NewsViewSectionDelegate>*)controller withTitle:(NSString *)title;
 
 - (IBAction)coverClick:(id)sender;
 - (IBAction)detailsClick:(id)sender;

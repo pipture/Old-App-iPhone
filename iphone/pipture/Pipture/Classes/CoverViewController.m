@@ -45,7 +45,7 @@
     [super dealloc];
 }
 
-- (void)prepare {
+- (void)prepare:(NSString *) title {
     if (placeHolder.subviews.count > 0)
         [[placeHolder.subviews objectAtIndex:0] removeFromSuperview];
     

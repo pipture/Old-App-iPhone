@@ -12,6 +12,7 @@
 #import "TimeslotFormatter.h"
 #import "CoverViewController.h"
 #import "EditNewsViewController.h"
+#import "NewsCategoryViewController.h"
 
 @implementation NewsView
 @synthesize coverPanel;
@@ -102,8 +103,10 @@
     scrollView.delegate = self;
     scrollView.pagingEnabled = NO;
     
-    [self placeViewController:[[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil]];
-    [self placeViewController:[[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]];
+    [self placeViewController:[[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil] withTitle:@""];
+    [self placeViewController:[[NewsCategoryViewController alloc] initWithNibName:@"NewsCategoryViewController" bundle:nil] withTitle:@"title1"];
+    [self placeViewController:[[NewsCategoryViewController alloc] initWithNibName:@"NewsCategoryViewController" bundle:nil] withTitle:@"title2"];
+    [self placeViewController:[[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil] withTitle:@""];
 }
 
 - (void)dealloc {
@@ -116,7 +119,7 @@
     [super dealloc];
 }
 
-- (void)placeViewController:(UIViewController<NewsViewSectionDelegate>*)controller {
+- (void)placeViewController:(UIViewController<NewsViewSectionDelegate>*)controller withTitle:(NSString *)title {
     [controller setHomeScreenDelegate:self.delegate];
     
     CGSize rect = scrollView.contentSize;
@@ -132,7 +135,7 @@
     controller.view.frame = CGRectMake(0, pos, rect.width, controller.view.frame.size.height);
     [scrollView addSubview:controller.view];
     
-    [controller prepare];
+    [controller prepare:title];
 }
 
 @end
