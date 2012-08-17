@@ -651,7 +651,8 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
                                } itemName:@"Album"] retain];              
             
             [receiver performSelectorOnMainThread:@selector(albumsReceived:) 
-                                       withObject:albums waitUntilDone:YES];
+                                       withObject:albums
+                                    waitUntilDone:YES];
             [albums release];
         }
         
@@ -689,7 +690,8 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
                                         } itemName:@"Album"] retain];              
                     
                     [receiver performSelectorOnMainThread:@selector(albumsReceived:)
-                                               withObject:albums waitUntilDone:YES];
+                                               withObject:albums
+                                            waitUntilDone:YES];
                     [albums release];
                     break;
                 }

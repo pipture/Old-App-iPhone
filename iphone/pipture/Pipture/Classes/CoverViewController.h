@@ -13,4 +13,6 @@
 @property (assign, nonatomic) id<HomeScreenDelegate> delegate;
 @property (retain, nonatomic) IBOutlet UIView *placeHolder;
 
+- (void)hotNewsCoverClicked;
+
 @end

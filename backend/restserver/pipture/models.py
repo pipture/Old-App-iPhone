@@ -104,11 +104,19 @@ class Series(models.Model):
 
 
 class Albums(models.Model):
+    PURCHASE_TYPE_NOT_FOR_SALE = 'N'
+    PURCHASE_TYPE_ALBUM_PASS = 'P'
+    PURCHASE_TYPE_BUY_ALBUM = 'B'
     PURCHASETYPE_CHOICES = (
         ('N', 'Not for sale'),
         ('P', 'Album pass'),
         ('B', 'Buy album'),
     )
+    SELL_STATUS_FROM_PURCHASE = {
+        'N': 0,
+        'P': 1,
+        'B': 2,
+    }
 
     AlbumId = models.AutoField(primary_key=True)
     SeriesId = models.ForeignKey(Series, verbose_name='Series for Album')
@@ -197,7 +205,9 @@ class Episodes(models.Model):
     EpisodeId = models.AutoField(primary_key=True)
     Title = models.CharField(max_length=100)
     VideoId = models.ForeignKey(Videos, verbose_name='Video for episode')
-    AlbumId = models.ForeignKey(Albums, verbose_name='Album for episode')
+    AlbumId = models.ForeignKey(Albums,
+                                related_name='episodes',
+                                verbose_name='Album for episode')
     CloseUpThumbnail = S3EnabledFileField(verbose_name='Video Thumbnail',
                                           upload_to=u'documents/')
     SquareThumbnail = S3EnabledFileField(verbose_name='Screenshot',
