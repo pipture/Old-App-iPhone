@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1801D73F15DE2DE90086D163 /* CategoryEditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1801D73E15DE2DE90086D163 /* CategoryEditViewController.xib */; };
+		1801D74315DE2E050086D163 /* CategoryEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1801D74215DE2E050086D163 /* CategoryEditViewController.m */; };
 		18F18F9115DCD81F003CE769 /* CoverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F18F9015DCD81F003CE769 /* CoverViewController.xib */; };
 		18F18F9515DCD850003CE769 /* CoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F18F9415DCD850003CE769 /* CoverViewController.m */; };
 		18F18F9715DCE375003CE769 /* EditNewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F18F9615DCE375003CE769 /* EditNewsViewController.xib */; };
@@ -333,6 +335,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1801D73E15DE2DE90086D163 /* CategoryEditViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoryEditViewController.xib; sourceTree = "<group>"; };
+		1801D74115DE2E050086D163 /* CategoryEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryEditViewController.h; sourceTree = "<group>"; };
+		1801D74215DE2E050086D163 /* CategoryEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryEditViewController.m; sourceTree = "<group>"; };
 		18F18F9015DCD81F003CE769 /* CoverViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CoverViewController.xib; sourceTree = "<group>"; };
 		18F18F9315DCD850003CE769 /* CoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverViewController.h; sourceTree = "<group>"; };
 		18F18F9415DCD850003CE769 /* CoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverViewController.m; sourceTree = "<group>"; };
@@ -805,6 +810,8 @@
 				18F18F9915DCE3A7003CE769 /* EditNewsViewController.m */,
 				18F18F9D15DCEC19003CE769 /* NewsCategoryViewController.h */,
 				18F18F9E15DCEC1A003CE769 /* NewsCategoryViewController.m */,
+				1801D74115DE2E050086D163 /* CategoryEditViewController.h */,
+				1801D74215DE2E050086D163 /* CategoryEditViewController.m */,
 			);
 			name = HomeScreen;
 			sourceTree = "<group>";
@@ -988,6 +995,7 @@
 				18F18F9015DCD81F003CE769 /* CoverViewController.xib */,
 				18F18F9615DCE375003CE769 /* EditNewsViewController.xib */,
 				18F18F9B15DCEBC6003CE769 /* NewsCategoryViewController.xib */,
+				1801D73E15DE2DE90086D163 /* CategoryEditViewController.xib */,
 			);
 			path = Resources;
 			sourceTree = SOURCE_ROOT;
@@ -1612,6 +1620,7 @@
 				18F18F9115DCD81F003CE769 /* CoverViewController.xib in Resources */,
 				18F18F9715DCE375003CE769 /* EditNewsViewController.xib in Resources */,
 				18F18F9C15DCEBC6003CE769 /* NewsCategoryViewController.xib in Resources */,
+				1801D73F15DE2DE90086D163 /* CategoryEditViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1711,6 +1720,7 @@
 				18F18F9515DCD850003CE769 /* CoverViewController.m in Sources */,
 				18F18F9A15DCE3A8003CE769 /* EditNewsViewController.m in Sources */,
 				18F18F9F15DCEC1B003CE769 /* NewsCategoryViewController.m in Sources */,
+				1801D74315DE2E050086D163 /* CategoryEditViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

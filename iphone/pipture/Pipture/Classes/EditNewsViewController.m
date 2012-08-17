@@ -51,5 +51,6 @@
 }
 
 - (IBAction)editClick:(id)sender {
+    [self.delegate showEditCategory];
 }
 @end
