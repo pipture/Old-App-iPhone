@@ -37,6 +37,9 @@ enum HomeScreenMode {
 - (void)showAlbumDetails:(Album*)album;
 - (void)showAlbumDetailsForTimeslot:(NSInteger)timeslotId;
 
+- (void)showEditCategory;
+- (void)dismissEditCategory;
+
 - (BOOL)redrawDiscarding;
 
 @end

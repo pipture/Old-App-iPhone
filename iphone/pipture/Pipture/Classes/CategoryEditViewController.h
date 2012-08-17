@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HomeScreenDelegate.h"
 
-@interface CategoryEditViewController : UIViewController
-
+@interface CategoryEditViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
+@property (assign, nonatomic) id<HomeScreenDelegate> delegate;
+@property (retain, nonatomic) IBOutlet UITableView *tableView;
+@property (retain, nonatomic) IBOutlet UINavigationItem *navigationItem;
 @end
