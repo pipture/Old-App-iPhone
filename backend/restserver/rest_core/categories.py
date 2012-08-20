@@ -18,11 +18,15 @@ class CategoryView(JSONResponsibleMixin, View):
         return self.request.GET.get('Key', '')
 
     def get_context_data(self):
-        items = self.get_items_queryset()[:self.limit]
-        return dict(title=self.title,
-                    items=tuple(self.get_item_info(item) for item in items),
-                    rows=self.rows,
-                    columns=self.columns)
+        items = tuple(self.get_item_info(item)
+                      for item in self.get_items_queryset()[:self.limit])
+        return dict(items=items,
+                    data={
+                        'id': self.category_id,
+                        'title': self.title,
+                        'rows': self.rows,
+                        'columns': self.columns,
+                    })
 
 
 class VideosMixin(object):
@@ -51,6 +55,7 @@ class SeriesMixin(object):
 
 
 class MostPopularVideos(CategoryView, VideosMixin):
+    category_id = 1
     title = 'Most Popular'
 
     def get_items_queryset(self):
@@ -58,6 +63,7 @@ class MostPopularVideos(CategoryView, VideosMixin):
 
 
 class RecentlyAddedVideos(CategoryView, VideosMixin):
+    category_id = 2
     title = 'Recently Added'
 
     def get_purchased_albums_ids(self):
@@ -75,6 +81,7 @@ class RecentlyAddedVideos(CategoryView, VideosMixin):
 
 
 class ComingSoonSeries(CategoryView, SeriesMixin):
+    category_id = 3
     title = 'Coming Soon'
 
     def get_items_queryset(self):
@@ -96,6 +103,7 @@ class ComingSoonSeries(CategoryView, SeriesMixin):
 
 
 class Top12VideosForYou(CategoryView, VideosMixin):
+    category_id = 4
     title = 'Top 12 for You'
 
     def get_items_queryset(self):
@@ -103,6 +111,7 @@ class Top12VideosForYou(CategoryView, VideosMixin):
 
 
 class WatchThatVideosAgain(CategoryView, VideosMixin):
+    category_id = 5
     title = 'Watch Them Again'
 
     def get_items_queryset(self):
@@ -114,5 +123,6 @@ class AllCategoriesView(JSONResponsibleMixin, View):
         return CategoryView.__subclasses__()
 
     def get_context_data(self):
-        return tuple(category_class(request=self.request).get_context_data()
-                     for category_class in self.get_category_classes())
+        result = tuple(category_class(request=self.request).get_context_data()
+                       for category_class in self.get_category_classes())
+        return dict(ChannelCategories=result)
