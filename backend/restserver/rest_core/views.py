@@ -105,7 +105,7 @@ def getTimeslots (request):
         slot["ScheduleDescription"] = ts.ScheduleDescription
         slot["Title"] = ts.AlbumId.SeriesId.Title
         slot["AlbumId"] = ts.AlbumId.AlbumId
-        slot["CloseupBackground"] = (ts.AlbumId.CloseUpBackground._get_url()).split('?')[0]
+        slot["CloseupBackground"] = ts.AlbumId.CloseUpBackground.get_url()
         if ts.is_current(sec_utc_now):
             slot["TimeslotStatus"] = 2
             current_ts = True
@@ -123,7 +123,7 @@ def getTimeslots (request):
         timeslots_json.append(slot)
     response['Timeslots'] = timeslots_json
     response['CurrentTime'] = sec_utc_now
-    response['Cover'] = get_cover()
+    response['Cover'], response['Album'] = get_cover()
     return HttpResponse (json.dumps(response))
 
 def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
@@ -151,7 +151,7 @@ def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
         if subs_url_i.name == "":
             subs_url= ""
         else:
-            subs_url= (subs_url_i._get_url()).split('?')[0]
+            subs_url= subs_url_i.get_url()
 
         if video_q == 0:
             video_url_i = video.VideoId.VideoUrl
@@ -163,7 +163,7 @@ def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
         if video_url_i.name == "":
             video_url_i = video.VideoId.VideoUrl
 
-        video_url= (video_url_i._get_url()).split('?')[0]
+        video_url= video_url_i.get_url()
 
         return video_url, subs_url, None
     else:
@@ -424,7 +424,7 @@ def getPlaylist (request):
                 response["Videos"].append({"Type": "Trailer", "TrailerId": video.TrailerId,
                                            "Title": video.Title, "Line1": video.Line1,
                                            "Line2": video.Line2,
-                                           "SquareThumbnail": (video.SquareThumbnail._get_url()).split('?')[0]})
+                                           "SquareThumbnail": video.SquareThumbnail.get_url()})
 
         elif timeslot_video.LinkType == "E":
             try:
@@ -442,14 +442,14 @@ def getPlaylist (request):
                                                "DateReleased": local_date_time_date_time_to_UTC_sec(video.DateReleased), "Subject": video.Subject,
                                                "SenderToReceiver": video.SenderToReceiver,
                                                "EpisodeNo": video.EpisodeNo,
-                                               "CloseUpThumbnail": (video.CloseUpThumbnail._get_url()).split('?')[0],
+                                               "CloseUpThumbnail": video.CloseUpThumbnail.get_url(),
 
                                                'AlbumTitle': video.AlbumId.Title,
                                                'SeriesTitle': video.AlbumId.SeriesId.Title,
                                                'AlbumSeason': video.AlbumId.Season,
-                                               'AlbumSquareThumbnail': (video.AlbumId.SquareThumbnail._get_url()).split('?')[0],
+                                               'AlbumSquareThumbnail': video.AlbumId.SquareThumbnail.get_url(),
 
-                                               "SquareThumbnail": (video.SquareThumbnail._get_url()).split('?')[0]})
+                                               "SquareThumbnail": video.SquareThumbnail.get_url()})
     return HttpResponse (json.dumps(response))
 
 def get_album_status (album, get_date_only=False):
@@ -538,8 +538,8 @@ def fill_albums_response(user_id, sallable):
 
             album_each = {}
             album_each['AlbumId'] = album.AlbumId
-            album_each['Thumbnail'] =  (album.Thumbnail._get_url()).split('?')[0]
-            album_each['SquareThumbnail'] =  (album.SquareThumbnail._get_url()).split('?')[0]
+            album_each['Thumbnail'] =  album.Thumbnail.get_url()
+            album_each['SquareThumbnail'] =  album.SquareThumbnail.get_url()
             album_each['SeriesTitle'] = album.SeriesId.Title
             album_each['Title'] = album.Title
             album_each['ReleaseDate'], album_each['UpdateDate'], album_each['AlbumStatus'] = get_album_status (album)
@@ -554,7 +554,7 @@ def fill_albums_response(user_id, sallable):
             album_each["Trailer"] ={"Type": "Trailer", "TrailerId": trailer.TrailerId,
                                "Title": trailer.Title, "Line1": trailer.Line1,
                                "Line2": trailer.Line2,
-                               "SquareThumbnail": (trailer.SquareThumbnail._get_url()).split('?')[0]}
+                               "SquareThumbnail": trailer.SquareThumbnail.get_url()}
 
             albums_json.append(album_each)
     else:
@@ -572,7 +572,7 @@ def fill_albums_response(user_id, sallable):
             if not albumid_inlist(albumid=album.AlbumId, lister=purchased_albums_list) and not album.HiddenAlbum:
                 album_each = {}
                 album_each['AlbumId'] = album.AlbumId
-                album_each['Cover'] =  (album.CloseUpBackground._get_url()).split('?')[0]
+                album_each['Cover'] =  album.CloseUpBackground.get_url()
                 album_each['SeriesTitle'] = album.SeriesId.Title
                 album_each['Title'] = album.Title
                 album_each['SellStatus'] = Albums.SELL_STATUS_FROM_PURCHASE.get(album.PurchaseStatus, 0)
@@ -585,7 +585,7 @@ def fill_albums_response(user_id, sallable):
                         "Title": trailer.Title,
                         "Line1": trailer.Line1,
                         "Line2": trailer.Line2,
-                        "SquareThumbnail": (trailer.SquareThumbnail._get_url()).split('?')[0]
+                        "SquareThumbnail": trailer.SquareThumbnail.get_url()
                     }
 
                 albums_json.append(album_each)
@@ -655,10 +655,10 @@ def album_json_by_id (album, purch_list):
     album_json = {}
     album_json['AlbumId'] = album.AlbumId
     album_json['Season'] = album.Season
-    album_json['Cover'] =  (album.Cover._get_url()).split('?')[0]
+    album_json['Cover'] =  album.Cover.get_url()
     album_json['SeriesTitle'] = album.SeriesId.Title
     album_json['Title'] = album.Title
-    album_json['SquareThumbnail'] = (album.SquareThumbnail._get_url()).split('?')[0]
+    album_json['SquareThumbnail'] = album.SquareThumbnail.get_url()
     album_json['Description'] = album.Description
     album_json['Rating'] = album.Rating
     album_json['Credits'] = album.Credits
@@ -759,7 +759,7 @@ def getAlbumDetail (request):
     album_json["Trailer"] ={"Type": "Trailer", "TrailerId": trailer.TrailerId,
                                "Title": trailer.Title, "Line1": trailer.Line1,
                                "Line2": trailer.Line2,
-                               "SquareThumbnail": (trailer.SquareThumbnail._get_url()).split('?')[0]}
+                               "SquareThumbnail": trailer.SquareThumbnail.get_url()}
 
 
     if include_episodes == "1":
@@ -781,8 +781,8 @@ def getAlbumDetail (request):
                                        "DateReleased": local_date_time_date_time_to_UTC_sec(episode.DateReleased), "Subject": episode.Subject,
                                        "SenderToReceiver": episode.SenderToReceiver,
                                        "EpisodeNo": episode.EpisodeNo,
-                                       "CloseUpThumbnail": (episode.CloseUpThumbnail._get_url()).split('?')[0],
-                                       "SquareThumbnail": (episode.SquareThumbnail._get_url()).split('?')[0]
+                                       "CloseUpThumbnail": episode.CloseUpThumbnail.get_url(),
+                                       "SquareThumbnail": episode.SquareThumbnail.get_url()
                                        })
 
     return HttpResponse (json.dumps(response))
@@ -909,8 +909,8 @@ def getSearchResult (request):
                                    "DateReleased": local_date_time_date_time_to_UTC_sec(episode.DateReleased), "Subject": episode.Subject,
                                    "SenderToReceiver": episode.SenderToReceiver,
                                    "EpisodeNo": episode.EpisodeNo,
-                                   "CloseUpThumbnail": (episode.CloseUpThumbnail._get_url()).split('?')[0],
-                                   "SquareThumbnail": (episode.SquareThumbnail._get_url()).split('?')[0]
+                                   "CloseUpThumbnail": episode.CloseUpThumbnail.get_url(),
+                                   "SquareThumbnail": episode.SquareThumbnail.get_url()
                                    })
             appendeditems.append(episode.EpisodeId)
             counter = counter + 1
@@ -950,7 +950,7 @@ def get_cover():
     if cover is None or not cover.name:
         cover = ""
     else:
-        cover = (cover._get_url()).split('?')[0]
+        cover = cover.get_url()
 
     album = pipture_settings.Album
     album = album and album_json_by_id(album, None)

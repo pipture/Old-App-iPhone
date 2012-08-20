@@ -174,14 +174,14 @@ class AlbumScreenshotGallery(models.Model):
 
     @property
     def ScreenshotURL(self):
-        return (self.Screenshot._get_url()).split('?')[0]
+        return self.Screenshot.get_url()
 
     @property
     def ScreenshotURLLQ(self):
         if self.ScreenshotLow is not None and self.ScreenshotLow.name != "":
-            return (self.ScreenshotLow._get_url()).split('?')[0]
+            return self.ScreenshotLow.get_url()
 
-        return (self.Screenshot._get_url()).split('?')[0]
+        return self.Screenshot.get_url()
 
     def __unicode__(self):
         return "Album: %s; Screenshot: %s." % (self.AlbumId.Description,

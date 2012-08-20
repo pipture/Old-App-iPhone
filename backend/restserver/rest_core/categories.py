@@ -14,7 +14,7 @@ class JSONResponsibleMixin(object):
 
 class CategoryView(JSONResponsibleMixin, View):
     def get_user_token(self):
-        return self.request.GET.get('Token', '')
+        return self.request.GET.get('Key', '')
 
     def get_context_data(self):
         items = self.get_items_queryset()[:self.limit]
@@ -30,14 +30,23 @@ class VideosMixin(object):
     columns = 4
 
     def get_item_info(self, episode):
-        return dict(id=episode.EpisodeId,
-                    title=episode.Title)
+        return dict(type='episode',
+                    id=episode.EpisodeId,
+                    Thumbnail=episode.CloseUpThumbnail.get_url(),
+                    Title=episode.Title)
 
 
 class SeriesMixin(object):
     limit = 3
     rows = 1
     columns = 3
+
+    def get_item_info(self, series):
+        first_album = series.albums_set.all()[0]
+        return dict(type='album',
+                    id=first_album.TrailerId,
+                    Thumbnail=first_album.Thumbnail.get_url(),
+                    Title=series.Title)
 
 
 class MostPopularVideos(CategoryView, VideosMixin):
