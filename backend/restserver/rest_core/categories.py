@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from django.http import HttpResponse
 from django.views.generic.base import View
 from django.db.models import Q
@@ -44,7 +45,7 @@ class SeriesMixin(object):
     def get_item_info(self, series):
         first_album = series.albums_set.all()[0]
         return dict(type='album',
-                    id=first_album.TrailerId,
+                    id=first_album.TrailerId.TrailerId,
                     Thumbnail=first_album.Thumbnail.get_url(),
                     Title=series.Title)
 
@@ -77,7 +78,21 @@ class ComingSoonSeries(CategoryView, SeriesMixin):
     title = 'Coming Soon'
 
     def get_items_queryset(self):
-        return []
+        return Series.objects.raw('''
+            SELECT SeriesId FROM
+                ((SELECT SeriesId_id, AlbumId FROM pipture_albums
+                WHERE SeriesId_id NOT IN (
+                    SELECT DISTINCT SeriesId_id FROM pipture_albums
+                        WHERE AlbumId in (
+                            SELECT DISTINCT AlbumId_id FROM pipture_episodes
+                                WHERE DateReleased <= "2012-01-01"
+                        )
+                )) AS albums
+                LEFT JOIN pipture_series ON SeriesId_id = SeriesId)
+                LEFT JOIN pipture_episodes ON AlbumId = AlbumId_id
+                GROUP BY SeriesId
+                ORDER BY MIN(DateReleased)
+        ''')
 
 
 class Top12VideosForYou(CategoryView, VideosMixin):
