@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.views.generic.base import View
 from django.db.models import Q
 
-from pipture.models import UserPurchasedItems, Albums, Episodes, Series
+from restserver.pipture.models import UserPurchasedItems, Albums, Episodes, Series
 
 
 class JSONResponsibleMixin(object):
@@ -53,7 +53,7 @@ class MostPopularVideos(CategoryView, VideosMixin):
     title = 'Most Popular'
 
     def get_items_queryset(self):
-        return []
+        return Episodes.objects.all()
 
 
 class RecentlyAddedVideos(CategoryView, VideosMixin):
@@ -84,14 +84,14 @@ class Top12VideosForYou(CategoryView, VideosMixin):
     title = 'Top 12 for You'
 
     def get_items_queryset(self):
-        return []
+        return Episodes.objects.all()
 
 
 class WatchThatVideosAgain(CategoryView, VideosMixin):
     title = 'Watch Them Again'
 
     def get_items_queryset(self):
-        return []
+        return Episodes.objects.all()
 
 
 class AllCategoriesView(JSONResponsibleMixin, View):

@@ -254,7 +254,8 @@ class Episodes(models.Model):
 
 class TimeSlots(models.Model):
     TimeSlotsId = models.AutoField(primary_key=True)
-    StartDate = models.DateField(verbose_name="Start date")
+    StartDate = models.DateField(verbose_name="Start date",
+                                 help_text="Should be set to minimum +2 days from today")
     EndDate = models.DateField(verbose_name="End date")
     StartTime = models.TimeField(verbose_name="Start time")
     EndTime = models.TimeField(verbose_name="End time")
@@ -305,9 +306,10 @@ class TimeSlots(models.Model):
         user_tz = user.get_profile().timezone
         return "%s, A%s, %s - %s (%s - %s)" % (self.AlbumId.SeriesId.Title,
                                                self.AlbumId.Title,
-                                               self.StartDate, self.EndDate,
-                                               from_utc_to_local_time(user_tz, self.StartTime),
-                                               from_utc_to_local_time(user_tz, self.EndTime))
+                                               self.StartDate,
+                                               self.EndDate,
+                                               self.StartTime,
+                                               self.EndTime)
 
     def __unicode__(self):
         return self.complexName

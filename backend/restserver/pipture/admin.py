@@ -15,9 +15,10 @@ from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
 #from django.http import QueryDict
 
-from restserver.pipture.models import Videos, Trailers, Series, Albums, Episodes, TimeSlots, TimeSlotVideos
-from restserver.pipture.models import PiptureSettings, PipUsers, AppleProducts,Transactions, PurchaseItems
-from restserver.pipture.models import UserPurchasedItems,SendMessage, AlbumScreenshotGallery,UserProfile
+from restserver.pipture.models import Videos, Trailers, Series, Albums, Episodes, TimeSlots, TimeSlotVideos,\
+                                      PiptureSettings, PipUsers, AppleProducts,Transactions, PurchaseItems,\
+                                      UserPurchasedItems,SendMessage, AlbumScreenshotGallery, UserProfile
+from restserver.pipture.forms import AdminTimeSlotsForm
 
 admin.site.register(PiptureSettings)
 admin.site.register(PipUsers)
@@ -108,6 +109,7 @@ class ButtonableModelAdmin(admin.ModelAdmin):
         return patterns('', *(url(r'^(\d+)/(%s)/$' %  but[0], wrap(self.button_view_dispatcher)) for but in self.buttons)) + super(ButtonableModelAdmin, self).get_urls()
 
 class TimeSlotsAdmin(ButtonableModelAdmin):
+    form = AdminTimeSlotsForm
 
     def manager(self, request, obj):
         return obj.manager_call(request)
