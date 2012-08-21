@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
+from restserver.rest_core.categories import AllCategoriesView
 from restserver.rest_core import views as rest_view
 
 
@@ -19,5 +20,6 @@ urlpatterns = patterns('',
     (r'^getAlbumScreenshots$', rest_view.getAlbumScreenshots),
     (r'^getUnusedMessageViews$', rest_view.getUnusedMessageViews),
     (r'^deactivateMessageViews$', rest_view.deactivateMessageViews),
+    (r'^getCategories$', AllCategoriesView.as_view()),
     (r'', rest_view.index),
 )

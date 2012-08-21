@@ -4,6 +4,7 @@ from django.db import models
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.files import File
+from django.db.models.fields.files import FieldFile
 
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
@@ -96,7 +97,14 @@ class S3Storage(FileSystemStorage):
         return name
 
 
+class CustomFieldFile(FieldFile):
+    def get_url(self):
+        return self._get_url().split('?')[0]
+
+
 class S3EnabledFileField(models.FileField):
+    attr_class = CustomFieldFile
+
     def __init__(self, bucket=None, verbose_name=None,
                  name=None, upload_to='', storage=None, **kwargs):
         if bucket is None:

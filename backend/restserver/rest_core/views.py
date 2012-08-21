@@ -1,21 +1,28 @@
-from django.views.generic.simple import direct_to_template
-from django.shortcuts import render_to_response, redirect
-from django.template.context import RequestContext
-from django.http import HttpResponse
 import json
 import datetime
 import pytz
 import calendar
 import uuid
-
-from django.conf import settings
-
-from django.views.decorators.csrf import csrf_exempt
-from decimal import Decimal
-from django.db.models import Q
-
 import urllib2
-import urllib
+from decimal import Decimal
+
+#from django.conf import settings
+#from django.views.generic.simple import direct_to_template
+#from django.shortcuts import render_to_response, redirect
+#from django.template.context import RequestContext
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+#from django.db.models import Min, Max
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+
+
+from restserver.pipture.views import get_albums_from_series
+from restserver.pipture.models import AppleProducts, PurchaseItems, UserPurchasedItems,\
+                                      Albums, Series, Episodes, Trailers,\
+                                      TimeSlots, TimeSlotVideos, AlbumScreenshotGallery,\
+                                      Transactions, PipUsers, PiptureSettings, SendMessage
+
 
 def local_date_time_date_time_to_UTC_sec (datetime_datetime):
     """
@@ -59,7 +66,7 @@ def getTimeslots (request):
         except pytz.exceptions.UnknownTimeZoneError, e:
             response["Error"] = {"ErrorCode": "888", "ErrorDescription": "Unknown timezone."}
             return HttpResponse (json.dumps(response))
-            
+
     timeslots_json = []
 
     today_utc = datetime.datetime.utcnow();
@@ -71,8 +78,6 @@ def getTimeslots (request):
     sec_utc_now = calendar.timegm(today.timetuple())
     tomorrow = today + timedelta
     yesterday = today - timedelta
-
-    from restserver.pipture.models import TimeSlots
 
     try:
         '''timeslots = TimeSlots.objects.select_related(depth=2).filter(Q(EndTime__gt=yesterday,
@@ -100,7 +105,7 @@ def getTimeslots (request):
         slot["ScheduleDescription"] = ts.ScheduleDescription
         slot["Title"] = ts.AlbumId.SeriesId.Title
         slot["AlbumId"] = ts.AlbumId.AlbumId
-        slot["CloseupBackground"] = (ts.AlbumId.CloseUpBackground._get_url()).split('?')[0]
+        slot["CloseupBackground"] = ts.AlbumId.CloseUpBackground.get_url()
         if ts.is_current(sec_utc_now):
             slot["TimeslotStatus"] = 2
             current_ts = True
@@ -118,14 +123,10 @@ def getTimeslots (request):
         timeslots_json.append(slot)
     response['Timeslots'] = timeslots_json
     response['CurrentTime'] = sec_utc_now
-    response['Cover'] = get_cover()
+    response['Cover'], response['Album'] = get_cover()
     return HttpResponse (json.dumps(response))
 
 def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
-
-    from restserver.pipture.models import Trailers
-    from restserver.pipture.models import Episodes
-
 
     """is_url - needs to return url or video instance"""
     try:
@@ -150,7 +151,7 @@ def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
         if subs_url_i.name == "":
             subs_url= ""
         else:
-            subs_url= (subs_url_i._get_url()).split('?')[0]
+            subs_url= subs_url_i.get_url()
 
         if video_q == 0:
             video_url_i = video.VideoId.VideoUrl
@@ -162,7 +163,7 @@ def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
         if video_url_i.name == "":
             video_url_i = video.VideoId.VideoUrl
 
-        video_url= (video_url_i._get_url()).split('?')[0]
+        video_url= video_url_i.get_url()
 
         return video_url, subs_url, None
     else:
@@ -171,7 +172,6 @@ def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
         return video_instance, None
 
 def episode_in_purchased_album(videoid, purchaser):
-    from restserver.pipture.models import Episodes
     try:
         video = Episodes.objects.select_related(depth=2).get (EpisodeId=videoid)
     except Episodes.DoesNotExist:
@@ -219,7 +219,7 @@ def getVideo (request):
 
     if video_quality > 1:
         video_quality = 1
-        
+
     local_today = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC).astimezone(local_tz).replace(tzinfo=None)
     sec_local_now = calendar.timegm(local_today.timetuple())
 
@@ -228,9 +228,6 @@ def getVideo (request):
     trailer_id = request.GET.get('TrailerId', None)
     force_buy = request.GET.get('ForceBuy', None)
     key = request.GET.get('Key', None)
-
-    from restserver.pipture.models import TimeSlots
-    from restserver.pipture.models import TimeSlotVideos
 
     if episode_id:
         video_type = "E"
@@ -300,7 +297,6 @@ def getVideo (request):
 
 
     else:
-        from restserver.pipture.models import PipUsers
         try:
             purchaser = PipUsers.objects.get(Token=key)
         except PipUsers.DoesNotExist:
@@ -317,7 +313,6 @@ def getVideo (request):
             response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is internal error. Wrong video URL"}
             return HttpResponse (json.dumps(response))
 
-        from restserver.pipture.models import PurchaseItems
         WATCH_EP = PurchaseItems.objects.get(Description="WatchEpisode")
 
         if is_purchased:
@@ -351,8 +346,6 @@ def getVideo (request):
                     return HttpResponse (json.dumps(response))
 
 def get_autoepisode(StartEpisodeId, start_time):
-    from restserver.pipture.models import Episodes
-
     d1 = datetime.datetime.now();
     delta = d1 - datetime.datetime(start_time.year, start_time.month, start_time.day)
 
@@ -393,15 +386,12 @@ def getPlaylist (request):
             response["Error"] = {"ErrorCode": "888", "ErrorDescription": "Unknown timezone."}
             return HttpResponse (json.dumps(response))
 
-    from restserver.pipture.models import TimeSlots
-    from restserver.pipture.models import TimeSlotVideos
-
     try:
         timeslot = TimeSlots.objects.get(TimeSlotsId=timeslot_id)
     except Exception as e:
         response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is no timeslot with id %s" % (timeslot_id)}
         return HttpResponse (json.dumps(response))
-    
+
     today = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC).astimezone(local_tz).replace(tzinfo=None)
     sec_utc_now = calendar.timegm(today.timetuple())
 
@@ -423,11 +413,6 @@ def getPlaylist (request):
         return HttpResponse (json.dumps(response))
     response["Videos"] = []
 
-    from restserver.pipture.models import Trailers
-    from restserver.pipture.models import Episodes
-    from restserver.pipture.models import Albums
-
-
     for timeslot_video in timeslot_videos_list:
         if timeslot_video.LinkType == "T":
             try:
@@ -439,7 +424,7 @@ def getPlaylist (request):
                 response["Videos"].append({"Type": "Trailer", "TrailerId": video.TrailerId,
                                            "Title": video.Title, "Line1": video.Line1,
                                            "Line2": video.Line2,
-                                           "SquareThumbnail": (video.SquareThumbnail._get_url()).split('?')[0]})
+                                           "SquareThumbnail": video.SquareThumbnail.get_url()})
 
         elif timeslot_video.LinkType == "E":
             try:
@@ -457,22 +442,17 @@ def getPlaylist (request):
                                                "DateReleased": local_date_time_date_time_to_UTC_sec(video.DateReleased), "Subject": video.Subject,
                                                "SenderToReceiver": video.SenderToReceiver,
                                                "EpisodeNo": video.EpisodeNo,
-                                               "CloseUpThumbnail": (video.CloseUpThumbnail._get_url()).split('?')[0],
+                                               "CloseUpThumbnail": video.CloseUpThumbnail.get_url(),
 
                                                'AlbumTitle': video.AlbumId.Title,
                                                'SeriesTitle': video.AlbumId.SeriesId.Title,
                                                'AlbumSeason': video.AlbumId.Season,
-                                               'AlbumSquareThumbnail': (video.AlbumId.SquareThumbnail._get_url()).split('?')[0],
+                                               'AlbumSquareThumbnail': video.AlbumId.SquareThumbnail.get_url(),
 
-                                               "SquareThumbnail": (video.SquareThumbnail._get_url()).split('?')[0]})
+                                               "SquareThumbnail": video.SquareThumbnail.get_url()})
     return HttpResponse (json.dumps(response))
 
 def get_album_status (album, get_date_only=False):
-    from django.db.models import Min
-    from django.db.models import Max
-    from restserver.pipture.models import PiptureSettings
-    from restserver.pipture.models import Episodes
-
     date_utc_now = datetime.datetime.utcnow()#.date()
     episodes = Episodes.objects.filter(AlbumId=album)
 
@@ -482,7 +462,7 @@ def get_album_status (album, get_date_only=False):
         if episode.DateReleased < min_date:
             min_date = episode.DateReleased
 
-        if episode.DateReleased > max_date and episode.DateReleased < date_utc_now:
+        if max_date < episode.DateReleased < date_utc_now:
             max_date = episode.DateReleased
 
     if album.TopAlbum:
@@ -518,18 +498,14 @@ def albumid_inlist(albumid, lister):
     return False
 
 def get_purchased_album_list(userid):
-    from restserver.pipture.models import PurchaseItems
-    #from restserver.pipture.models import UserPurchasedItems
     ALBUM_EP = PurchaseItems.objects.get(Description="Album")
 
-    from restserver.pipture.models import PipUsers
     try:
         purchaser = PipUsers.objects.get(Token=userid)
     except PipUsers.DoesNotExist:
         return None
 
     #get allpurchased albums for user
-    from restserver.pipture.models import UserPurchasedItems
     try:
         return UserPurchasedItems.objects.all().filter(UserId = purchaser).filter(PurchaseItemId = ALBUM_EP)
     except Exception as e:
@@ -548,7 +524,6 @@ def fill_albums_response(user_id, sallable):
     response = {}
     albums_json = []
     if not sallable:
-        from restserver.pipture.models import Albums
         try:
             albums_list = Albums.objects.select_related(depth=1).all()
         except Exception as e:
@@ -563,8 +538,8 @@ def fill_albums_response(user_id, sallable):
 
             album_each = {}
             album_each['AlbumId'] = album.AlbumId
-            album_each['Thumbnail'] =  (album.Thumbnail._get_url()).split('?')[0]
-            album_each['SquareThumbnail'] =  (album.SquareThumbnail._get_url()).split('?')[0]
+            album_each['Thumbnail'] =  album.Thumbnail.get_url()
+            album_each['SquareThumbnail'] =  album.SquareThumbnail.get_url()
             album_each['SeriesTitle'] = album.SeriesId.Title
             album_each['Title'] = album.Title
             album_each['ReleaseDate'], album_each['UpdateDate'], album_each['AlbumStatus'] = get_album_status (album)
@@ -572,29 +547,24 @@ def fill_albums_response(user_id, sallable):
             if albumid_inlist(albumid=album.AlbumId, lister=purchased_albums_list):
                 album_each['SellStatus'] = 100
             else:
-                if album.PurchaseStatus == 'P':
-                    album_each['SellStatus'] = 1
-                elif album.PurchaseStatus == 'B':
-                    album_each['SellStatus'] = 2
-                else:
-                    album_each['SellStatus'] = 0
+                album_each['SellStatus'] = Albums.SELL_STATUS_FROM_PURCHASE.get(album.PurchaseStatus, 0)
 
             trailer = album.TrailerId
 
             album_each["Trailer"] ={"Type": "Trailer", "TrailerId": trailer.TrailerId,
                                "Title": trailer.Title, "Line1": trailer.Line1,
                                "Line2": trailer.Line2,
-                               "SquareThumbnail": (trailer.SquareThumbnail._get_url()).split('?')[0]}
+                               "SquareThumbnail": trailer.SquareThumbnail.get_url()}
 
             albums_json.append(album_each)
     else:
-        from restserver.pipture.models import Albums
-
         purchased_albums_list = get_purchased_album_list(userid = user_id)
 
         #get all albums fith sallable attribute
         try:
-            albums_list = Albums.objects.select_related(depth=1).all().exclude(PurchaseStatus = 'N').exclude(PurchaseStatus = None)
+            albums_list = Albums.objects.select_related(depth=1).all()\
+                                .exclude(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)\
+                                .exclude(PurchaseStatus=None)
         except Exception as e:
             return None, {"ErrorCode": "2", "ErrorDescription": "There is internal error: %s." % (e)}
 
@@ -602,22 +572,21 @@ def fill_albums_response(user_id, sallable):
             if not albumid_inlist(albumid=album.AlbumId, lister=purchased_albums_list) and not album.HiddenAlbum:
                 album_each = {}
                 album_each['AlbumId'] = album.AlbumId
-                album_each['Cover'] =  (album.CloseUpBackground._get_url()).split('?')[0]
+                album_each['Cover'] =  album.CloseUpBackground.get_url()
                 album_each['SeriesTitle'] = album.SeriesId.Title
                 album_each['Title'] = album.Title
-                if album.PurchaseStatus == 'P':
-                    album_each['SellStatus'] = 1
-                elif album.PurchaseStatus == 'B':
-                    album_each['SellStatus'] = 2
-                else:
-                    album_each['SellStatus'] = 0
+                album_each['SellStatus'] = Albums.SELL_STATUS_FROM_PURCHASE.get(album.PurchaseStatus, 0)
 
                 trailer = album.TrailerId
 
-                album_each["Trailer"] ={"Type": "Trailer", "TrailerId": trailer.TrailerId,
-                               "Title": trailer.Title, "Line1": trailer.Line1,
-                               "Line2": trailer.Line2,
-                               "SquareThumbnail": (trailer.SquareThumbnail._get_url()).split('?')[0]}
+                album_each["Trailer"] = {
+                        "Type": "Trailer",
+                        "TrailerId": trailer.TrailerId,
+                        "Title": trailer.Title,
+                        "Line1": trailer.Line1,
+                        "Line2": trailer.Line2,
+                        "SquareThumbnail": trailer.SquareThumbnail.get_url()
+                    }
 
                 albums_json.append(album_each)
 
@@ -686,10 +655,10 @@ def album_json_by_id (album, purch_list):
     album_json = {}
     album_json['AlbumId'] = album.AlbumId
     album_json['Season'] = album.Season
-    album_json['Cover'] =  (album.Cover._get_url()).split('?')[0]
+    album_json['Cover'] =  album.Cover.get_url()
     album_json['SeriesTitle'] = album.SeriesId.Title
     album_json['Title'] = album.Title
-    album_json['SquareThumbnail'] = (album.SquareThumbnail._get_url()).split('?')[0]
+    album_json['SquareThumbnail'] = album.SquareThumbnail.get_url()
     album_json['Description'] = album.Description
     album_json['Rating'] = album.Rating
     album_json['Credits'] = album.Credits
@@ -699,19 +668,12 @@ def album_json_by_id (album, purch_list):
     if albumid_inlist(albumid=album.AlbumId, lister=purch_list):
         album_json['SellStatus'] = 100
     else:
-        if album.PurchaseStatus == 'P':
-            album_json['SellStatus'] = 1
-        elif album.PurchaseStatus == 'B':
-            album_json['SellStatus'] = 2
-        else:
-            album_json['SellStatus'] = 0
+        album_json['SellStatus'] = Albums.SELL_STATUS_FROM_PURCHASE[album.PurchaseStatus]
 
     return album_json
 
 
 def is_episode_on_air (episode, today):
-
-    from restserver.pipture.models import TimeSlotVideos
 
     if episode.DateReleased.date() > today:
         return False
@@ -766,8 +728,6 @@ def getAlbumDetail (request):
             response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is internal error (%s).It seems like AlbumId is not integer." % (e)}
             return HttpResponse (json.dumps(response))
 
-        from restserver.pipture.models import Albums
-
         try:
             album = Albums.objects.select_related(depth=1).get(AlbumId=album_id)
         except Albums.DoesNotExist as e:
@@ -780,8 +740,6 @@ def getAlbumDetail (request):
         except Exception as e:
             response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is internal error (%s).It seems like TimeslotId is not integer." % (e)}
             return HttpResponse (json.dumps(response))
-
-        from restserver.pipture.models import TimeSlots
 
         try:
             timeslot = TimeSlots.objects.select_related(depth=1).get(TimeSlotsId=timeslot_id)
@@ -801,13 +759,11 @@ def getAlbumDetail (request):
     album_json["Trailer"] ={"Type": "Trailer", "TrailerId": trailer.TrailerId,
                                "Title": trailer.Title, "Line1": trailer.Line1,
                                "Line2": trailer.Line2,
-                               "SquareThumbnail": (trailer.SquareThumbnail._get_url()).split('?')[0]}
+                               "SquareThumbnail": trailer.SquareThumbnail.get_url()}
 
 
     if include_episodes == "1":
         response["Episodes"] = []
-
-        from restserver.pipture.models import Episodes
 
         try:
             episodes = Episodes.objects.filter (AlbumId=album).order_by('EpisodeNo')
@@ -825,8 +781,8 @@ def getAlbumDetail (request):
                                        "DateReleased": local_date_time_date_time_to_UTC_sec(episode.DateReleased), "Subject": episode.Subject,
                                        "SenderToReceiver": episode.SenderToReceiver,
                                        "EpisodeNo": episode.EpisodeNo,
-                                       "CloseUpThumbnail": (episode.CloseUpThumbnail._get_url()).split('?')[0],
-                                       "SquareThumbnail": (episode.SquareThumbnail._get_url()).split('?')[0]
+                                       "CloseUpThumbnail": episode.CloseUpThumbnail.get_url(),
+                                       "SquareThumbnail": episode.SquareThumbnail.get_url()
                                        })
 
     return HttpResponse (json.dumps(response))
@@ -856,11 +812,6 @@ def getSearchResult (request):
         response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
 
     searchquery = request.GET.get('query', None)
-
-    from restserver.pipture.models import Episodes
-    from restserver.pipture.models import Series
-    from restserver.pipture.models import Albums
-    from restserver.pipture.views import get_albums_from_series
 
     allalbums = []
     allepisodes = []
@@ -958,8 +909,8 @@ def getSearchResult (request):
                                    "DateReleased": local_date_time_date_time_to_UTC_sec(episode.DateReleased), "Subject": episode.Subject,
                                    "SenderToReceiver": episode.SenderToReceiver,
                                    "EpisodeNo": episode.EpisodeNo,
-                                   "CloseUpThumbnail": (episode.CloseUpThumbnail._get_url()).split('?')[0],
-                                   "SquareThumbnail": (episode.SquareThumbnail._get_url()).split('?')[0]
+                                   "CloseUpThumbnail": episode.CloseUpThumbnail.get_url(),
+                                   "SquareThumbnail": episode.SquareThumbnail.get_url()
                                    })
             appendeditems.append(episode.EpisodeId)
             counter = counter + 1
@@ -969,9 +920,6 @@ def getSearchResult (request):
     return HttpResponse (json.dumps(response))
 
 def register_pip_user (email, password, first_name,last_name):
-    from restserver.pipture.models import PipUsers
-    from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
-
     token = str(uuid.uuid1())
     p = PipUsers(Email=email, Password=password, FirstName=first_name, LastName=last_name, Token=token)
     try:
@@ -982,7 +930,6 @@ def register_pip_user (email, password, first_name,last_name):
         return token
 
 def update_pip_user (pipUsersEmail, password):
-    from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
     pipUsersEmail.Password = password
     token = str(uuid.uuid1())
     pipUsersEmail.Token = token
@@ -994,8 +941,6 @@ def update_pip_user (pipUsersEmail, password):
         return token
 
 def get_cover():
-    from restserver.pipture.models import PiptureSettings
-
     try:
         pipture_settings = PiptureSettings.objects.all()[0]
     except IndexError:
@@ -1005,7 +950,7 @@ def get_cover():
     if cover is None or not cover.name:
         cover = ""
     else:
-        cover = (cover._get_url()).split('?')[0]
+        cover = cover.get_url()
 
     album = pipture_settings.Album
     album = album and album_json_by_id(album, None)
@@ -1029,8 +974,6 @@ def register(request):
         return HttpResponse (json.dumps(response))
     else:
         response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
-
-    from restserver.pipture.models import PipUsers
 
     user = PipUsers()
     user.save()
@@ -1057,8 +1000,6 @@ def login(request):
         return HttpResponse(json.dumps(response))
     else:
         response["Error"] = {"ErrorCode": "", "ErrorDescription": ""}
-
-    from restserver.pipture.models import PipUsers
 
     user_uid = request.POST.get('UUID', None)
     if not user_uid:
@@ -1104,15 +1045,12 @@ def buy (request):
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
         return HttpResponse (json.dumps(response))
 
-    from restserver.pipture.models import PipUsers
-
     try:
         purchaser = PipUsers.objects.get(Token=key)
     except PipUsers.DoesNotExist:
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
         return HttpResponse (json.dumps(response))
 
-    from restserver.pipture.models import Transactions
     #first check transaction in our table
 
     try:
@@ -1143,9 +1081,6 @@ def buy (request):
         apple_transaction_id = result_json['receipt']['transaction_id']
 
     #-----------------------To Apple Server----------------------------
-
-    from restserver.pipture.models import AppleProducts
-    from django.db import IntegrityError
 
     if apple_product_response == "com.pipture.Pipture.credits":
         try:
@@ -1187,8 +1122,6 @@ def buy (request):
             response["Error"] = {"ErrorCode": "2", "ErrorDescription": "Wrong product."}
             return HttpResponse (json.dumps(response))
 
-        from restserver.pipture.models import PurchaseItems
-        from restserver.pipture.models import UserPurchasedItems
         ALBUM_EP = PurchaseItems.objects.get(Description="Album")
         new_p = UserPurchasedItems(UserId=purchaser, ItemId=int(albumid), PurchaseItemId = ALBUM_EP, ItemCost=0)
         new_p.save()
@@ -1215,8 +1148,6 @@ def getBalance (request):
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
         return HttpResponse (json.dumps(response))
 
-    from restserver.pipture.models import PipUsers
-
     try:
         purchaser = PipUsers.objects.get(Token=key)
     except PipUsers.DoesNotExist:
@@ -1226,7 +1157,6 @@ def getBalance (request):
     return HttpResponse (json.dumps(response))
 
 def new_send_message (user, video_id, message, video_type, user_name, views_count, screenshot_url = ''):
-    from restserver.pipture.models import SendMessage
     try:
         s = SendMessage (UserId=user,Text=message,LinkId= video_id,LinkType=video_type, UserName=user_name, ScreenshotURL=screenshot_url, ViewsCount=0, ViewsLimit=views_count, AllowRemove=0, AutoLock=1)
         s.save()
@@ -1287,8 +1217,6 @@ def sendMessage (request):
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
         return HttpResponse (json.dumps(response))
 
-    from restserver.pipture.models import PipUsers
-
     try:
         purchaser = PipUsers.objects.get(Token=key)
     except PipUsers.DoesNotExist:
@@ -1302,7 +1230,6 @@ def sendMessage (request):
             return HttpResponse (json.dumps(response))
         else:
             u_url = new_send_message (user=purchaser, video_id=trailer_id, message=message, video_type="T", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
-            from restserver.pipture.models import PiptureSettings
             vhost = PiptureSettings.objects.all()[0].VideoHost
 
             response['MessageURL'] = "%s/%s" % (vhost, u_url)
@@ -1320,8 +1247,6 @@ def sendMessage (request):
         return HttpResponse (json.dumps(response))
 
     '''
-    from restserver.pipture.models import PurchaseItems
-    #from restserver.pipture.models import UserPurchasedItems
     SEND_EP = PurchaseItems.objects.get(Description="SendEpisode")
 
     video_url, subs_url, error = get_video_url_from_episode_or_trailer (id=episode_id, type_r="E", video_q=0)
@@ -1357,7 +1282,6 @@ def sendMessage (request):
         purchaser.Balance = Decimal (user_ballance - message_cost)
         purchaser.save()
         u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
-        from restserver.pipture.models import PiptureSettings
         vhost = PiptureSettings.objects.all()[0].VideoHost
 
         response['MessageURL'] = "%s/%s" % (vhost, u_url)
@@ -1375,7 +1299,6 @@ def sendMessage (request):
         return HttpResponse (json.dumps(response))
 
 def getAlbumScreenshotByEpisodeId (EpisodeId):
-    from restserver.pipture.models import AlbumScreenshotGallery
     response = {}
     try:
         EpisodeId = int (EpisodeId)
@@ -1383,7 +1306,6 @@ def getAlbumScreenshotByEpisodeId (EpisodeId):
         response["Error"] = {"ErrorCode": "1", "ErrorDescription": "EpisodeId is not int."}
         return HttpResponse (json.dumps(response))
 
-    from restserver.pipture.models import Episodes
     try:
         episode = Episodes.objects.select_related(depth=1).get (EpisodeId=EpisodeId)
     except Episodes.DoesNotExist:
@@ -1442,14 +1364,11 @@ def getUnusedMessageViews (request):
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
         return HttpResponse (json.dumps(response))
 
-    from restserver.pipture.models import PipUsers
     try:
         purchaser = PipUsers.objects.get(Token=key)
     except PipUsers.DoesNotExist:
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
         return HttpResponse (json.dumps(response))
-
-    from restserver.pipture.models import SendMessage
 
     try:
         messages = SendMessage.objects.all().filter(UserId = purchaser)
@@ -1512,14 +1431,11 @@ def deactivateMessageViews (request):
     except Exception:
         period = 0
 
-    from restserver.pipture.models import PipUsers
     try:
         purchaser = PipUsers.objects.get(Token=key)
     except PipUsers.DoesNotExist:
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
         return HttpResponse (json.dumps(response))
-
-    from restserver.pipture.models import SendMessage
 
     try:
         messages = SendMessage.objects.all().filter(UserId = purchaser)

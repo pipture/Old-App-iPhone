@@ -14,6 +14,7 @@
 #import "AsyncImageView.h"
 #import "AlbumDetailInfoController.h"
 #import "SearchViewController.h"
+#import "CategoryEditViewController.h"
 
 #define TIMESLOT_CHANGE_POLL_INTERVAL 60
 #define TIMESLOT_REGULAR_POLL_INTERVAL 900
@@ -681,6 +682,18 @@
 - (BOOL)redrawDiscarding {
     return redrawDiscarding;
 }
+
+- (void)showEditCategory {
+    CategoryEditViewController * vc = [[CategoryEditViewController alloc] initWithNibName:@"CategoryEditViewController" bundle:nil];
+    vc.delegate = self;
+    [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
+    [self.navigationController presentModalViewController:vc animated:YES];
+}
+- (void)dismissEditCategory {
+    [self.navigationController dismissModalViewControllerAnimated:YES];
+    [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
+}
+
 
 - (void)openDetails:(BOOL)withNavigation 
               album:(Album*)album 

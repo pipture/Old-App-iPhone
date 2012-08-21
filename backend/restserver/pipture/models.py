@@ -104,11 +104,19 @@ class Series(models.Model):
 
 
 class Albums(models.Model):
+    PURCHASE_TYPE_NOT_FOR_SALE = 'N'
+    PURCHASE_TYPE_ALBUM_PASS = 'P'
+    PURCHASE_TYPE_BUY_ALBUM = 'B'
     PURCHASETYPE_CHOICES = (
         ('N', 'Not for sale'),
         ('P', 'Album pass'),
         ('B', 'Buy album'),
     )
+    SELL_STATUS_FROM_PURCHASE = {
+        'N': 0,
+        'P': 1,
+        'B': 2,
+    }
 
     AlbumId = models.AutoField(primary_key=True)
     SeriesId = models.ForeignKey(Series, verbose_name='Series for Album')
@@ -166,14 +174,14 @@ class AlbumScreenshotGallery(models.Model):
 
     @property
     def ScreenshotURL(self):
-        return (self.Screenshot._get_url()).split('?')[0]
+        return self.Screenshot.get_url()
 
     @property
     def ScreenshotURLLQ(self):
         if self.ScreenshotLow is not None and self.ScreenshotLow.name != "":
-            return (self.ScreenshotLow._get_url()).split('?')[0]
+            return self.ScreenshotLow.get_url()
 
-        return (self.Screenshot._get_url()).split('?')[0]
+        return self.Screenshot.get_url()
 
     def __unicode__(self):
         return "Album: %s; Screenshot: %s." % (self.AlbumId.Description,
@@ -197,7 +205,9 @@ class Episodes(models.Model):
     EpisodeId = models.AutoField(primary_key=True)
     Title = models.CharField(max_length=100)
     VideoId = models.ForeignKey(Videos, verbose_name='Video for episode')
-    AlbumId = models.ForeignKey(Albums, verbose_name='Album for episode')
+    AlbumId = models.ForeignKey(Albums,
+                                related_name='episodes',
+                                verbose_name='Album for episode')
     CloseUpThumbnail = S3EnabledFileField(verbose_name='Video Thumbnail',
                                           upload_to=u'documents/')
     SquareThumbnail = S3EnabledFileField(verbose_name='Screenshot',
@@ -244,7 +254,8 @@ class Episodes(models.Model):
 
 class TimeSlots(models.Model):
     TimeSlotsId = models.AutoField(primary_key=True)
-    StartDate = models.DateField(verbose_name="Start date")
+    StartDate = models.DateField(verbose_name="Start date",
+                                 help_text="Should be set to minimum +2 days from today")
     EndDate = models.DateField(verbose_name="End date")
     StartTime = models.TimeField(verbose_name="Start time")
     EndTime = models.TimeField(verbose_name="End time")
@@ -295,9 +306,10 @@ class TimeSlots(models.Model):
         user_tz = user.get_profile().timezone
         return "%s, A%s, %s - %s (%s - %s)" % (self.AlbumId.SeriesId.Title,
                                                self.AlbumId.Title,
-                                               self.StartDate, self.EndDate,
-                                               from_utc_to_local_time(user_tz, self.StartTime),
-                                               from_utc_to_local_time(user_tz, self.EndTime))
+                                               self.StartDate,
+                                               self.EndDate,
+                                               self.StartTime,
+                                               self.EndTime)
 
     def __unicode__(self):
         return self.complexName
