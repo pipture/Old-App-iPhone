@@ -84,6 +84,7 @@ class ComingSoonSeries(CategoryView, SeriesMixin):
     category_id = 3
     title = 'Coming Soon'
 
+    # TODO: add test coming soon series and change date by CURRENT_TIMESTAMP()
     def get_items_queryset(self):
         return Series.objects.raw('''
             SELECT SeriesId FROM
