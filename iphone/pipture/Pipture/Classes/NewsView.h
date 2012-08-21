@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "HomeScreenDelegate.h"
+#import "PiptureAppDelegate.h"
 
-@interface NewsView : UIView<UIScrollViewDelegate>
+@interface NewsView : UIView<UIScrollViewDelegate, ChannelCategoriesReceiver>
 {
     BOOL allowBubble;
 }

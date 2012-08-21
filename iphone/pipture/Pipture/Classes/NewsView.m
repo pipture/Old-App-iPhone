@@ -110,16 +110,19 @@
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     scrollView.pagingEnabled = NO;
+
+    [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+    [[[PiptureAppDelegate instance] model] getChannelCategoriesForReciever: self];
     
     [self placeViewController:[[CoverViewController alloc] 
                                initWithNibName:@"CoverViewController" bundle:nil] 
                     withTitle:@""];
-    [self placeViewController:[[NewsCategoryViewController alloc] 
-                               initWithNibName:@"NewsCategoryViewController" bundle:nil]
-                    withTitle:@"title1"];
-    [self placeViewController:[[NewsCategoryViewController alloc] 
-                               initWithNibName:@"NewsCategoryViewController" bundle:nil] 
-                    withTitle:@"title2"];
+//    [self placeViewController:[[NewsCategoryViewController alloc] 
+//                               initWithNibName:@"NewsCategoryViewController" bundle:nil]
+//                    withTitle:@"title1"];
+//    [self placeViewController:[[NewsCategoryViewController alloc] 
+//                               initWithNibName:@"NewsCategoryViewController" bundle:nil] 
+//                    withTitle:@"title2"];
     [self placeViewController:[[EditNewsViewController alloc] 
                                initWithNibName:@"EditNewsViewController" bundle:nil] 
                     withTitle:@""];
@@ -134,6 +137,15 @@
     [scrollView release];
     [super dealloc];
 }
+
+
+-(void)channelCategoriesReceived:(NSArray*)channelCategories {
+    NSLog(@"channelCategories received: %@", [[channelCategories objectAtIndex:0] title]);
+    NSLog(@"channelCategories received: %@", [[[[channelCategories objectAtIndex:0] items] objectAtIndex:0] thumbnail]);
+    
+    //render channelCategories
+}
+
 
 - (void)placeViewController:(UIViewController<NewsViewSectionDelegate>*)controller
                   withTitle:(NSString *)title {

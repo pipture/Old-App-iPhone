@@ -314,6 +314,9 @@
 		88AC13881507462300F02F97 /* right-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88AC13841507462300F02F97 /* right-white@2x.png */; };
 		88AC138B1507777500F02F97 /* PiptureStoreModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AC138A1507777500F02F97 /* PiptureStoreModel.m */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
+		88D1162615DE074700DB95A0 /* Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D1162515DE074700DB95A0 /* Category.m */; };
+		88D1162D15DE142000DB95A0 /* CategoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D1162C15DE142000DB95A0 /* CategoryItem.m */; };
+		88D1163015DE477700DB95A0 /* CategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D1162F15DE477600DB95A0 /* CategoryViewController.m */; };
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
 		88E5098414FF9507003AFA14 /* LibraryCardA7.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88E5098214FF9507003AFA14 /* LibraryCardA7.xib */; };
 		88E5098514FF9507003AFA14 /* LibraryCardB3.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88E5098314FF9507003AFA14 /* LibraryCardB3.xib */; };
@@ -708,6 +711,12 @@
 		88AC138A1507777500F02F97 /* PiptureStoreModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PiptureStoreModel.m; path = Classes/PiptureStoreModel.m; sourceTree = "<group>"; };
 		88BE44B11483A341002D30ED /* PiptureModelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureModelTest.h; sourceTree = "<group>"; };
 		88BE44B21483A341002D30ED /* PiptureModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModelTest.m; sourceTree = "<group>"; };
+		88D1162415DE074700DB95A0 /* Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Category.h; sourceTree = "<group>"; };
+		88D1162515DE074700DB95A0 /* Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Category.m; sourceTree = "<group>"; };
+		88D1162B15DE142000DB95A0 /* CategoryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryItem.h; sourceTree = "<group>"; };
+		88D1162C15DE142000DB95A0 /* CategoryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryItem.m; sourceTree = "<group>"; };
+		88D1162E15DE477600DB95A0 /* CategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryViewController.h; sourceTree = "<group>"; };
+		88D1162F15DE477600DB95A0 /* CategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryViewController.m; sourceTree = "<group>"; };
 		88D84207147B626C00E47EF8 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		88D84208147B626C00E47EF8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		88E5098214FF9507003AFA14 /* LibraryCardA7.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryCardA7.xib; sourceTree = "<group>"; };
@@ -805,6 +814,8 @@
 				18F18F9915DCE3A7003CE769 /* EditNewsViewController.m */,
 				18F18F9D15DCEC19003CE769 /* NewsCategoryViewController.h */,
 				18F18F9E15DCEC1A003CE769 /* NewsCategoryViewController.m */,
+				88D1162E15DE477600DB95A0 /* CategoryViewController.h */,
+				88D1162F15DE477600DB95A0 /* CategoryViewController.m */,
 			);
 			name = HomeScreen;
 			sourceTree = "<group>";
@@ -840,6 +851,10 @@
 				384A1F961491C21C007D5E0B /* Trailer.m */,
 				889F003914A0ADBD00F8432A /* ScreenshotImage.h */,
 				889F003A14A0ADBD00F8432A /* ScreenshotImage.m */,
+				88D1162415DE074700DB95A0 /* Category.h */,
+				88D1162515DE074700DB95A0 /* Category.m */,
+				88D1162B15DE142000DB95A0 /* CategoryItem.h */,
+				88D1162C15DE142000DB95A0 /* CategoryItem.m */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -1711,6 +1726,9 @@
 				18F18F9515DCD850003CE769 /* CoverViewController.m in Sources */,
 				18F18F9A15DCE3A8003CE769 /* EditNewsViewController.m in Sources */,
 				18F18F9F15DCEC1B003CE769 /* NewsCategoryViewController.m in Sources */,
+				88D1162615DE074700DB95A0 /* Category.m in Sources */,
+				88D1162D15DE142000DB95A0 /* CategoryItem.m in Sources */,
+				88D1163015DE477700DB95A0 /* CategoryViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

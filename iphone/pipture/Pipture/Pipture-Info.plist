@@ -86,6 +86,8 @@
 	<string>getVideo?%@=%@&amp;ForceBuy=%@&amp;q=%@</string>
 	<key>Rest Get video from timeslot</key>
 	<string>getVideo?%@=%@&amp;TimeslotId=%@&amp;q=%@</string>
+	<key>Rest Get channel categories request</key>
+	<string>getCategories?</string>
 	<key>Rest Login</key>
 	<string>login</string>
 	<key>Rest Register</key>

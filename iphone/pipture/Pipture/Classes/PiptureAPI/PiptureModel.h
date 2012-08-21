@@ -15,6 +15,7 @@
 #import "ScreenshotImage.h"
 #import "UnreadedPeriod.h"
 #import "DataRequestRetryStrategyFactory.h"
+#import "Category.h"
 @interface DefaultDataRequestFactory : NSObject<DataRequestManager>
 
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
@@ -119,6 +120,10 @@
 -(void)unreadMessagesReceived:(UnreadedPeriod*)periods;
 @end
 
+@protocol ChannelCategoriesReceiver <PiptureModelDelegate>
+@required
+-(void)channelCategoriesReceived:(NSArray*)channelCategories;
+@end
 
 @interface PiptureModel : NSObject     
 {
@@ -167,6 +172,8 @@
 -(BOOL)getUnusedMessageViews:(NSObject<UnreadMessagesReceiver>*)receiver;
 
 -(BOOL)deactivateMessageViews:(NSNumber *)periodId receiver:(NSObject<BalanceReceiver>*)receiver;
+
+-(BOOL)getChannelCategoriesForReciever:(NSObject<ChannelCategoriesReceiver>*)receiver;
 
 @end
 

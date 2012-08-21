@@ -59,6 +59,7 @@ NSString *GET_ALBUM_DETAILS_REQUEST;
 NSString *GET_ALBUM_DETAILS_FOR_TIMESLOT_REQUEST;
 NSString *GET_BALANCE_REQUEST;
 NSString *GET_BUY_REQUEST;
+NSString *GET_CHANNEL_CATEGORIES_REQUEST;
 NSString *SEND_MESSAGE_REQUEST;
 NSString *GET_SCREENSHOT_COLLECTION;
 NSString *GET_UNREADED_MESSAGES;
@@ -97,6 +98,8 @@ static NSString* const JSON_PARAM_MESSAGE_URL = @"MessageURL";
 static NSString* const JSON_PARAM_UUID = @"UUID";
 static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
 static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
+static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
+
 
 
 - (id)init
@@ -119,6 +122,7 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         GET_ALBUM_DETAILS_FOR_TIMESLOT_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get album details for timeslot"] retain]; 
         GET_BALANCE_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get balance"] retain];
         GET_BUY_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Buy"] retain];
+        GET_CHANNEL_CATEGORIES_REQUEST =  [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get channel categories request"] retain];
         SEND_MESSAGE_REQUEST = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Send message"] retain];
         GET_SCREENSHOT_COLLECTION = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get album screenshots"] retain];
         GET_UNREADED_MESSAGES = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"Rest Get unreaded messages"] retain];
@@ -1129,6 +1133,50 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
     return [request startExecute];
 }
 
+-(BOOL)getChannelCategoriesForReciever:(NSObject<ChannelCategoriesReceiver>*)receiver{
+    
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithString:GET_CHANNEL_CATEGORIES_REQUEST]];
+    
+    DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url
+                                                               callback:^(NSDictionary* jsonResult,
+                                                                          DataRequestError* error){
+                                                                   if (error)
+                                                                   {
+                                                                       [PiptureModel processError:error receiver:receiver];
+                                                                   }
+                                                                   else
+                                                                   {
+                                                                       NSArray* jsonCategories = [[PiptureModel parseItems:jsonResult
+                                                                                                jsonArrayParamName:JSON_PARAM_CHANNEL_CATEGORIES
+                                                                                                       itemCreator:^(NSDictionary*jsonIT)
+                                                                                           {
+                                                                                               return [jsonIT autorelease];
+                                                                                           } itemName:@"Category"] retain];
+                                                                       
+                                                                       NSInteger index = 0;
+                                                                       NSMutableArray* channelCategories = [[NSMutableArray alloc]init];
+                                                                       for (NSDictionary* jc in jsonCategories){
+                                                                           index++;
+                                                                           Category* category = [[Category alloc] initWithJSON:jc atIndex:index];
+                                                                           [channelCategories addObject:category];
+                                                                           [category release];
+                                                                       }
+                                                                       
+                                                                       [receiver performSelectorOnMainThread:@selector(channelCategoriesReceived:) 
+                                                                                                  withObject:channelCategories waitUntilDone:YES];
+                                                                       [channelCategories release];
+                                                                   }
+                                                                   
+                                                                   [PiptureModel setModelRequestingState:NO receiver:receiver];        
+                                                               }];
+    [PiptureModel setModelRequestingState:YES receiver:receiver];    
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];    
+    [request blockCancel];
+    return [request startExecute];
+    
+}
+
+
 -(BOOL)deactivateMessageViews:(NSNumber *)periodId 
                      receiver:(NSObject<BalanceReceiver>*)receiver {
     NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:SEND_DEACTIVATE_MESSAGES]];
@@ -1304,7 +1352,11 @@ static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
         [date_formater release];
     }
 
+    finalURL = [finalURL stringByReplacingOccurrencesOfString: @"?&" withString:  @"?"];
+    
     NSURL * url = [NSURL URLWithString:[END_POINT_URL stringByAppendingString:finalURL]];
+    
+    
     return url;
     
 }
