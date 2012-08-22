@@ -112,8 +112,8 @@
     scrollView.pagingEnabled = NO;
 
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
-    [[[PiptureAppDelegate instance] model] 
-     getChannelCategoriesForReciever: [PiptureAppDelegate instance].categoriesController];
+//    [[[PiptureAppDelegate instance] model] 
+//     getChannelCategoriesForReciever: [PiptureAppDelegate instance].categoriesController];
     
     [self placeViewController:[[CoverViewController alloc] 
                                initWithNibName:@"CoverViewController" bundle:nil] 
@@ -124,9 +124,9 @@
 //    [self placeViewController:[[NewsCategoryViewController alloc] 
 //                               initWithNibName:@"NewsCategoryViewController" bundle:nil] 
 //                    withTitle:@"title2"];
-    [self placeViewController:[[EditNewsViewController alloc] 
-                               initWithNibName:@"EditNewsViewController" bundle:nil] 
-                    withTitle:@""];
+//    [self placeViewController:[[EditNewsViewController alloc] 
+//                               initWithNibName:@"EditNewsViewController" bundle:nil] 
+//                    withTitle:@""];
 }
 
 - (void)dealloc {
