@@ -112,7 +112,8 @@
     scrollView.pagingEnabled = NO;
 
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
-    [[[PiptureAppDelegate instance] model] getChannelCategoriesForReciever: self];
+    [[[PiptureAppDelegate instance] model] 
+     getChannelCategoriesForReciever: [PiptureAppDelegate instance].categoriesController];
     
     [self placeViewController:[[CoverViewController alloc] 
                                initWithNibName:@"CoverViewController" bundle:nil] 
@@ -137,15 +138,6 @@
     [scrollView release];
     [super dealloc];
 }
-
-
--(void)channelCategoriesReceived:(NSArray*)channelCategories {
-    NSLog(@"channelCategories received: %@", [[channelCategories objectAtIndex:0] title]);
-    NSLog(@"channelCategories received: %@", [[[[channelCategories objectAtIndex:0] items] objectAtIndex:0] thumbnail]);
-    
-    //render channelCategories
-}
-
 
 - (void)placeViewController:(UIViewController<NewsViewSectionDelegate>*)controller
                   withTitle:(NSString *)title {

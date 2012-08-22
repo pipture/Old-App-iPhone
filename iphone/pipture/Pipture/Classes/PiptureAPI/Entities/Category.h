@@ -14,6 +14,7 @@
 @property(retain, nonatomic) NSString* title;
 @property(assign, nonatomic) NSInteger columns;
 @property(assign, nonatomic) NSInteger rows;
+@property(assign, nonatomic) NSInteger categoryId;
 @property(assign, nonatomic) NSInteger index;
 @property(retain, nonatomic) NSArray* items;
 

@@ -8,11 +8,10 @@
 
 #import "CategoryEditViewController.h"
 
-@interface CategoryEditViewController ()
-
-@end
 
 @implementation CategoryEditViewController
+
+@synthesize channelCategories = channelCategories_;
 @synthesize navigationItem;
 @synthesize delegate;
 @synthesize tableView;
@@ -107,6 +106,10 @@
             case 2: cell.textLabel.text = @"third category";
                 break;
         }
+        NSLog(@"%@", channelCategories_);
+        Category *category = [channelCategories_ objectAtIndex:row];
+        cell.textLabel.text = category.title;
+        
     }
     
     return cell;
@@ -118,8 +121,53 @@
 }
 
 - (void)dealloc {
+    [channelCategories_ release];
     [navigationItem release];
     [tableView release];
     [super dealloc];
 }
+
+#pragma mark -
+#pragma mark ChannelCategoriesReceiver 
+
+- (void)channelCategoriesReceived:(NSMutableArray*)categories {
+//    TODO: remove logging
+    NSLog(@"channelCategories received: %@", categories);
+    
+    NSArray *categoriesOrder = [[PiptureAppDelegate instance] getChannelCategoriesOrder];
+    NSLog(@"categories order: %@", categoriesOrder);
+    
+    if (categoriesOrder || [categories count] != [categoriesOrder count]) {
+        channelCategories_ = [[NSMutableArray alloc] init];
+        
+        NSMutableDictionary *categoriesById = [[NSMutableDictionary alloc] init];
+        
+        for (Category *category in categories) {
+            [categoriesById setValue:category 
+                              forKey:[NSString stringWithFormat:@"%d", category.categoryId]];
+        }
+            
+        for (NSString *index in categoriesOrder) {
+            Category *category = [categoriesById objectForKey:[NSString stringWithFormat:@"%@", index]];
+            [channelCategories_ addObject:category];
+        }
+        
+        [categoriesById release];
+    } else {
+        [categories retain];
+        [channelCategories_ release];
+        channelCategories_ = categories;
+        
+        NSMutableArray *categoriesOrderToPut = [[NSMutableArray alloc] init];
+        for (Category *category in channelCategories_) {
+            [categoriesOrderToPut addObject:[NSString stringWithFormat:@"%@", category.categoryId]];
+        }
+        
+        [[PiptureAppDelegate instance] putChannelCategoriesOrder:categoriesOrderToPut];
+        [categoriesOrderToPut release];
+    }
+    NSLog(@"channelCategories stored: %@", channelCategories_);
+    NSLog(@"%d", [channelCategories_ retainCount]);
+}
+
 @end

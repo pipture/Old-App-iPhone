@@ -238,7 +238,8 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                     NSDictionary * dic = [NSDictionary dictionaryWithObjects:array 
                                                                      forKeys:[NSArray arrayWithObjects:@"Cover", @"Album", nil]];
                     [receiver performSelectorOnMainThread:@selector(loggedIn:) 
-                                               withObject:dic waitUntilDone:YES];                    
+                                               withObject:dic 
+                                            waitUntilDone:YES];                    
                     break;
                 case 1:
                     [receiver performSelectorOnMainThread:@selector(loginFailed) 
@@ -1156,8 +1157,8 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                                                                            } itemName:@"Category"] retain];
                                                                        
                                                                        NSInteger index = 0;
-                                                                       NSMutableArray* channelCategories = [[NSMutableArray alloc]init];
-                                                                       for (NSDictionary* jc in jsonCategories){
+                                                                       NSMutableArray* channelCategories = [[NSMutableArray alloc] init];
+                                                                       for (NSDictionary* jc in jsonCategories) {
                                                                            index++;
                                                                            Category* category = [[Category alloc] initWithJSON:jc atIndex:index];
                                                                            [channelCategories addObject:category];
@@ -1165,7 +1166,8 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                                                        }
                                                                        
                                                                        [receiver performSelectorOnMainThread:@selector(channelCategoriesReceived:) 
-                                                                                                  withObject:channelCategories waitUntilDone:YES];
+                                                                                                  withObject:channelCategories 
+                                                                                               waitUntilDone:YES];
                                                                        [channelCategories release];
                                                                    }
                                                                    

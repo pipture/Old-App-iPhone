@@ -10,6 +10,7 @@
 #import "HomeScreenDelegate.h"
 
 @interface NewsCategoryViewController : UIViewController<NewsViewSectionDelegate>
+
 @property (assign, nonatomic) id<HomeScreenDelegate> delegate;
 @property (retain, nonatomic) IBOutlet UIView *itemContainer;
 @property (retain, nonatomic) IBOutlet UILabel *categoryTitle;

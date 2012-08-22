@@ -8,9 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "HomeScreenDelegate.h"
+#import "PiptureModel.h"
+#import "PiptureAppDelegate.h"
 
-@interface CategoryEditViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
+@interface CategoryEditViewController : UIViewController<UITableViewDataSource, 
+                                                         UITableViewDelegate,
+                                                         ChannelCategoriesReceiver> {
+    NSMutableArray *channelCategories_;
+}
+@property (readonly, nonatomic) NSArray *channelCategories;
 @property (assign, nonatomic) id<HomeScreenDelegate> delegate;
 @property (retain, nonatomic) IBOutlet UITableView *tableView;
 @property (retain, nonatomic) IBOutlet UINavigationItem *navigationItem;
+
 @end
