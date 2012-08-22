@@ -41,7 +41,7 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (void)prepare:(NSString *) title {
+- (void)prepare:(id) data {
     
 }
 

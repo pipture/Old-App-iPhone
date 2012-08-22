@@ -12,7 +12,7 @@
 #import "TimeslotFormatter.h"
 #import "CoverViewController.h"
 #import "EditNewsViewController.h"
-#import "NewsCategoryViewController.h"
+#import "CategoryViewController.h"
 
 @implementation NewsView
 @synthesize coverPanel;
@@ -114,18 +114,6 @@
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
     [[[PiptureAppDelegate instance] model] getChannelCategoriesForReciever: self];
     
-    [self placeViewController:[[CoverViewController alloc] 
-                               initWithNibName:@"CoverViewController" bundle:nil] 
-                    withTitle:@""];
-//    [self placeViewController:[[NewsCategoryViewController alloc] 
-//                               initWithNibName:@"NewsCategoryViewController" bundle:nil]
-//                    withTitle:@"title1"];
-//    [self placeViewController:[[NewsCategoryViewController alloc] 
-//                               initWithNibName:@"NewsCategoryViewController" bundle:nil] 
-//                    withTitle:@"title2"];
-    [self placeViewController:[[EditNewsViewController alloc] 
-                               initWithNibName:@"EditNewsViewController" bundle:nil] 
-                    withTitle:@""];
 }
 
 - (void)dealloc {
@@ -143,15 +131,30 @@
     NSLog(@"channelCategories received: %@", [[channelCategories objectAtIndex:0] title]);
     NSLog(@"channelCategories received: %@", [[[[channelCategories objectAtIndex:0] items] objectAtIndex:0] thumbnail]);
     
-    //render channelCategories
+    [self placeViewController: [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil]
+                  withData: nil
+     ];
+    for (Category* category in channelCategories){
+        [self placeViewController: [[CategoryViewController alloc]initWithNibName:@"CategoryViewController" bundle:nil]
+                      withData: category
+         ];
+        
+    }
+    
+    [self placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]
+                  withData: nil
+     ];
 }
 
 
-- (void)placeViewController:(UIViewController<NewsViewSectionDelegate>*)controller
-                  withTitle:(NSString *)title {
+- (void)placeViewController:(UIViewController<CategoryViewSectionDelegate>*)controller
+                withData:(id)data
+{
     [controller setHomeScreenDelegate:self.delegate];
     
     CGSize rect = scrollView.contentSize;
+    
+    NSLog(@"%f:%f",rect.width,controller.view.frame.size.height);
     int pos = 0;
     if (scrollView.subviews.count == 0) {
         pos = 0;
@@ -164,7 +167,7 @@
     controller.view.frame = CGRectMake(0, pos,rect.width, controller.view.frame.size.height);
     [scrollView addSubview:controller.view];
     
-    [controller prepare:title];
+    [controller prepare:data];
 }
 
 @end
