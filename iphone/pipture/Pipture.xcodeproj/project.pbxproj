@@ -13,8 +13,7 @@
 		18F18F9515DCD850003CE769 /* CoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F18F9415DCD850003CE769 /* CoverViewController.m */; };
 		18F18F9715DCE375003CE769 /* EditNewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F18F9615DCE375003CE769 /* EditNewsViewController.xib */; };
 		18F18F9A15DCE3A8003CE769 /* EditNewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F18F9915DCE3A7003CE769 /* EditNewsViewController.m */; };
-		18F18F9C15DCEBC6003CE769 /* NewsCategoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F18F9B15DCEBC6003CE769 /* NewsCategoryViewController.xib */; };
-		18F18F9F15DCEC1B003CE769 /* NewsCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F18F9E15DCEC1A003CE769 /* NewsCategoryViewController.m */; };
+		18F18F9C15DCEBC6003CE769 /* CategoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F18F9B15DCEBC6003CE769 /* CategoryViewController.xib */; };
 		381935C1147D04540049B30E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 381935C0147D04540049B30E /* MessageUI.framework */; };
 		381935CC147E2C850049B30E /* AlbumItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 381935CB147E2C850049B30E /* AlbumItemView.xib */; };
 		381935CF147E2F180049B30E /* AlbumItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 381935CE147E2F180049B30E /* AlbumItemViewController.m */; };
@@ -267,6 +266,8 @@
 		884D41DD15063BE500C91986 /* special-close-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 884D41D915063BE500C91986 /* special-close-button.png */; };
 		884D41DE15063BE500C91986 /* special-close-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 884D41DA15063BE500C91986 /* special-close-button@2x.png */; };
 		88606F1B14C415F9009FB5FD /* ScheduleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88606F1A14C415F9009FB5FD /* ScheduleModel.m */; };
+		886904C815E505440054E01F /* Thumbnail-default3.png in Resources */ = {isa = PBXBuildFile; fileRef = 886904C715E505440054E01F /* Thumbnail-default3.png */; };
+		886904CC15E5E1810054E01F /* CategoryItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 886904CB15E5E1810054E01F /* CategoryItemViewController.m */; };
 		88751791148CAD3B00AFFFAC /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */; };
 		88751792148CAD3B00AFFFAC /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875177C148CAD3B00AFFFAC /* SBJsonParser.m */; };
 		88751793148CAD3B00AFFFAC /* SBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875177E148CAD3B00AFFFAC /* SBJsonStreamParser.m */; };
@@ -321,6 +322,11 @@
 		88D8420A147B626C00E47EF8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D84208147B626C00E47EF8 /* HomeViewController.m */; };
 		88E5098414FF9507003AFA14 /* LibraryCardA7.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88E5098214FF9507003AFA14 /* LibraryCardA7.xib */; };
 		88E5098514FF9507003AFA14 /* LibraryCardB3.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88E5098314FF9507003AFA14 /* LibraryCardB3.xib */; };
+		88F2D69315E48E6D002510F1 /* CategoryItemMView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88F2D69215E48E6D002510F1 /* CategoryItemMView.xib */; };
+		88F2D69515E48ED0002510F1 /* CategoryItemSView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88F2D69415E48ED0002510F1 /* CategoryItemSView.xib */; };
+		88F2D69815E492E7002510F1 /* CategoryItemSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F2D69715E492E7002510F1 /* CategoryItemSViewController.m */; };
+		88F2D69B15E492F2002510F1 /* CategoryItemMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F2D69A15E492F2002510F1 /* CategoryItemMViewController.m */; };
+		88F2D69E15E49E45002510F1 /* CategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F2D69D15E49E45002510F1 /* CategoryViewController.m */; };
 		88FC5C0814922C2800C40DA1 /* NSDictionary+ValueHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0714922C2800C40DA1 /* NSDictionary+ValueHelper.m */; };
 		88FC5C0D14922C3600C40DA1 /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0A14922C3600C40DA1 /* Album.m */; };
 		88FC5C0E14922C3600C40DA1 /* Series.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0C14922C3600C40DA1 /* Series.m */; };
@@ -346,9 +352,7 @@
 		18F18F9615DCE375003CE769 /* EditNewsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditNewsViewController.xib; sourceTree = "<group>"; };
 		18F18F9815DCE3A7003CE769 /* EditNewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditNewsViewController.h; sourceTree = "<group>"; };
 		18F18F9915DCE3A7003CE769 /* EditNewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditNewsViewController.m; sourceTree = "<group>"; };
-		18F18F9B15DCEBC6003CE769 /* NewsCategoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewsCategoryViewController.xib; sourceTree = "<group>"; };
-		18F18F9D15DCEC19003CE769 /* NewsCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsCategoryViewController.h; sourceTree = "<group>"; };
-		18F18F9E15DCEC1A003CE769 /* NewsCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsCategoryViewController.m; sourceTree = "<group>"; };
+		18F18F9B15DCEBC6003CE769 /* CategoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoryViewController.xib; sourceTree = "<group>"; };
 		381935C0147D04540049B30E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		381935CB147E2C850049B30E /* AlbumItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumItemView.xib; sourceTree = "<group>"; };
 		381935CD147E2F180049B30E /* AlbumItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumItemViewController.h; sourceTree = "<group>"; };
@@ -640,6 +644,9 @@
 		884D41DA15063BE500C91986 /* special-close-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "special-close-button@2x.png"; sourceTree = "<group>"; };
 		88606F1914C415F9009FB5FD /* ScheduleModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScheduleModel.h; path = Classes/ScheduleModel.h; sourceTree = "<group>"; };
 		88606F1A14C415F9009FB5FD /* ScheduleModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScheduleModel.m; path = Classes/ScheduleModel.m; sourceTree = "<group>"; };
+		886904C715E505440054E01F /* Thumbnail-default3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Thumbnail-default3.png"; sourceTree = "<group>"; };
+		886904CA15E5E1810054E01F /* CategoryItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryItemViewController.h; sourceTree = "<group>"; };
+		886904CB15E5E1810054E01F /* CategoryItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryItemViewController.m; sourceTree = "<group>"; };
 		88751777148CAD3B00AFFFAC /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		88751778148CAD3B00AFFFAC /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJson.h"; sourceTree = "<group>"; };
 		88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJson.m"; sourceTree = "<group>"; };
@@ -723,6 +730,14 @@
 		88D84208147B626C00E47EF8 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		88E5098214FF9507003AFA14 /* LibraryCardA7.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryCardA7.xib; sourceTree = "<group>"; };
 		88E5098314FF9507003AFA14 /* LibraryCardB3.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryCardB3.xib; sourceTree = "<group>"; };
+		88F2D69215E48E6D002510F1 /* CategoryItemMView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoryItemMView.xib; sourceTree = "<group>"; };
+		88F2D69415E48ED0002510F1 /* CategoryItemSView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoryItemSView.xib; sourceTree = "<group>"; };
+		88F2D69615E492E7002510F1 /* CategoryItemSViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryItemSViewController.h; sourceTree = "<group>"; };
+		88F2D69715E492E7002510F1 /* CategoryItemSViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryItemSViewController.m; sourceTree = "<group>"; };
+		88F2D69915E492F2002510F1 /* CategoryItemMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryItemMViewController.h; sourceTree = "<group>"; };
+		88F2D69A15E492F2002510F1 /* CategoryItemMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryItemMViewController.m; sourceTree = "<group>"; };
+		88F2D69C15E49E45002510F1 /* CategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryViewController.h; sourceTree = "<group>"; };
+		88F2D69D15E49E45002510F1 /* CategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryViewController.m; sourceTree = "<group>"; };
 		88FC5C0614922C2800C40DA1 /* NSDictionary+ValueHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+ValueHelper.h"; sourceTree = "<group>"; };
 		88FC5C0714922C2800C40DA1 /* NSDictionary+ValueHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+ValueHelper.m"; sourceTree = "<group>"; };
 		88FC5C0914922C3600C40DA1 /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Album.h; sourceTree = "<group>"; };
@@ -799,6 +814,8 @@
 		38441FD9147FA5AD009B9D4E /* HomeScreen */ = {
 			isa = PBXGroup;
 			children = (
+				88F2D69C15E49E45002510F1 /* CategoryViewController.h */,
+				88F2D69D15E49E45002510F1 /* CategoryViewController.m */,
 				88D84207147B626C00E47EF8 /* HomeViewController.h */,
 				88D84208147B626C00E47EF8 /* HomeViewController.m */,
 				38549D93149F235F004D2189 /* NewsView.h */,
@@ -814,8 +831,6 @@
 				18F18F9415DCD850003CE769 /* CoverViewController.m */,
 				18F18F9815DCE3A7003CE769 /* EditNewsViewController.h */,
 				18F18F9915DCE3A7003CE769 /* EditNewsViewController.m */,
-				18F18F9D15DCEC19003CE769 /* NewsCategoryViewController.h */,
-				18F18F9E15DCEC1A003CE769 /* NewsCategoryViewController.m */,
 				1801D74115DE2E050086D163 /* CategoryEditViewController.h */,
 				1801D74215DE2E050086D163 /* CategoryEditViewController.m */,
 			);
@@ -1004,8 +1019,11 @@
 				38DA46F5151B60DB00107A50 /* SearchDividerView.xib */,
 				18F18F9015DCD81F003CE769 /* CoverViewController.xib */,
 				18F18F9615DCE375003CE769 /* EditNewsViewController.xib */,
-				18F18F9B15DCEBC6003CE769 /* NewsCategoryViewController.xib */,
+				18F18F9B15DCEBC6003CE769 /* CategoryViewController.xib */,
 				1801D73E15DE2DE90086D163 /* CategoryEditViewController.xib */,
+				88F2D69215E48E6D002510F1 /* CategoryItemMView.xib */,
+				886904C715E505440054E01F /* Thumbnail-default3.png */,
+				88F2D69415E48ED0002510F1 /* CategoryItemSView.xib */,
 			);
 			path = Resources;
 			sourceTree = SOURCE_ROOT;
@@ -1246,6 +1264,12 @@
 		38D74559147F701200062441 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				886904CA15E5E1810054E01F /* CategoryItemViewController.h */,
+				886904CB15E5E1810054E01F /* CategoryItemViewController.m */,
+				88F2D69915E492F2002510F1 /* CategoryItemMViewController.h */,
+				88F2D69A15E492F2002510F1 /* CategoryItemMViewController.m */,
+				88F2D69615E492E7002510F1 /* CategoryItemSViewController.h */,
+				88F2D69715E492E7002510F1 /* CategoryItemSViewController.m */,
 				387E9F5514A493A800355C43 /* DetailsTitleViewController.h */,
 				387E9F5614A493A800355C43 /* DetailsTitleViewController.m */,
 				384EBA7614A19317000973CD /* AlbumsView.h */,
@@ -1629,8 +1653,11 @@
 				3886C65C15232821003BAF6C /* librarybutton@2x.png in Resources */,
 				18F18F9115DCD81F003CE769 /* CoverViewController.xib in Resources */,
 				18F18F9715DCE375003CE769 /* EditNewsViewController.xib in Resources */,
-				18F18F9C15DCEBC6003CE769 /* NewsCategoryViewController.xib in Resources */,
+				18F18F9C15DCEBC6003CE769 /* CategoryViewController.xib in Resources */,
 				1801D73F15DE2DE90086D163 /* CategoryEditViewController.xib in Resources */,
+				88F2D69315E48E6D002510F1 /* CategoryItemMView.xib in Resources */,
+				88F2D69515E48ED0002510F1 /* CategoryItemSView.xib in Resources */,
+				886904C815E505440054E01F /* Thumbnail-default3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1729,10 +1756,13 @@
 				38DA46FB151DD50600107A50 /* SubRip.m in Sources */,
 				18F18F9515DCD850003CE769 /* CoverViewController.m in Sources */,
 				18F18F9A15DCE3A8003CE769 /* EditNewsViewController.m in Sources */,
-				18F18F9F15DCEC1B003CE769 /* NewsCategoryViewController.m in Sources */,
 				88D1162615DE074700DB95A0 /* Category.m in Sources */,
 				88D1162D15DE142000DB95A0 /* CategoryItem.m in Sources */,
 				1801D74315DE2E050086D163 /* CategoryEditViewController.m in Sources */,
+				88F2D69815E492E7002510F1 /* CategoryItemSViewController.m in Sources */,
+				88F2D69B15E492F2002510F1 /* CategoryItemMViewController.m in Sources */,
+				88F2D69E15E49E45002510F1 /* CategoryViewController.m in Sources */,
+				886904CC15E5E1810054E01F /* CategoryItemViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

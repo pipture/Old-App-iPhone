@@ -125,6 +125,14 @@
 -(void)channelCategoriesReceived:(NSMutableArray*)categories;
 @end
 
+@protocol CategoryItem
+-(UIView*)thumbnailButton;
+-(void)setCategoryItem:(CategoryItem*)category;
+-(void)prepareWithX:(int)x withY:(int)y;
+@end
+
+
+
 @interface PiptureModel : NSObject     
 {
 //@private
