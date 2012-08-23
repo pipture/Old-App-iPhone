@@ -686,7 +686,9 @@
 - (void)showEditCategory {
     PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
     CategoryEditViewController *vc = appDelegate.categoriesController;
-    vc.delegate = appDelegate.homeViewController;
+    if (!vc.delegate) {
+        vc.delegate = (id<HomeScreenDelegate>)appDelegate.homeViewController;
+    }
     [appDelegate tabbarVisible:NO slide:YES];
     [self.navigationController presentModalViewController:vc animated:YES];
 }
@@ -721,17 +723,16 @@
         [adic release];
     }
 }
-
-- (void)showAlbumDetails:(Album*)album{
+ 
+- (void)showAlbumDetails:(Album*)album {
     [self openDetails:YES album:album timeslotId:0];
 }
 
-- (void)showAlbumDetailsForTimeslot:(NSInteger)timeslotId
-{    
+- (void)showAlbumDetailsForTimeslot:(NSInteger)timeslotId {
     [self openDetails:NO album:nil timeslotId:timeslotId];
 }
 
-
+#pragma mark -
 #pragma mark PiptureModelDelegate methods
 
 -(void)dataRequestFailed:(DataRequestError*)error
@@ -739,6 +740,7 @@
     [[[PiptureAppDelegate instance] networkErrorAlerter] showStandardAlertForError:error];
 }
 
+#pragma mark -
 #pragma mark ScheduleModel observer methods
 
 - (void) newTimeslotsReceived:(NSNotification *) notification
@@ -754,6 +756,7 @@
     [self powerButtonEnable];
 }
 
+#pragma mark -
 #pragma mark AlbumsDelegate methods
 
 -(void)albumsReceived:(NSArray*)albums {
@@ -764,6 +767,7 @@
     [[PiptureAppDelegate instance] updateBalance];
 }
 
+#pragma mark -
 #pragma mark WelcomeScreenProtocol Methods
 
 -(void)weclomeScreenDidDissmis:(int)tag {

@@ -125,6 +125,7 @@
 
 - (void)dealloc {
     [channelCategories_ release];
+    [categoriesOrder_ release];
     [navigationItem release];
     [tableView release];
     [super dealloc];
