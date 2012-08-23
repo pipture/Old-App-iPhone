@@ -16,6 +16,8 @@
 #import "UnreadedPeriod.h"
 #import "DataRequestRetryStrategyFactory.h"
 #import "Category.h"
+
+#pragma mark -
 @interface DefaultDataRequestFactory : NSObject<DataRequestManager>
 
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback;
@@ -25,6 +27,7 @@
 
 @end
 
+#pragma mark -
 @protocol PiptureModelDelegate 
 
 @optional
@@ -35,15 +38,18 @@
 
 @end
 
+#pragma mark -
 @protocol SensitiveDataReceiver
 @required
 -(void)authenticationFailed;
 @end
 
+#pragma mark -
 @protocol TimeslotsReceiver <PiptureModelDelegate>
 -(void)timeslotsReceived:(NSDictionary*)timeslots;
 @end
 
+#pragma mark -
 @protocol PlaylistReceiver <PiptureModelDelegate>
 @required
 -(void)playlistReceived:(NSArray*)playlistItems;
@@ -54,6 +60,7 @@
 
 @end
 
+#pragma mark -
 @protocol SearchResultReceiver <PiptureModelDelegate>
 @required
 -(void)searchResultReceived:(NSArray*)searchResultItems;
@@ -61,11 +68,13 @@
 @end
 
 
+#pragma mark -
 @protocol BalanceReceiver <PiptureModelDelegate,SensitiveDataReceiver>
 @required
 -(void)balanceReceived:(NSDecimalNumber*)balance;
 @end
 
+#pragma mark -
 @protocol VideoURLReceiver <BalanceReceiver>
 @required
 -(void)videoURLReceived:(PlaylistItem*)playlistItem;
@@ -74,20 +83,24 @@
 -(void)timeslotExpiredForVideo:(PlaylistItem*)playlistItem;
 @end
 
+#pragma mark -
 @protocol AlbumDetailsReceiver <PiptureModelDelegate>
 @required
 -(void)albumDetailsReceived:(Album*)album;
 -(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album;
 @end
 
+#pragma mark -
 @protocol AlbumsReceiver <PiptureModelDelegate>
 @required
 -(void)albumsReceived:(NSArray*)albums;
 @end
 
+#pragma mark -
 @protocol SellableAlbumsReceiver <AlbumsReceiver,SensitiveDataReceiver>
 @end
 
+#pragma mark -
 @protocol AuthenticationDelegate <PiptureModelDelegate>
 @required
 -(void)loggedIn:(NSDictionary*)params;
@@ -95,6 +108,7 @@
 -(void)registred:(NSDictionary*)params;
 @end
 
+#pragma mark -
 @protocol PurchaseDelegate <PiptureModelDelegate,SensitiveDataReceiver>
 @required
 -(void)purchased:(NSDecimalNumber*)newBalance;
@@ -103,28 +117,36 @@
 -(void)duplicateTransactionId;
 @end
 
+#pragma mark -
 @protocol SendMessageDelegate <BalanceReceiver>
 @required
 -(void)messageSiteURLreceived:(NSString*)url;
 -(void)notEnoughMoneyForSend:(PlaylistItem*)playlistItem;
 @end
 
+#pragma mark -
 @protocol ScreenshotCollectionReceiver <PiptureModelDelegate>
 @required
 -(void)screenshotsNotSupported;
 -(void)screenshotsReceived:(NSArray*)screenshotImages;
 @end
 
+#pragma mark -
 @protocol UnreadMessagesReceiver <PiptureModelDelegate>
 @required
 -(void)unreadMessagesReceived:(UnreadedPeriod*)periods;
 @end
 
+#pragma mark -
 @protocol ChannelCategoriesReceiver <PiptureModelDelegate>
 @required
 -(void)channelCategoriesReceived:(NSMutableArray*)categories;
+-(void)updateCategories:(NSArray *)categories byOrder:(NSArray *)newCategoriesOrder;
+@property (readonly, nonatomic) NSMutableArray *channelCategories;
+@property (readonly, nonatomic) NSArray *categoriesOrder;
 @end
 
+#pragma mark -
 @protocol CategoryItem
 -(UIView*)thumbnailButton;
 -(void)setCategoryItem:(CategoryItem*)category;
@@ -133,6 +155,7 @@
 
 
 
+#pragma mark -
 @interface PiptureModel : NSObject     
 {
 //@private

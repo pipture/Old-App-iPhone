@@ -110,11 +110,11 @@
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     scrollView.pagingEnabled = NO;
-    //TODO: move this stuff to HomeViewController
-    [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
-    [[[PiptureAppDelegate instance] model] 
-     getChannelCategoriesForReciever: [PiptureAppDelegate instance].categoriesController];
     
+    // TODO: move to proper place (or keep it here if this place is proper)
+    [self.delegate getChannelCategories];
+    [self placeViewController: [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil]
+                     withData: nil];
 }
 
 - (void)dealloc {
@@ -127,20 +127,15 @@
     [super dealloc];
 }
 
--(void)channelCategoriesReceived:(NSArray*)channelCategories {
-    [self placeViewController: [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil]
-                  withData: nil
-     ];
+-(void)placeCategories:(NSArray*)channelCategories {
     for (Category* category in channelCategories){
         [self placeViewController: [[CategoryViewController alloc]initWithNibName:@"CategoryViewController" bundle:nil]
-                      withData: category
-         ];
+                         withData: category];
         
     }
     
     [self placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]
-                  withData: nil
-     ];
+                     withData: nil];
 }
 
 

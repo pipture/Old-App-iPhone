@@ -19,6 +19,7 @@
 - (void)prepareWith:(id<HomeScreenDelegate>)parent;
 - (void)updateTimeSlotInfo:(Timeslot*)timeslot;
 - (void)allowShowBubble:(BOOL)allow;
+- (void)placeCategories:(NSArray*)channelCategories;
 - (void)placeViewController:(UIViewController<CategoryViewSectionDelegate>*)controller
                withData:(id)data;
 
