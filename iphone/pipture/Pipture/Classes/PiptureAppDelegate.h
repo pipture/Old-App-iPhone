@@ -69,7 +69,7 @@
 @property (readonly, nonatomic) NSInteger tabViewBaseHeight;
 @property (readonly, nonatomic) NetworkErrorAlerter* networkErrorAlerter;
 @property (readonly, nonatomic) Album *albumForCover;
-@property (readonly, nonatomic) UIViewController *categoriesController;
+@property (readonly, nonatomic) CategoryEditViewController *categoriesController;
 
 +(PiptureAppDelegate*) instance;
 

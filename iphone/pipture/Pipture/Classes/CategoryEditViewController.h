@@ -9,12 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "HomeScreenDelegate.h"
 #import "PiptureModel.h"
-#import "PiptureAppDelegate.h"
 
 @interface CategoryEditViewController : UIViewController<UITableViewDataSource, 
                                                          UITableViewDelegate,
                                                          ChannelCategoriesReceiver> {
     NSMutableArray *channelCategories_;
+    NSMutableArray *categoriesOrder_;
 }
 @property (readonly, nonatomic) NSArray *channelCategories;
 @property (assign, nonatomic) id<HomeScreenDelegate> delegate;

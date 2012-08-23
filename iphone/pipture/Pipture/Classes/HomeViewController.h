@@ -15,7 +15,6 @@
 #import "LibraryCardController.h"
 
 @interface HomeViewController : UIViewController <AlbumsReceiver,
-                                                  ChannelCategoriesReceiver,
                                                   UIAlertViewDelegate,
                                                   UITabBarDelegate,
                                                   HomeScreenDelegate,
@@ -38,7 +37,7 @@
 - (IBAction)flipAction:(id)sender;
 - (IBAction)searchAction:(id)sender;
 - (IBAction)storeAction:(id)sender;
-- (IBAction)editCategoryAction;
+//- (IBAction)editCategoryAction;
 
 @property (retain, nonatomic) IBOutlet UIView *tabbarContainer;
 @property (retain, nonatomic) IBOutlet UIButton *flipButton;

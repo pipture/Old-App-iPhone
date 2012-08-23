@@ -102,7 +102,9 @@ static PiptureAppDelegate *instance;
         model_ = [[PiptureModel alloc] init];
         busyView = [[BusyViewController alloc] initWithNibName:@"PurchaseBusyView"
                                                         bundle:nil];
-        categoriesController = [[CategoryEditViewController alloc] init];
+        categoriesController = [[CategoryEditViewController alloc] initWithNibName:@"CategoryEditViewController" 
+                                                                            bundle:nil];
+        
         purchases = [[InAppPurchaseManager alloc] init];
         networkErrorAlerter_ = [[NetworkErrorAlerter alloc] init];
         [purchases loadStore];        
@@ -131,6 +133,7 @@ static PiptureAppDelegate *instance;
             homeViewController = visible;
         }
     }
+    NSLog(@"homeViewController %@", homeViewController);
     return (HomeViewController*)homeViewController;
 }
 
