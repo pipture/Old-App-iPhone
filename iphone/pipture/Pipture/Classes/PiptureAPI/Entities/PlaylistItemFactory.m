@@ -21,6 +21,7 @@
 
 +(PlaylistItem*)createItem:(NSDictionary*)jsonItem ofType:(NSString*)itemType
 {
+    NSLog(@"--itemType->%@",itemType);
     if ([PLAYLIST_ITEM_TYPE_EPISODE isEqualToString:itemType])
     {
         return [[[Episode alloc]initWithJSON:jsonItem] autorelease];

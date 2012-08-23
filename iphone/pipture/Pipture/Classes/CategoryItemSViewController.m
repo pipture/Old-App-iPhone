@@ -10,15 +10,6 @@
 
 @implementation CategoryItemSViewController
 
-- (IBAction)videoShow:(id)sender {
-    if (categoryItem && categoryItem.id) {
-        NSLog(@"Trailer Show");
-        //        TODO: Play videos here
-        //        NSArray * playlist = [NSArray arrayWithObject:album.trailer];
-        //        [[PiptureAppDelegate instance] showVideo:playlist
-        //                                          noNavi:YES
-        //                                      timeslotId:nil];
-    }
-}
+@synthesize thumbnailButton;
 
 @end

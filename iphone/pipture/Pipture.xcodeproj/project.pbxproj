@@ -266,6 +266,8 @@
 		884D41DD15063BE500C91986 /* special-close-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 884D41D915063BE500C91986 /* special-close-button.png */; };
 		884D41DE15063BE500C91986 /* special-close-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 884D41DA15063BE500C91986 /* special-close-button@2x.png */; };
 		88606F1B14C415F9009FB5FD /* ScheduleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88606F1A14C415F9009FB5FD /* ScheduleModel.m */; };
+		886904C815E505440054E01F /* Thumbnail-default3.png in Resources */ = {isa = PBXBuildFile; fileRef = 886904C715E505440054E01F /* Thumbnail-default3.png */; };
+		886904CC15E5E1810054E01F /* CategoryItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 886904CB15E5E1810054E01F /* CategoryItemViewController.m */; };
 		88751791148CAD3B00AFFFAC /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */; };
 		88751792148CAD3B00AFFFAC /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875177C148CAD3B00AFFFAC /* SBJsonParser.m */; };
 		88751793148CAD3B00AFFFAC /* SBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8875177E148CAD3B00AFFFAC /* SBJsonStreamParser.m */; };
@@ -642,6 +644,9 @@
 		884D41DA15063BE500C91986 /* special-close-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "special-close-button@2x.png"; sourceTree = "<group>"; };
 		88606F1914C415F9009FB5FD /* ScheduleModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScheduleModel.h; path = Classes/ScheduleModel.h; sourceTree = "<group>"; };
 		88606F1A14C415F9009FB5FD /* ScheduleModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScheduleModel.m; path = Classes/ScheduleModel.m; sourceTree = "<group>"; };
+		886904C715E505440054E01F /* Thumbnail-default3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Thumbnail-default3.png"; sourceTree = "<group>"; };
+		886904CA15E5E1810054E01F /* CategoryItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryItemViewController.h; sourceTree = "<group>"; };
+		886904CB15E5E1810054E01F /* CategoryItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryItemViewController.m; sourceTree = "<group>"; };
 		88751777148CAD3B00AFFFAC /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		88751778148CAD3B00AFFFAC /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJson.h"; sourceTree = "<group>"; };
 		88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJson.m"; sourceTree = "<group>"; };
@@ -1017,6 +1022,7 @@
 				18F18F9B15DCEBC6003CE769 /* CategoryViewController.xib */,
 				1801D73E15DE2DE90086D163 /* CategoryEditViewController.xib */,
 				88F2D69215E48E6D002510F1 /* CategoryItemMView.xib */,
+				886904C715E505440054E01F /* Thumbnail-default3.png */,
 				88F2D69415E48ED0002510F1 /* CategoryItemSView.xib */,
 			);
 			path = Resources;
@@ -1258,6 +1264,8 @@
 		38D74559147F701200062441 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				886904CA15E5E1810054E01F /* CategoryItemViewController.h */,
+				886904CB15E5E1810054E01F /* CategoryItemViewController.m */,
 				88F2D69915E492F2002510F1 /* CategoryItemMViewController.h */,
 				88F2D69A15E492F2002510F1 /* CategoryItemMViewController.m */,
 				88F2D69615E492E7002510F1 /* CategoryItemSViewController.h */,
@@ -1649,6 +1657,7 @@
 				1801D73F15DE2DE90086D163 /* CategoryEditViewController.xib in Resources */,
 				88F2D69315E48E6D002510F1 /* CategoryItemMView.xib in Resources */,
 				88F2D69515E48ED0002510F1 /* CategoryItemSView.xib in Resources */,
+				886904C815E505440054E01F /* Thumbnail-default3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1753,6 +1762,7 @@
 				88F2D69815E492E7002510F1 /* CategoryItemSViewController.m in Sources */,
 				88F2D69B15E492F2002510F1 /* CategoryItemMViewController.m in Sources */,
 				88F2D69E15E49E45002510F1 /* CategoryViewController.m in Sources */,
+				886904CC15E5E1810054E01F /* CategoryItemViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

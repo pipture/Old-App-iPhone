@@ -110,7 +110,7 @@
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     scrollView.pagingEnabled = NO;
-
+    //TODO: move this stuff to HomeViewController
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
     [[[PiptureAppDelegate instance] model] getChannelCategoriesForReciever: self];
     
@@ -128,9 +128,6 @@
 
 
 -(void)channelCategoriesReceived:(NSArray*)channelCategories {
-    NSLog(@"channelCategories received: %@", [[channelCategories objectAtIndex:0] title]);
-    NSLog(@"channelCategories received: %@", [[[[channelCategories objectAtIndex:0] items] objectAtIndex:0] thumbnail]);
-    
     [self placeViewController: [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil]
                   withData: nil
      ];
@@ -154,7 +151,6 @@
     
     CGSize rect = scrollView.contentSize;
     
-    NSLog(@"%f:%f",rect.width,controller.view.frame.size.height);
     int pos = 0;
     if (scrollView.subviews.count == 0) {
         pos = 0;
@@ -166,6 +162,7 @@
     scrollView.contentSize = rect;
     controller.view.frame = CGRectMake(0, pos,rect.width, controller.view.frame.size.height);
     [scrollView addSubview:controller.view];
+    
     
     [controller prepare:data];
 }

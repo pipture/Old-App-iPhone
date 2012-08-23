@@ -67,7 +67,7 @@ static NSInteger const MEDIUM_THUMBS = 3;
     int i = 0;
     for (int y = 0; y < category.rows; y++) {
         for (int x = 0; x < category.columns; x++) {
-            id item = nil;
+            UIViewController<CategoryItem> *item = nil;
             switch (category.columns) {
                 case SMALL_THUMBS:
                     item = [[CategoryItemSViewController alloc] initWithNibName:@"CategoryItemSView" bundle:nil];
@@ -77,16 +77,14 @@ static NSInteger const MEDIUM_THUMBS = 3;
                     break;
                 default:
                     NSLog(@"Unexpected channelCategory parameter COLUMNS");
+                    return;
                     
             }
-//            item.view.frame = CGRectMake(MARGIN_RIGHT + (x * ITEM_WIDTH),
-//                                         libraryCardHeight + OFFSET_FROM_LIB_CARD + (y * ITEM_HEIGHT),
-//                                         ITEM_WIDTH,
-//                                         ITEM_HEIGHT);
-//            [self addSubview:item.view];
+            [item setCategoryItem:[category.items objectAtIndex:i++]];
+            [item prepareWithX:x withY:y];
+            [self.view addSubview: item.view];
         }
     }
-    
 }
 
 @end

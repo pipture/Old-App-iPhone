@@ -7,15 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "HomeScreenDelegate.h"
+#import "CategoryItemViewController.h"
 #import "Category.h"
 
-@interface CategoryItemMViewController : UIViewController
-{
-    CategoryItem* categoryItem;
-}
-@property (retain, nonatomic) IBOutlet UIView *thumbnailButton;
+@interface CategoryItemMViewController : CategoryItemViewController
 
-- (IBAction)videoShow:(id)sender;
+@property (retain, nonatomic) IBOutlet UIView *thumbnailButton;
 
 @end
