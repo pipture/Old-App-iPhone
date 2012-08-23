@@ -122,7 +122,7 @@
 
 @protocol ChannelCategoriesReceiver <PiptureModelDelegate>
 @required
--(void)channelCategoriesReceived:(NSArray*)channelCategories;
+-(void)channelCategoriesReceived:(NSMutableArray*)categories;
 @end
 
 @protocol CategoryItem

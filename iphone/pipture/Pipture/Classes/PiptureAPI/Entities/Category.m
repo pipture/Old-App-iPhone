@@ -15,12 +15,14 @@
 @synthesize title;
 @synthesize columns;
 @synthesize rows;
+@synthesize categoryId;
 @synthesize index = index_;
 @synthesize items;
 
 static NSString* const JSON_PARAM_TITLE = @"title";
 static NSString* const JSON_PARAM_COLUMNS = @"columns";
 static NSString* const JSON_PARAM_ROWS = @"rows";
+static NSString* const JSON_PARAM_CATEGORY_ID = @"id";
 static NSString* const JSON_PARAM_ITEMS = @"items";
 
 -(id)initWithJSON:(NSDictionary*)jsonData atIndex:(NSInteger) index{
@@ -43,9 +45,10 @@ static NSString* const JSON_PARAM_ITEMS = @"items";
 {
     NSDictionary* channelData = [jsonData objectForKey:@"data"];
     
-    self.title   = [channelData strValueForKey:JSON_PARAM_TITLE   defaultIfEmpty:self.title];
-    self.columns = [channelData intValueForKey:JSON_PARAM_COLUMNS defaultIfEmpty:self.columns];
-    self.rows    = [channelData intValueForKey:JSON_PARAM_ROWS    defaultIfEmpty:self.rows];
+    self.title      = [channelData strValueForKey:JSON_PARAM_TITLE       defaultIfEmpty:self.title];
+    self.columns    = [channelData intValueForKey:JSON_PARAM_COLUMNS     defaultIfEmpty:self.columns];
+    self.rows       = [channelData intValueForKey:JSON_PARAM_ROWS        defaultIfEmpty:self.rows];
+    self.categoryId = [channelData intValueForKey:JSON_PARAM_CATEGORY_ID defaultIfEmpty:self.categoryId];
     
     NSArray* channelItems = [[PiptureModel parseItems:jsonData
                                    jsonArrayParamName:@"items"

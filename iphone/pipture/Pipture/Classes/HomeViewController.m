@@ -684,11 +684,13 @@
 }
 
 - (void)showEditCategory {
-    CategoryEditViewController * vc = [[CategoryEditViewController alloc] initWithNibName:@"CategoryEditViewController" bundle:nil];
-    vc.delegate = self;
-    [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
+    PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
+    CategoryEditViewController *vc = appDelegate.categoriesController;
+    vc.delegate = appDelegate.homeViewController;
+    [appDelegate tabbarVisible:NO slide:YES];
     [self.navigationController presentModalViewController:vc animated:YES];
 }
+
 - (void)dismissEditCategory {
     [self.navigationController dismissModalViewControllerAnimated:YES];
     [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];

@@ -14,16 +14,19 @@
 #import "ScheduleModel.h"
 #import "LibraryCardController.h"
 
-@interface HomeViewController : UIViewController <AlbumsReceiver, UIAlertViewDelegate, UITabBarDelegate, HomeScreenDelegate, WelcomeScreenProtocol>
-{
+@interface HomeViewController : UIViewController <AlbumsReceiver,
+                                                  UIAlertViewDelegate,
+                                                  UITabBarDelegate,
+                                                  HomeScreenDelegate,
+                                                  WelcomeScreenProtocol> {
     enum HomeScreenMode homeScreenMode;
     
     NSTimer *changeTimer;
     NSTimer *updateTimer;
     NSTimer *blinkTimer;
     
-    ScheduleModel* scheduleModel;
-    
+    ScheduleModel *scheduleModel;
+                                                      
     BOOL redrawDiscarding;
     int lastHS_mode;
 }
@@ -34,7 +37,7 @@
 - (IBAction)flipAction:(id)sender;
 - (IBAction)searchAction:(id)sender;
 - (IBAction)storeAction:(id)sender;
-- (IBAction)editCategoryAction;
+//- (IBAction)editCategoryAction;
 
 @property (retain, nonatomic) IBOutlet UIView *tabbarContainer;
 @property (retain, nonatomic) IBOutlet UIButton *flipButton;

@@ -112,7 +112,8 @@
     scrollView.pagingEnabled = NO;
     //TODO: move this stuff to HomeViewController
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
-    [[[PiptureAppDelegate instance] model] getChannelCategoriesForReciever: self];
+    [[[PiptureAppDelegate instance] model] 
+     getChannelCategoriesForReciever: [PiptureAppDelegate instance].categoriesController];
     
 }
 
@@ -125,7 +126,6 @@
     [scrollView release];
     [super dealloc];
 }
-
 
 -(void)channelCategoriesReceived:(NSArray*)channelCategories {
     [self placeViewController: [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil]
