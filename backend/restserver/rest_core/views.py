@@ -1066,7 +1066,9 @@ def buy (request):
 
     #-----------------------To Apple Server----------------------------
     data_json = json.dumps({"receipt-data" : "%s" % (apple_purchase)})
-    url = 'https://buy.itunes.apple.com/verifyReceipt'
+    #TODO: after Apple will approve this, uncomment next line and comment sandbox line
+    #url = 'https://buy.itunes.apple.com/verifyReceipt'
+    url = 'https://sandbox.itunes.apple.com/verifyReceipt'
     req = urllib2.Request(url=url, data=data_json)
     response_apple = urllib2.urlopen(req)
     result = response_apple.read()
