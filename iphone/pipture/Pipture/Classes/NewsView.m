@@ -148,11 +148,18 @@
 - (void)updateCategoriesOrder:(NSArray *)categoriesOrder {
     NSLog(@"1 - %@", self.scrollView.subviews);
     
-    for (UIView *view in [categoryViews allValues]) {
-        [view removeFromSuperview];
-    }
+    // First view is view with hot news cover
+    UIView *firstView = [self.scrollView.subviews objectAtIndex:0];
+    NSInteger originY = firstView.frame.origin.y + firstView.frame.size.height;
+    
     for (NSString *index in categoriesOrder) {
-        [self.scrollView addSubview:[categoryViews objectForKey:index]];
+        UIView *categoryView = [categoryViews objectForKey:index];
+        CGRect rect = categoryView.frame;
+        categoryView.frame = CGRectMake(rect.origin.x,
+                                        originY,
+                                        rect.size.width, 
+                                        rect.size.height);
+        originY += rect.size.height;
     }
     NSLog(@"2 - %@", self.scrollView.subviews);
 }
