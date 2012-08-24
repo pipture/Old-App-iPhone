@@ -672,16 +672,18 @@
 - (void)doPower {
     [self doUpdate];
     Timeslot * slot = [scheduleModel currentTimeslot];
+    NSNumber* timeslotId = nil;
+    if (slot !=nil){
+        timeslotId = [NSNumber numberWithInt:slot.timeslotId];
+    }
     
-    if (slot) {
-        [scheduleView scrollToCurPage];
-        NSArray *playList = [self getChannelCategoriesPlaylist];
-        [[PiptureAppDelegate instance] showVideo:playList
-                                          noNavi:NO 
-                                      timeslotId:[NSNumber numberWithInt:slot.timeslotId]];
+    [scheduleView scrollToCurPage];
+    NSArray *playList = [self getChannelCategoriesPlaylist];
+    [[PiptureAppDelegate instance] showVideo:playList
+                                      noNavi:NO
+                                  timeslotId:timeslotId];
 /*        reqTimeslotId = slot.timeslotId;
         [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];*/
-    }
 }
 
 -(NSArray*)getChannelCategoriesPlaylist{
