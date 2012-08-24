@@ -154,17 +154,17 @@
     int pos = 0;
     if (scrollView.subviews.count == 0) {
         pos = 0;
-        rect.height = controller.view.frame.size.height;
+        rect.height = 0;
     } else {
         pos = rect.height;
-        rect.height += controller.view.frame.size.height;
     }
-    scrollView.contentSize = rect;
     controller.view.frame = CGRectMake(0, pos,rect.width, controller.view.frame.size.height);
-    [scrollView addSubview:controller.view];
-    
-    
     [controller prepare:data];
+    
+    rect.height += controller.view.frame.size.height;
+    scrollView.contentSize = rect;
+    
+    [scrollView addSubview:controller.view];
 }
 
 @end
