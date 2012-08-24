@@ -403,6 +403,7 @@
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
+            [self.navigationController setNavigationBarHidden:YES animated:NO];
             [scheduleModel updateTimeslots];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
