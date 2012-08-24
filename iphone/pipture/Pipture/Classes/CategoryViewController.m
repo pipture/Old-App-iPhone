@@ -87,7 +87,7 @@ static NSInteger const MEDIUM_THUMBS = 3;
             UIViewController<CategoryItem> *item = [self getCategoryItem:category.columns];
             
             [item setCategoryItem:[category.items objectAtIndex:i++]];
-            [item prepareWithX:x withY:y];
+            [item prepareWithX:x withY:y withOffset:(int)[self.view viewWithTag:1].frame.origin.y];
             [self.view addSubview: item.view];
         }
     }

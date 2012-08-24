@@ -14,7 +14,7 @@
 @property (retain, nonatomic) CategoryItem* categoryItem;
 @property (retain, nonatomic) IBOutlet UIView *thumbnailButton;
 
-- (void)prepareWithX:(int)x withY:(int)y;
+- (void)prepareWithX:(int)x withY:(int)y withOffset:(int)offset;
 - (IBAction)playChannelCategoryVideo:(id)sender;
 + (PlaylistItem*)getCategoryItemVideo:(CategoryItem*)categoryItem;
 

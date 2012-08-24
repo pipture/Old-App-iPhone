@@ -16,7 +16,6 @@
 @synthesize categoryItem;
 
 static NSInteger const MARGIN_RIGHT = 15;
-static NSInteger const OFFSET_FROM_TITLE = 88;
 
 static NSString* const JSON_PARAM_TYPE_EPISODE = @"episode";
 static NSString* const JSON_PARAM_TYPE_ALBUM = @"album";
@@ -47,12 +46,12 @@ static NSString* const JSON_PARAM_TITLE = @"Title";
     return playlistItem;
 };
 
--(void)prepareWithX:(int)x withY:(int)y {
+-(void)prepareWithX:(int)x withY:(int)y withOffset:(int)offset {
     int itemWidth  = (int)self.view.frame.size.width;
     int itemHeight = (int)self.view.frame.size.height;
     
     self.view.frame = CGRectMake(MARGIN_RIGHT + (x * itemWidth),
-                                 OFFSET_FROM_TITLE + (y * itemHeight),
+                                 offset + (y * itemHeight),
                                  itemWidth,
                                  itemHeight);
     
