@@ -40,7 +40,7 @@
     if (visible) panel.hidden = NO;
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.3];
-    panel.alpha  = visible?1:0;
+    panel.alpha = visible ? 1: 0;
     
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
@@ -125,6 +125,7 @@
     [detailButton release];
     
     [scrollView release];
+    [categoryViews release];
     [super dealloc];
 }
 
@@ -146,8 +147,6 @@
 }
 
 - (void)updateCategoriesOrder:(NSArray *)categoriesOrder {
-    NSLog(@"1 - %@", self.scrollView.subviews);
-    
     // First view is view with hot news cover
     UIView *firstView = [self.scrollView.subviews objectAtIndex:0];
     NSInteger originY = firstView.frame.origin.y + firstView.frame.size.height;
@@ -161,7 +160,6 @@
                                         rect.size.height);
         originY += rect.size.height;
     }
-    NSLog(@"2 - %@", self.scrollView.subviews);
 }
 
 
