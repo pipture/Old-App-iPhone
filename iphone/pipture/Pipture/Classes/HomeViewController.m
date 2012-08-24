@@ -15,6 +15,7 @@
 #import "AlbumDetailInfoController.h"
 #import "SearchViewController.h"
 #import "CategoryEditViewController.h"
+#import "CategoryItemViewController.h"
 
 #define TIMESLOT_CHANGE_POLL_INTERVAL 60
 #define TIMESLOT_REGULAR_POLL_INTERVAL 900
@@ -669,16 +670,35 @@
 
                                                      
 - (void)doPower {
+    [self doUpdate];
     Timeslot * slot = [scheduleModel currentTimeslot];
     
     if (slot) {
         [scheduleView scrollToCurPage];
-        [[PiptureAppDelegate instance] showVideo:nil
+        NSArray *playList = [self getChannelCategoriesPlaylist];
+        [[PiptureAppDelegate instance] showVideo:playList
                                           noNavi:NO 
                                       timeslotId:[NSNumber numberWithInt:slot.timeslotId]];
 /*        reqTimeslotId = slot.timeslotId;
         [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];*/
     }
+}
+
+-(NSArray*)getChannelCategoriesPlaylist{
+    NSMutableArray* playlist = [[NSMutableArray alloc] init];
+    for(Category* category in self.channelCategories){
+        for(CategoryItem* categoryItem in category.items){
+            [playlist addObject: [CategoryItemViewController getCategoryItemVideo:categoryItem]];
+        }
+    }
+    
+    NSArray* result=nil;
+    if (playlist.count>0){
+        result = [NSArray arrayWithArray:playlist];
+    }
+    [playlist release];
+    
+    return result;
 }
 
 - (BOOL)redrawDiscarding {

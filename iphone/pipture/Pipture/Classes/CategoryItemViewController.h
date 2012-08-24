@@ -16,5 +16,6 @@
 
 - (void)prepareWithX:(int)x withY:(int)y;
 - (IBAction)playChannelCategoryVideo:(id)sender;
++ (PlaylistItem*)getCategoryItemVideo:(CategoryItem*)categoryItem;
 
 @end

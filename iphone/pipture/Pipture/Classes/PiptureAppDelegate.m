@@ -599,7 +599,7 @@ static PiptureAppDelegate *instance;
     [self.window setRootViewController:videoViewController];
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
     
-    if (playlist.count == 0) {
+    if (timeslotId != nil) {
         [model_ cancelCurrentRequest];
         [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:timeslotId 
                                                              receiver:videoViewController];
@@ -727,8 +727,8 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (void)powerButtonEnable:(BOOL)enable {
-    powerButton.enabled = enable;
-    refreshTapZone.hidden = enable;
+//    powerButton.enabled = enable;
+//    refreshTapZone.hidden = enable;
 }
 
 //The event handling method
