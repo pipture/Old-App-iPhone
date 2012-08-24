@@ -79,6 +79,9 @@
 - (void)putHomescreenState:(int)state;
 - (int)getHomescreenState;
 
+- (void)putChannelCategoriesOrder:(NSArray *)categories;
+- (NSArray *)getChannelCategoriesOrder;
+
 - (void)putUserName:(NSString*)name;
 - (NSString*)getUserName;
 

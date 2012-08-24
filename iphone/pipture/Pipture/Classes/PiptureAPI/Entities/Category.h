@@ -11,11 +11,12 @@
 
 @interface Category : NSObject
 
-@property(retain, nonatomic) NSString* title;
+@property(retain, nonatomic) NSString *title;
 @property(assign, nonatomic) NSInteger columns;
 @property(assign, nonatomic) NSInteger rows;
+@property(assign, nonatomic) NSString *categoryId;
 @property(assign, nonatomic) NSInteger index;
-@property(retain, nonatomic) NSArray* items;
+@property(retain, nonatomic) NSArray *items;
 
 -(id)initWithJSON:(NSDictionary*)jsonData atIndex:(NSInteger) index;
 

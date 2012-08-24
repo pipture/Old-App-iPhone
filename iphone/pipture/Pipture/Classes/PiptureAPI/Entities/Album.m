@@ -110,8 +110,14 @@ static NSString* const CREDITS_ITEM_TAB = @",";
 -(id)initWithJSON:(NSDictionary*)jsonData
 {
     self = [self init];
-    if (self) {                
-        [self parseJSON:jsonData];
+    if (self) {
+        @try {
+            [self parseJSON:jsonData];
+        }
+        @catch (NSException *exception) {
+            [self release];
+            return nil;
+        }
     }
     return self;
     

@@ -12,6 +12,7 @@ settings_staging.py
 *.swp
 *.swo
 *.db
+*.ipa
 backend/bin/
 backend/lib/
 backend/include/

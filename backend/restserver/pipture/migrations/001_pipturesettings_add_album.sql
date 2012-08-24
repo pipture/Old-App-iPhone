@@ -1,6 +1,6 @@
 ALTER TABLE pipture_pipturesettings
   ADD COLUMN Album_id INT
-  AFTER PremierPeriod;
+  AFTER PremierePeriod;
 
 ALTER TABLE pipture_pipturesettings
   ADD FOREIGN KEY (Album_id)

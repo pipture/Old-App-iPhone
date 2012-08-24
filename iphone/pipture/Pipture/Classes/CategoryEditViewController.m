@@ -7,12 +7,15 @@
 //
 
 #import "CategoryEditViewController.h"
+#import "Category.h"
+#import "PiptureAppDelegate.h"
+
 
 @interface CategoryEditViewController ()
-
 @end
 
 @implementation CategoryEditViewController
+
 @synthesize navigationItem;
 @synthesize delegate;
 @synthesize tableView;
@@ -25,12 +28,22 @@
     return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    // Copying current categories order
+    [categoriesOrder_ release];
+    categoriesOrder_ = [[NSMutableArray alloc]  initWithArray:self.delegate.categoriesOrder
+                                                    copyItems:YES];
+}
+ 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
 
-    UIButton * backButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 50, 29)];
+    // Creating Back button
+    UIButton * backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 29)];
     [backButton setBackgroundImage:[UIImage imageNamed:@"back-button-up.png"]
                           forState:UIControlStateNormal];
     [backButton setTitle:@" Back" forState:UIControlStateNormal];
@@ -38,8 +51,10 @@
                    action:@selector(backAction)
          forControlEvents:UIControlEventTouchUpInside];
     [[backButton titleLabel] setFont:[UIFont boldSystemFontOfSize:12]];
-    UIBarButtonItem * back = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:backButton];
     self.navigationItem.leftBarButtonItem = back;
+    
+    // Setting action for Done button
     [self.navigationItem.rightBarButtonItem setAction:@selector(doneAction)];
     
     [self.tableView setEditing:YES];
@@ -63,15 +78,27 @@
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-    //todo: do whatever u want after row has been moved
+    // fromIndexPath and toIndexPath here have following format: [0, indexOfRow]
+    NSUInteger fromRowindex = [fromIndexPath indexAtPosition:1],
+               toRowIndex = [toIndexPath indexAtPosition:1];
+    
+    // Updating local copy of array with order indexes
+    NSString *stringToMove = [categoriesOrder_ objectAtIndex:fromRowindex];
+    [categoriesOrder_ removeObjectAtIndex:fromRowindex];
+    [categoriesOrder_ insertObject:stringToMove atIndex:toRowIndex];
 }
 
 - (void)doneAction {
-    //TODO: save changes
+    // Saving changes for last edit session
+    [self.delegate updateCategories:self.delegate.channelCategories
+                            byOrder:categoriesOrder_ 
+                        updateViews:YES];
     [self.delegate dismissEditCategory];
 }
 
 - (void)backAction {
+    // Undoing changes for last edit session
+    [[self.tableView undoManager] undoNestedGroup];
     [self.delegate dismissEditCategory];
 }
 
@@ -88,38 +115,33 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)theTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString * const kNorCellID = @"NorCellID";
     
     int row = indexPath.row;
     UITableViewCell * cell = nil;
-    cell = [tableView dequeueReusableCellWithIdentifier:kNorCellID];
+    cell = [theTableView dequeueReusableCellWithIdentifier:kNorCellID];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kNorCellID];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+                                      reuseIdentifier:kNorCellID];
         
-        //todo: fill row by category from Model
-        switch (row) {
-            case 0: cell.textLabel.text = @"first category";
-                break;
-            case 1: cell.textLabel.text = @"second category";
-                break;
-            case 2: cell.textLabel.text = @"third category";
-                break;
-        }
+        Category *category = [self.delegate.channelCategories objectAtIndex:row];
+        cell.textLabel.text = category.title;
     }
     
     return cell;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    //todo: return real category count
-    return 3;
+    return [self.delegate.channelCategories count];
 }
 
 - (void)dealloc {
+    [categoriesOrder_ release];
     [navigationItem release];
     [tableView release];
     [super dealloc];
 }
+
+
 @end

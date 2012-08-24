@@ -45,6 +45,7 @@ static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
 static NSString* const HOMESCREENSTATE_KEY = @"HSState";
 static NSString* const SUBSSTATE_KEY = @"SubsState";
+static NSString* const CHANNEL_CATEGORIES_ORDER = @"ChannelCategoriesOrder";
 
 enum {
     INSUFFICIENT_FUND_ALERT = 1,
@@ -62,11 +63,13 @@ static PiptureAppDelegate *instance;
 {
     [coverImage release];
     [albumForCover release];
+    
     [networkErrorAlerter_ release];
     [wifiConnection release];
     [welcomeScreen release];
     [homeViewController release];
     [busyView release];
+    
     [[GANTracker sharedTracker] stopTracker];
     [purchases release];
     [homeNavigationController release];
@@ -198,6 +201,8 @@ static PiptureAppDelegate *instance;
     [NSKeyedArchiver archiveRootObject:oldSavedArray toFile:storage];
 }
 
+#pragma mark -
+
 - (NSArray*)getInAppPurchases {
     NSString * storage = [[self documentsDirectory] stringByAppendingPathComponent:@"pipture_purchases"];
     return (NSArray*)[NSKeyedUnarchiver unarchiveObjectWithFile:storage];
@@ -208,6 +213,8 @@ static PiptureAppDelegate *instance;
     NSFileManager * manager = [NSFileManager defaultManager];
     [manager removeItemAtPath:storage error:nil];
 }
+
+#pragma mark -
 
 - (NSString*)loadUserUUID
 {    
@@ -221,6 +228,9 @@ static PiptureAppDelegate *instance;
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+#pragma mark -
+#pragma mark Subtitles
+
 - (void)putSubtitlesState:(BOOL)state {
     [[NSUserDefaults standardUserDefaults] setBool:state
                                             forKey:SUBSSTATE_KEY];
@@ -231,6 +241,9 @@ static PiptureAppDelegate *instance;
     BOOL state = [[NSUserDefaults standardUserDefaults] boolForKey:SUBSSTATE_KEY];
     return state;
 }
+
+#pragma mark -
+#pragma mark Homescreen state
 
 - (void)putHomescreenState:(int)state {
     [[NSUserDefaults standardUserDefaults] setInteger:state 
@@ -243,6 +256,23 @@ static PiptureAppDelegate *instance;
     return state;
 }
 
+#pragma mark -
+#pragma mark Channel categories order
+
+- (void)putChannelCategoriesOrder:(NSArray *)categories {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:categories forKey:CHANNEL_CATEGORIES_ORDER];
+//    [userDefaults removeObjectForKey:CHANNEL_CATEGORIES_ORDER];
+    [userDefaults synchronize];
+}
+
+- (NSArray *)getChannelCategoriesOrder {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:CHANNEL_CATEGORIES_ORDER];
+}
+
+#pragma mark -
+#pragma mark User name
+
 - (void)putUserName:(NSString*)name {
     [[NSUserDefaults standardUserDefaults] setObject:name 
                                               forKey:USERNAME_KEY];
@@ -252,6 +282,9 @@ static PiptureAppDelegate *instance;
 - (NSString*)getUserName {
     return [[NSUserDefaults standardUserDefaults] stringForKey:USERNAME_KEY];
 }
+
+#pragma mark -
+#pragma mark Time for album id
 
 - (void)putUpdateTimeForAlbumId:(NSInteger)albumId updateDate:(NSInteger)date {
     [[NSUserDefaults standardUserDefaults] setInteger:date 
@@ -264,6 +297,7 @@ static PiptureAppDelegate *instance;
             integerForKey:[NSString stringWithFormat:@"album%d", albumId]];
 }
 
+#pragma mark -
 
 -(void)unsuspendPlayer {
     if (self.window.rootViewController == videoViewController) {
