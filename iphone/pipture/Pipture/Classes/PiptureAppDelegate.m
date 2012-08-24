@@ -262,6 +262,7 @@ static PiptureAppDelegate *instance;
 - (void)putChannelCategoriesOrder:(NSArray *)categories {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setObject:categories forKey:CHANNEL_CATEGORIES_ORDER];
+//    [userDefaults removeObjectForKey:CHANNEL_CATEGORIES_ORDER];
     [userDefaults synchronize];
 }
 

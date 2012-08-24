@@ -31,6 +31,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    // Copying current categories order
     [categoriesOrder_ release];
     categoriesOrder_ = [[NSMutableArray alloc]  initWithArray:self.delegate.categoriesOrder
                                                     copyItems:YES];
@@ -41,7 +42,8 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
 
-    UIButton * backButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 50, 29)];
+    // Creating Back button
+    UIButton * backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 29)];
     [backButton setBackgroundImage:[UIImage imageNamed:@"back-button-up.png"]
                           forState:UIControlStateNormal];
     [backButton setTitle:@" Back" forState:UIControlStateNormal];
@@ -51,6 +53,8 @@
     [[backButton titleLabel] setFont:[UIFont boldSystemFontOfSize:12]];
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:backButton];
     self.navigationItem.leftBarButtonItem = back;
+    
+    // Setting action for Done button
     [self.navigationItem.rightBarButtonItem setAction:@selector(doneAction)];
     
     [self.tableView setEditing:YES];
@@ -78,19 +82,23 @@
     NSUInteger fromRowindex = [fromIndexPath indexAtPosition:1],
                toRowIndex = [toIndexPath indexAtPosition:1];
     
+    // Updating local copy of array with order indexes
     NSString *stringToMove = [categoriesOrder_ objectAtIndex:fromRowindex];
     [categoriesOrder_ removeObjectAtIndex:fromRowindex];
     [categoriesOrder_ insertObject:stringToMove atIndex:toRowIndex];
 }
 
 - (void)doneAction {
+    // Saving changes for last edit session
     [self.delegate updateCategories:self.delegate.channelCategories
-                            byOrder:categoriesOrder_];
+                            byOrder:categoriesOrder_ 
+                        updateViews:YES];
     [self.delegate dismissEditCategory];
 }
 
 - (void)backAction {
-    // TODO: revert back order of rows
+    // Undoing changes for last edit session
+    [[self.tableView undoManager] undoNestedGroup];
     [self.delegate dismissEditCategory];
 }
 

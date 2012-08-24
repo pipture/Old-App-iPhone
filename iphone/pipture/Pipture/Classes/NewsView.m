@@ -21,6 +21,7 @@
 @synthesize delegate;
 @synthesize scrollView;
 @synthesize currentTimeslot;
+@synthesize categoryViews;
 
 #pragma mark - View lifecycle
 
@@ -127,21 +128,39 @@
     [super dealloc];
 }
 
+#pragma mark -
+#pragma mark Manage views for categories
+
 -(void)placeCategories:(NSArray*)channelCategories {
+    categoryViews = [[NSMutableDictionary alloc] init];
+    
     for (Category* category in channelCategories){
-        [self placeViewController: [[CategoryViewController alloc]initWithNibName:@"CategoryViewController" bundle:nil]
-                         withData: category];
-        
+        CategoryViewController *vc = [[CategoryViewController alloc] initWithNibName:@"CategoryViewController" 
+                                                                              bundle:nil];
+        [self placeViewController:vc withData:category];
+        [categoryViews setValue:vc.view forKey:category.categoryId];
     }
     
     [self placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]
                      withData: nil];
 }
 
+- (void)updateCategoriesOrder:(NSArray *)categoriesOrder {
+    NSLog(@"1 - %@", self.scrollView.subviews);
+    
+    for (UIView *view in [categoryViews allValues]) {
+        [view removeFromSuperview];
+    }
+    for (NSString *index in categoriesOrder) {
+        [self.scrollView addSubview:[categoryViews objectForKey:index]];
+    }
+    NSLog(@"2 - %@", self.scrollView.subviews);
+}
+
 
 - (void)placeViewController:(UIViewController<CategoryViewSectionDelegate>*)controller
-                withData:(id)data
-{
+                   withData:(id)data {
+    
     [controller setHomeScreenDelegate:self.delegate];
     
     CGSize rect = scrollView.contentSize;
@@ -157,7 +176,6 @@
     scrollView.contentSize = rect;
     controller.view.frame = CGRectMake(0, pos,rect.width, controller.view.frame.size.height);
     [scrollView addSubview:controller.view];
-    
     
     [controller prepare:data];
 }

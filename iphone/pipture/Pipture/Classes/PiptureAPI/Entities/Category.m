@@ -36,6 +36,7 @@ static NSString* const JSON_PARAM_ITEMS = @"items";
 
 - (void)dealloc {
     [title release];
+    [categoryId release];
     [items release];
     [super dealloc];
 }
@@ -45,10 +46,10 @@ static NSString* const JSON_PARAM_ITEMS = @"items";
 {
     NSDictionary* channelData = [jsonData objectForKey:@"data"];
     
-    self.title      = [channelData strValueForKey:JSON_PARAM_TITLE       defaultIfEmpty:self.title];
-    self.columns    = [channelData intValueForKey:JSON_PARAM_COLUMNS     defaultIfEmpty:self.columns];
-    self.rows       = [channelData intValueForKey:JSON_PARAM_ROWS        defaultIfEmpty:self.rows];
-    self.categoryId = [channelData intValueForKey:JSON_PARAM_CATEGORY_ID defaultIfEmpty:self.categoryId];
+    self.title      = [[channelData strValueForKey:JSON_PARAM_TITLE       defaultIfEmpty:self.title] retain];
+    self.columns    = [channelData  intValueForKey:JSON_PARAM_COLUMNS     defaultIfEmpty:self.columns];
+    self.rows       = [channelData  intValueForKey:JSON_PARAM_ROWS        defaultIfEmpty:self.rows];
+    self.categoryId = [[channelData strValueForKey:JSON_PARAM_CATEGORY_ID defaultIfEmpty:self.categoryId] retain];
     
     NSArray* channelItems = [[PiptureModel parseItems:jsonData
                                    jsonArrayParamName:@"items"

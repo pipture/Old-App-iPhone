@@ -789,16 +789,18 @@
 //    NSLog(@"channelCategories received: %@", categories);
     
     PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
+    
+    // Revealing categories order from UserDefaults
     NSArray *storedCategoriesOrder = [appDelegate getChannelCategoriesOrder];
-//    NSLog(@"categories order: %@", categoriesOrder);
     
     [categoriesOrder release];
     
-    if (storedCategoriesOrder || [categories count] != [storedCategoriesOrder count]) {
+    if (storedCategoriesOrder && categories.count == storedCategoriesOrder.count) {
         [channelCategories release];
         
         [self updateCategories:categories 
-                       byOrder:storedCategoriesOrder];
+                       byOrder:storedCategoriesOrder
+                   updateViews:NO];
         categoriesOrder = [storedCategoriesOrder retain];
     } else {
         [categories retain];
@@ -807,7 +809,7 @@
         
         NSMutableArray *newCategoriesOrder = [[NSMutableArray alloc] init];
         for (Category *category in channelCategories) {
-            [newCategoriesOrder addObject:[NSString stringWithFormat:@"%@", category.categoryId]];
+            [newCategoriesOrder addObject:category.categoryId];
         }
         categoriesOrder = [[NSArray alloc] initWithArray:newCategoriesOrder];
         
@@ -815,20 +817,23 @@
     }
 //    NSLog(@"channelCategories stored: %@", channelCategories_);
     
-    [newsView placeCategories:channelCategories];
+    [self.newsView placeCategories:channelCategories];
 }
 
-- (void)updateCategories:(NSArray *)categories byOrder:(NSMutableArray *)newCategoriesOrder {
+
+- (void)updateCategories:(NSArray *)categories 
+                 byOrder:(NSMutableArray *)newCategoriesOrder
+             updateViews:(BOOL)updateViews {
     NSMutableArray *reorderedCategories = [[NSMutableArray alloc] init];
     NSMutableDictionary *categoriesById = [[NSMutableDictionary alloc] init];
     
     for (Category *category in categories) {
         [categoriesById setValue:category 
-                          forKey:[NSString stringWithFormat:@"%d", category.categoryId]];
+                          forKey:category.categoryId];
     }
         
     for (NSString *index in newCategoriesOrder) {
-        Category *category = [categoriesById objectForKey:[NSString stringWithFormat:@"%@", index]];
+        Category *category = [categoriesById objectForKey:index];
         [reorderedCategories addObject:category];
     }
     
@@ -838,7 +843,10 @@
     [categoriesOrder release];
     categoriesOrder = [[NSArray alloc] initWithArray:newCategoriesOrder];
     
-    // TODO: update order of views
+    if (updateViews) {
+        [[PiptureAppDelegate instance] putChannelCategoriesOrder:categoriesOrder];
+        [self.newsView updateCategoriesOrder:categoriesOrder];
+    }
 }
 
 - (void)getChannelCategories {
