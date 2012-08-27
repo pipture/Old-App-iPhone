@@ -19,6 +19,9 @@
 - (void)prepareWith:(id<HomeScreenDelegate>)parent;
 - (void)updateTimeSlotInfo:(Timeslot*)timeslot;
 - (void)allowShowBubble:(BOOL)allow;
+
+- (void)placeCategories:(NSArray*)channelCategories;
+- (void)updateCategoriesOrder:(NSArray*)categoriesOrder;
 - (void)placeViewController:(UIViewController<CategoryViewSectionDelegate>*)controller
                withData:(id)data;
 
@@ -32,4 +35,7 @@
 @property (retain, nonatomic) IBOutlet UIButton *coverButton;
 @property (retain, nonatomic) IBOutlet UIButton *detailButton;
 @property (retain, nonatomic) Timeslot*currentTimeslot;
+
+@property (readonly, nonatomic) NSMutableDictionary *categoryViews;
+
 @end

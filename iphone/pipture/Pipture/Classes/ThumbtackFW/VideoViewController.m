@@ -757,7 +757,12 @@
 -(void)playlistReceived:(NSArray*)playlistItems {
     NSLog(@"Playlist: %@", playlistItems);
     if (playlistItems && playlistItems.count > 0) {
-        self.playlist = playlistItems;
+        NSMutableArray* mergedPlaylist = [[NSMutableArray alloc] initWithObjects: [playlistItems objectAtIndex:0], nil];
+        for (PlaylistItem* categoryItem in self.playlist){
+            [mergedPlaylist addObject:categoryItem];
+        }
+        self.playlist = mergedPlaylist;
+        [mergedPlaylist release];
         
         [self initVideo];
     } else {

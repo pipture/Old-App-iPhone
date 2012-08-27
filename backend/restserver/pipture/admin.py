@@ -109,7 +109,7 @@ class ButtonableModelAdmin(admin.ModelAdmin):
         return patterns('', *(url(r'^(\d+)/(%s)/$' %  but[0], wrap(self.button_view_dispatcher)) for but in self.buttons)) + super(ButtonableModelAdmin, self).get_urls()
 
 class TimeSlotsAdmin(ButtonableModelAdmin):
-    form = AdminTimeSlotsForm
+#    form = AdminTimeSlotsForm
 
     def manager(self, request, obj):
         return obj.manager_call(request)

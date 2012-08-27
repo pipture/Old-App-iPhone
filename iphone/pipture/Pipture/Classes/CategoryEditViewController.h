@@ -11,13 +11,10 @@
 #import "PiptureModel.h"
 
 @interface CategoryEditViewController : UIViewController<UITableViewDataSource, 
-                                                         UITableViewDelegate,
-                                                         ChannelCategoriesReceiver> {
-    NSMutableArray *channelCategories_;
+                                                         UITableViewDelegate> {
     NSMutableArray *categoriesOrder_;
 }
-@property (readonly, nonatomic) NSArray *channelCategories;
-@property (assign, nonatomic) id<HomeScreenDelegate> delegate;
+@property (assign, nonatomic) id<HomeScreenDelegate, ChannelCategoriesReceiver> delegate;
 @property (retain, nonatomic) IBOutlet UITableView *tableView;
 @property (retain, nonatomic) IBOutlet UINavigationItem *navigationItem;
 

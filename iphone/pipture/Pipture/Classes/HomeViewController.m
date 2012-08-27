@@ -15,6 +15,7 @@
 #import "AlbumDetailInfoController.h"
 #import "SearchViewController.h"
 #import "CategoryEditViewController.h"
+#import "CategoryItemViewController.h"
 
 #define TIMESLOT_CHANGE_POLL_INTERVAL 60
 #define TIMESLOT_REGULAR_POLL_INTERVAL 900
@@ -35,6 +36,8 @@
 @synthesize storeButton;
 @synthesize progressView;
 @synthesize newsView;
+@synthesize channelCategories;
+@synthesize categoriesOrder;
 
 
 #pragma mark - View lifecycle
@@ -400,6 +403,7 @@
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
+            [self.navigationController setNavigationBarHidden:YES animated:NO];
             [scheduleModel updateTimeslots];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
@@ -506,6 +510,7 @@
 
 - (void)setHomeScreenMode:(enum HomeScreenMode)mode {
     //TODO: Part of 9151 refactor
+    PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
     
     if (mode == HomeScreenMode_Last)
         mode = lastHS_mode;
@@ -513,6 +518,11 @@
     if (mode != homeScreenMode) {
         if (homeScreenMode != HomeScreenMode_Unknown) {
             lastHS_mode = homeScreenMode;
+        }
+        
+        // Fixes bug #14263
+        if (homeScreenMode == HomeScreenMode_Schedule && mode == HomeScreenMode_Albums) {
+            lastHS_mode = HomeScreenMode_PlayingNow;
         }
         
         //flip to cover or back to PN
@@ -537,12 +547,12 @@
             }
         }
         
-        [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+        [[appDelegate model] cancelCurrentRequest];
         
         
         switch (mode) {
             case HomeScreenMode_Cover:
-                [[PiptureAppDelegate instance] 
+                [appDelegate 
                  showWelcomeScreenWithTitle:@"Welcome to Pipture."
                  message:@"Enjoy watching scheduled video programs\nshot specifically for smartphones users\nand send hilarious video messages\nperformed by great talents." 
                  storeKey:@"AppWelcomeShown" 
@@ -555,8 +565,8 @@
 
                 [self setFullScreenMode];
                 
-                [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
-                [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_CHANNEL];
+                [appDelegate tabbarVisible:YES slide:YES];
+                [appDelegate tabbarSelect:TABBARITEM_CHANNEL];
                 [flipButton setImage:[UIImage imageNamed:@"button-flip.png"] 
                             forState:UIControlStateNormal];
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"]
@@ -567,22 +577,22 @@
 
                 [scheduleModel updateTimeslots];
                 
-                [[PiptureAppDelegate instance] putHomescreenState:mode];
+                [appDelegate putHomescreenState:mode];
                 
                 break;
             case HomeScreenMode_PlayingNow:
                 [tabbarContainer addSubview:scheduleView];
                 if (flipAction) [UIView commitAnimations];
-                [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+                [[appDelegate model] cancelCurrentRequest];
                 [scheduleModel updateTimeslots];
 
                 [self setFullScreenMode];
                 homeScreenMode = mode;
-                [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
+                [appDelegate tabbarVisible:YES slide:YES];
                 
                 [scheduleView setTimeslotsMode:TimeslotsMode_PlayingNow];
 
-                [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_CHANNEL];
+                [appDelegate tabbarSelect:TABBARITEM_CHANNEL];
                 [flipButton setImage:[UIImage imageNamed:@"button-flip-back.png"] 
                             forState:UIControlStateNormal];
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] 
@@ -593,7 +603,7 @@
 
                 [scheduleView scrollToPlayingNow];
                 
-                [[PiptureAppDelegate instance] putHomescreenState:mode];
+                [appDelegate putHomescreenState:mode];
                 
                 break;
             case HomeScreenMode_Schedule:
@@ -606,7 +616,7 @@
                 [scheduleButton setTitle:@"Done" 
                                 forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
-                [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
+                [appDelegate tabbarVisible:NO slide:YES];
                 
                 homeScreenMode = mode;
                 
@@ -623,7 +633,7 @@
                 
                 break;
             case HomeScreenMode_Albums:
-                [[PiptureAppDelegate instance] 
+                [appDelegate 
                  showWelcomeScreenWithTitle:@"About Pipture Library"                                                 
                  message:@"Add Views to your Library Card and gain\naccess to the entire collection of videos that\nhave already been broadcast on Pipture.\n\nEach time you watch or send a video, a\n View will be deducted from your card. You\nget unlimited views if you purchase Albums.\n\nTo add 100 Views, which is at $0.99, or only\n $0.0099 per view, click the Store button at the top left in the Library. Enjoy!" 
                  storeKey:@"LibraryWelcomeShown" 
@@ -638,10 +648,10 @@
                 [self setFullScreenMode];
                 [self setNavBarMode];
                 
-                [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_LIBRARY];
-                [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
+                [appDelegate tabbarSelect:TABBARITEM_LIBRARY];
+                [appDelegate tabbarVisible:YES slide:YES];
                 
-                [[PiptureAppDelegate instance] putHomescreenState:mode];
+                [appDelegate putHomescreenState:mode];
                 break;
             default: break;
         }        
@@ -667,16 +677,37 @@
 
                                                      
 - (void)doPower {
+    [self doUpdate];
     Timeslot * slot = [scheduleModel currentTimeslot];
+    NSNumber* timeslotId = nil;
+    if (slot !=nil){
+        timeslotId = [NSNumber numberWithInt:slot.timeslotId];
+    }
     
-    if (slot) {
-        [scheduleView scrollToCurPage];
-        [[PiptureAppDelegate instance] showVideo:nil
-                                          noNavi:NO 
-                                      timeslotId:[NSNumber numberWithInt:slot.timeslotId]];
+    [scheduleView scrollToCurPage];
+    NSArray *playList = [self getChannelCategoriesPlaylist];
+    [[PiptureAppDelegate instance] showVideo:playList
+                                      noNavi:NO
+                                  timeslotId:timeslotId];
 /*        reqTimeslotId = slot.timeslotId;
         [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];*/
+}
+
+-(NSArray*)getChannelCategoriesPlaylist{
+    NSMutableArray* playlist = [[NSMutableArray alloc] init];
+    for(Category* category in self.channelCategories){
+        for(CategoryItem* categoryItem in category.items){
+            [playlist addObject: [CategoryItemViewController getCategoryItemVideo:categoryItem]];
+        }
     }
+    
+    NSArray* result=nil;
+    if (playlist.count>0){
+        result = [NSArray arrayWithArray:playlist];
+    }
+    [playlist release];
+    
+    return result;
 }
 
 - (BOOL)redrawDiscarding {
@@ -685,10 +716,9 @@
 
 - (void)showEditCategory {
     PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
-    CategoryEditViewController *vc = appDelegate.categoriesController;
-    if (!vc.delegate) {
-        vc.delegate = (id<HomeScreenDelegate>)appDelegate.homeViewController;
-    }
+    CategoryEditViewController *vc = [[CategoryEditViewController alloc] initWithNibName:@"CategoryEditViewController" 
+                                                                                  bundle:nil];
+    vc.delegate = self;
     [appDelegate tabbarVisible:NO slide:YES];
     [self.navigationController presentModalViewController:vc animated:YES];
 }
@@ -778,6 +808,80 @@
         case WELCOMESCREEN_LIBRARY:
             break;
     }
+}
+
+#pragma mark -
+#pragma mark ChannelCategoriesReceiver 
+
+- (void)channelCategoriesReceived:(NSMutableArray*)categories {
+//    TODO: remove logging
+//    NSLog(@"channelCategories received: %@", categories);
+    
+    PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
+    
+    // Revealing categories order from UserDefaults
+    NSArray *storedCategoriesOrder = [appDelegate getChannelCategoriesOrder];
+    
+    [categoriesOrder release];
+    
+    if (storedCategoriesOrder && categories.count == storedCategoriesOrder.count) {
+        [channelCategories release];
+        
+        [self updateCategories:categories 
+                       byOrder:storedCategoriesOrder
+                   updateViews:NO];
+        categoriesOrder = [storedCategoriesOrder retain];
+    } else {
+        [categories retain];
+        [channelCategories release];
+        channelCategories = categories;
+        
+        NSMutableArray *newCategoriesOrder = [[NSMutableArray alloc] init];
+        for (Category *category in channelCategories) {
+            [newCategoriesOrder addObject:category.categoryId];
+        }
+        categoriesOrder = [[NSArray alloc] initWithArray:newCategoriesOrder];
+        
+        [appDelegate putChannelCategoriesOrder:categoriesOrder];
+    }
+//    NSLog(@"channelCategories stored: %@", channelCategories_);
+    
+    [self.newsView placeCategories:channelCategories];
+}
+
+
+- (void)updateCategories:(NSArray *)categories 
+                 byOrder:(NSMutableArray *)newCategoriesOrder
+             updateViews:(BOOL)updateViews {
+    NSMutableArray *reorderedCategories = [[NSMutableArray alloc] init];
+    NSMutableDictionary *categoriesById = [[NSMutableDictionary alloc] init];
+    
+    for (Category *category in categories) {
+        [categoriesById setValue:category 
+                          forKey:category.categoryId];
+    }
+        
+    for (NSString *index in newCategoriesOrder) {
+        Category *category = [categoriesById objectForKey:index];
+        [reorderedCategories addObject:category];
+    }
+    
+    channelCategories = reorderedCategories;
+    [categoriesById release];
+    
+    [categoriesOrder release];
+    categoriesOrder = [[NSArray alloc] initWithArray:newCategoriesOrder];
+    
+    if (updateViews) {
+        [[PiptureAppDelegate instance] putChannelCategoriesOrder:categoriesOrder];
+        [self.newsView updateCategoriesOrder:categoriesOrder];
+    }
+}
+
+- (void)getChannelCategories {
+    PiptureModel *piptureModel = [[PiptureAppDelegate instance] model];
+    [piptureModel cancelCurrentRequest];
+    [piptureModel getChannelCategoriesForReciever:self];
 }
 
 @end

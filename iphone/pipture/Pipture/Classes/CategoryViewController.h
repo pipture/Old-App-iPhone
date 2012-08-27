@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "HomeScreenDelegate.h"
+#import "PiptureModel.h"
 
 @interface CategoryViewController : UIViewController<CategoryViewSectionDelegate>
-
 @property (assign, nonatomic) id<HomeScreenDelegate> delegate;
 @property (retain, nonatomic) IBOutlet UIView *itemContainer;
 @property (retain, nonatomic) IBOutlet UILabel *categoryTitle;

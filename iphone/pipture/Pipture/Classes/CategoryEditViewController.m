@@ -7,16 +7,15 @@
 //
 
 #import "CategoryEditViewController.h"
+#import "Category.h"
 #import "PiptureAppDelegate.h"
 
 
-@interface CategoryEditViewController (PrivateEditController)
-- (void)updateCategories:(NSArray *)categories byOrder:(NSArray *)categoriesOrder;
+@interface CategoryEditViewController ()
 @end
 
 @implementation CategoryEditViewController
 
-@synthesize channelCategories = channelCategories_;
 @synthesize navigationItem;
 @synthesize delegate;
 @synthesize tableView;
@@ -29,12 +28,22 @@
     return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    // Copying current categories order
+    [categoriesOrder_ release];
+    categoriesOrder_ = [[NSMutableArray alloc]  initWithArray:self.delegate.categoriesOrder
+                                                    copyItems:YES];
+}
+ 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
 
-    UIButton * backButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 50, 29)];
+    // Creating Back button
+    UIButton * backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 29)];
     [backButton setBackgroundImage:[UIImage imageNamed:@"back-button-up.png"]
                           forState:UIControlStateNormal];
     [backButton setTitle:@" Back" forState:UIControlStateNormal];
@@ -44,6 +53,8 @@
     [[backButton titleLabel] setFont:[UIFont boldSystemFontOfSize:12]];
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:backButton];
     self.navigationItem.leftBarButtonItem = back;
+    
+    // Setting action for Done button
     [self.navigationItem.rightBarButtonItem setAction:@selector(doneAction)];
     
     [self.tableView setEditing:YES];
@@ -71,21 +82,23 @@
     NSUInteger fromRowindex = [fromIndexPath indexAtPosition:1],
                toRowIndex = [toIndexPath indexAtPosition:1];
     
+    // Updating local copy of array with order indexes
     NSString *stringToMove = [categoriesOrder_ objectAtIndex:fromRowindex];
     [categoriesOrder_ removeObjectAtIndex:fromRowindex];
     [categoriesOrder_ insertObject:stringToMove atIndex:toRowIndex];
 }
 
 - (void)doneAction {
-    NSLog(@"%@", channelCategories_);
-    [self updateCategories:channelCategories_
-                   byOrder:categoriesOrder_];
-//    [self.delegate reorderCategoriesViews];
+    // Saving changes for last edit session
+    [self.delegate updateCategories:self.delegate.channelCategories
+                            byOrder:categoriesOrder_ 
+                        updateViews:YES];
     [self.delegate dismissEditCategory];
-    NSLog(@"%@", channelCategories_);
 }
 
 - (void)backAction {
+    // Undoing changes for last edit session
+    [[self.tableView undoManager] undoNestedGroup];
     [self.delegate dismissEditCategory];
 }
 
@@ -112,7 +125,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
                                       reuseIdentifier:kNorCellID];
         
-        Category *category = [channelCategories_ objectAtIndex:row];
+        Category *category = [self.delegate.channelCategories objectAtIndex:row];
         cell.textLabel.text = category.title;
     }
     
@@ -120,66 +133,15 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [channelCategories_ count];
+    return [self.delegate.channelCategories count];
 }
 
 - (void)dealloc {
-    [channelCategories_ release];
     [categoriesOrder_ release];
     [navigationItem release];
     [tableView release];
     [super dealloc];
 }
 
-- (void)updateCategories:(NSArray *)categories byOrder:(NSArray *)categoriesOrder {
-    NSMutableArray *reorderedCategories = [[NSMutableArray alloc] init];
-    NSMutableDictionary *categoriesById = [[NSMutableDictionary alloc] init];
-    
-    for (Category *category in categories) {
-        [categoriesById setValue:category 
-                          forKey:[NSString stringWithFormat:@"%d", category.categoryId]];
-    }
-        
-    for (NSString *index in categoriesOrder) {
-        Category *category = [categoriesById objectForKey:[NSString stringWithFormat:@"%@", index]];
-        [reorderedCategories addObject:category];
-    }
-    
-    channelCategories_ = reorderedCategories;
-    [categoriesById release];
-}
-
-#pragma mark -
-#pragma mark ChannelCategoriesReceiver 
-
-- (void)channelCategoriesReceived:(NSMutableArray*)categories {
-//    TODO: remove logging
-//    NSLog(@"channelCategories received: %@", categories);
-    
-    NSArray *categoriesOrder = [[PiptureAppDelegate instance] getChannelCategoriesOrder];
-//    NSLog(@"categories order: %@", categoriesOrder);
-    
-    [categoriesOrder_ release];
-    
-    if (categoriesOrder || [categories count] != [categoriesOrder count]) {
-        [channelCategories_ release];
-        
-        [self updateCategories:categories 
-                       byOrder:categoriesOrder];
-        categoriesOrder_ = [[NSMutableArray alloc] initWithArray:categoriesOrder];
-    } else {
-        [categories retain];
-        [channelCategories_ release];
-        channelCategories_ = categories;
-        
-        categoriesOrder_ = [[NSMutableArray alloc] init];
-        for (Category *category in channelCategories_) {
-            [categoriesOrder_ addObject:[NSString stringWithFormat:@"%@", category.categoryId]];
-        }
-        
-        [[PiptureAppDelegate instance] putChannelCategoriesOrder:categoriesOrder_];
-    }
-//    NSLog(@"channelCategories stored: %@", channelCategories_);
-}
 
 @end

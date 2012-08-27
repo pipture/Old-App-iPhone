@@ -18,7 +18,6 @@
 #import "MailComposerNavigationController.h"
 #import "PiptureStoreModel.h"
 #import "PiptureStoreController.h"
-#import "CategoryEditViewController.h"
 
 #define PLACEHOLDER1 @"default.png"
 
@@ -69,7 +68,6 @@
 @property (readonly, nonatomic) NSInteger tabViewBaseHeight;
 @property (readonly, nonatomic) NetworkErrorAlerter* networkErrorAlerter;
 @property (readonly, nonatomic) Album *albumForCover;
-@property (readonly, nonatomic) CategoryEditViewController *categoriesController;
 
 +(PiptureAppDelegate*) instance;
 

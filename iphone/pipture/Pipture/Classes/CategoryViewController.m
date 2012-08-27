@@ -64,27 +64,49 @@ static NSInteger const MEDIUM_THUMBS = 3;
 - (void)prepare:(Category*) category {
     self.categoryTitle.text = [category title];
     
+    UIViewController<CategoryItem>* sampleItem = [self getCategoryItem:category.columns];
+    if (!sampleItem) return;
+
+    NSInteger contentHeight = sampleItem.view.frame.size.height * category.rows;
+    UIView *container = [self.view viewWithTag:1];
+    NSInteger deltaHeight = container.frame.size.height - contentHeight;
+    
+    container.frame = CGRectMake(container.frame.origin.x,
+                                 container.frame.origin.y,
+                                 container.frame.size.width,
+                                 container.frame.size.height - deltaHeight);
+    
+    self.view.frame = CGRectMake(self.view.frame.origin.x,
+                                 self.view.frame.origin.y,
+                                 self.view.frame.size.width,
+                                 self.view.frame.size.height - deltaHeight);
+    
     int i = 0;
     for (int y = 0; y < category.rows; y++) {
         for (int x = 0; x < category.columns; x++) {
-            UIViewController<CategoryItem> *item = nil;
-            switch (category.columns) {
-                case SMALL_THUMBS:
-                    item = [[CategoryItemSViewController alloc] initWithNibName:@"CategoryItemSView" bundle:nil];
-                    break;
-                case MEDIUM_THUMBS:
-                    item = [[CategoryItemMViewController alloc] initWithNibName:@"CategoryItemMView" bundle:nil];
-                    break;
-                default:
-                    NSLog(@"Unexpected channelCategory parameter COLUMNS");
-                    return;
-                    
-            }
+            UIViewController<CategoryItem> *item = [self getCategoryItem:category.columns];
+            
             [item setCategoryItem:[category.items objectAtIndex:i++]];
-            [item prepareWithX:x withY:y];
+            [item prepareWithX:x withY:y withOffset:(int)[self.view viewWithTag:1].frame.origin.y];
             [self.view addSubview: item.view];
         }
     }
+}
+
+-(UIViewController<CategoryItem> *)getCategoryItem: (NSInteger) thumbsType{
+    UIViewController<CategoryItem> *item = nil;
+    switch (thumbsType) {
+        case SMALL_THUMBS:
+            item = [[CategoryItemSViewController alloc] initWithNibName:@"CategoryItemSView" bundle:nil];
+            break;
+        case MEDIUM_THUMBS:
+            item = [[CategoryItemMViewController alloc] initWithNibName:@"CategoryItemMView" bundle:nil];
+            break;
+        default:
+            NSLog(@"Unexpected channelCategory parameter COLUMNS");
+            item = nil;
+    }
+    return item;
 }
 
 @end

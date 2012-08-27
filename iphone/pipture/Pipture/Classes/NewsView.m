@@ -21,6 +21,7 @@
 @synthesize delegate;
 @synthesize scrollView;
 @synthesize currentTimeslot;
+@synthesize categoryViews;
 
 #pragma mark - View lifecycle
 
@@ -39,7 +40,7 @@
     if (visible) panel.hidden = NO;
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.3];
-    panel.alpha  = visible?1:0;
+    panel.alpha = visible ? 1: 0;
     
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
@@ -110,11 +111,11 @@
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     scrollView.pagingEnabled = NO;
-    //TODO: move this stuff to HomeViewController
-    [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
-    [[[PiptureAppDelegate instance] model] 
-     getChannelCategoriesForReciever: [PiptureAppDelegate instance].categoriesController];
     
+    // TODO: move to proper place (or keep it here if this place is proper)
+    [self.delegate getChannelCategories];
+    [self placeViewController: [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil]
+                     withData: nil];
 }
 
 - (void)dealloc {
@@ -124,29 +125,49 @@
     [detailButton release];
     
     [scrollView release];
+    [categoryViews release];
     [super dealloc];
 }
 
--(void)channelCategoriesReceived:(NSArray*)channelCategories {
-    [self placeViewController: [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil]
-                  withData: nil
-     ];
+#pragma mark -
+#pragma mark Manage views for categories
+
+-(void)placeCategories:(NSArray*)channelCategories {
+    categoryViews = [[NSMutableDictionary alloc] init];
+    
     for (Category* category in channelCategories){
-        [self placeViewController: [[CategoryViewController alloc]initWithNibName:@"CategoryViewController" bundle:nil]
-                      withData: category
-         ];
-        
+        if (category.display == YES){
+            CategoryViewController *vc = [[CategoryViewController alloc] initWithNibName:@"CategoryViewController"
+                                                                              bundle:nil];
+            [self placeViewController:vc withData:category];
+            [categoryViews setValue:vc.view forKey:category.categoryId];
+        }
     }
     
     [self placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]
-                  withData: nil
-     ];
+                     withData: nil];
+}
+
+- (void)updateCategoriesOrder:(NSArray *)categoriesOrder {
+    // First view is view with hot news cover
+    UIView *firstView = [self.scrollView.subviews objectAtIndex:0];
+    NSInteger originY = firstView.frame.origin.y + firstView.frame.size.height;
+    
+    for (NSString *index in categoriesOrder) {
+        UIView *categoryView = [categoryViews objectForKey:index];
+        CGRect rect = categoryView.frame;
+        categoryView.frame = CGRectMake(rect.origin.x,
+                                        originY,
+                                        rect.size.width, 
+                                        rect.size.height);
+        originY += rect.size.height;
+    }
 }
 
 
 - (void)placeViewController:(UIViewController<CategoryViewSectionDelegate>*)controller
-                withData:(id)data
-{
+                   withData:(id)data {
+    
     [controller setHomeScreenDelegate:self.delegate];
     
     CGSize rect = scrollView.contentSize;
@@ -154,17 +175,17 @@
     int pos = 0;
     if (scrollView.subviews.count == 0) {
         pos = 0;
-        rect.height = controller.view.frame.size.height;
+        rect.height = 0;
     } else {
         pos = rect.height;
-        rect.height += controller.view.frame.size.height;
     }
-    scrollView.contentSize = rect;
     controller.view.frame = CGRectMake(0, pos,rect.width, controller.view.frame.size.height);
-    [scrollView addSubview:controller.view];
-    
-    
     [controller prepare:data];
+    
+    rect.height += controller.view.frame.size.height;
+    scrollView.contentSize = rect;
+    
+    [scrollView addSubview:controller.view];
 }
 
 @end

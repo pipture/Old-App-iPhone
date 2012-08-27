@@ -40,7 +40,6 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 @synthesize userPurchasedViewsSinceAppStart;
 @synthesize userPurchasedAlbumSinceAppStart;
 @synthesize albumForCover;
-@synthesize categoriesController;
 
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
@@ -70,7 +69,6 @@ static PiptureAppDelegate *instance;
     [welcomeScreen release];
     [homeViewController release];
     [busyView release];
-    [categoriesController release];
     
     [[GANTracker sharedTracker] stopTracker];
     [purchases release];
@@ -102,9 +100,6 @@ static PiptureAppDelegate *instance;
         model_ = [[PiptureModel alloc] init];
         busyView = [[BusyViewController alloc] initWithNibName:@"PurchaseBusyView"
                                                         bundle:nil];
-        categoriesController = [[CategoryEditViewController alloc] initWithNibName:@"CategoryEditViewController" 
-                                                                            bundle:nil];
-        
         purchases = [[InAppPurchaseManager alloc] init];
         networkErrorAlerter_ = [[NetworkErrorAlerter alloc] init];
         [purchases loadStore];        
@@ -133,7 +128,6 @@ static PiptureAppDelegate *instance;
             homeViewController = visible;
         }
     }
-    NSLog(@"homeViewController %@", homeViewController);
     return (HomeViewController*)homeViewController;
 }
 
@@ -268,6 +262,7 @@ static PiptureAppDelegate *instance;
 - (void)putChannelCategoriesOrder:(NSArray *)categories {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setObject:categories forKey:CHANNEL_CATEGORIES_ORDER];
+//    [userDefaults removeObjectForKey:CHANNEL_CATEGORIES_ORDER];
     [userDefaults synchronize];
 }
 
@@ -604,7 +599,7 @@ static PiptureAppDelegate *instance;
     [self.window setRootViewController:videoViewController];
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
     
-    if (playlist.count == 0) {
+    if (timeslotId != nil) {
         [model_ cancelCurrentRequest];
         [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:timeslotId 
                                                              receiver:videoViewController];
@@ -732,8 +727,8 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (void)powerButtonEnable:(BOOL)enable {
-    powerButton.enabled = enable;
-    refreshTapZone.hidden = enable;
+//    powerButton.enabled = enable;
+//    refreshTapZone.hidden = enable;
 }
 
 //The event handling method
@@ -790,7 +785,9 @@ NSInteger networkActivityIndecatorCount;
                 }
                 break;
                 
-            case TABBARITEM_LIBRARY: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
+            case TABBARITEM_LIBRARY: 
+                [vc setHomeScreenMode:HomeScreenMode_Albums];
+                break;
         }
         
         [self tabbarSelect:[sender tag]];

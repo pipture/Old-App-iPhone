@@ -16,7 +16,6 @@
 @synthesize categoryItem;
 
 static NSInteger const MARGIN_RIGHT = 15;
-static NSInteger const OFFSET_FROM_TITLE = 88;
 
 static NSString* const JSON_PARAM_TYPE_EPISODE = @"episode";
 static NSString* const JSON_PARAM_TYPE_ALBUM = @"album";
@@ -25,8 +24,15 @@ static NSString* const JSON_PARAM_TRAILER_ID = @"TrailerId";
 static NSString* const JSON_PARAM_TITLE = @"Title";
 
 - (IBAction)playChannelCategoryVideo:(id)sender {
+    [[PiptureAppDelegate instance] showVideo:[NSArray arrayWithObject:[[self class] getCategoryItemVideo:categoryItem]]
+                                      noNavi:YES
+                                  timeslotId:nil];
+    
+}
+
++(PlaylistItem*)getCategoryItemVideo:(CategoryItem*)categoryItem{
     NSMutableDictionary *playlistItemData = [NSMutableDictionary new];
-    [playlistItemData setObject:categoryItem.title forKey:JSON_PARAM_TITLE];	
+    [playlistItemData setObject:categoryItem.title forKey:JSON_PARAM_TITLE];
     NSString *type = nil;
     if ([JSON_PARAM_TYPE_EPISODE isEqualToString:categoryItem.type]){
         [playlistItemData setObject:[NSString stringWithFormat:@"%d", categoryItem.id] forKey:JSON_PARAM_EPISODE_ID];
@@ -37,18 +43,15 @@ static NSString* const JSON_PARAM_TITLE = @"Title";
         type = PLAYLIST_ITEM_TYPE_TRAILER;
     }
     PlaylistItem *playlistItem = [PlaylistItemFactory createItem:playlistItemData ofType:type];
-    [[PiptureAppDelegate instance] showVideo:[NSArray arrayWithObject:playlistItem]
-                                      noNavi:YES
-                                  timeslotId:nil];
-    
-}
+    return playlistItem;
+};
 
--(void)prepareWithX:(int)x withY:(int)y {
+-(void)prepareWithX:(int)x withY:(int)y withOffset:(int)offset {
     int itemWidth  = (int)self.view.frame.size.width;
     int itemHeight = (int)self.view.frame.size.height;
     
     self.view.frame = CGRectMake(MARGIN_RIGHT + (x * itemWidth),
-                                 OFFSET_FROM_TITLE + (y * itemHeight),
+                                 offset + (y * itemHeight),
                                  itemWidth,
                                  itemHeight);
     
