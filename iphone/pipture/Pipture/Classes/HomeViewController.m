@@ -510,6 +510,7 @@
 
 - (void)setHomeScreenMode:(enum HomeScreenMode)mode {
     //TODO: Part of 9151 refactor
+    PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
     
     if (mode == HomeScreenMode_Last)
         mode = lastHS_mode;
@@ -517,6 +518,11 @@
     if (mode != homeScreenMode) {
         if (homeScreenMode != HomeScreenMode_Unknown) {
             lastHS_mode = homeScreenMode;
+        }
+        
+        // Fixes bug #14263
+        if (homeScreenMode == HomeScreenMode_Schedule && mode == HomeScreenMode_Albums) {
+            lastHS_mode = HomeScreenMode_PlayingNow;
         }
         
         //flip to cover or back to PN
@@ -541,12 +547,12 @@
             }
         }
         
-        [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+        [[appDelegate model] cancelCurrentRequest];
         
         
         switch (mode) {
             case HomeScreenMode_Cover:
-                [[PiptureAppDelegate instance] 
+                [appDelegate 
                  showWelcomeScreenWithTitle:@"Welcome to Pipture."
                  message:@"Enjoy watching scheduled video programs\nshot specifically for smartphones users\nand send hilarious video messages\nperformed by great talents." 
                  storeKey:@"AppWelcomeShown" 
@@ -559,8 +565,8 @@
 
                 [self setFullScreenMode];
                 
-                [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
-                [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_CHANNEL];
+                [appDelegate tabbarVisible:YES slide:YES];
+                [appDelegate tabbarSelect:TABBARITEM_CHANNEL];
                 [flipButton setImage:[UIImage imageNamed:@"button-flip.png"] 
                             forState:UIControlStateNormal];
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"]
@@ -571,22 +577,22 @@
 
                 [scheduleModel updateTimeslots];
                 
-                [[PiptureAppDelegate instance] putHomescreenState:mode];
+                [appDelegate putHomescreenState:mode];
                 
                 break;
             case HomeScreenMode_PlayingNow:
                 [tabbarContainer addSubview:scheduleView];
                 if (flipAction) [UIView commitAnimations];
-                [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+                [[appDelegate model] cancelCurrentRequest];
                 [scheduleModel updateTimeslots];
 
                 [self setFullScreenMode];
                 homeScreenMode = mode;
-                [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
+                [appDelegate tabbarVisible:YES slide:YES];
                 
                 [scheduleView setTimeslotsMode:TimeslotsMode_PlayingNow];
 
-                [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_CHANNEL];
+                [appDelegate tabbarSelect:TABBARITEM_CHANNEL];
                 [flipButton setImage:[UIImage imageNamed:@"button-flip-back.png"] 
                             forState:UIControlStateNormal];
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] 
@@ -597,7 +603,7 @@
 
                 [scheduleView scrollToPlayingNow];
                 
-                [[PiptureAppDelegate instance] putHomescreenState:mode];
+                [appDelegate putHomescreenState:mode];
                 
                 break;
             case HomeScreenMode_Schedule:
@@ -610,7 +616,7 @@
                 [scheduleButton setTitle:@"Done" 
                                 forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
-                [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
+                [appDelegate tabbarVisible:NO slide:YES];
                 
                 homeScreenMode = mode;
                 
@@ -627,7 +633,7 @@
                 
                 break;
             case HomeScreenMode_Albums:
-                [[PiptureAppDelegate instance] 
+                [appDelegate 
                  showWelcomeScreenWithTitle:@"About Pipture Library"                                                 
                  message:@"Add Views to your Library Card and gain\naccess to the entire collection of videos that\nhave already been broadcast on Pipture.\n\nEach time you watch or send a video, a\n View will be deducted from your card. You\nget unlimited views if you purchase Albums.\n\nTo add 100 Views, which is at $0.99, or only\n $0.0099 per view, click the Store button at the top left in the Library. Enjoy!" 
                  storeKey:@"LibraryWelcomeShown" 
@@ -642,10 +648,10 @@
                 [self setFullScreenMode];
                 [self setNavBarMode];
                 
-                [[PiptureAppDelegate instance] tabbarSelect:TABBARITEM_LIBRARY];
-                [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
+                [appDelegate tabbarSelect:TABBARITEM_LIBRARY];
+                [appDelegate tabbarVisible:YES slide:YES];
                 
-                [[PiptureAppDelegate instance] putHomescreenState:mode];
+                [appDelegate putHomescreenState:mode];
                 break;
             default: break;
         }        
