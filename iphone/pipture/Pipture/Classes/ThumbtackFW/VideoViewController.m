@@ -256,6 +256,8 @@
 
 
 - (BOOL)playNextItem {
+    [subtitlesLabel setTextWithVerticalResize:@""];
+    
     if (nextPlayerItem != nil) {
         [player pause];
         

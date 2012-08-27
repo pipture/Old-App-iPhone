@@ -95,7 +95,7 @@
             break;            
     }
     flipButton.hidden = !visible;
-    
+    flipEnhancer.hidden = !visible;
 }
 
 -(void) defineBarsVisibility
