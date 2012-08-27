@@ -19,13 +19,15 @@ class CategoryView(JSONResponsibleMixin, View):
 
     def get_context_data(self):
         items = tuple(self.get_item_info(item)
-                      for item in self.get_items_queryset()[:self.limit])
+                      for item in self.get_items_queryset()[:self.limit]) \
+                if hasattr(self, 'get_items_queryset') else tuple()
         return dict(items=items,
                     data={
                         'id': self.category_id,
                         'title': self.title,
-                        'rows': self.rows,
-                        'columns': self.columns,
+                        'display': getattr(self, 'display', 1),
+                        'rows': getattr(self, 'rows', 0),
+                        'columns': getattr(self, 'columns', 0),
                     })
 
 
@@ -52,6 +54,12 @@ class SeriesMixin(object):
                     id=first_album.TrailerId.TrailerId,
                     Thumbnail=first_album.Thumbnail.get_url(),
                     Title=series.Title)
+
+
+class ScheduledSeries(CategoryView):
+    category_id = 0
+    title = 'Scheduled Series'
+    display = 0
 
 
 class MostPopularVideos(CategoryView, VideosMixin):
