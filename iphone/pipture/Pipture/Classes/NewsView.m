@@ -136,10 +136,12 @@
     categoryViews = [[NSMutableDictionary alloc] init];
     
     for (Category* category in channelCategories){
-        CategoryViewController *vc = [[CategoryViewController alloc] initWithNibName:@"CategoryViewController" 
+        if (category.display == YES){
+            CategoryViewController *vc = [[CategoryViewController alloc] initWithNibName:@"CategoryViewController"
                                                                               bundle:nil];
-        [self placeViewController:vc withData:category];
-        [categoryViews setValue:vc.view forKey:category.categoryId];
+            [self placeViewController:vc withData:category];
+            [categoryViews setValue:vc.view forKey:category.categoryId];
+        }
     }
     
     [self placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]
