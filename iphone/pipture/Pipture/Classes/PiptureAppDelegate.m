@@ -785,7 +785,9 @@ NSInteger networkActivityIndecatorCount;
                 }
                 break;
                 
-            case TABBARITEM_LIBRARY: [vc setHomeScreenMode:HomeScreenMode_Albums]; break;
+            case TABBARITEM_LIBRARY: 
+                [vc setHomeScreenMode:HomeScreenMode_Albums];
+                break;
         }
         
         [self tabbarSelect:[sender tag]];
