@@ -18,6 +18,7 @@
 }
 
 - (void) updateTimeslots;
+- (void) updateTimeslotsWithCallback:(DataRequestCallback)callback;
 - (BOOL) pageInRange:(NSInteger)page;
 - (NSInteger) timeslotsCount;
 - (NSDate*) nextTimeslotChange;
