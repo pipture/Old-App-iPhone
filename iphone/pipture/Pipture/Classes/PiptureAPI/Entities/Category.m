@@ -52,7 +52,7 @@ static NSString* const JSON_PARAM_ITEMS = @"items";
     self.columns    = [channelData  intValueForKey:JSON_PARAM_COLUMNS     defaultIfEmpty:self.columns];
     self.rows       = [channelData  intValueForKey:JSON_PARAM_ROWS        defaultIfEmpty:self.rows];
     self.categoryId = [[channelData strValueForKey:JSON_PARAM_CATEGORY_ID defaultIfEmpty:self.categoryId] retain];
-    self.display    = [channelData intValueForKey:JSON_PARAM_DISPLAY     defaultIfEmpty:self.display] == 0 ? YES : NO;
+    self.display    = [channelData intValueForKey:JSON_PARAM_DISPLAY     defaultIfEmpty:self.display] == 1 ? YES : NO;
     
     NSArray* channelItems = [[PiptureModel parseItems:jsonData
                                    jsonArrayParamName:@"items"

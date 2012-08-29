@@ -53,8 +53,8 @@ PiptureModel*target;
     
 
 -(void)testGetTimeslotsFromCurrentWithMaxCount {
-    finished = NO;
-    [target getTimeslotsFromCurrentWithMaxCount:3 forTarget:self callback:@selector(GetTimeSlotsFromCurrentWithMaxCountCallback:)];
+//    finished = NO;
+//    [target getTimeslotsFromCurrentWithMaxCount:3 forTarget:self callback:@selector(GetTimeSlotsFromCurrentWithMaxCountCallback:)];
 
 }
 

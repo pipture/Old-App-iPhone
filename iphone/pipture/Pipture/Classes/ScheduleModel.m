@@ -80,7 +80,12 @@
 
 - (void)updateTimeslots
 {
-    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self];
+    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self callback:nil];
+}
+
+- (void)updateTimeslotsWithCallback:(DataRequestCallback)callback
+{
+    [[[PiptureAppDelegate instance] model] getTimeslotsFromCurrentWithMaxCount:10 receiver:self callback:callback];
 }
 
 -(void)timeslotsReceived:(NSDictionary *)params {
@@ -108,7 +113,7 @@
                                                                 object:self];
                         
         }
-    }        
+    }
         
 }
 

@@ -10,6 +10,10 @@
 #import "HomeScreenDelegate.h"
 #import "PiptureModel.h"
 
+#define CATEGORY_SCHEDULED_SERIES 0
+#define SCHEDULED_SERIES_PLACEHOLDER @"SCHEDULED_SERIES_PLACEHOLDER"
+
+
 @interface CategoryEditViewController : UIViewController<UITableViewDataSource, 
                                                          UITableViewDelegate> {
     NSMutableArray *categoriesOrder_;

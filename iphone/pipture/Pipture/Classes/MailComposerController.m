@@ -725,7 +725,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         case 3:
             return @"From";                                                
         case 4:
-            return @"To (# of viewers)";                                
+            return @"To (# of views)";                                
         default:
             return nil;
     }        

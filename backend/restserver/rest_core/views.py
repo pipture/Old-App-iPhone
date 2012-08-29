@@ -525,7 +525,9 @@ def fill_albums_response(user_id, sallable):
     albums_json = []
     if not sallable:
         try:
-            albums_list = Albums.objects.select_related(depth=1).all()
+            albums_list = Albums.objects.select_related(depth=1).all()\
+                                .exclude(PurchaseStatus=Albums.PURCHASE_TYPE_ALBUM_PASS)\
+                                .exclude(PurchaseStatus=Albums.PURCHASE_TYPE_BUY_ALBUM)
         except Exception as e:
             response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is internal error: %s." % (e)}
             return HttpResponse (json.dumps(response))
