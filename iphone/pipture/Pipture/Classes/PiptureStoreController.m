@@ -388,6 +388,9 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     [model buyAlbumAtPage:[self getPageNumber]];
 }
 
+- (IBAction)onInfoButton:(id)sender {
+}
+
 - (void)processWrap {
     int page = [self getPageNumber] + 1;
     
