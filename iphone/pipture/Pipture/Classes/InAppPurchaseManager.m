@@ -8,6 +8,7 @@
 
 #import "InAppPurchaseManager.h"
 #import "PiptureAppDelegate.h"
+#import "PiptureAppDelegate+GATracking.h"
 
 @interface PurchaseSession : NSObject<PurchaseDelegate, UIAlertViewDelegate> {
     BOOL inProcess;
@@ -106,11 +107,13 @@
         [[PiptureAppDelegate instance] setUserPurchasedAlbumSinceAppStart:YES];                
         [[NSNotificationCenter defaultCenter] postNotificationName:ALBUM_PURCHASED_NOTIFICATION object:nil];
         NSString * albPurch = [NSString stringWithFormat:@"Album purchased: %@", appleProductId_];
-        TRACK_EVENT(@"PurchaseAlbum", albPurch);
+        GA_TRACK_EVENT(GA_EVENT_PURCHASE_ALBUM, albPurch, -1, nil);
+//        (@"PurchaseAlbum", albPurch);
     } else {
         [[PiptureAppDelegate instance] setUserPurchasedViewsSinceAppStart:YES];        
         [[NSNotificationCenter defaultCenter] postNotificationName:VIEWS_PURCHASED_NOTIFICATION object:nil];
-        TRACK_EVENT(@"Purchase", @"100 Views purchased");
+        GA_TRACK_EVENT(GA_EVENT_PURCHASE_VIDEO, @"100 views purchased", -1, nil);
+//        (@"Purchase", @"100 Views purchased");
     }
     
     [self release];    
@@ -128,7 +131,8 @@
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"purchaseNotConfirmed");
     
-    TRACK_EVENT(@"Purchase", @"Not confirmed");
+    GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, @"Not confirmed", -1, nil);
+//    (@"Purchase", @"Not confirmed");
     [self release];    
 }
 
@@ -138,7 +142,8 @@
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"unknownProductPurchased");
     
-    TRACK_EVENT(@"Purchase", @"Unknown product");
+    GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, @"Unknown product", -1, nil);
+//    (@"Purchase", @"Unknown product");
     [self release];    
 }
 
@@ -148,7 +153,8 @@
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"duplicateTransactionId");
     
-    TRACK_EVENT(@"Purchase", @"Duplicate transaction");
+    GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, @"Duplicate transaction", -1, nil);
+//    (@"Purchase", @"Duplicate transaction");
     [self release];    
 }
 
@@ -212,7 +218,8 @@
 //
 - (void)purchaseCredits
 {
-    TRACK_EVENT(@"Purchase", @"Start credits purchasing");
+    GA_TRACK_EVENT(GA_EVENT_PURCHASE_VIDEO, @"Start credits purchasing", -1, nil);
+//    (@"Purchase", @"Start credits purchasing");
     
     NSArray * purchase = [[PiptureAppDelegate instance] getInAppPurchases];
     isInProcess = YES;
@@ -236,7 +243,10 @@
 - (void)purchaseAlbum:(NSString*)appleProductId {
     
     NSString * albPurch = [NSString stringWithFormat:@"Album purchased: %@", appleProductId];
-    TRACK_EVENT(@"PurchaseAlbum", albPurch);
+    
+    GA_TRACK_EVENT(GA_EVENT_PURCHASE_ALBUM, albPurch, -1, nil);
+//    (@"PurchaseAlbum", albPurch);
+    
     isInProcess = YES;
     [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:YES completion:^{
         SKPayment *payment = [SKPayment paymentWithProductIdentifier:appleProductId];
@@ -343,7 +353,9 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         [self finishTransaction:transaction wasSuccessful:NO];
 
         NSString * err = [NSString stringWithFormat:@"Transaction finished with error: %@!", transaction.error.localizedDescription];
-        TRACK_EVENT(@"Purchase", err);
+        GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, err, -1, nil);
+//        (@"Purchase", err);
+        
         SHOW_ERROR(@"Purchase failed", err);
     }
     else
@@ -353,7 +365,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         // this is fine, the user just cancelled, so don’t notify
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
         
-        TRACK_EVENT(@"Purchase", @"Credits purchasing cancelled by user");
+        GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, @"Credits purchasing cancelled by user", -1, nil);
+//        (@"Purchase", @"Credits purchasing cancelled by user");
         [[NSNotificationCenter defaultCenter] postNotificationName:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];
     }
 } 

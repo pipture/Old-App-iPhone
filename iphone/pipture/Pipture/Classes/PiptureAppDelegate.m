@@ -7,6 +7,7 @@
 //
 
 #import "PiptureAppDelegate.h"
+#import "PiptureAppDelegate+GATracking.h"
 #import "GANTracker.h"
 #import "InAppPurchaseManager.h"
 #import "HomeViewController.h"
@@ -14,8 +15,6 @@
 #import "MailComposerController.h"
 #import "Appirater.h"
 
-// Dispatch period in seconds
-static const NSInteger kGANDispatchPeriodSec = 10;
 
 @implementation PiptureAppDelegate
 @synthesize busyView;
@@ -70,7 +69,7 @@ static PiptureAppDelegate *instance;
     [homeViewController release];
     [busyView release];
     
-    [[GANTracker sharedTracker] stopTracker];
+    [self stopGoogleAnalyticsTracker];
     [purchases release];
     [homeNavigationController release];
     [_window release];
@@ -102,7 +101,9 @@ static PiptureAppDelegate *instance;
                                                         bundle:nil];
         purchases = [[InAppPurchaseManager alloc] init];
         networkErrorAlerter_ = [[NetworkErrorAlerter alloc] init];
-        [purchases loadStore];        
+        [purchases loadStore];
+        
+        gaTracker = [GANTracker sharedTracker];
     }
     return self;
 }
@@ -428,9 +429,8 @@ static PiptureAppDelegate *instance;
     [self cleanDocDir:200000000];//200Mb limit
     //[self cleanDocDir:2000];//200Mb limit
     
-    [[GANTracker sharedTracker] startTrackerWithAccountID:@"UA-27681421-1"
-                                           dispatchPeriod:kGANDispatchPeriodSec
-                                                 delegate:nil];
+    [self startGoogleAnalyticsTracker];
+    
     /*
      ◦ User starts the application (home screen)
      ◦ User views video.
@@ -439,7 +439,7 @@ static PiptureAppDelegate *instance;
      */
     
     NSError *error;
-    TRACK_EVENT(@"Start Application", @"");
+    GA_TRACK_EVENT(GA_EVENT_APPLICATION_START, nil, -1, nil);
     
     if (![[GANTracker sharedTracker] trackPageview:@"/app_entry_point"
                                          withError:&error]) {
@@ -607,7 +607,8 @@ static PiptureAppDelegate *instance;
         [videoViewController initVideo];
     }
     
-    TRACK_EVENT(@"Open Activity", @"Video player");
+//    (@"Open Activity", @"Video player");
+    GA_TRACK_EVENT(GA_EVENT_ACTIVITY_OPENPLAYER, nil, -1, nil);
 }
 
 - (BOOL)isHighResolutionDevice {
@@ -660,21 +661,6 @@ NSInteger networkActivityIndecatorCount;
             networkActivityIndecatorCount = 0;
     }
 }
-
-- (BOOL)trackEvent:(NSString*)event :(NSString*)action {
-    NSError *error;
-    if (![[GANTracker sharedTracker] trackEvent:event
-                                         action:action
-                                          label:@"Pipture"
-                                          value:-1
-                                      withError:&error]) {
-        NSLog(@"Library tracking error: %@", error);
-        return NO;
-    }
-    
-    return YES;
-}
-
 
 - (void)showError:(NSString *)title message:(NSString *)message {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title
