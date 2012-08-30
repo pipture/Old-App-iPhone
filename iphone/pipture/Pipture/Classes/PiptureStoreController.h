@@ -28,5 +28,6 @@
 - (IBAction)onNextButton:(id)sender;
 - (IBAction)onPreviousButton:(id)sender;
 - (IBAction)onBuyButton:(id)sender;
+- (IBAction)onInfoButton:(id)sender;
 
 @end

@@ -73,6 +73,7 @@
 @property (retain, nonatomic) IBOutlet UILabel *subtitlesLabel;
 
 @property (assign, nonatomic) BOOL simpleMode;
+@property (assign, nonatomic) BOOL fromStore;
 
 
 @end

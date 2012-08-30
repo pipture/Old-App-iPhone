@@ -26,7 +26,8 @@ static NSString* const JSON_PARAM_TITLE = @"Title";
 - (IBAction)playChannelCategoryVideo:(id)sender {
     [[PiptureAppDelegate instance] showVideo:[NSArray arrayWithObject:[[self class] getCategoryItemVideo:categoryItem]]
                                       noNavi:YES
-                                  timeslotId:nil];
+                                  timeslotId:nil
+                                   fromStore:NO];
     
 }
 

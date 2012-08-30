@@ -191,6 +191,7 @@
         Episode * episode = [episodes objectAtIndex:indexPath.row / 2];
         [[PiptureAppDelegate instance] getVideoURL:episode 
                                      forTimeslotId:nil
+                                        getPreview:NO //TODO: check for sellable!
                                           receiver:self];
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
@@ -259,7 +260,8 @@
     NSArray * playlist = [NSArray arrayWithObject:playlistItem];
     [[PiptureAppDelegate instance] showVideo:playlist 
                                       noNavi:YES
-                                  timeslotId:nil];        
+                                  timeslotId:nil
+                                   fromStore:NO];//TODO: maybe should check for sellable status
 }
 
 -(void)authenticationFailed {

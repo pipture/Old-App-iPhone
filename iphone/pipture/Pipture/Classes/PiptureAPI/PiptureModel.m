@@ -536,7 +536,8 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
 -(BOOL)getVideoURL:(PlaylistItem*)playListItem 
           forceBuy:(BOOL)forceBuy 
      forTimeslotId:(NSNumber*)timeslotId
-       withQuality:(NSNumber*)videoQuality 
+       withQuality:(NSNumber*)videoQuality
+        getPreview:(BOOL)preview
           receiver:(NSObject<VideoURLReceiver>*)receiver
 {
     BOOL needToUpdate = timeslotId == 0;
@@ -553,12 +554,14 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                        [playListItem videoKeyName],
                                        [NSNumber numberWithInt:[playListItem videoKeyValue]],
                                        timeslotId, 
-                                       videoQuality]]:
+                                       videoQuality,
+                                       preview?[NSNumber numberWithInt:1]:[NSNumber numberWithInt:0]]]:
             [self buildURLWithRequest:[NSString stringWithFormat:GET_VIDEO_REQUEST, 
                                        [playListItem videoKeyName],
                                        [NSNumber numberWithInt:[playListItem videoKeyValue]],
                                        [NSNumber numberWithBool:forceBuy], 
-                                       videoQuality]];
+                                       videoQuality,
+                                       preview?[NSNumber numberWithInt:1]:[NSNumber numberWithInt:0]]];
         DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url
                                                                    callback:^(NSDictionary* jsonResult,
                                                                               DataRequestError* error){
