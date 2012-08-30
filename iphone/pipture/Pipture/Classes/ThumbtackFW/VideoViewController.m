@@ -9,6 +9,7 @@
 #import "VideoViewController.h"
 #import "PlaylistItem.h"
 #import "PiptureAppDelegate.h"
+#import "PiptureAppDelegate+GATracking.h"
 #import "UILabel+ResizeForVerticalAlign.h"
 
 @implementation VideoViewController
@@ -248,9 +249,11 @@
 
 - (void)sendToGA:(NSString*)video {
     if (self.timeslotId == nil || self.timeslotId.intValue == 0) {
-        TRACK_EVENT(@"Playing video from library", video);
+        GA_TRACK_EVENT(GA_EVENT_VIDEO_PLAY, video, -1, nil);
+//        (@"Playing video from library", video);
     } else {
-        TRACK_EVENT(@"Playing video from tv", video);
+        GA_TRACK_EVENT(GA_EVENT_TIMESLOT_PLAY, video, -1, nil);
+//        (@"Playing video from tv", video);
     }
 }
 

@@ -18,6 +18,8 @@
 #import "MailComposerNavigationController.h"
 #import "PiptureStoreModel.h"
 #import "PiptureStoreController.h"
+#import "GANTracker.h"
+
 
 #define PLACEHOLDER1 @"default.png"
 
@@ -27,7 +29,6 @@
 #define TABBARITEM_CHANNEL 1
 #define TABBARITEM_LIBRARY 2
 
-#define TRACK_EVENT(event, action) [[PiptureAppDelegate instance] trackEvent:event:action]
 #define GET_CREDITS [[PiptureAppDelegate instance] getBalance];
 
 #define SET_BALANCE(balance) [[PiptureAppDelegate instance] setBalance:balance];
@@ -41,6 +42,7 @@
     InAppPurchaseManager *purchases;
     NetworkConnection curConnection;
     NetworkConnectionInformer *wifiConnection;
+    GANTracker *gaTracker;
 }
 
 @property (assign, nonatomic) BOOL userPurchasedViewsSinceAppStart;
@@ -101,7 +103,6 @@
 - (IBAction)actionButton:(id)sender;
 - (IBAction)onStoreClick:(id)sender;
 
-- (BOOL)trackEvent:(NSString*)event :(NSString*)action;
 - (void)openHome;
 - (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId;//TODO: add video mode, playlist, e .t.c
 - (void)openMailComposer:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId fromViewController:(UIViewController*)viewController;
@@ -129,5 +130,7 @@
 
 - (void)setCover:(NSString*)cover;
 - (void)setAlbumForCoverFromJSON:(id)album;
+
+- (NSString*)loadUserUUID;
 
 @end
