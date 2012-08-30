@@ -439,3 +439,11 @@ div.paragraph {
 li.full-width {
     width: 100;
 }
+
+.download_button
+{
+	height: 33px;
+	width: 168px;
+	position: relative;
+	float:right;
+}
