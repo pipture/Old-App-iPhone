@@ -10,6 +10,7 @@
 #import "PlaylistItem.h"
 #import "PiptureAppDelegate.h"
 #import "PiptureAppDelegate+GATracking.h"
+#import "CategoryEditViewController.h"
 #import "UILabel+ResizeForVerticalAlign.h"
 
 @implementation VideoViewController
@@ -259,6 +260,8 @@
 
 
 - (BOOL)playNextItem {
+    [subtitlesLabel setTextWithVerticalResize:@""];
+    
     if (nextPlayerItem != nil) {
         [player pause];
         
@@ -756,15 +759,22 @@
 #pragma mark PlaylistReceiver methods
 
 -(void)playlistReceived:(NSArray*)playlistItems {
-    NSLog(@"Playlist: %@", playlistItems);
-    if (playlistItems && playlistItems.count > 0) {
-        NSMutableArray* mergedPlaylist = [[NSMutableArray alloc] initWithObjects: [playlistItems objectAtIndex:0], nil];
-        for (PlaylistItem* categoryItem in self.playlist){
-            [mergedPlaylist addObject:categoryItem];
+    NSMutableArray *mergedPlaylist = [[NSMutableArray alloc] init];
+    for (int i=0; i<[self.playlist count]; ++i){
+        PlaylistItem *item = [self.playlist objectAtIndex:i];
+        if([SCHEDULED_SERIES_PLACEHOLDER isEqualToString: item.videoUrl]){
+            for (PlaylistItem* playlistItem in playlistItems){
+                [mergedPlaylist addObject:playlistItem];
+            }
+        } else {
+            [mergedPlaylist addObject:item];
         }
-        self.playlist = mergedPlaylist;
-        [mergedPlaylist release];
-        
+    }
+    
+    self.playlist = mergedPlaylist;
+    [mergedPlaylist release];
+    
+    if (self.playlist.count > 0) {
         [self initVideo];
     } else {
         NSLog(@"Empty playlist");

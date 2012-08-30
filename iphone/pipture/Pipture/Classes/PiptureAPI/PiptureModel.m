@@ -20,7 +20,9 @@
                      sendKey:(BOOL)sendKey 
                 sendTimezone:(BOOL)timeZone;
 -(BOOL)getTimeslotsWithURL:(NSURL*)url
-                  receiver:(NSObject<TimeslotsReceiver>*)receiver;
+                  receiver:(NSObject<TimeslotsReceiver>*)receiver
+                  callback:(DataRequestCallback)callback;
+
 
 + (NSMutableArray *)parseItems:(NSDictionary *)jsonResult
             jsonArrayParamName:(NSString*)paramName 
@@ -340,22 +342,24 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                             [NSNumber numberWithInt:timeslotId], 
                                             [NSNumber numberWithInt:maxCount]]];
     
-    return [self getTimeslotsWithURL:url receiver:receiver];
+    return [self getTimeslotsWithURL:url receiver:receiver callback:nil];
 }
 
 
 
 -(BOOL)getTimeslotsFromCurrentWithMaxCount:(NSInteger)maxCount 
                                   receiver:(NSObject<TimeslotsReceiver>*)receiver
+                                  callback:(DataRequestCallback)callback
 {
     NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_CURRENT_TIMESLOTS_REQUEST,
                                             [NSNumber numberWithInt:maxCount]]];
     
-    return [self getTimeslotsWithURL:url receiver:receiver];
+    return [self getTimeslotsWithURL:url receiver:receiver callback:callback];
 }
 
 -(BOOL)getTimeslotsWithURL:(NSURL*)url 
                   receiver:(NSObject<TimeslotsReceiver>*)receiver
+                  callback:(DataRequestCallback)callback
 {
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url 
                                                                callback:^(NSDictionary* jsonResult,
@@ -396,7 +400,9 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
             
             [receiver performSelectorOnMainThread:@selector(timeslotsReceived:)
                                        withObject:dic waitUntilDone:YES];
-            [timeslots release];            
+            [timeslots release];
+            
+            if (callback != nil) callback(nil, nil);
         }
         
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
@@ -435,7 +441,7 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                               {
                                                   return [PlaylistItemFactory createItem:jsonIT];
                                                   
-                                              } itemName:@"Playlist item"] retain]; 
+                                              } itemName:@"Playlist item"] retain];
                     [receiver performSelectorOnMainThread:@selector(playlistReceived:) 
                                                withObject:playlistItems waitUntilDone:YES];
                     [playlistItems release];

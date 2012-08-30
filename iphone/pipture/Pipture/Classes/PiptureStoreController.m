@@ -292,8 +292,10 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (void)fixLayout {
-    if (self.view.frame.origin.y == 0)
+    if (self.view.frame.origin.y == 0 && self.navigationController.navigationBar.hidden != YES)
         self.view.frame = CGRectMake(0, -64, 320, 480);
+    
+    [UIApplication sharedApplication].statusBarHidden = self.navigationController.navigationBar.hidden;
 }
 
 -(void)viewDidLayoutSubviews {

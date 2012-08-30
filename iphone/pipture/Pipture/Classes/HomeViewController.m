@@ -98,7 +98,7 @@
             break;            
     }
     flipButton.hidden = !visible;
-    
+    flipEnhancer.hidden = !visible;
 }
 
 -(void) defineBarsVisibility
@@ -662,9 +662,9 @@
     [self defineFlipButtonVisibility];
 }
 
-- (void)doUpdate {
+- (void)doUpdateWithCallback:(DataRequestCallback)callback{
     [self startBlinkTimer];
-    [scheduleModel updateTimeslots];
+    [scheduleModel updateTimeslotsWithCallback:callback];
 }
 
 - (void)doFlip {
@@ -677,27 +677,40 @@
 
                                                      
 - (void)doPower {
-    [self doUpdate];
-    Timeslot * slot = [scheduleModel currentTimeslot];
-    NSNumber* timeslotId = nil;
-    if (slot !=nil){
-        timeslotId = [NSNumber numberWithInt:slot.timeslotId];
-    }
-    
-    [scheduleView scrollToCurPage];
-    NSArray *playList = [self getChannelCategoriesPlaylist];
-    [[PiptureAppDelegate instance] showVideo:playList
-                                      noNavi:NO
-                                  timeslotId:timeslotId];
-/*        reqTimeslotId = slot.timeslotId;
-        [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];*/
+
+    [self doUpdateWithCallback:^(NSDictionary* jsonResult,
+        DataRequestError* error){
+            //TODO: move this stuff to callback
+            Timeslot * slot = [scheduleModel currentTimeslot];
+            NSNumber* timeslotId = nil;
+            if (slot !=nil){
+                timeslotId = [NSNumber numberWithInt:slot.timeslotId];
+            }
+        
+            [scheduleView scrollToCurPage];
+            NSArray *playList = [self getChannelCategoriesPlaylistWithPlaceholders:(timeslotId != nil)];
+            [[PiptureAppDelegate instance] showVideo:playList
+                                              noNavi:NO
+                                          timeslotId:timeslotId];
+            /*        reqTimeslotId = slot.timeslotId;
+             [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];*/
+        
+    }];
 }
 
--(NSArray*)getChannelCategoriesPlaylist{
+-(NSArray*)getChannelCategoriesPlaylistWithPlaceholders:(BOOL)addPlaceholder{
     NSMutableArray* playlist = [[NSMutableArray alloc] init];
     for(Category* category in self.channelCategories){
-        for(CategoryItem* categoryItem in category.items){
-            [playlist addObject: [CategoryItemViewController getCategoryItemVideo:categoryItem]];
+        if (addPlaceholder && CATEGORY_SCHEDULED_SERIES == [category.categoryId intValue]) {
+            PlaylistItem *placeholder = [[PlaylistItem alloc] init];
+            placeholder.videoUrl = SCHEDULED_SERIES_PLACEHOLDER;
+            [playlist addObject: placeholder];
+            [placeholder release];
+        }
+        else {
+            for(CategoryItem* categoryItem in category.items){
+                [playlist addObject: [CategoryItemViewController getCategoryItemVideo:categoryItem]];
+            }
         }
     }
     

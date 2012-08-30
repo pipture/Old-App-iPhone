@@ -23,6 +23,7 @@ from restserver.pipture.models import AppleProducts, PurchaseItems, UserPurchase
                                       TimeSlots, TimeSlotVideos, AlbumScreenshotGallery,\
                                       Transactions, PipUsers, PiptureSettings, SendMessage
 
+from django.db.models import Q
 
 def local_date_time_date_time_to_UTC_sec (datetime_datetime):
     """
@@ -524,13 +525,16 @@ def fill_albums_response(user_id, sallable):
     response = {}
     albums_json = []
     if not sallable:
+        purchased_albums_list = get_purchased_album_list(userid = user_id)
         try:
-            albums_list = Albums.objects.select_related(depth=1).all()
+            if purchased_albums_list:
+                albums_list = Albums.objects.filter(Q(AlbumId__in=purchased_albums_list.values_list("ItemId")) | Q(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE))
+            else:
+                albums_list = Albums.objects.filter(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
         except Exception as e:
             response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is internal error: %s." % (e)}
             return HttpResponse (json.dumps(response))
 
-        purchased_albums_list = get_purchased_album_list(userid = user_id)
 
         for album in albums_list:
             if album.HiddenAlbum:

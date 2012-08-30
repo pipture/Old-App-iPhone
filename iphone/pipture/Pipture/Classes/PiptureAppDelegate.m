@@ -343,7 +343,7 @@ static PiptureAppDelegate *instance;
     if (powerButton.enabled == NO) {
         HomeViewController * vc = [self getHomeView];
         if (vc) {
-            [vc doUpdate];
+            [vc doUpdateWithCallback:nil];
         }
     }
 }
