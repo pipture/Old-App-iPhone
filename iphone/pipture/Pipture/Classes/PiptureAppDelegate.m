@@ -119,7 +119,6 @@ static PiptureAppDelegate *instance;
     return vis;
 }
 
-
 - (HomeViewController*)getHomeView {
     if (!homeViewController)
     {    
@@ -580,7 +579,7 @@ static PiptureAppDelegate *instance;
 }
 
 
-- (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId{
+- (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId fromStore:(BOOL)fromStore{
     
     if ([self videoViewVisible]) return;
     
@@ -595,6 +594,7 @@ static PiptureAppDelegate *instance;
     videoViewController.playlist = playlist;
     videoViewController.wantsFullScreenLayout = YES;
     videoViewController.simpleMode = noNavi;
+    videoViewController.fromStore = fromStore;
     
     [self.window setRootViewController:videoViewController];
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
@@ -623,7 +623,8 @@ static PiptureAppDelegate *instance;
 }
 
 - (BOOL)getVideoURL:(PlaylistItem*)item 
-      forTimeslotId:(NSNumber*)timeslotId 
+      forTimeslotId:(NSNumber*)timeslotId
+         getPreview:(BOOL)preview
            receiver:(NSObject<VideoURLReceiver>*)receiver {
     NSNumber * quality = [NSNumber numberWithInt:(curConnection == NetworkConnection_Cellular ||
                                                   ![self isHighResolutionDevice]) ? 1 : 0];
@@ -632,6 +633,7 @@ static PiptureAppDelegate *instance;
                       forceBuy:YES
                  forTimeslotId:timeslotId
                    withQuality:quality
+                    getPreview:preview
                       receiver:receiver];
 }
 

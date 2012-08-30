@@ -11,6 +11,7 @@
 
 #import "Timeslot.h"
 #import "Album.h"
+#import "DataRequest.h"
 
 enum HomeScreenMode {
     HomeScreenMode_Cover,
@@ -26,7 +27,7 @@ enum HomeScreenMode {
 - (void)setHomeScreenMode:(enum HomeScreenMode)mode;
 - (enum HomeScreenMode)homescreenMode;
 
-- (void)doUpdateWithCallback;
+- (void)doUpdateWithCallback:(DataRequestCallback)callback;
 - (void)doFlip;
 - (void)doPower;
 

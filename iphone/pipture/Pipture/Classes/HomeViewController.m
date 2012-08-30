@@ -691,7 +691,8 @@
             NSArray *playList = [self getChannelCategoriesPlaylistWithPlaceholders:(timeslotId != nil)];
             [[PiptureAppDelegate instance] showVideo:playList
                                               noNavi:NO
-                                          timeslotId:timeslotId];
+                                          timeslotId:timeslotId
+                                           fromStore:NO];
             /*        reqTimeslotId = slot.timeslotId;
              [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];*/
         

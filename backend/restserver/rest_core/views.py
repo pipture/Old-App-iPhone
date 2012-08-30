@@ -220,6 +220,11 @@ def getVideo (request):
     if video_quality > 1:
         video_quality = 1
 
+    if "preview" not in keys:
+        video_preview = 0
+    else:
+        video_preview = int(request.GET.get("preview"))
+
     local_today = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC).astimezone(local_tz).replace(tzinfo=None)
     sec_local_now = calendar.timegm(local_today.timetuple())
 
@@ -297,16 +302,20 @@ def getVideo (request):
 
 
     else:
-        try:
-            purchaser = PipUsers.objects.get(Token=key)
-        except PipUsers.DoesNotExist:
-            response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
-            return HttpResponse (json.dumps(response))
+        if video_preview != 1:
+            try:
+                purchaser = PipUsers.objects.get(Token=key)
+            except PipUsers.DoesNotExist:
+                response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+                return HttpResponse (json.dumps(response))
 
-        if episode_id:
-            is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=key)
+            if episode_id:
+                is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=key)
+            else:
+                is_purchased = True
         else:
-            is_purchased = True
+            """for preview always purchased. sequrity warning!!! TODO!!!"""
+            is_purchased = True 
 
         video_url, subs_url, error = get_video_url_from_episode_or_trailer (id = episode_id, type_r = video_type, video_q=video_quality)
         if error:

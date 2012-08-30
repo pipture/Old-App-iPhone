@@ -103,7 +103,7 @@
 
 - (BOOL)trackEvent:(NSString*)event :(NSString*)action;
 - (void)openHome;
-- (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId;//TODO: add video mode, playlist, e .t.c
+- (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId fromStore:(BOOL)fromStore;
 - (void)openMailComposer:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId fromViewController:(UIViewController*)viewController;
 - (void)closeMailComposer;
 
@@ -118,7 +118,7 @@
 
 - (NetworkConnection)networkConnection;
 - (BOOL)isHighResolutionDevice;
-- (BOOL)getVideoURL:(PlaylistItem*)item forTimeslotId:(NSNumber*)timeslotId receiver:(NSObject<VideoURLReceiver>*)receiver;
+- (BOOL)getVideoURL:(PlaylistItem*)item forTimeslotId:(NSNumber*)timeslotId getPreview:(BOOL)preview receiver:(NSObject<VideoURLReceiver>*)receiver;
 
 - (void)putUpdateTimeForAlbumId:(NSInteger)albumId updateDate:(NSInteger)date;
 - (NSInteger)getUpdateTimeForAlbumId:(NSInteger)albumId;

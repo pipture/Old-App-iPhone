@@ -94,11 +94,7 @@
         heightOffset = buttonsPanel.frame.size.height;
         buttonsPanel.frame = CGRectMake(0, 0, 
                                         buttonsPanel.frame.size.width, 
-                                        buttonsPanel.frame.size.height);
-        subViewContainer.frame = CGRectMake(0,
-                                            buttonsPanel.frame.size.height, 
-                                            buttonsPanel.frame.size.width,
-                                            self.view.frame.size.height-buttonsPanel.frame.size.height);
+                                        heightOffset);
         
         self.navigationItem.leftBarButtonItem = back;
     } else {
@@ -331,6 +327,8 @@
             [sendButton addTarget:self action:@selector(sendButtonTouchUpInside:)   forControlEvents:UIControlEventTouchUpInside];
             [sendButton addTarget:self action:@selector(sendButtonTouchUpOutside:)  forControlEvents:UIControlEventTouchUpOutside];
             
+            sendButton.hidden = (self.album.sellStatus == AlbumSellStatus_Buy ||
+                                 self.album.sellStatus == AlbumSellStatus_Pass);
         }
         [self fillCell:[indexPath row] cell:cell];
     } else {
@@ -349,12 +347,14 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section != 0) {
         if (indexPath.row %2 == 0) {
+            BOOL sellable = album.sellStatus == AlbumSellStatus_Buy || album.sellStatus == AlbumSellStatus_Pass;
             Episode * episode = [album.episodes objectAtIndex:indexPath.row / 2];
             NSArray * playlist = [NSArray arrayWithObject:episode];
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
             [[PiptureAppDelegate instance] showVideo:playlist
                                               noNavi:YES 
-                                          timeslotId:nil];        
+                                          timeslotId:nil
+                                           fromStore:sellable];
             //[[PiptureAppDelegate instance] getVideoURL:episode forTimeslotId:nil receiver:self];
             
         }
@@ -469,9 +469,11 @@
 
 -(void)videoURLReceived:(PlaylistItem*)playlistItem {
     NSArray * playlist = [NSArray arrayWithObject:playlistItem];
+    BOOL sellable = album.sellStatus == AlbumSellStatus_Buy || album.sellStatus == AlbumSellStatus_Pass;
     [[PiptureAppDelegate instance] showVideo:playlist 
                                       noNavi:YES 
-                                  timeslotId:nil];        
+                                  timeslotId:nil
+                                   fromStore:sellable];
 }
 
 -(void)videoNotPurchased:(PlaylistItem*)playlistItem {
@@ -526,7 +528,12 @@
         }
     }
     
-    CGRect rect = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height - [PiptureAppDelegate instance].tabViewBaseHeight);
+    int tabbarOffset = 0;
+    if (album.sellStatus != AlbumSellStatus_Pass && album.sellStatus != AlbumSellStatus_Buy) {
+        tabbarOffset = [PiptureAppDelegate instance].tabViewBaseHeight;
+    }
+    
+    CGRect rect = CGRectMake(0, 0, subViewContainer.frame.size.width, subViewContainer.frame.size.height - tabbarOffset);
     switch ([sender tag]) {
         case DetailAlbumViewType_Credits:
             detailPage.frame = rect;
@@ -604,9 +611,11 @@
     if (album && album.trailer) {
         NSLog(@"Trailer Show");
         NSArray * playlist = [NSArray arrayWithObject:album.trailer];
+        BOOL sellable = album.sellStatus == AlbumSellStatus_Buy || album.sellStatus == AlbumSellStatus_Pass;
         [[PiptureAppDelegate instance] showVideo:playlist
                                           noNavi:YES
-                                      timeslotId:nil];
+                                      timeslotId:nil
+                                       fromStore:sellable];
     }
 }
 
