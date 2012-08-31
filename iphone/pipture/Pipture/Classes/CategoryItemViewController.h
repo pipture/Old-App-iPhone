@@ -10,7 +10,7 @@
 #import "PiptureModel.h"
 #import "Category.h"
 
-@interface CategoryItemViewController : UIViewController<CategoryItem>
+@interface CategoryItemViewController : UIViewController
 @property (retain, nonatomic) CategoryItem* categoryItem;
 @property (retain, nonatomic) IBOutlet UIView *thumbnailButton;
 
