@@ -182,7 +182,7 @@
 
 -(BOOL)getSearchResults:(NSString*)query receiver:(NSObject<SearchResultReceiver>*)receiver;
 
--(BOOL)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId withQuality:(NSNumber*)videoQuality receiver:(NSObject<VideoURLReceiver>*)receiver;
+-(BOOL)getVideoURL:(PlaylistItem*)playListItem forceBuy:(BOOL)forceBuy forTimeslotId:(NSNumber*)timeslotId withQuality:(NSNumber*)videoQuality getPreview:(BOOL)preview receiver:(NSObject<VideoURLReceiver>*)receiver;
 
 -(BOOL)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver;
 
@@ -205,6 +205,11 @@
 -(BOOL)deactivateMessageViews:(NSNumber *)periodId receiver:(NSObject<BalanceReceiver>*)receiver;
 
 -(BOOL)getChannelCategoriesForReciever:(NSObject<ChannelCategoriesReceiver>*)receiver;
+
++ (NSMutableArray *)parseItems:(NSDictionary *)jsonResult
+            jsonArrayParamName:(NSString*)paramName
+                   itemCreator:(id (^)(NSDictionary*dct))createItem
+                      itemName:(NSString*)itemName;
 
 @end
 

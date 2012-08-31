@@ -47,7 +47,7 @@
     BOOL visible = YES;
     switch (homeScreenMode) {
         case HomeScreenMode_Cover:
-            visible = YES;
+            visible = NO;
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Schedule:            
@@ -69,7 +69,7 @@
             break;            
     }
     scheduleButton.hidden = !visible;
-    
+    scheduleEnhancer.hidden = !visible;
 }
 
 - (void)defineFlipButtonVisibility
@@ -77,7 +77,7 @@
     BOOL visible = YES;    
     switch (homeScreenMode) {
         case HomeScreenMode_Cover:
-            visible = YES;
+            visible = NO;
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Schedule:            
@@ -569,6 +569,9 @@
                 
                 [appDelegate tabbarVisible:YES slide:YES];
                 [appDelegate tabbarSelect:TABBARITEM_CHANNEL];
+                
+                /*
+                
                 [flipButton setImage:[UIImage imageNamed:@"button-flip.png"] 
                             forState:UIControlStateNormal];
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"]
@@ -576,6 +579,7 @@
                 [scheduleButton setTitle:@"Schedule" 
                                 forState:UIControlStateNormal];
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
+                */
 
                 [scheduleModel updateTimeslots];
                 
@@ -595,7 +599,8 @@
                 [scheduleView setTimeslotsMode:TimeslotsMode_PlayingNow];
 
                 [appDelegate tabbarSelect:TABBARITEM_CHANNEL];
-                [flipButton setImage:[UIImage imageNamed:@"button-flip-back.png"] 
+
+                [flipButton setImage:[UIImage imageNamed:@"button-flip-back.png"]
                             forState:UIControlStateNormal];
                 [scheduleButton setBackgroundImage:[UIImage imageNamed:@"button-schedule.png"] 
                                           forState:UIControlStateNormal];
@@ -693,7 +698,8 @@
             NSArray *playList = [self getChannelCategoriesPlaylistWithPlaceholders:(timeslotId != nil)];
             [[PiptureAppDelegate instance] showVideo:playList
                                               noNavi:NO
-                                          timeslotId:timeslotId];
+                                          timeslotId:timeslotId
+                                           fromStore:NO];
             /*        reqTimeslotId = slot.timeslotId;
              [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];*/
         

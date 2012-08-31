@@ -85,9 +85,9 @@
 	<key>Rest Get unreaded messages</key>
 	<string>getUnusedMessageViews?</string>
 	<key>Rest Get video</key>
-	<string>getVideo?%@=%@&amp;ForceBuy=%@&amp;q=%@</string>
+	<string>getVideo?%@=%@&amp;ForceBuy=%@&amp;q=%@&amp;preview=%@</string>
 	<key>Rest Get video from timeslot</key>
-	<string>getVideo?%@=%@&amp;TimeslotId=%@&amp;q=%@</string>
+	<string>getVideo?%@=%@&amp;TimeslotId=%@&amp;q=%@&amp;preview=%@</string>
 	<key>Rest Login</key>
 	<string>login</string>
 	<key>Rest Register</key>

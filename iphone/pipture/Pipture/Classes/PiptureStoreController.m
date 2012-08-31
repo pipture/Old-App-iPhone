@@ -9,7 +9,7 @@
 #import "PiptureStoreController.h"
 #import "PiptureAppDelegate.h"
 #import "HomeItemViewController.h"
-
+#import "AlbumDetailInfoController.h"
 
 
 @implementation PiptureStoreController
@@ -386,6 +386,17 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 - (IBAction)onBuyButton:(id)sender {
     progressView.hidden = NO;
     [model buyAlbumAtPage:[self getPageNumber]];
+}
+
+- (IBAction)onInfoButton:(id)sender {
+    AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo"
+                                                                                  bundle:nil];
+    adic.withNavigationBar = YES;
+    adic.album = [model albumForPage:[self getPageNumber]];
+    adic.timeslotId = 0;
+    adic.scheduleModel = nil;
+    [self.navigationController pushViewController:adic animated:YES];
+    [adic release];
 }
 
 - (void)processWrap {

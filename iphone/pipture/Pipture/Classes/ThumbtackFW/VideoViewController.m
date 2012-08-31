@@ -31,6 +31,7 @@
 @synthesize navigationBar;
 @synthesize navigationItem;
 @synthesize timeslotId;
+@synthesize fromStore;
 
 - (void)resetControlHider {
     if (controlsHideTimer != nil) {
@@ -71,8 +72,10 @@
         player = nil;
     }
     
-    
-    [[PiptureAppDelegate instance] openHome];
+    if (fromStore)
+        [[PiptureAppDelegate instance] openPiptureStore];
+    else
+        [[PiptureAppDelegate instance] openHome];
 }
 
 - (void)enableControls:(BOOL)enabled {
@@ -102,6 +105,8 @@
 }
 
 - (void)setupSubtitles:(PlaylistItem*) item {
+    sendButton.hidden = fromStore && [item class] != [Trailer class];
+    
     SubRip * newsubtitles = [[SubRip alloc] initWithString:item.videoSubs];
     [subtitles release];
     subtitles = newsubtitles;
@@ -120,14 +125,21 @@
     if (player != nil) {
         float duration = CMTimeGetSeconds(player.currentItem.asset.duration);
         float position = CMTimeGetSeconds(player.currentItem.currentTime);
-        
+
+        PlaylistItem * item = [playlist objectAtIndex:pos];
+        BOOL preview = fromStore && [item class] != [Trailer class];
+        if (preview && position > 10)  {
+            [self nextVideo];
+            return;
+        }
 
         //NSLog(@"Pos: %f, len: %f", position, duration);
         if (duration > 0 && duration - position < 10 && nextPlayerItem == nil && !precacheBegin && playlist && pos + 1 < [playlist count]) {
             NSLog(@"Precaching");
             
             PlaylistItem * item = [playlist objectAtIndex:pos + 1];
-            [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId receiver:self];
+            BOOL preview = fromStore && [item class] != [Trailer class];
+            [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId getPreview:preview receiver:self];
             precacheBegin = YES;
         }
         
@@ -323,7 +335,8 @@
         PlaylistItem * item = [playlist objectAtIndex:pos];
         //because in nextvideo it will be incremented
         pos--;
-        [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId receiver:self];
+        BOOL preview = fromStore && [item class] != [Trailer class];
+        [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId getPreview:preview receiver:self];
     }
 }
 
@@ -338,7 +351,8 @@
                 PlaylistItem * item = [playlist objectAtIndex:pos + 1];
                 waitForNext = YES;
                 [self enableControls:NO];
-                [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId receiver:self];
+                BOOL preview = fromStore && [item class] != [Trailer class];
+                [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId getPreview:preview receiver:self];
             }
         } else {
             [self goBack];
@@ -426,6 +440,8 @@
     pausedStatus = NO;
     [pauseButton setImage:[UIImage imageNamed:@"Button-Pause.png"] forState:UIControlStateNormal];
     [pauseButton setImage:[UIImage imageNamed:@"Button-Pause-press.png"] forState:UIControlStateHighlighted];
+    
+    sendButton.hidden = fromStore;
     
     [self destroyNextItem];
     
@@ -715,6 +731,7 @@
             videoContainer.player = player;
 
             [self setupSubtitles:playlistItem];
+            
             
             pos++;
             [self customNavBarTitle];
