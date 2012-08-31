@@ -14,6 +14,7 @@
 @implementation CategoryItemViewController
 
 @synthesize categoryItem;
+@synthesize thumbnailButton;
 
 static NSInteger const MARGIN_RIGHT = 15;
 

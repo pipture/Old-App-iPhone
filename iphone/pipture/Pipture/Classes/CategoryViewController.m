@@ -7,8 +7,7 @@
 //
 
 #import "CategoryViewController.h"
-#import "CategoryItemMViewController.h"
-#import "CategoryItemSViewController.h"
+#import "CategoryItemViewController.h"
 #import "Category.h"
 
 @implementation CategoryViewController
@@ -97,10 +96,10 @@ static NSInteger const MEDIUM_THUMBS = 3;
     UIViewController<CategoryItem> *item = nil;
     switch (thumbsType) {
         case SMALL_THUMBS:
-            item = [[CategoryItemSViewController alloc] initWithNibName:@"CategoryItemSView" bundle:nil];
+            item = [[CategoryItemViewController alloc] initWithNibName:@"CategoryItemSView" bundle:nil];
             break;
         case MEDIUM_THUMBS:
-            item = [[CategoryItemMViewController alloc] initWithNibName:@"CategoryItemMView" bundle:nil];
+            item = [[CategoryItemViewController alloc] initWithNibName:@"CategoryItemMView" bundle:nil];
             break;
         default:
             NSLog(@"Unexpected channelCategory parameter COLUMNS");
