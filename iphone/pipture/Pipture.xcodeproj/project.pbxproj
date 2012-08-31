@@ -610,6 +610,7 @@
 		38FA2C7F150F5E3B00CBEDD8 /* bar-above-keyboard@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bar-above-keyboard@2x.png"; sourceTree = "<group>"; };
 		7D41003C15EE47BB0038B82B /* PiptureAppDelegate+GATracking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PiptureAppDelegate+GATracking.h"; sourceTree = "<group>"; };
 		7D41003D15EE47BB0038B82B /* PiptureAppDelegate+GATracking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PiptureAppDelegate+GATracking.m"; sourceTree = "<group>"; };
+		7DFB52E115F0A511000E1B53 /* GAEventWithCustomVariablesEmitter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GAEventWithCustomVariablesEmitter.h; sourceTree = "<group>"; };
 		8805613E14A46A79004A445C /* checked-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checked-selected.png"; sourceTree = "<group>"; };
 		8805613F14A46A79004A445C /* checked-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checked-selected@2x.png"; sourceTree = "<group>"; };
 		8811ED94147B6FC5008CC877 /* HomeView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeView.xib; sourceTree = "<group>"; };
@@ -1044,6 +1045,7 @@
 				38BC27C3149870E6002B938F /* BusyViewController.m */,
 				887517A2148CAE3400AFFFAC /* PiptureAppDelegate.h */,
 				887517A3148CAE3400AFFFAC /* PiptureAppDelegate.m */,
+				7DFB52E115F0A511000E1B53 /* GAEventWithCustomVariablesEmitter.h */,
 				7D41003C15EE47BB0038B82B /* PiptureAppDelegate+GATracking.h */,
 				7D41003D15EE47BB0038B82B /* PiptureAppDelegate+GATracking.m */,
 				8812B9D514FB4DB80089A905 /* NetworkErrorAlerter.h */,

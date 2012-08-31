@@ -7,6 +7,7 @@
 //
 
 #import "PlaylistItem.h"
+#import "PiptureAppDelegate+GATracking.h"
 
 @implementation PlaylistItem
 
@@ -92,6 +93,14 @@
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
                                  userInfo:nil];
+}
+
+-(NSArray *)getCustomGAVariables {
+    NSString *itemId = [NSString stringWithFormat:@"%d", [self videoKeyValue]];
+    
+    return [NSArray arrayWithObject:GA_SESSION_VARIABLE(GA_INDEX_ITEM, 
+                                                        [self videoKeyName], 
+                                                        itemId)];
 }
 
 @end

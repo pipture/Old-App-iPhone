@@ -20,16 +20,26 @@
 #define GA_EVENT_PURCHASE_ERROR             [NSArray arrayWithObjects:@"Purchase", @"Error", nil]
 
 #define GA_VARIABLE(index, name, value, scope)      [NSArray arrayWithObjects:[NSNumber numberWithInt:index], name, value, [NSNumber numberWithInt:scope], nil]
-#define GA_VISITOR_VARIABLE(index, name, value)     GA_VARIABLE(index, name, value, kGANVisitorScope)
-#define GA_SESSION_VARIABLE(index, name, value)     GA_VARIABLE(index, name, value, kGANSessionScope)
+#define GA_SESSION_VARIABLE(index, name, value)     GA_VARIABLE(index, name, value, kGANPageScope)
 
 #define GA_TRACK_EVENT(event, label, value, vars)   [[PiptureAppDelegate instance] trackGoogleAnalyticsEvent:event withLabel:label withValue:value withCustomVariables:vars]
+
+#define GA_NO_VALUE -1
+#define GA_NO_LABEL nil
+#define GA_NO_VARS nil
+
+static NSInteger const GA_INDEX_KEY = 1;
+static NSInteger const GA_INDEX_ITEM = 2;
+
+static NSString* const GA_VAR_KEY = @"key";
 
 
 @interface PiptureAppDelegate (GATracking)
 
 - (void)startGoogleAnalyticsTracker;
 - (void)stopGoogleAnalyticsTracker;
+
+- (void)trackPageviewToGoogleAnalytics:(NSString*)page;
 
 - (BOOL)trackGoogleAnalyticsEvent:(NSArray *)eventMacro 
                         withLabel:(NSString *)label
