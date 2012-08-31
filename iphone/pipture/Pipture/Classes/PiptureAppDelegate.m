@@ -347,7 +347,7 @@ static PiptureAppDelegate *instance;
     }
 }
 
-- (NSString*)getCoverImage {
+- (NSString*)coverImage {
     return coverImage;
 }
 

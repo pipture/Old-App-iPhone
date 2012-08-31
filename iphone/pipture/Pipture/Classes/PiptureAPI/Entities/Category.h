@@ -19,6 +19,6 @@
 @property(assign, nonatomic) NSInteger rows;
 @property(retain, nonatomic) NSArray *items;
 
--(id)initWithJSON:(NSDictionary*)jsonData atIndex:(NSInteger) index;
+-(id)initWithJSON:(NSDictionary*)jsonData;
 
 @end

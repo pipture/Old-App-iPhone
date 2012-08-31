@@ -111,6 +111,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
 {
     self = [self init];
     if (self) {
+        //FIXME: get rid of exception swallow
         @try {
             [self parseJSON:jsonData];
         }

@@ -49,7 +49,7 @@
     if (placeHolder.subviews.count > 0)
         [[placeHolder.subviews objectAtIndex:0] removeFromSuperview];
     
-    NSString *cover = [[PiptureAppDelegate instance] getCoverImage];
+    NSString *cover = [[PiptureAppDelegate instance] coverImage];
     CGRect rect = CGRectMake(0, 0, placeHolder.frame.size.width, placeHolder.frame.size.height);
     if (cover && cover.length > 0) {
         AsyncImageView *imageView = [[[AsyncImageView alloc] initWithFrame:rect] autorelease];
