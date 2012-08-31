@@ -142,8 +142,8 @@
 @required
 -(void)channelCategoriesReceived:(NSMutableArray*)categories;
 -(void)updateCategories:(NSArray *)categories byOrder:(NSArray *)newCategoriesOrder updateViews:(BOOL)update;
-@property (readonly, nonatomic) NSMutableArray *channelCategories;
-@property (readonly, nonatomic) NSArray *categoriesOrder;
+@property (retain, nonatomic) NSMutableArray *channelCategories;
+@property (retain, nonatomic) NSArray *categoriesOrder;
 @end
 
 #pragma mark -

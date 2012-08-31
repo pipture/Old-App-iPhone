@@ -113,7 +113,7 @@
     scrollView.pagingEnabled = NO;
     
     // TODO: move to proper place (or keep it here if this place is proper)
-    [self.delegate getChannelCategories];
+    [self.delegate requestChannelCategories];
     [self placeViewController: [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil]
                      withData: nil];
 }
