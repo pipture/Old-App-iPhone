@@ -60,7 +60,7 @@ static NSInteger const MEDIUM_THUMBS = 3;
     self.delegate = hsDelegate;
 }
 
-- (void)prepare:(Category*) category {
+- (void)fillWithContent:(Category*) category {
     self.categoryTitle.text = [category title];
     
     UIViewController<CategoryItem>* sampleItem = [self getCategoryItem:category.columns];

@@ -45,7 +45,7 @@
     [super dealloc];
 }
 
-- (void)prepare:(id) data {
+- (void)setCoverImage {
     if (placeHolder.subviews.count > 0)
         [[placeHolder.subviews objectAtIndex:0] removeFromSuperview];
     

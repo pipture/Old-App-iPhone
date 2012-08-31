@@ -33,7 +33,7 @@ static NSString* const JSON_PARAM_TITLE = @"Title";
 }
 
 +(PlaylistItem*)getCategoryItemVideo:(CategoryItem*)categoryItem{
-    NSMutableDictionary *playlistItemData = [NSMutableDictionary new];
+    NSMutableDictionary *playlistItemData = [[NSMutableDictionary alloc] init];
     [playlistItemData setObject:categoryItem.title forKey:JSON_PARAM_TITLE];
     NSString *type = nil;
     if ([JSON_PARAM_TYPE_EPISODE isEqualToString:categoryItem.type]){

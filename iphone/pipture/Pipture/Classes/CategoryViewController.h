@@ -11,9 +11,10 @@
 #import "HomeScreenDelegate.h"
 #import "PiptureModel.h"
 
-@interface CategoryViewController : UIViewController<CategoryViewSectionDelegate>
+@interface CategoryViewController : UIViewController<NewsItem>
 @property (assign, nonatomic) id<HomeScreenDelegate> delegate;
 @property (retain, nonatomic) IBOutlet UIView *itemContainer;
 @property (retain, nonatomic) IBOutlet UILabel *categoryTitle;
 
+-(void)fillWithContent:(Category*)category;
 @end

@@ -114,8 +114,9 @@
     
     // TODO: move to proper place (or keep it here if this place is proper)
     [self.delegate getChannelCategories];
-    [self placeViewController: [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil]
-                     withData: nil];
+    CoverViewController *cover = [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil];
+    [self placeViewController: cover];
+    [cover setCoverImage];
 }
 
 - (void)dealloc {
@@ -139,13 +140,13 @@
         if (category.display == YES){
             CategoryViewController *vc = [[CategoryViewController alloc] initWithNibName:@"CategoryViewController"
                                                                               bundle:nil];
-            [self placeViewController:vc withData:category];
+            [vc fillWithContent:category];
+            [self placeViewController:vc];
             [categoryViews setValue:vc.view forKey:category.categoryId];
         }
     }
     
-    [self placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]
-                     withData: nil];
+    [self placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]];
 }
 
 - (void)updateCategoriesOrder:(NSArray *)categoriesOrder {
@@ -165,8 +166,8 @@
 }
 
 
-- (void)placeViewController:(UIViewController<CategoryViewSectionDelegate>*)controller
-                   withData:(id)data {
+- (void)placeViewController:(UIViewController<NewsItem>*)controller
+{
     
     [controller setHomeScreenDelegate:self.delegate];
     
@@ -180,7 +181,6 @@
         pos = rect.height;
     }
     controller.view.frame = CGRectMake(0, pos,rect.width, controller.view.frame.size.height);
-    [controller prepare:data];
     
     rect.height += controller.view.frame.size.height;
     scrollView.contentSize = rect;

@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "HomeScreenDelegate.h"
 
-@interface CoverViewController : UIViewController<CategoryViewSectionDelegate>
+@interface CoverViewController : UIViewController<NewsItem>
 @property (assign, nonatomic) id<HomeScreenDelegate> delegate;
 @property (retain, nonatomic) IBOutlet UIView *placeHolder;
 
 - (void)hotNewsCoverClicked;
+- (void)setCoverImage;
 
 @end
