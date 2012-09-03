@@ -77,11 +77,10 @@ class MostPopularVideos(CategoryView, VideosMixin):
     days_period = 10
 
     def get_items_queryset(self):
-        return Episodes.objects.all()
-#        ids = self.get_data_from_ga()
-#        episodes = Episodes.objects.filter(EpisodeId__in=ids)
-#        return [episodes.get(EpisodeId=id) for id in ids
-#                if episodes.filter(EpisodeId=id)]
+        ids = self.get_data_from_ga()
+        episodes = Episodes.objects.filter(EpisodeId__in=ids)
+        return [episodes.get(EpisodeId=id) for id in ids
+                if episodes.filter(EpisodeId=id)]
 
     def get_data_from_ga(self):
         end_date = datetime.today()
