@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.views.generic.base import View
 from django.db.models import Q
 
-from pipture.ga_service import pipture_ga
+#from pipture.ga_service import pipture_ga
 from restserver.pipture.models import UserPurchasedItems, Albums, Episodes, Series
 
 
@@ -41,6 +41,10 @@ class VideosMixin(object):
     def get_item_info(self, episode):
         return dict(type='episode',
                     id=episode.EpisodeId,
+                    EpisodeNo=episode.EpisodeNo,
+                    AlbumTitle=episode.AlbumId.Title,
+                    SeriesTitle=episode.AlbumId.SeriesId.Title,
+                    AlbumSeason=episode.AlbumId.Season,
                     Thumbnail=episode.CloseUpThumbnail.get_url(),
                     Title=episode.Title)
 
@@ -54,6 +58,8 @@ class SeriesMixin(object):
         first_album = series.albums_set.all()[0]
         return dict(type='album',
                     id=first_album.TrailerId.TrailerId,
+                    Line1=first_album.TrailerId.Line1,
+                    Line2=first_album.TrailerId.Line2,
                     Thumbnail=first_album.Thumbnail.get_url(),
                     Title=series.Title)
 
@@ -69,10 +75,11 @@ class MostPopularVideos(CategoryView, VideosMixin):
     title = 'Most Popular'
 
     def get_items_queryset(self):
-        ids = self.get_data_from_ga()
-        episodes = Episodes.objects.filter(EpisodeId__in=ids)
-        return [episodes.get(EpisodeId=id) for id in ids
-                if episodes.filter(EpisodeId=id)]
+        return Episodes.objects.all()
+#        ids = self.get_data_from_ga()
+#        episodes = Episodes.objects.filter(EpisodeId__in=ids)
+#        return [episodes.get(EpisodeId=id) for id in ids
+#                if episodes.filter(EpisodeId=id)]
 
     def get_data_from_ga(self):
         end_date = datetime.today()
