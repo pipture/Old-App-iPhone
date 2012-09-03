@@ -14,7 +14,7 @@
 
 @synthesize categoryId;
 @synthesize title;
-@synthesize index = index_;
+@synthesize index;
 @synthesize display;
 @synthesize columns;
 @synthesize rows;
@@ -27,10 +27,9 @@ static NSString* const JSON_PARAM_COLUMNS = @"columns";
 static NSString* const JSON_PARAM_ROWS = @"rows";
 static NSString* const JSON_PARAM_ITEMS = @"items";
 
--(id)initWithJSON:(NSDictionary*)jsonData atIndex:(NSInteger) index{
+-(id)initWithJSON:(NSDictionary*)jsonData{
     self = [self init];
     if (self){
-        index_ = index;
         [self parseJSON:jsonData];
     }
     return self;
@@ -54,21 +53,12 @@ static NSString* const JSON_PARAM_ITEMS = @"items";
     self.categoryId = [[channelData strValueForKey:JSON_PARAM_CATEGORY_ID defaultIfEmpty:self.categoryId] retain];
     self.display    = [channelData  intValueForKey:JSON_PARAM_DISPLAY     defaultIfEmpty:self.display] == 1 ? YES : NO;
     
-    NSArray* channelItems = [[PiptureModel parseItems:jsonData
+    self.items = [PiptureModel parseItems:jsonData
                                    jsonArrayParamName:@"items"
                                           itemCreator:^(NSDictionary*jsonIT)
                               {
-                                  return [jsonIT autorelease];
-                              } itemName:@"Item"] retain];
-
-    NSMutableArray* _items = [[NSMutableArray alloc] init];
-    for (NSDictionary* ci in channelItems){
-        CategoryItem* _item = [[CategoryItem alloc] initWithJSON:ci];
-        [_items addObject: _item];
-        [_item release];
-    }
-    self.items = _items;
-    [_items release];
+                                  return [[[CategoryItem alloc] initWithJSON:jsonIT] autorelease];
+                              } itemName:@"Item"];
 }
 
 

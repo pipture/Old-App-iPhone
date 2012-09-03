@@ -1158,21 +1158,12 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                                                    }
                                                                    else
                                                                    {
-                                                                       NSArray* jsonCategories = [[PiptureModel parseItems:jsonResult
+                                                                       NSArray* channelCategories = [[PiptureModel parseItems:jsonResult
                                                                                                 jsonArrayParamName:JSON_PARAM_CHANNEL_CATEGORIES
                                                                                                        itemCreator:^(NSDictionary*jsonIT)
                                                                                            {
-                                                                                               return [jsonIT autorelease];
+                                                                                               return [[[Category alloc] initWithJSON:jsonIT] autorelease];
                                                                                            } itemName:@"Category"] retain];
-                                                                       
-                                                                       NSInteger index = 0;
-                                                                       NSMutableArray* channelCategories = [[NSMutableArray alloc] init];
-                                                                       for (NSDictionary* jc in jsonCategories) {
-                                                                           index++;
-                                                                           Category* category = [[Category alloc] initWithJSON:jc atIndex:index];
-                                                                           [channelCategories addObject:category];
-                                                                           [category release];
-                                                                       }
                                                                        
                                                                        [receiver performSelectorOnMainThread:@selector(channelCategoriesReceived:) 
                                                                                                   withObject:channelCategories 

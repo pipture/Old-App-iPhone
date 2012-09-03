@@ -695,7 +695,7 @@
             }
         
             [scheduleView scrollToCurPage];
-            NSArray *playList = [self getChannelCategoriesPlaylistWithPlaceholders:(timeslotId != nil)];
+            NSArray *playList = [self categoriesPlaylistWithPlaceholder:(timeslotId != nil)];
             [[PiptureAppDelegate instance] showVideo:playList
                                               noNavi:NO
                                           timeslotId:timeslotId
@@ -706,7 +706,7 @@
     }];
 }
 
--(NSArray*)getChannelCategoriesPlaylistWithPlaceholders:(BOOL)addPlaceholder{
+-(NSArray*)categoriesPlaylistWithPlaceholder:(BOOL)addPlaceholder{
     NSMutableArray* playlist = [[NSMutableArray alloc] init];
     for(Category* category in self.channelCategories){
         if (addPlaceholder && CATEGORY_SCHEDULED_SERIES == [category.categoryId intValue]) {
@@ -717,7 +717,7 @@
         }
         else {
             for(CategoryItem* categoryItem in category.items){
-                [playlist addObject: [CategoryItemViewController getCategoryItemVideo:categoryItem]];
+                [playlist addObject: categoryItem.playlistItem];
             }
         }
     }
@@ -835,6 +835,10 @@
 #pragma mark ChannelCategoriesReceiver 
 
 - (void)channelCategoriesReceived:(NSMutableArray*)categories {
+    for (int i=0; i<categories.count; i++){
+        Category *category = [categories objectAtIndex:i];
+        category.index = i + 1;
+    }
 //    TODO: remove logging
 //    NSLog(@"channelCategories received: %@", categories);
     

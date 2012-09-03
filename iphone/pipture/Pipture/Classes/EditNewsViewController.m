@@ -41,11 +41,6 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (void)prepare:(id) data {
-    
-}
-
-
 -(void)setHomeScreenDelegate:(id<HomeScreenDelegate>) hsDelegate {
     self.delegate = hsDelegate;
 }

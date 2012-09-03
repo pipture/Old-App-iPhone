@@ -41,6 +41,10 @@ class VideosMixin(object):
     def get_item_info(self, episode):
         return dict(type='episode',
                     id=episode.EpisodeId,
+                    EpisodeNo=episode.EpisodeNo,
+                    AlbumTitle=episode.AlbumId.Title,
+                    SeriesTitle=episode.AlbumId.SeriesId.Title,
+                    AlbumSeason=episode.AlbumId.Season,
                     Thumbnail=episode.CloseUpThumbnail.get_url(),
                     Title=episode.Title)
 
@@ -55,7 +59,8 @@ class SeriesMixin(object):
         trailer = first_album.TrailerId
         return dict(type='album',
                     id=trailer.TrailerId,
-                    line1=trailer.Line1,
+                    Line1=trailer.Line1,
+                    Line2=trailer.Line2,
                     Thumbnail=first_album.Thumbnail.get_url(),
                     Title=series.Title)
 
@@ -72,10 +77,11 @@ class MostPopularVideos(CategoryView, VideosMixin):
     days_period = 10
 
     def get_items_queryset(self):
-        ids = self.get_data_from_ga()
-        episodes = Episodes.objects.filter(EpisodeId__in=ids)
-        return [episodes.get(EpisodeId=id) for id in ids
-                if episodes.filter(EpisodeId=id)]
+        return Episodes.objects.all()
+#        ids = self.get_data_from_ga()
+#        episodes = Episodes.objects.filter(EpisodeId__in=ids)
+#        return [episodes.get(EpisodeId=id) for id in ids
+#                if episodes.filter(EpisodeId=id)]
 
     def get_data_from_ga(self):
         end_date = datetime.today()

@@ -47,10 +47,8 @@ enum HomeScreenMode {
 
 @end
 
-@protocol CategoryViewSectionDelegate <NSObject>
-
+@protocol NewsItem <NSObject>
 -(void)setHomeScreenDelegate:(id<HomeScreenDelegate>) delegate;
-- (void)prepare:(NSString *) title;
 @end
 
 #endif

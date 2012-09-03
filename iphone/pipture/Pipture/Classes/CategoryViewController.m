@@ -7,8 +7,7 @@
 //
 
 #import "CategoryViewController.h"
-#import "CategoryItemMViewController.h"
-#import "CategoryItemSViewController.h"
+#import "CategoryItemViewController.h"
 #import "Category.h"
 
 @implementation CategoryViewController
@@ -61,46 +60,50 @@ static NSInteger const MEDIUM_THUMBS = 3;
     self.delegate = hsDelegate;
 }
 
-- (void)prepare:(Category*) category {
+- (void)fillWithContent:(Category*) category {
+    UIView* v = self.view;
+    v = nil;
+    
     self.categoryTitle.text = [category title];
     
-    UIViewController<CategoryItem>* sampleItem = [self getCategoryItem:category.columns];
+    CategoryItemViewController *sampleItem = [self categoryItemByCategory:category categoryItem:nil];
     if (!sampleItem) return;
 
     NSInteger contentHeight = sampleItem.view.frame.size.height * category.rows;
-    UIView *container = [self.view viewWithTag:1];
-    NSInteger deltaHeight = container.frame.size.height - contentHeight;
+    NSInteger deltaHeight = self.itemContainer.frame.size.height - contentHeight;
+    CGRect frame;
     
-    container.frame = CGRectMake(container.frame.origin.x,
-                                 container.frame.origin.y,
-                                 container.frame.size.width,
-                                 container.frame.size.height - deltaHeight);
+    frame = self.itemContainer.frame;
+    self.itemContainer.frame = CGRectMake(frame.origin.x,
+                                          frame.origin.y,
+                                          frame.size.width,
+                                          frame.size.height - deltaHeight);
     
-    self.view.frame = CGRectMake(self.view.frame.origin.x,
-                                 self.view.frame.origin.y,
-                                 self.view.frame.size.width,
-                                 self.view.frame.size.height - deltaHeight);
+    frame = self.view.frame;
+    self.view.frame = CGRectMake(frame.origin.x,
+                                 frame.origin.y,
+                                 frame.size.width,
+                                 frame.size.height - deltaHeight);
     
     int i = 0;
+    int offset = self.itemContainer.frame.origin.y;
     for (int y = 0; y < category.rows; y++) {
         for (int x = 0; x < category.columns; x++) {
-            UIViewController<CategoryItem> *item = [self getCategoryItem:category.columns];
-            
-            [item setCategoryItem:[category.items objectAtIndex:i++]];
-            [item prepareWithX:x withY:y withOffset:(int)[self.view viewWithTag:1].frame.origin.y];
+            CategoryItemViewController *item = [self categoryItemByCategory:category categoryItem:[category.items objectAtIndex:i++]];
+            [item prepareWithX:x withY:y withOffset:offset];
             [self.view addSubview: item.view];
         }
     }
 }
 
--(UIViewController<CategoryItem> *)getCategoryItem: (NSInteger) thumbsType{
-    UIViewController<CategoryItem> *item = nil;
-    switch (thumbsType) {
+-(CategoryItemViewController*)categoryItemByCategory:(Category*)category categoryItem:(CategoryItem*)categoryItem{
+    CategoryItemViewController *item = nil;
+    switch (category.columns) {
         case SMALL_THUMBS:
-            item = [[CategoryItemSViewController alloc] initWithNibName:@"CategoryItemSView" bundle:nil];
+            item = [[CategoryItemViewController alloc] initWithCategoryItem:categoryItem NibName:@"CategoryItemSView" bundle:nil];
             break;
         case MEDIUM_THUMBS:
-            item = [[CategoryItemMViewController alloc] initWithNibName:@"CategoryItemMView" bundle:nil];
+            item = [[CategoryItemViewController alloc] initWithCategoryItem: categoryItem NibName:@"CategoryItemMView" bundle:nil];
             break;
         default:
             NSLog(@"Unexpected channelCategory parameter COLUMNS");

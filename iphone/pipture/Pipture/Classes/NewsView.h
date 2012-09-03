@@ -22,8 +22,7 @@
 
 - (void)placeCategories:(NSArray*)channelCategories;
 - (void)updateCategoriesOrder:(NSArray*)categoriesOrder;
-- (void)placeViewController:(UIViewController<CategoryViewSectionDelegate>*)controller
-               withData:(id)data;
+- (void)placeViewController:(UIViewController<NewsItem>*)controller;
 
 - (IBAction)coverClick:(id)sender;
 - (IBAction)detailsClick:(id)sender;

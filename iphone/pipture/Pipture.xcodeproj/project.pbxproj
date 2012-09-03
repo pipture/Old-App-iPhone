@@ -333,8 +333,6 @@
 		88E5098514FF9507003AFA14 /* LibraryCardB3.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88E5098314FF9507003AFA14 /* LibraryCardB3.xib */; };
 		88F2D69315E48E6D002510F1 /* CategoryItemMView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88F2D69215E48E6D002510F1 /* CategoryItemMView.xib */; };
 		88F2D69515E48ED0002510F1 /* CategoryItemSView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88F2D69415E48ED0002510F1 /* CategoryItemSView.xib */; };
-		88F2D69815E492E7002510F1 /* CategoryItemSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F2D69715E492E7002510F1 /* CategoryItemSViewController.m */; };
-		88F2D69B15E492F2002510F1 /* CategoryItemMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F2D69A15E492F2002510F1 /* CategoryItemMViewController.m */; };
 		88F2D69E15E49E45002510F1 /* CategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F2D69D15E49E45002510F1 /* CategoryViewController.m */; };
 		88FC5C0814922C2800C40DA1 /* NSDictionary+ValueHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0714922C2800C40DA1 /* NSDictionary+ValueHelper.m */; };
 		88FC5C0D14922C3600C40DA1 /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC5C0A14922C3600C40DA1 /* Album.m */; };
@@ -752,10 +750,6 @@
 		88E5098314FF9507003AFA14 /* LibraryCardB3.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryCardB3.xib; sourceTree = "<group>"; };
 		88F2D69215E48E6D002510F1 /* CategoryItemMView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoryItemMView.xib; sourceTree = "<group>"; };
 		88F2D69415E48ED0002510F1 /* CategoryItemSView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoryItemSView.xib; sourceTree = "<group>"; };
-		88F2D69615E492E7002510F1 /* CategoryItemSViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryItemSViewController.h; sourceTree = "<group>"; };
-		88F2D69715E492E7002510F1 /* CategoryItemSViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryItemSViewController.m; sourceTree = "<group>"; };
-		88F2D69915E492F2002510F1 /* CategoryItemMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryItemMViewController.h; sourceTree = "<group>"; };
-		88F2D69A15E492F2002510F1 /* CategoryItemMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryItemMViewController.m; sourceTree = "<group>"; };
 		88F2D69C15E49E45002510F1 /* CategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryViewController.h; sourceTree = "<group>"; };
 		88F2D69D15E49E45002510F1 /* CategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryViewController.m; sourceTree = "<group>"; };
 		88FC5C0614922C2800C40DA1 /* NSDictionary+ValueHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+ValueHelper.h"; sourceTree = "<group>"; };
@@ -1297,10 +1291,6 @@
 			children = (
 				886904CA15E5E1810054E01F /* CategoryItemViewController.h */,
 				886904CB15E5E1810054E01F /* CategoryItemViewController.m */,
-				88F2D69915E492F2002510F1 /* CategoryItemMViewController.h */,
-				88F2D69A15E492F2002510F1 /* CategoryItemMViewController.m */,
-				88F2D69615E492E7002510F1 /* CategoryItemSViewController.h */,
-				88F2D69715E492E7002510F1 /* CategoryItemSViewController.m */,
 				387E9F5514A493A800355C43 /* DetailsTitleViewController.h */,
 				387E9F5614A493A800355C43 /* DetailsTitleViewController.m */,
 				384EBA7614A19317000973CD /* AlbumsView.h */,
@@ -1798,8 +1788,6 @@
 				88D1162615DE074700DB95A0 /* Category.m in Sources */,
 				88D1162D15DE142000DB95A0 /* CategoryItem.m in Sources */,
 				1801D74315DE2E050086D163 /* CategoryEditViewController.m in Sources */,
-				88F2D69815E492E7002510F1 /* CategoryItemSViewController.m in Sources */,
-				88F2D69B15E492F2002510F1 /* CategoryItemMViewController.m in Sources */,
 				88F2D69E15E49E45002510F1 /* CategoryViewController.m in Sources */,
 				886904CC15E5E1810054E01F /* CategoryItemViewController.m in Sources */,
 				7D41003E15EE47BB0038B82B /* PiptureAppDelegate+GATracking.m in Sources */,
