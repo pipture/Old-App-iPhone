@@ -6,12 +6,11 @@ from oauth2client.client import SignedJwtAssertionCredentials
 
 
 class GoogleAnalyticsV3Client(object):
-    SCOPE = 'https://www.googleapis.com/auth/analytics.readonly'
     ACCOUNT_NAME = settings.GOOGLE_API_ACCOUNT_NAME
     PRIVATE_KEY = settings.GOOGLE_API_PRIVATE_KEY
-    STORAGE = settings.GOOGLE_API_CREDENTIALS_STORAGE
     GA_PROFILE_ID = settings.GOOGLE_ANALYTICS_PROFILE_ID
 
+    scope = 'https://www.googleapis.com/auth/analytics.readonly'
     service_name = 'analytics'
     version = 'v3'
 
@@ -27,7 +26,7 @@ class GoogleAnalyticsV3Client(object):
     def get_credentials(self):
         credentials = SignedJwtAssertionCredentials(self.ACCOUNT_NAME,
                                                     self.load_key(),
-                                                    self.SCOPE)
+                                                    self.scope)
         return credentials
 
     def initialize_service(self):
