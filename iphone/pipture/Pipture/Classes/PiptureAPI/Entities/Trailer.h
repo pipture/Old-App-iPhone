@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "PlaylistItem.h"
 
-@interface Trailer  : PlaylistItem
+@interface Trailer : PlaylistItem
 
 @property(assign, nonatomic) NSInteger trailerId;
 @property(retain, nonatomic) NSString* title;
@@ -20,6 +20,5 @@
 @property(retain, nonatomic) NSString* trailerEmailScreenshot;
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
-
 
 @end

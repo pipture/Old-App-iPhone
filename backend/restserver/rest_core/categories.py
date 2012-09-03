@@ -1,9 +1,11 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
+
 from django.http import HttpResponse
 from django.views.generic.base import View
 from django.db.models import Q
 
+from pipture.ga_service import pipture_ga
 from restserver.pipture.models import UserPurchasedItems, Albums, Episodes, Series
 
 
@@ -67,7 +69,22 @@ class MostPopularVideos(CategoryView, VideosMixin):
     title = 'Most Popular'
 
     def get_items_queryset(self):
-        return Episodes.objects.all()
+        ids = self.get_data_from_ga()
+        episodes = Episodes.objects.filter(EpisodeId__in=ids)
+        return [episodes.get(EpisodeId=id) for id in ids
+                if episodes.filter(EpisodeId=id)]
+
+    def get_data_from_ga(self):
+        end_date = datetime.today()
+        start_date = end_date - timedelta(days=4)
+
+        feed = pipture_ga.get_most_popular_videos(self.limit * 2,
+                                                  start_date,
+                                                  end_date)
+        for item in feed:
+            print item
+        return tuple(int(item['ga:customVarValue2']) for item in feed
+                     if item['ga:customVarValue2'].isdigit())
 
 
 class RecentlyAddedVideos(CategoryView, VideosMixin):

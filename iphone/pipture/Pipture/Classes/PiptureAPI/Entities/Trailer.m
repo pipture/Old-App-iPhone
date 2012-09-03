@@ -118,4 +118,5 @@ static NSString* const VIDEO_KEY_NAME = @"TrailerId";
 {
     return NO;
 }
+
 @end

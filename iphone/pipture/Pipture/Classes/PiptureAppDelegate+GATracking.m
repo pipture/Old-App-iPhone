@@ -23,11 +23,23 @@ static NSString* const GA_ERROR_MESSAGE = @"Google Analytics tracking error: %@"
                           dispatchPeriod:kGANDispatchPeriodSec
                                 delegate:nil];
     
-    [self setCustomGAVariable:GA_VISITOR_VARIABLE(1, @"key", [self loadUserUUID])];
+    [self setCustomGAVariable:GA_VARIABLE(GA_INDEX_KEY, 
+                                          GA_VAR_KEY, 
+                                          [self loadUserUUID],
+                                          kGANVisitorScope)];
 }
 
 - (void)stopGoogleAnalyticsTracker {
     [gaTracker stopTracker];
+}
+
+- (void)trackPageviewToGoogleAnalytics:(NSString *)page {
+    NSError * error;
+    
+    if (![gaTracker trackPageview:page
+                        withError:&error]) {
+        [self printTrackingError:error];
+    }        
 }
 
 - (void)printTrackingError:(NSError*)error {
@@ -44,6 +56,14 @@ static NSString* const GA_ERROR_MESSAGE = @"Google Analytics tracking error: %@"
                                    withError:&error]) {
         [self printTrackingError:error];
     }
+    NSLog(@"Set variable at index %@, %@ = %@", [variableMacro objectAtIndex:0], [variableMacro objectAtIndex:1], [variableMacro objectAtIndex:2]);
+}
+
+- (void)clearCustomGAVariableAtIndex:(NSInteger)index {
+    [gaTracker setCustomVariableAtIndex:index
+                                   name:@""
+                                  value:@""
+                              withError:nil];
 }
 
 - (BOOL)trackGoogleAnalyticsEvent:(NSArray *)eventMacro 
@@ -65,6 +85,13 @@ static NSString* const GA_ERROR_MESSAGE = @"Google Analytics tracking error: %@"
                      withError:&error]) {
         [self printTrackingError:error];
         return NO;
+    }
+    
+    if (customVariables) {
+        for (NSArray *variable in customVariables) {
+            NSInteger index = [[variable objectAtIndex:0] intValue];
+            [self clearCustomGAVariableAtIndex:index];
+        }
     }
     
     return YES;    

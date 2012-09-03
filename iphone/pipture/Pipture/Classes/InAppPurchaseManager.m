@@ -107,12 +107,18 @@
         [[PiptureAppDelegate instance] setUserPurchasedAlbumSinceAppStart:YES];                
         [[NSNotificationCenter defaultCenter] postNotificationName:ALBUM_PURCHASED_NOTIFICATION object:nil];
         NSString * albPurch = [NSString stringWithFormat:@"Album purchased: %@", appleProductId_];
-        GA_TRACK_EVENT(GA_EVENT_PURCHASE_ALBUM, albPurch, -1, nil);
+        GA_TRACK_EVENT(GA_EVENT_PURCHASE_ALBUM, 
+                       albPurch, 
+                       GA_NO_VALUE,
+                       GA_NO_VARS);
 //        (@"PurchaseAlbum", albPurch);
     } else {
         [[PiptureAppDelegate instance] setUserPurchasedViewsSinceAppStart:YES];        
         [[NSNotificationCenter defaultCenter] postNotificationName:VIEWS_PURCHASED_NOTIFICATION object:nil];
-        GA_TRACK_EVENT(GA_EVENT_PURCHASE_VIDEO, @"100 views purchased", -1, nil);
+        GA_TRACK_EVENT(GA_EVENT_PURCHASE_VIDEO, 
+                       @"100 views purchased",
+                       GA_NO_VALUE,
+                       GA_NO_VARS);
 //        (@"Purchase", @"100 Views purchased");
     }
     
@@ -131,7 +137,10 @@
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"purchaseNotConfirmed");
     
-    GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, @"Not confirmed", -1, nil);
+    GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, 
+                   @"Not confirmed", 
+                   GA_NO_VALUE,
+                   GA_NO_VARS);
 //    (@"Purchase", @"Not confirmed");
     [self release];    
 }
@@ -142,7 +151,10 @@
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"unknownProductPurchased");
     
-    GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, @"Unknown product", -1, nil);
+    GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, 
+                   @"Unknown product", 
+                   GA_NO_VALUE, 
+                   GA_NO_VARS);
 //    (@"Purchase", @"Unknown product");
     [self release];    
 }
@@ -153,7 +165,10 @@
     [[PiptureAppDelegate instance] dismissModalBusy];
     NSLog(@"duplicateTransactionId");
     
-    GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, @"Duplicate transaction", -1, nil);
+    GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR,
+                   @"Duplicate transaction",
+                   GA_NO_VALUE,
+                   GA_NO_VARS);
 //    (@"Purchase", @"Duplicate transaction");
     [self release];    
 }
@@ -218,7 +233,10 @@
 //
 - (void)purchaseCredits
 {
-    GA_TRACK_EVENT(GA_EVENT_PURCHASE_VIDEO, @"Start credits purchasing", -1, nil);
+    GA_TRACK_EVENT(GA_EVENT_PURCHASE_VIDEO,
+                   @"Start credits purchasing",
+                   GA_NO_VALUE,
+                   GA_NO_VARS);
 //    (@"Purchase", @"Start credits purchasing");
     
     NSArray * purchase = [[PiptureAppDelegate instance] getInAppPurchases];
@@ -244,7 +262,10 @@
     
     NSString * albPurch = [NSString stringWithFormat:@"Album purchased: %@", appleProductId];
     
-    GA_TRACK_EVENT(GA_EVENT_PURCHASE_ALBUM, albPurch, -1, nil);
+    GA_TRACK_EVENT(GA_EVENT_PURCHASE_ALBUM,
+                   albPurch,
+                   GA_NO_VALUE,
+                   GA_NO_VARS);
 //    (@"PurchaseAlbum", albPurch);
     
     isInProcess = YES;
@@ -353,7 +374,10 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         [self finishTransaction:transaction wasSuccessful:NO];
 
         NSString * err = [NSString stringWithFormat:@"Transaction finished with error: %@!", transaction.error.localizedDescription];
-        GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, err, -1, nil);
+        GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, 
+                       err, 
+                       GA_NO_VALUE,
+                       GA_NO_VARS);
 //        (@"Purchase", err);
         
         SHOW_ERROR(@"Purchase failed", err);
@@ -365,7 +389,10 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         // this is fine, the user just cancelled, so don’t notify
         [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
         
-        GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, @"Credits purchasing cancelled by user", -1, nil);
+        GA_TRACK_EVENT(GA_EVENT_PURCHASE_ERROR, 
+                       @"Credits purchasing cancelled by user", 
+                       GA_NO_VALUE, 
+                       GA_NO_VARS);
 //        (@"Purchase", @"Credits purchasing cancelled by user");
         [[NSNotificationCenter defaultCenter] postNotificationName:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];
     }

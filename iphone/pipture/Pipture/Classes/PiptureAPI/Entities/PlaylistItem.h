@@ -7,9 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "GAEventWithCustomVariablesEmitter.h"
 
 // Abstract class
-@interface PlaylistItem  : NSObject 
+@interface PlaylistItem : NSObject <GAEventWithCustomVariablesEmitter>
 
 @property(readonly,nonatomic) NSString *videoName;
 @property(readonly,nonatomic) NSString *videoContainerName;
@@ -27,6 +28,5 @@
 -(BOOL)isVideoUrlLQLoaded;
 -(const NSString*)videoKeyName;
 -(NSInteger)videoKeyValue;
-
 
 @end

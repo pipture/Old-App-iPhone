@@ -29,7 +29,7 @@
 
 @property(readonly, nonatomic) Album* album;
 
--(id)initWithJSON:(NSDictionary*)jsonData;
+- (id)initWithJSON:(NSDictionary*)jsonData;
 - (void)setExternalAlbum:(Album*)album;
 
 @end

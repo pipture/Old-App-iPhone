@@ -438,13 +438,12 @@ static PiptureAppDelegate *instance;
      ◦ User attempts a purchase and what they purchased.
      */
     
-    NSError *error;
-    GA_TRACK_EVENT(GA_EVENT_APPLICATION_START, nil, -1, nil);
+    GA_TRACK_EVENT(GA_EVENT_APPLICATION_START, 
+                   GA_NO_LABEL,
+                   GA_NO_VALUE, 
+                   GA_NO_VARS);
     
-    if (![[GANTracker sharedTracker] trackPageview:@"/app_entry_point"
-                                         withError:&error]) {
-        NSLog(@"error in trackPageview");
-    }        
+    [self trackPageviewToGoogleAnalytics:@"/app_entry_point"];
     
     // Observe the kNetworkReachabilityChangedNotification. When that notification is posted, the
     // method "reachabilityChanged" will be called. 
@@ -608,7 +607,10 @@ static PiptureAppDelegate *instance;
     }
     
 //    (@"Open Activity", @"Video player");
-    GA_TRACK_EVENT(GA_EVENT_ACTIVITY_OPENPLAYER, nil, -1, nil);
+    GA_TRACK_EVENT(GA_EVENT_ACTIVITY_OPENPLAYER,
+                   GA_NO_LABEL,
+                   GA_NO_VALUE, 
+                   GA_NO_VARS);
 }
 
 - (BOOL)isHighResolutionDevice {

@@ -440,6 +440,8 @@
     [albumsView release];
     [scheduleModel release];
 
+    [channelCategories release];
+    [categoriesOrder release];
 
     [scheduleEnhancer release];
     [flipEnhancer release];
@@ -845,25 +847,19 @@
     // Revealing categories order from UserDefaults
     NSArray *storedCategoriesOrder = [appDelegate getChannelCategoriesOrder];
     
-    [categoriesOrder release];
-    
     if (storedCategoriesOrder && categories.count == storedCategoriesOrder.count) {
-        [channelCategories release];
-        
         [self updateCategories:categories 
                        byOrder:storedCategoriesOrder
                    updateViews:NO];
-        categoriesOrder = [storedCategoriesOrder retain];
+        self.categoriesOrder = [storedCategoriesOrder retain];
     } else {
-        [categories retain];
-        [channelCategories release];
-        channelCategories = categories;
+        self.channelCategories = categories;
         
         NSMutableArray *newCategoriesOrder = [[NSMutableArray alloc] init];
         for (Category *category in channelCategories) {
             [newCategoriesOrder addObject:category.categoryId];
         }
-        categoriesOrder = [[NSArray alloc] initWithArray:newCategoriesOrder];
+        self.categoriesOrder = [[NSArray alloc] initWithArray:newCategoriesOrder];
         
         [appDelegate putChannelCategoriesOrder:categoriesOrder];
     }
@@ -889,19 +885,19 @@
         [reorderedCategories addObject:category];
     }
     
-    channelCategories = reorderedCategories;
-    [categoriesById release];
-    
-    [categoriesOrder release];
-    categoriesOrder = [[NSArray alloc] initWithArray:newCategoriesOrder];
+    self.channelCategories = reorderedCategories;
+    self.categoriesOrder = [[NSArray alloc] initWithArray:newCategoriesOrder];
     
     if (updateViews) {
         [[PiptureAppDelegate instance] putChannelCategoriesOrder:categoriesOrder];
         [self.newsView updateCategoriesOrder:categoriesOrder];
     }
+    
+    [categoriesById release];
+    [reorderedCategories release];
 }
 
-- (void)getChannelCategories {
+- (void)requestChannelCategories {
     PiptureModel *piptureModel = [[PiptureAppDelegate instance] model];
     [piptureModel cancelCurrentRequest];
     [piptureModel getChannelCategoriesForReciever:self];
