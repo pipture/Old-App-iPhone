@@ -44,6 +44,9 @@
 @synthesize cardSectionViewController;
 @synthesize emptyCell;
 @synthesize progressView;
+@synthesize prompt1Label;
+@synthesize prompt2Label;
+@synthesize numberOfViewsLabel;
 
 
 #pragma mark - View lifecycle
@@ -497,8 +500,27 @@
 - (void) onNewBalance:(NSNotification *) notification {
     progressView.hidden = YES;
     if (viewType == DetailAlbumViewType_Videos) {
+        [self setNumberOfViews:[[PiptureAppDelegate instance] getBalance]];
         [self showScrollingHintIfNeeded];
     }
+}
+
+-(void)setNumberOfViews:(NSInteger)numberOfViews {
+    NSString* text = [NSString stringWithFormat:@"%d",numberOfViews,nil];
+    if (prompt1Label.frame.origin.y == prompt2Label.frame.origin.y) {
+        // Need to move prompt 2 and resize number of views
+        
+        NSInteger newwidth = [text sizeWithFont:numberOfViewsLabel.font constrainedToSize:CGSizeMake(100, numberOfViewsLabel.frame.size.height) lineBreakMode:UILineBreakModeTailTruncation].width;
+        CGRect rect = numberOfViewsLabel.frame;
+        rect.size.width = newwidth;
+        numberOfViewsLabel.frame = rect;
+        CGRect rect2 = prompt2Label.frame;
+        rect2.origin.x = rect.origin.x + rect.size.width + 5;
+        prompt2Label.frame = rect2;
+    }
+    numberOfViewsLabel.text = text;
+    
+    
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)balance {
