@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "PlaylistItemFactory.h"
 
 @interface CategoryItem : NSObject
 
@@ -14,6 +15,7 @@
 @property(retain, nonatomic) NSString* title;
 @property(retain, nonatomic) NSString* thumbnail;
 @property(retain, nonatomic) NSString* type;
+@property(retain, nonatomic) PlaylistItem* playlistItem;
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
 

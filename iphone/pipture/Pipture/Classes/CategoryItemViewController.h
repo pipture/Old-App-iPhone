@@ -16,6 +16,6 @@
 
 - (void)prepareWithX:(int)x withY:(int)y withOffset:(int)offset;
 - (IBAction)playChannelCategoryVideo:(id)sender;
-+ (PlaylistItem*)getCategoryItemVideo:(CategoryItem*)categoryItem;
+- (id)initWithCategoryItem:(CategoryItem *) categoryItem NibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 
 @end

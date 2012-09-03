@@ -66,7 +66,7 @@ static NSInteger const MEDIUM_THUMBS = 3;
     
     self.categoryTitle.text = [category title];
     
-    CategoryItemViewController *sampleItem = [self categoryItemByCategory:category];
+    CategoryItemViewController *sampleItem = [self categoryItemByCategory:category categoryItem:nil];
     if (!sampleItem) return;
 
     NSInteger contentHeight = sampleItem.view.frame.size.height * category.rows;
@@ -89,23 +89,21 @@ static NSInteger const MEDIUM_THUMBS = 3;
     int offset = self.itemContainer.frame.origin.y;
     for (int y = 0; y < category.rows; y++) {
         for (int x = 0; x < category.columns; x++) {
-            CategoryItemViewController *item = [self categoryItemByCategory:category];
-            
-            [item setCategoryItem:[category.items objectAtIndex:i++]];
+            CategoryItemViewController *item = [self categoryItemByCategory:category categoryItem:[category.items objectAtIndex:i++]];
             [item prepareWithX:x withY:y withOffset:offset];
             [self.view addSubview: item.view];
         }
     }
 }
 
--(CategoryItemViewController*)categoryItemByCategory: (Category*) category{
+-(CategoryItemViewController*)categoryItemByCategory:(Category*)category categoryItem:(CategoryItem*)categoryItem{
     CategoryItemViewController *item = nil;
     switch (category.columns) {
         case SMALL_THUMBS:
-            item = [[CategoryItemViewController alloc] initWithNibName:@"CategoryItemSView" bundle:nil];
+            item = [[CategoryItemViewController alloc] initWithCategoryItem:categoryItem NibName:@"CategoryItemSView" bundle:nil];
             break;
         case MEDIUM_THUMBS:
-            item = [[CategoryItemViewController alloc] initWithNibName:@"CategoryItemMView" bundle:nil];
+            item = [[CategoryItemViewController alloc] initWithCategoryItem: categoryItem NibName:@"CategoryItemMView" bundle:nil];
             break;
         default:
             NSLog(@"Unexpected channelCategory parameter COLUMNS");

@@ -715,7 +715,7 @@
         }
         else {
             for(CategoryItem* categoryItem in category.items){
-                [playlist addObject: [CategoryItemViewController getCategoryItemVideo:categoryItem]];
+                [playlist addObject: categoryItem.playlistItem];
             }
         }
     }
