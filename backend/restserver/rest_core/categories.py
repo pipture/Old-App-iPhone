@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.views.generic.base import View
 from django.db.models import Q
 
-from pipture.ga_service import pipture_ga
+from pipture.ga_v3_service import pipture_ga
 from restserver.pipture.models import UserPurchasedItems, Albums, Episodes, Series
 
 
@@ -52,8 +52,10 @@ class SeriesMixin(object):
 
     def get_item_info(self, series):
         first_album = series.albums_set.all()[0]
+        trailer = first_album.TrailerId
         return dict(type='album',
-                    id=first_album.TrailerId.TrailerId,
+                    id=trailer.TrailerId,
+                    line1=trailer.Line1,
                     Thumbnail=first_album.Thumbnail.get_url(),
                     Title=series.Title)
 
@@ -67,6 +69,7 @@ class ScheduledSeries(CategoryView):
 class MostPopularVideos(CategoryView, VideosMixin):
     category_id = 1
     title = 'Most Popular'
+    days_period = 10
 
     def get_items_queryset(self):
         ids = self.get_data_from_ga()
@@ -76,15 +79,11 @@ class MostPopularVideos(CategoryView, VideosMixin):
 
     def get_data_from_ga(self):
         end_date = datetime.today()
-        start_date = end_date - timedelta(days=4)
+        start_date = end_date - timedelta(days=self.days_period)
 
-        feed = pipture_ga.get_most_popular_videos(self.limit * 2,
+        return pipture_ga.get_most_popular_videos(self.limit,
                                                   start_date,
                                                   end_date)
-        for item in feed:
-            print item
-        return tuple(int(item['ga:customVarValue2']) for item in feed
-                     if item['ga:customVarValue2'].isdigit())
 
 
 class RecentlyAddedVideos(CategoryView, VideosMixin):
