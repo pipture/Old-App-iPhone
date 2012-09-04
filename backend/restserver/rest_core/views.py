@@ -25,6 +25,8 @@ from restserver.pipture.models import AppleProducts, PurchaseItems, UserPurchase
 
 from django.db.models import Q
 
+from django.conf import settings
+
 def local_date_time_date_time_to_UTC_sec (datetime_datetime):
     """
     time.mktime - for local to UTC
@@ -1336,10 +1338,10 @@ def sendMessage (request):
     is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=key)
     message_cost = int(SEND_EP.Price) * int(views_count)
 
-    #if album is purchased, then 10 views are free
-    if int(views_count) > 10 and is_purchased:
-        message_cost -= int(SEND_EP.Price) * 10
-    elif int(views_count) <= 10 and is_purchased:
+    #if album is purchased, then settings.MESSAGE_VIEWS_LOWER_LIMIT views are free
+    if int(views_count) > settings.MESSAGE_VIEWS_LOWER_LIMIT and is_purchased:
+        message_cost -= int(SEND_EP.Price) * settings.MESSAGE_VIEWS_LOWER_LIMIT
+    elif int(views_count) <= settings.MESSAGE_VIEWS_LOWER_LIMIT and is_purchased:
         message_cost = 0
 
     user_ballance = int(purchaser.Balance)
@@ -1456,14 +1458,12 @@ def getUnusedMessageViews (request):
     for message in messages:
         if message.LinkType == "E":
             is_purchased = episode_in_purchased_album(videoid=message.LinkId, purchaser=key)
-            cnt = message.ViewsLimit - message.ViewsCount
+            cnt = 0
             if is_purchased:
-                if cnt <= 10:
-                    cnt = 0
-                else:
-                    cnt -= 10
 
-            if cnt < 0: cnt = 0
+                rest = message.ViewsLimit - message.ViewsCount - settings.MESSAGE_VIEWS_LOWER_LIMIT;
+                if rest > 0:
+                    cnt = rest
 
             if message.Timestamp is not None:
                 if message.Timestamp>= weekdate:
@@ -1527,23 +1527,21 @@ def deactivateMessageViews (request):
         if message.LinkType == "E":
             if period == 0 or (message.Timestamp >= weekdate and period == 1) or (message.Timestamp < weekdate and period == 2):
                 is_purchased = episode_in_purchased_album(videoid=message.LinkId, purchaser=key)
-                cnt = message.ViewsLimit - message.ViewsCount
+                cnt = 0
                 if is_purchased:
-                    if cnt <= 10:
-                        cnt = 0
-                    else:
-                        cnt -= 10
-
-                if cnt < 0: cnt = 0
+                    rest = message.ViewsLimit - message.ViewsCount - settings.MESSAGE_VIEWS_LOWER_LIMIT;
+                    if rest > 0:
+                        cnt = rest
 
                 group += cnt
-                if message.ViewsCount < message.ViewsLimit:
+                if cnt>0:
                     message.ViewsCount = message.ViewsLimit
                     message.save()
 
-    user_ballance = int(purchaser.Balance)
-    purchaser.Balance = Decimal(user_ballance + group)
-    purchaser.save()
+    if group>0:
+        user_ballance = int(purchaser.Balance)
+        purchaser.Balance = Decimal (user_ballance + group)
+        purchaser.save()
 
     response["Restored"] = "%s" % group
     response["Balance"] = "%s" % purchaser.Balance
