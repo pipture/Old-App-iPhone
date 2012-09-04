@@ -55,6 +55,10 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) IBOutlet UITableViewCell *emptyCell;
 @property (retain, nonatomic) IBOutlet UIView *progressView;
 
+@property (retain, nonatomic) IBOutlet UILabel *prompt1Label;
+@property (retain, nonatomic) IBOutlet UILabel *prompt2Label;
+@property (retain, nonatomic) IBOutlet UILabel *numberOfViewsLabel;
+
 @property (retain, nonatomic) LibraryCardController *cardSectionViewController;
 
 -(void)showScrollingHintIfNeeded;
