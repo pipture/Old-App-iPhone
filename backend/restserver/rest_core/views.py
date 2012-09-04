@@ -1399,14 +1399,11 @@ def getUnusedMessageViews (request):
     for message in messages:
         if message.LinkType == "E":
             is_purchased = episode_in_purchased_album(videoid=message.LinkId, purchaser=key)
-            cnt = message.ViewsLimit - message.ViewsCount
+            cnt = 0
             if is_purchased:
-                if cnt <= 10:
-                    cnt = 0
-                else:
-                    cnt = cnt - 10
-
-            if cnt < 0: cnt = 0
+                rest = message.ViewsLimit - message.ViewsCount - 10;
+                if (rest > 0):
+                    cnt = rest
 
             if message.Timestamp != None:
                 if message.Timestamp>= weekdate:
@@ -1466,23 +1463,21 @@ def deactivateMessageViews (request):
         if message.LinkType == "E":
             if period == 0 or (message.Timestamp >= weekdate and period == 1) or (message.Timestamp < weekdate and period == 2):
                 is_purchased = episode_in_purchased_album(videoid=message.LinkId, purchaser=key)
-                cnt = message.ViewsLimit - message.ViewsCount
+                cnt = 0
                 if is_purchased:
-                    if cnt <= 10:
-                        cnt = 0
-                    else:
-                        cnt = cnt - 10
-
-                if cnt < 0: cnt = 0
+                    rest = message.ViewsLimit - message.ViewsCount - 10;
+                    if (rest > 0):
+                        cnt = rest
 
                 group = group + cnt
-                if message.ViewsCount < message.ViewsLimit:
+                if cnt>0:
                     message.ViewsCount = message.ViewsLimit
                     message.save()
 
-    user_ballance = int(purchaser.Balance)
-    purchaser.Balance = Decimal (user_ballance + group)
-    purchaser.save()
+    if group>0:
+        user_ballance = int(purchaser.Balance)
+        purchaser.Balance = Decimal (user_ballance + group)
+        purchaser.save()
 
     response["Restored"] = "%s" % group
     response["Balance"] = "%s" % (purchaser.Balance)
