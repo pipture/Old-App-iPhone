@@ -25,6 +25,8 @@ from restserver.pipture.models import AppleProducts, PurchaseItems, UserPurchase
 
 from django.db.models import Q
 
+from django.conf import settings
+
 def local_date_time_date_time_to_UTC_sec (datetime_datetime):
     """
     time.mktime - for local to UTC
@@ -1283,10 +1285,10 @@ def sendMessage (request):
     is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=key)
     message_cost = int(SEND_EP.Price) * int(views_count)
 
-    #if album is purchased, then 10 views are free
-    if int(views_count) > 10 and is_purchased:
-        message_cost = message_cost - int(SEND_EP.Price) * 10
-    elif int(views_count) <= 10 and is_purchased:
+    #if album is purchased, then settings.MESSAGE_VIEWS_LOWER_LIMIT views are free
+    if int(views_count) > settings.MESSAGE_VIEWS_LOWER_LIMIT and is_purchased:
+        message_cost = message_cost - int(SEND_EP.Price) * settings.MESSAGE_VIEWS_LOWER_LIMIT
+    elif int(views_count) <= settings.MESSAGE_VIEWS_LOWER_LIMIT and is_purchased:
         message_cost = 0
 
     user_ballance = int(purchaser.Balance)
@@ -1401,7 +1403,7 @@ def getUnusedMessageViews (request):
             is_purchased = episode_in_purchased_album(videoid=message.LinkId, purchaser=key)
             cnt = 0
             if is_purchased:
-                rest = message.ViewsLimit - message.ViewsCount - 10;
+                rest = message.ViewsLimit - message.ViewsCount - settings.MESSAGE_VIEWS_LOWER_LIMIT;
                 if (rest > 0):
                     cnt = rest
 
@@ -1465,7 +1467,7 @@ def deactivateMessageViews (request):
                 is_purchased = episode_in_purchased_album(videoid=message.LinkId, purchaser=key)
                 cnt = 0
                 if is_purchased:
-                    rest = message.ViewsLimit - message.ViewsCount - 10;
+                    rest = message.ViewsLimit - message.ViewsCount - settings.MESSAGE_VIEWS_LOWER_LIMIT;
                     if (rest > 0):
                         cnt = rest
 
