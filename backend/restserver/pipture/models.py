@@ -514,6 +514,26 @@ class UserPurchasedItems(models.Model):
         verbose_name_plural = "User Purchased Items"
 
 
+class FreeMsgViewers(models.Model):
+    FreeMsgViewersId = models.AutoField(primary_key=True)
+    UserId = models.ForeignKey(PipUsers, editable=False)
+    EpisodeId = models.ForeignKey(Episodes, editable=False)
+    Rest = models.IntegerField()
+
+    def __unicode__(self):
+        return "%s: %s, %s free views" % (self.UserId.UserUID, self.EpisodeId.Title, self.Rest)
+
+    def __str__(self):
+        return "%s: %s, %s free views" % (self.UserId.UserUID, self.EpisodeId.Title, self.Rest)
+
+    class Admin:
+        pass
+
+    class Meta:
+        verbose_name = "Free Message Viewers"
+        verbose_name_plural = "Free Message Viewers"
+
+
 class AppleProducts(models.Model):
     AppleProductId = models.AutoField(primary_key=True)
     ProductId = models.CharField(verbose_name="Apple product Id",
@@ -604,6 +624,7 @@ class SendMessage(models.Model):
     ScreenshotURL = models.CharField(blank=True, null=True,  max_length=200)
     ViewsCount = models.IntegerField()
     ViewsLimit = models.IntegerField()
+    FreeViews = models.IntegerField()
     AllowRemove = models.IntegerField(max_length=1)
     AutoLock = models.IntegerField(max_length=1)
 

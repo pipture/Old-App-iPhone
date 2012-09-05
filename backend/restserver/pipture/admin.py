@@ -17,7 +17,8 @@ from django.contrib.admin.views.main import ChangeList
 
 from restserver.pipture.models import Videos, Trailers, Series, Albums, Episodes, TimeSlots, TimeSlotVideos,\
                                       PiptureSettings, PipUsers, AppleProducts,Transactions, PurchaseItems,\
-                                      UserPurchasedItems,SendMessage, AlbumScreenshotGallery, UserProfile
+                                      UserPurchasedItems,SendMessage, AlbumScreenshotGallery, UserProfile,\
+                                      FreeMsgViewers
 from restserver.pipture.forms import AdminTimeSlotsForm
 
 admin.site.register(PiptureSettings)
@@ -28,6 +29,7 @@ admin.site.register(PurchaseItems)
 admin.site.register(UserPurchasedItems)
 admin.site.register(SendMessage)
 admin.site.register(UserProfile)
+admin.site.register(FreeMsgViewers)
 #admin.site.register(TimeSlotVideos)
 
 from pytz import timezone

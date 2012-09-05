@@ -21,7 +21,8 @@ from restserver.pipture.views import get_albums_from_series
 from restserver.pipture.models import AppleProducts, PurchaseItems, UserPurchasedItems,\
                                       Albums, Series, Episodes, Trailers,\
                                       TimeSlots, TimeSlotVideos, AlbumScreenshotGallery,\
-                                      Transactions, PipUsers, PiptureSettings, SendMessage
+                                      Transactions, PipUsers, PiptureSettings, SendMessage,\
+                                      FreeMsgViewers
 
 from django.db.models import Q
 
@@ -1173,15 +1174,31 @@ def getBalance (request):
     response["Balance"] = "%s" % (purchaser.Balance)
     return HttpResponse (json.dumps(response))
 
-def new_send_message (user, video_id, message, video_type, user_name, views_count, screenshot_url = ''):
+def new_send_message (user, video_id, message, video_type, user_name, views_count, screenshot_url = '', free_views=0):
     try:
-        s = SendMessage (UserId=user,Text=message,LinkId= video_id,LinkType=video_type, UserName=user_name, ScreenshotURL=screenshot_url, ViewsCount=0, ViewsLimit=views_count, AllowRemove=0, AutoLock=1)
+        s = SendMessage (UserId=user,Text=message,LinkId= video_id,LinkType=video_type, UserName=user_name, ScreenshotURL=screenshot_url, ViewsCount=0, ViewsLimit=views_count, FreeViews=free_views, AllowRemove=0, AutoLock=1)
         s.save()
     except Exception as e:
         print "%s" % (e)
         raise
     return s.Url
 
+def free_viewers(purchaser, episode_id):
+    try:
+        episode = Episodes.objects.get(EpisodeId=episode_id);
+    except Episodes.DoesNotExist:
+        return None
+        
+    is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=purchaser.Token)
+    if not is_purchased:
+        return None
+    try:
+        free_viewers = FreeMsgViewers.objects.get(UserId=purchaser, EpisodeId=episode)
+    except FreeMsgViewers.DoesNotExist:
+        free_viewers = FreeMsgViewers(UserId=purchaser, EpisodeId=episode, Rest=settings.MESSAGE_VIEWS_LOWER_LIMIT)
+        free_viewers.save()
+        
+    return free_viewers
 
 @csrf_exempt
 def sendMessage (request):
@@ -1282,14 +1299,21 @@ def sendMessage (request):
 
     #else:
 
-    is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=key)
     message_cost = int(SEND_EP.Price) * int(views_count)
 
     #if album is purchased, then settings.MESSAGE_VIEWS_LOWER_LIMIT views are free
-    if int(views_count) > settings.MESSAGE_VIEWS_LOWER_LIMIT and is_purchased:
-        message_cost = message_cost - int(SEND_EP.Price) * settings.MESSAGE_VIEWS_LOWER_LIMIT
-    elif int(views_count) <= settings.MESSAGE_VIEWS_LOWER_LIMIT and is_purchased:
-        message_cost = 0
+    freeViews = 0
+    free = free_viewers(purchaser,episode_id)
+    if free and free.Rest > 0:
+        message_cost -= int(SEND_EP.Price) * free.Rest
+        if message_cost<0: message_cost = 0
+        
+        rest = free.Rest - int(views_count)
+        rest = (rest if rest > 0 else 0)
+        freeViews =  free.Rest - rest;
+        
+        free.Rest = rest
+        free.save()
 
     user_ballance = int(purchaser.Balance)
     if (user_ballance - message_cost) >= 0:
@@ -1298,7 +1322,7 @@ def sendMessage (request):
         #new_p.save()
         purchaser.Balance = Decimal (user_ballance - message_cost)
         purchaser.save()
-        u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
+        u_url = new_send_message (user=purchaser, video_id=episode_id, message=message, video_type="E", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''), free_views=freeViews)
         vhost = PiptureSettings.objects.all()[0].VideoHost
 
         response['MessageURL'] = "%s/%s" % (vhost, u_url)
@@ -1388,7 +1412,7 @@ def getUnusedMessageViews (request):
         return HttpResponse (json.dumps(response))
 
     try:
-        messages = SendMessage.objects.all().filter(UserId = purchaser)
+        messages = SendMessage.objects.raw('SELECT * FROM pipture_sendmessage WHERE UserId_id=%s AND ViewsLimit<>FreeViews', [purchaser.UserUID])
     except SendMessage.DoesNotExist:
         response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is no messages for user %s." % (purchaser)}
         return HttpResponse (json.dumps(response))
@@ -1403,7 +1427,7 @@ def getUnusedMessageViews (request):
             is_purchased = episode_in_purchased_album(videoid=message.LinkId, purchaser=key)
             cnt = 0
             if is_purchased:
-                rest = message.ViewsLimit - message.ViewsCount - settings.MESSAGE_VIEWS_LOWER_LIMIT;
+                rest = message.ViewsLimit - message.ViewsCount - message.FreeViews;
                 if (rest > 0):
                     cnt = rest
 
@@ -1452,7 +1476,7 @@ def deactivateMessageViews (request):
         return HttpResponse (json.dumps(response))
 
     try:
-        messages = SendMessage.objects.all().filter(UserId = purchaser)
+        messages = SendMessage.objects.raw('SELECT * FROM pipture_sendmessage WHERE UserId_id=%s AND ViewsLimit<>FreeViews', [purchaser.UserUID])
     except SendMessage.DoesNotExist:
         response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is no messages for user %s." % (purchaser)}
         return HttpResponse (json.dumps(response))
@@ -1467,7 +1491,7 @@ def deactivateMessageViews (request):
                 is_purchased = episode_in_purchased_album(videoid=message.LinkId, purchaser=key)
                 cnt = 0
                 if is_purchased:
-                    rest = message.ViewsLimit - message.ViewsCount - settings.MESSAGE_VIEWS_LOWER_LIMIT;
+                    rest = message.ViewsLimit - message.ViewsCount - message.FreeViews;
                     if (rest > 0):
                         cnt = rest
 
