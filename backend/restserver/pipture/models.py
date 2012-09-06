@@ -112,10 +112,16 @@ class Albums(models.Model):
         ('P', 'Album pass'),
         ('B', 'Buy album'),
     )
+
+    STATUS_NORMAL = 1
+    STATUS_PREMIERE = 2
+    STATUS_COMING_SOON = 3
+
     SELL_STATUS_FROM_PURCHASE = {
         'N': 0,
         'P': 1,
         'B': 2,
+        'purchased': 100,
     }
 
     AlbumId = models.AutoField(primary_key=True)
@@ -287,7 +293,6 @@ class TimeSlots(models.Model):
         res_sdate = self.get_startTime()
         return res_sdate
 
-
     @property
     def EndTimeUTC(self):
         res_edate = self.get_endTime()
@@ -310,6 +315,18 @@ class TimeSlots(models.Model):
                                                self.EndDate,
                                                self.StartTime,
                                                self.EndTime)
+
+    @property
+    def status(self):
+        sec_utc_now = self.now_seconds()
+
+        if self.is_current(sec_utc_now):
+            status = 2
+        elif self.StartTimeUTC > sec_utc_now:
+            status = 1
+        else:
+            status = 0
+        return status
 
     def __unicode__(self):
         return self.complexName
@@ -348,7 +365,8 @@ class TimeSlots(models.Model):
         return res_date
 
     def is_current (self, local_time):
-        return (self.is_in_date_period(local_time) & self.is_in_time_period(local_time))
+        return self.is_in_date_period(local_time) and\
+               self.is_in_time_period(local_time)
 
     def manager_call(self, request):
         data = {'chosen_timeslot': self.TimeSlotsId,
@@ -449,6 +467,15 @@ class PiptureSettings(models.Model):
     class Meta:
         verbose_name = "Pipture setting"
         verbose_name_plural = "Pipture settings"
+
+    @staticmethod
+    def get_premiere_period():
+        return PiptureSettings.objects.all()[0].VideoHost
+
+    @staticmethod
+    def get_video_host():
+        return PiptureSettings.objects.all()[0].VideoHost
+
 
 
 class PipUsers(models.Model):
@@ -582,6 +609,9 @@ def uuid2shortid():
 
 
 class SendMessage(models.Model):
+
+    TYPE_EPISODE = 'E'
+    TYPE_TRAILER = 'T'
 
     LINKTYPE_CHOICES = (
         ('E', 'Episodes'),
