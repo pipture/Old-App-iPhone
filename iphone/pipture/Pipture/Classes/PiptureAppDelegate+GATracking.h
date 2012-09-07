@@ -14,13 +14,14 @@
 #define GA_EVENT_ACTIVITY_HOTNEWSCOVER      [NSArray arrayWithObjects:@"Activity", @"HotNewsCover", nil]
 #define GA_EVENT_ACTIVITY_OPENPLAYER        [NSArray arrayWithObjects:@"Activity", @"OpenPlayer", nil]
 #define GA_EVENT_VIDEO_PLAY                 [NSArray arrayWithObjects:@"Video", @"Play", nil]
+#define GA_EVENT_VIDEO_SEND                 [NSArray arrayWithObjects:@"Video", @"Send", nil]
 #define GA_EVENT_TIMESLOT_PLAY              [NSArray arrayWithObjects:@"Timeslot", @"Play", nil]
 #define GA_EVENT_PURCHASE_VIDEO             [NSArray arrayWithObjects:@"Purchase", @"Video", nil]
 #define GA_EVENT_PURCHASE_ALBUM             [NSArray arrayWithObjects:@"Purchase", @"Album", nil]
 #define GA_EVENT_PURCHASE_ERROR             [NSArray arrayWithObjects:@"Purchase", @"Error", nil]
 
 #define GA_VARIABLE(index, name, value, scope)      [NSArray arrayWithObjects:[NSNumber numberWithInt:index], name, value, [NSNumber numberWithInt:scope], nil]
-#define GA_SESSION_VARIABLE(index, name, value)     GA_VARIABLE(index, name, value, kGANPageScope)
+#define GA_PAGE_VARIABLE(index, name, value)     GA_VARIABLE(index, name, value, kGANPageScope)
 
 #define GA_TRACK_EVENT(event, label, value, vars)   [[PiptureAppDelegate instance] trackGoogleAnalyticsEvent:event withLabel:label withValue:value withCustomVariables:vars]
 
@@ -30,6 +31,8 @@
 
 static NSInteger const GA_INDEX_KEY = 1;
 static NSInteger const GA_INDEX_ITEM = 2;
+static NSInteger const GA_INDEX_MESSAGE_LENGTH = 3;
+static NSInteger const GA_INDEX_ALBUM_SELL_STATUS = 4;
 
 static NSString* const GA_VAR_KEY = @"key";
 
