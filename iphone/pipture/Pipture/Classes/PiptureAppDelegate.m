@@ -39,6 +39,7 @@
 @synthesize userPurchasedViewsSinceAppStart;
 @synthesize userPurchasedAlbumSinceAppStart;
 @synthesize albumForCover;
+@synthesize uuid;
 
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
@@ -84,7 +85,7 @@ static PiptureAppDelegate *instance;
     [backgroundImage release];
     [mailComposerNavigationController release];
     [piptureStoreNavigationController release];
-
+    [uuid release];
     
     [refreshTapZone release];
     [super dealloc];
@@ -221,9 +222,10 @@ static PiptureAppDelegate *instance;
     return [[NSUserDefaults standardUserDefaults] stringForKey:UUID_KEY];
 }
 
-- (void)saveUUID:(NSString*)uuid
+- (void)saveUUID:(NSString*)the_uuid
 {
-    [[NSUserDefaults standardUserDefaults] setObject:uuid 
+    self.uuid = the_uuid;
+    [[NSUserDefaults standardUserDefaults] setObject:the_uuid 
                                               forKey:UUID_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -324,15 +326,15 @@ static PiptureAppDelegate *instance;
     } 
     else
     {
-        NSString* uuid = [self loadUserUUID];        
-        if ([uuid length] == 0)
+        self.uuid = [self loadUserUUID];        
+        if ([self.uuid length] == 0)
         {
             registrationRequired = YES;
             [self processAuthentication];
         }
         else
         {
-            [model_ loginWithUUID:uuid receiver:self];
+            [model_ loginWithUUID:self.uuid receiver:self];
         }
     }
 }
@@ -364,8 +366,10 @@ static PiptureAppDelegate *instance;
 
 -(void)loggedIn:(NSDictionary*)params
 {
-    [self setCover:[params objectForKey:@"Cover"]];
-    [self setAlbumForCoverFromJSON:[params objectForKey:@"Album"]];
+    if (!self.albumForCover) {
+        [self setCover:[params objectForKey:@"Cover"]];
+        [self setAlbumForCoverFromJSON:[params objectForKey:@"Album"]];
+    }
     
     if (loggedIn) {
         [self unsuspendPlayer];
@@ -398,6 +402,7 @@ static PiptureAppDelegate *instance;
 -(void)registred:(NSDictionary*)params
 {
     [self setCover:[params objectForKey:@"Cover"]];
+    [self setAlbumForCoverFromJSON:[params objectForKey:@"Album"]];
     
     [self saveUUID:[params objectForKey:@"UUID"]];
 }
