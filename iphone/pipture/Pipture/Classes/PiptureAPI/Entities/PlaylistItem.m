@@ -98,7 +98,7 @@
 -(NSArray *)getCustomGAVariables {
     NSString *itemId = [NSString stringWithFormat:@"%d", [self videoKeyValue]];
     
-    return [NSArray arrayWithObject:GA_SESSION_VARIABLE(GA_INDEX_ITEM, 
+    return [NSArray arrayWithObject:GA_PAGE_VARIABLE(GA_INDEX_ITEM, 
                                                         [self videoKeyName], 
                                                         itemId)];
 }
