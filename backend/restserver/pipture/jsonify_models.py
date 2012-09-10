@@ -15,11 +15,11 @@ class Utils(object):
 
     @staticmethod
     def get_album_status(album, released, updated):
-        date_utc_now = datetime.datetime.utcnow()
+        date_utc_now = datetime.utcnow()
 
         if not album.episodes.all():
             status = album.STATUS_NORMAL
-        elif released > date_utc_now:
+        elif released > Utils.get_timestamp(date_utc_now):
             status = album.STATUS_COMING_SOON
         else:
             # TODO: move PiptureSettings from huge models file and remove inline import
@@ -28,7 +28,7 @@ class Utils(object):
 
             premiere_days = PiptureSettings.get_premiere_period()
             premiere_period = timedelta(days=premiere_days)
-            if updated >= date_utc_now - premiere_period:
+            if updated >= Utils.get_timestamp(date_utc_now - premiere_period):
                 status = album.STATUS_PREMIERE
             else:
                 status = album.STATUS_NORMAL
@@ -38,6 +38,7 @@ class Utils(object):
     @staticmethod
     def get_release_and_update_dates(album):
         episodes_dates = album.episodes.values_list('DateReleased')
+        episodes_dates = [date[0] for date in episodes_dates]
 
         low_datetime, high_datetime = datetime(1970, 1, 1), datetime(3790, 1, 1)
 
@@ -62,7 +63,7 @@ class JsonifyModels(object):
         released, updated = Utils.get_release_and_update_dates(album)
         is_purchased = kwargs.get('is_purchased', False)
 
-        album = {
+        album_json = {
             'AlbumId': album.AlbumId,
             'Season': album.Season,
             'Cover': album.Cover.get_url(),
@@ -79,20 +80,23 @@ class JsonifyModels(object):
         }
 
         if kwargs.get('add_album_status', False):
-            album['AlbumStatus'] = Utils.get_album_status(released, updated)
+            status =  Utils.get_album_status(album, released, updated)
+            album_json['AlbumStatus'] = status
 
         if kwargs.get('add_trailer', False):
-            album['Trailer'] = self.__call__(album.TrailerId)
+            album_json['Trailer'] = self.__call__(album.TrailerId)
 
-        return album
+        return album_json
 
     def episodes(self, episode, **kwargs):
-        episode = {
+        released = Utils.get_timestamp(episode.DateReleased)
+
+        episode_json = {
             "Type": "Episode",
             "EpisodeId": episode.EpisodeId,
             "Title": episode.Title,
             "Script": episode.Script,
-            "DateReleased": episode.DateReleased,
+            "DateReleased": released,
             "Subject": episode.Subject,
             "SenderToReceiver": episode.SenderToReceiver,
             "EpisodeNo": episode.EpisodeNo,
@@ -102,14 +106,14 @@ class JsonifyModels(object):
 
         if kwargs.get('add_album_info', False):
             album = episode.AlbumId
-            episode.update({
+            episode_json.update({
                 "AlbumTitle": album.Title,
                 "SeriesTitle": album.SeriesId.Title,
                 "AlbumSeason": album.Season,
                 "AlbumSquareThumbnail": album.SquareThumbnail.get_url(),
             })
 
-        return episode
+        return episode_json
 
     def albumscreenshotgallery(self, screenshot, **kwargs):
         return {

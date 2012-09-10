@@ -1,11 +1,15 @@
 import calendar
 from datetime import datetime, timedelta
+from decimal import Decimal
+import urllib2
 from annoying.functions import get_object_or_None
 
-from pipture.models import TimeSlots, TimeSlotVideos, Episodes, SendMessage, Trailers
-from rest_core.api_errors import WrongParameter, BadRequest, NotFound
+from pipture.models import TimeSlots, TimeSlotVideos, Episodes, SendMessage, Trailers, PurchaseItems
+from pipture.utils import EpisodeUtils
+from rest_core.api_errors import WrongParameter, BadRequest, NotFound, Forbidden, UnauthorizedError
 from rest_core.api_view import GetView
-from rest_core.validation_mixins import TimezoneValidationMixin, KeyValidationMixin
+from rest_core.validation_mixins import TimezoneValidationMixin, KeyValidationMixin, \
+                                        PurchaserValidationMixin, EpisodeAndTrailerValidationMixin
 
 import pytz
 
@@ -34,7 +38,8 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
         }
 
 
-class GetVideo(GetView, TimezoneValidationMixin, KeyValidationMixin):
+class GetVideo(GetView, TimezoneValidationMixin,
+               EpisodeAndTrailerValidationMixin):
 
     def clean_quality(self):
         try:
@@ -51,100 +56,90 @@ class GetVideo(GetView, TimezoneValidationMixin, KeyValidationMixin):
         except ValueError:
             raise WrongParameter(parameter='preview')
 
-    def clean_episode_and_trailer(self):
-        self.episode_id = self.params.get('EpisodeId', None)
-        self.trailer_id = self.params.get('TrailerId', None)
-
-        if self.episode_id and self.trailer_id:
-            msg = 'There are EpisodeId and TrailerId. Should be only one param.'
-            raise BadRequest(message=msg)
-
-        if not self.episode_id and not self.trailer_id:
-            msg = 'There are no EpisodeId or TrailerId. Should be one param.'
-            raise BadRequest(message=msg)
-
     def clean(self):
-        timeslot_id = self.params.get('TimeslotId', None)
-        force_buy = self.params.get('ForceBuy', None)
+        self.timeslot_id = self.params.get('TimeslotId', None)
+        self.force_buy = self.params.get('ForceBuy', None)
+        self.key = self.params.get('Key', None)
 
-    def get_context_data(self):
-        local_today = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC).astimezone(local_tz).replace(tzinfo=None)
+        if self.force_buy and not self.key:
+            raise UnauthorizedError()
+
+        if self.episode_id:
+            self.video = self._clean_episode()
+        elif self.trailer_id:
+            self.video = self._clean_trailer()
+
+    def read_subtitles(self ,subtitles_url):
+        if subtitles_url is not None and subtitles_url != "":
+            subtitles = urllib2.urlopen(subtitles_url)
+            return subtitles.read()
+        return ""
+
+    def get_video_and_subtitles(self, video_item, quality):
+        video = video_item.VideoId
+
+        subtitles = video.VideoSubtitles
+        if subtitles.name == '':
+            substitles_url= ''
+        else:
+            substitles_url= subtitles.get_url()
+
+        if quality == 0:
+            video_file = video.VideoUrl
+        else:
+            try:
+                video_file = video.VideoLQUrl
+            except Exception:
+                video_file = video.VideoUrl
+        if video_file.name == '':
+            video_file = video.VideoUrl
+
+        return video_file.get_url(), substitles_url
+
+    def perform_timeslot_operations(self):
+        local_today = datetime.utcnow().replace(tzinfo=pytz.UTC)\
+                                       .astimezone(self.local_timezone)\
+                                       .replace(tzinfo=None)
         sec_local_now = calendar.timegm(local_today.timetuple())
 
-        if episode_id:
-            video_type = "E"
-        else:
-            video_type = "T"
+        if not TimeSlots.timeslot_is_current(self.timeslot_id, sec_local_now):
+            raise Forbidden(message='Timeslot expired')
 
-        if trailer_id and not timeslot_id:
-            video_url, subs_url, error = get_video_url_from_episode_or_trailer (id = trailer_id, type_r = "T", video_q=video_quality)
-            if error:
-                response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % error}
+    def perform_buy_operations(self):
+        pass
 
-            response['VideoURL'] = video_url
-            response['Subs'] = readSubtitles(subs_url=subs_url)
-            return HttpResponse(json.dumps(response))
+    def perform_operations(self):
+        if self.timeslot_id:
+            self.perform_timeslot_operations()
 
-        elif timeslot_id:
-            containid = True
-            if TimeSlots.timeslot_is_current(timeslot_id, sec_local_now) and containid:
-                video_url, subs_url, error = get_video_url_from_episode_or_trailer (id = episode_id or trailer_id, type_r = video_type, video_q=video_quality)
-                if error:
-                    response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % error}
-                response['VideoURL'] = video_url
-                response['Subs'] = readSubtitles(subs_url=subs_url)
-            else:
-                response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Timeslot expired"}
+        elif self.episode_id:
+            is_purchased = (self.video_preview == 1) or \
+                    EpisodeUtils.is_in_purchased_album(self.episode_id, self.key)
 
-
-        else:
-            if video_preview != 1:
-                try:
-                    purchaser = PipUsers.objects.get(Token=key)
-                except PipUsers.DoesNotExist:
-                    response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
-
-                if episode_id:
-                    is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=key)
+            if not is_purchased:
+                if self.force_buy == "0":
+                    raise Forbidden(message="Video not purchased.")
                 else:
-                    is_purchased = True
-            else:
-                # TODO: for preview always purchased. sequrity warning
-                is_purchased = True
+                    price = PurchaseItems.objects \
+                                         .get(Description="WatchEpisode").Price
 
-            video_url, subs_url, error = get_video_url_from_episode_or_trailer (id = episode_id, type_r = video_type, video_q=video_quality)
-            if error:
-                response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is internal error. Wrong video URL"}
-                return HttpResponse(json.dumps(response))
+                    if self.purchaser.Balance - price < 0:
+                        raise Forbidden()
 
-            WATCH_EP = PurchaseItems.objects.get(Description="WatchEpisode")
+                    self.purchaser.Balance -= price
+                    self.purchaser.save()
 
-            if is_purchased:
-                response['VideoURL'] = video_url
-                response['Subs'] = readSubtitles(subs_url=subs_url)
-                response['Balance'] = "%s" % purchaser.Balance
-            else:
-                if force_buy == "0":
-                    response["Error"] = {"ErrorCode": "2", "ErrorDescription": "Video not purchased."}
-                else:
-                    if (purchaser.Balance - WATCH_EP.Price) >= 0:
-                        #remove storing in purchased items
-                        #new_p = UserPurchasedItems(UserId=purchaser, ItemId=episode_id, PurchaseItemId = WATCH_EP, ItemCost=WATCH_EP.Price)
-                        #new_p.save()
-                        purchaser.Balance = Decimal(purchaser.Balance - WATCH_EP.Price)
-                        purchaser.save()
-                        response['VideoURL'] = video_url
-                        response['Subs'] = readSubtitles(subs_url=subs_url)
-                        response['Balance'] = "%s" % purchaser.Balance
-                        try:
-                            http_resp = HttpResponse(json.dumps(response))
-                        except Exception:
-                            purchaser.Balance = Decimal(purchaser.Balance + WATCH_EP.Price)
-                            purchaser.save()
+    def get_context_data(self):
+        video_url, subtitles_url = \
+                self.get_video_and_subtitles(self.video, self.video_quality)
+        response = {
+            'VideoUrl': video_url,
+            'Subs': self.read_subtitles(subtitles_url),
+        }
+        if hasattr(self, 'purchaser'):
+            response['Balance'] = self.purchaser.Balance
 
-                        return http_resp
-                    else:
-                        response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
+        return response
 
 
 class GetPlaylist(GetView, TimezoneValidationMixin):
@@ -167,10 +162,10 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
         sec_utc_now = calendar.timegm(today.timetuple())
 
         if self.timeslot.StartTimeUTC > sec_utc_now:
-            raise BadRequest(message='Timeslot is in the future')
+            raise Forbidden(message='Timeslot is in the future')
 
         if  sec_utc_now > self.timeslot.EndTimeUTC:
-            raise BadRequest(message='Timeslot is in the past')
+            raise Forbidden(message='Timeslot is in the past')
 
         self.timeslot_videos = TimeSlotVideos.objects\
                                              .filter(TimeSlotsId=self.timeslot)\

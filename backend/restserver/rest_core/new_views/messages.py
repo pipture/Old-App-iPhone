@@ -4,15 +4,17 @@ from decimal import Decimal
 from django.conf import settings
 
 from pipture.models import PiptureSettings, SendMessage, Trailers,\
-                           Episodes, PurchaseItems
+                           PurchaseItems
 from pipture.utils import EpisodeUtils
 from rest_core.api_errors import BadRequest, ParameterExpected, \
                                  NotFound, Forbidden, WrongParameter
 from rest_core.api_view import PostView, GetView
-from rest_core.validation_mixins import PurchaserValidationMixin
+from rest_core.validation_mixins import PurchaserValidationMixin, \
+                                        EpisodeAndTrailerValidationMixin
 
 
-class SendMessageView(PostView, PurchaserValidationMixin):
+class SendMessageView(PostView, PurchaserValidationMixin,
+                      EpisodeAndTrailerValidationMixin):
 
     def clean_message(self):
         self.message = self.params.get('Message', None)
@@ -26,36 +28,6 @@ class SendMessageView(PostView, PurchaserValidationMixin):
         if not self.user_name:
             raise ParameterExpected(parameter='UserName')
 
-    def clean_episode_and_trailer(self):
-        self.episode_id = self.params.get('EpisodeId', None)
-        self.trailer_id = self.params.get('TrailerId', None)
-
-        if self.episode_id and self.trailer_id:
-            msg = 'There are EpisodeId and TrailerId. Should be only one param.'
-            raise BadRequest(message=msg)
-
-        if not self.episode_id and not self.trailer_id:
-            msg = 'There are no EpisodeId or TrailerId. Should be one param.'
-            raise BadRequest(message=msg)
-
-    def _clean_trailer(self):
-        try:
-            return Trailers.objects.get(TrailerId=int(self.trailer_id))
-        except ValueError:
-            raise WrongParameter(parameter='TrailerId')
-        except Trailers.DoesNotExist:
-            raise NotFound(
-                message='There is no trailer with id %s' % self.trailer_id)
-
-    def _clean_episode(self):
-        try:
-            return Episodes.objects.get(EpisodeId=int(self.episode_id))
-        except ValueError:
-            raise WrongParameter(parameter='EpisodeId')
-        except Episodes.DoesNotExist:
-            raise NotFound(
-                message='There is no episode with id %s' % self.episode_id)
-
     def clean(self):
         self.screenshot_url = self.params.get('ScreenshotURL', '')
 
@@ -67,7 +39,7 @@ class SendMessageView(PostView, PurchaserValidationMixin):
     def create_message_and_return_url(self, video):
         if isinstance(video, Trailers):
             video_id, video_type = video.TrailerId, SendMessage.TYPE_TRAILER
-        elif isinstance(video, Episodes):
+        else:  # isinstance(video, Episodes):
             video_id, video_type = video.EpisodeId, SendMessage.TYPE_EPISODE
 
         sent_message = SendMessage(UserId=self.purchaser,

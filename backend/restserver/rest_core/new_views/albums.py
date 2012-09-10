@@ -66,7 +66,7 @@ class GetAlbums(GetView, KeyValidationMixin):
     def get_context_data(self):
         purchased_ids = AlbumUtils.get_purchased(self.key)
 
-        albums_list = Albums.objects.filter(
+        albums_list = Albums.objects.select_related(depth=1).filter(
             Q(HiddenAlbum=False) & (
                 Q(AlbumId__in=purchased_ids) |
                 Q(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
@@ -80,6 +80,7 @@ class GetAlbums(GetView, KeyValidationMixin):
                                     add_album_status=True)
                        for album in albums_list]
         }
+
 
 class GetSellableAlbums(GetView, KeyValidationMixin):
 
@@ -113,7 +114,7 @@ class GetAlbumScreenshots(GetView):
         except ValueError:
             raise WrongParameter(parameter='EpisodeId')
         except Episodes.DoesNotExist:
-            raise NotFound('There is no episode with id %s.' % EpisodeId)
+            raise NotFound(message='There is no episode with id %s.' % EpisodeId)
 
     def clean(self):
         self.screenshots = AlbumScreenshotGallery.objects\

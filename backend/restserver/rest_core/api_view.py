@@ -1,6 +1,5 @@
 import json
 from collections import Callable
-from annoying.decorators import JsonResponse
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -9,8 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 
 from restserver.pipture.jsonify_models import JsonifyModels
-from restserver.rest_core.api_errors import ApiError, InternalServerError,\
-                                            EmptyError
+from rest_core.api_errors import ApiError, EmptyError, InternalServerError
 from restserver.rest_core.validation_mixins import ApiValidationMixin
 
 
@@ -20,14 +18,15 @@ class ParameterValidationMixin(object):
 
     def validate_parameters(self):
         clean_methods = [method for method in dir(self)
-                                if method.startswith(self.validate_prefix) and
-                                isinstance(method, Callable)]
+                                if method.startswith(self.validate_prefix)]
         if self.validate_prefix in clean_methods:
             clean_methods.remove(self.validate_prefix)
             clean_methods.append(self.validate_prefix)
 
-            for method_name in clean_methods:
-                getattr(self, method_name)()
+        for method_name in clean_methods:
+            handler = getattr(self, method_name)
+            if isinstance(handler, Callable):
+                handler()
 
 
 class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
@@ -44,13 +43,13 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
             self.validate_parameters()
             context = self.get_context_data()
             context.update(EmptyError().get_dict())
-        except ApiError, error:
+        except ApiError as error:
             context = error.get_dict()
-        except Exception, error:
+        except Exception as error:
             if not settings.DEBUG:
                 context = InternalServerError(error=error).get_dict()
             else:
-                raise error
+               raise error
 
         return HttpResponse(json.dumps(context))
 

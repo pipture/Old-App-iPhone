@@ -470,7 +470,7 @@ class PiptureSettings(models.Model):
 
     @staticmethod
     def get_premiere_period():
-        return PiptureSettings.objects.all()[0].VideoHost
+        return PiptureSettings.objects.all()[0].PremierePeriod
 
     @staticmethod
     def get_video_host():

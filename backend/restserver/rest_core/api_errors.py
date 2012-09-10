@@ -52,7 +52,7 @@ class InternalServerError(ApiError):
 
 
 class WrongParameter(BadRequest):
-    message = 'Invalid parameter "%s".'
+    message = 'Invalid parameter %s.'
 
     def __init__(self, *args, **kwargs):
         super(WrongParameter, self).__init__(*args, **kwargs)
@@ -63,7 +63,7 @@ class WrongParameter(BadRequest):
 
 
 class ParameterExpected(WrongParameter):
-    message = 'Parameter "%s" expected.'
+    message = 'Parameter %s expected.'
 
 
 

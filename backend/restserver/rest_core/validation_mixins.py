@@ -1,7 +1,7 @@
 import pytz
-from pipture.models import PipUsers
+from pipture.models import PipUsers, Trailers, Episodes
 from rest_core.api_errors import ParameterExpected, WrongParameter, \
-                                 UnauthorizedError, BadRequest
+                                 UnauthorizedError, BadRequest, NotFound
 
 
 class ApiValidationMixin(object):
@@ -47,6 +47,39 @@ class TimezoneValidationMixin(object):
 
         self.timezone = self.params[param_name]
         try:
-            self.local_timezone = pytz.timezone(self.tz)
+            self.local_timezone = pytz.timezone(self.timezone)
         except pytz.exceptions.UnknownTimeZoneError:
             raise BadRequest(message='Unknown timezone.')
+
+
+class EpisodeAndTrailerValidationMixin(object):
+
+    def clean_episode_and_trailer(self):
+        self.episode_id = self.params.get('EpisodeId', None)
+        self.trailer_id = self.params.get('TrailerId', None)
+
+        if self.episode_id and self.trailer_id:
+            msg = 'There are EpisodeId and TrailerId. Should be only one param.'
+            raise BadRequest(message=msg)
+
+        if not self.episode_id and not self.trailer_id:
+            msg = 'There are no EpisodeId or TrailerId. Should be one param.'
+            raise BadRequest(message=msg)
+
+    def _clean_trailer(self):
+        try:
+            return Trailers.objects.get(TrailerId=int(self.trailer_id))
+        except ValueError:
+            raise WrongParameter(parameter='TrailerId')
+        except Trailers.DoesNotExist:
+            raise NotFound(
+                message='There is no trailer with id %s' % self.trailer_id)
+
+    def _clean_episode(self):
+        try:
+            return Episodes.objects.get(EpisodeId=int(self.episode_id))
+        except ValueError:
+            raise WrongParameter(parameter='EpisodeId')
+        except Episodes.DoesNotExist:
+            raise NotFound(
+                message='There is no episode with id %s' % self.episode_id)

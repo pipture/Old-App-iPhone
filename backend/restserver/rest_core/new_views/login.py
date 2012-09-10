@@ -7,7 +7,7 @@ from django.db import IntegrityError
 from pipture.utils import AlbumUtils
 
 from rest_core.api_errors import WrongParameter, UnauthorizedError,\
-                                 BadRequest, ParameterExpected
+                                 BadRequest, ParameterExpected, NotFound
 from rest_core.api_view import GetView, PostView
 from rest_core.validation_mixins import PurchaserValidationMixin
 
@@ -16,6 +16,14 @@ from restserver.pipture.models import AppleProducts, PurchaseItems,\
 
 from annoying.functions import get_object_or_None
 
+
+class Index(GetView):
+
+    def clean_api(self):
+        pass
+
+    def get_context_data(self):
+        raise NotFound(message='Unknown method')
 
 
 class Register(PostView):
@@ -109,7 +117,7 @@ class Buy(PostView, PurchaserValidationMixin):
 
         self._clean_apple_purchase()
 
-        if self.apple_product == self.APPLE_PRODUCT_CREDITS:
+        if self.product == self.APPLE_PRODUCT_CREDITS:
             self.perform_credits_oprations()
         else:
             self.perform_other_operations()
@@ -120,7 +128,7 @@ class Buy(PostView, PurchaserValidationMixin):
         except AppleProducts.DoesNotExist:
             raise WrongParameter(parameter='Product')
 
-        cost = Decimal(self.apple_product.Price * self.quantity)
+        cost = Decimal(self.product.Price * self.quantity)
 
         try:
             transaction = Transactions(UserId=self.purchaser,
