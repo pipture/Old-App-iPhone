@@ -10,8 +10,8 @@ urlpatterns = patterns('',
 #    (r'^getAlbumScreenshots$', rest_view.getAlbumScreenshots),
 
 #    (r'^getTimeslots$', rest_view.getTimeslots),
-#    (r'^getVideo$', rest_view.getVideo),
-#    (r'^getPlaylist$', rest_view.getPlaylist),
+    (r'^getVideo$', rest_view.getVideo),
+    (r'^getPlaylist$', rest_view.getPlaylist),
 
 #    (r'^getSearchRes$', rest_view.getSearchResult),
 
