@@ -20,6 +20,8 @@
 #define GA_EVENT_PURCHASE_ALBUM             [NSArray arrayWithObjects:@"Purchase", @"Album", nil]
 #define GA_EVENT_PURCHASE_ERROR             [NSArray arrayWithObjects:@"Purchase", @"Error", nil]
 
+#define GA_EVENT_ACTION                     objectAtIndex:1
+
 #define GA_VARIABLE(index, name, value, scope)      [NSArray arrayWithObjects:[NSNumber numberWithInt:index], name, value, [NSNumber numberWithInt:scope], nil]
 #define GA_PAGE_VARIABLE(index, name, value)     GA_VARIABLE(index, name, value, kGANPageScope)
 

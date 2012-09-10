@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Series.h"
-#import "Trailer.h"
+@class Trailer;
 
 enum AlbumStatus{
     AlbumStatus_Wrong = 0,

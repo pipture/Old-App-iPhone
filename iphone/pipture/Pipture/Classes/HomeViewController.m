@@ -840,6 +840,7 @@
 #pragma mark ChannelCategoriesReceiver 
 
 - (void)channelCategoriesReceived:(NSMutableArray*)categories {
+    [categories retain];
     for (int i=0; i<categories.count; i++){
         Category *category = [categories objectAtIndex:i];
         category.index = i + 1;
@@ -869,8 +870,8 @@
         [appDelegate putChannelCategoriesOrder:categoriesOrder];
     }
 //    NSLog(@"channelCategories stored: %@", channelCategories_);
-    
-    [self.newsView placeCategories:channelCategories];
+    [self.newsView placeCategories:categories];
+    [categories release];
 }
 
 
