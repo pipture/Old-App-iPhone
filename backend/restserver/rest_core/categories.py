@@ -39,14 +39,19 @@ class VideosMixin(object):
     columns = 4
 
     def get_item_info(self, episode):
+        print episode.AlbumId.Title
         return dict(type='episode',
                     id=episode.EpisodeId,
                     EpisodeNo=episode.EpisodeNo,
-                    AlbumTitle=episode.AlbumId.Title,
                     SeriesTitle=episode.AlbumId.SeriesId.Title,
-                    AlbumSeason=episode.AlbumId.Season,
                     Thumbnail=episode.CloseUpThumbnail.get_url(),
-                    Title=episode.Title)
+                    Title=episode.Title,
+                    Album={
+                        'Title':episode.AlbumId.Title,
+                        'SellStatus' : Albums.SELL_STATUS_FROM_PURCHASE.get(episode.AlbumId.PurchaseStatus, 0),
+                        'Season' : episode.AlbumId.Season
+                    }
+                    )
 
 
 class SeriesMixin(object):
@@ -57,12 +62,19 @@ class SeriesMixin(object):
     def get_item_info(self, series):
         first_album = series.albums_set.all()[0]
         trailer = first_album.TrailerId
+        print first_album.PurchaseStatus, first_album.Season
         return dict(type='album',
                     id=trailer.TrailerId,
                     Line1=trailer.Line1,
                     Line2=trailer.Line2,
                     Thumbnail=first_album.Thumbnail.get_url(),
-                    Title=series.Title)
+                    Title=series.Title,
+                    Album={
+                        'Title' : first_album.Title,
+                        'SellStatus' : Albums.SELL_STATUS_FROM_PURCHASE.get(first_album.PurchaseStatus, 0),
+                        'Season' : first_album.Season
+                    }
+                    )
 
 
 class ScheduledSeries(CategoryView):

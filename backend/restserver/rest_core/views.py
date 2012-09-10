@@ -867,8 +867,11 @@ def getSearchResult (request):
 
     #word_search = r'\b'+ searchquery +r'\b'
     #word_search = r'\bhandsome\b'
-    word_search = r'[[:<:]]'+ searchquery +'[[:>:]]'
-
+    if len(searchquery) > 4:
+        word_search = r'(?:'+ searchquery[0:len(searchquery)-3] + '|' + searchquery +  ')'
+    else:
+        word_search = r''+ searchquery
+    
     try:
         series = Series.objects.filter(Title__iregex=word_search)
     except Exception:
@@ -905,29 +908,19 @@ def getSearchResult (request):
                 pass
             else:
                 enlarge_list(list_data=allepisodes, append_data=albepisodes)
-
-    episodes_title = None
-    episodes_subj = None
-    episodes_keys = None
-
+    
+    episodes = None
     try:
-        episodes_title = Episodes.objects.filter(Title__iregex=word_search)
+        episodes = Episodes.objects.filter(
+            Q(Title__iregex=word_search)   |
+            Q(Subject__iregex=word_search) |
+            Q(Keywords__iregex=word_search)|
+            Q(Script__iregex=word_search)
+        )
     except Exception as e:
         pass
 
-    try:
-        episodes_subj = Episodes.objects.filter(Subject__iregex=word_search)
-    except Exception as e:
-        pass
-
-    try:
-        episodes_keys = Episodes.objects.filter(Keywords__iregex=word_search)
-    except Exception as e:
-        pass
-
-    enlarge_list(list_data=allepisodes, append_data=episodes_title)
-    enlarge_list(list_data=allepisodes, append_data=episodes_subj)
-    enlarge_list(list_data=allepisodes, append_data=episodes_keys)
+    enlarge_list(list_data=allepisodes, append_data=episodes)
 
     appendeditems = []
 
