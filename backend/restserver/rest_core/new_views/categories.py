@@ -6,16 +6,11 @@ from django.views.generic.base import View
 from django.db.models import Q
 
 from pipture.ga_v3_service import pipture_ga
+from rest_core.api_view import GetView
 from restserver.pipture.models import UserPurchasedItems, Albums, Episodes, Series
 
 
-class JSONResponsibleMixin(object):
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        return HttpResponse(json.dumps(context))
-
-
-class CategoryView(JSONResponsibleMixin, View):
+class CategoryView(View):
     def get_user_token(self):
         return self.request.GET.get('Key', '')
 
@@ -160,7 +155,7 @@ class WatchThatVideosAgain(CategoryView, VideosMixin):
         return Episodes.objects.all()
 
 
-class AllCategoriesView(JSONResponsibleMixin, View):
+class GetAllCategories(GetView):
     def get_category_classes(self):
         return CategoryView.__subclasses__()
 

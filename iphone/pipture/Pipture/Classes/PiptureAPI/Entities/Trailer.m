@@ -7,6 +7,7 @@
 //
 
 #import "Trailer.h"
+#import "NSDictionary+ValueHelper.h"
 
 @implementation Trailer
 
@@ -26,6 +27,9 @@ static NSString* const JSON_PARAM_LINE_3 = @"Line3";
 static NSString* const JSON_PARAM_THUMBNAIL = @"Thumbnail";
 static NSString* const JSON_PARAM_EMAIL_SCREENSHOT = @"SquareThumbnail";
 static NSString* const VIDEO_KEY_NAME = @"TrailerId";
+static NSString* const JSON_PARAM_ALBUM_TITLE = @"AlbumTitle";
+static NSString* const JSON_PARAM_ALBUM_SEASON = @"AlbumSeason";
+static NSString* const JSON_PARAM_ALBUM_SELL_STATUS = @"SellStatus";
 
 
 - (void)dealloc {
@@ -68,6 +72,11 @@ static NSString* const VIDEO_KEY_NAME = @"TrailerId";
   //      self.line3 = [jsonData objectForKey:JSON_PARAM_LINE_3];
         self.thumbnail = [jsonData objectForKey:JSON_PARAM_THUMBNAIL];                    
         self.trailerEmailScreenshot = [jsonData objectForKey:JSON_PARAM_EMAIL_SCREENSHOT];                    
+
+//        self.album = [[Album alloc] init];
+        self.album.title = [jsonData objectForKey:JSON_PARAM_ALBUM_TITLE];
+        self.album.season = [jsonData objectForKey:JSON_PARAM_ALBUM_SEASON];
+        self.album.sellStatus = [jsonData intValueForKey:JSON_PARAM_ALBUM_SELL_STATUS defaultIfEmpty:self.album.sellStatus];
     }
     return self;
 }

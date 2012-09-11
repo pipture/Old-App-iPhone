@@ -10,6 +10,7 @@
 #import "PiptureAppDelegate.h"
 #import "PlaylistItemFactory.h"
 #import "Episode.h"
+#import "PiptureAppDelegate+GATracking.h"
 
 
 @interface PiptureModel(Private)
@@ -293,9 +294,12 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                     if (uuid)
                     {
                         NSDictionary * dic = [NSDictionary 
-                                              dictionaryWithObjects:[NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER], 
-                                                                     uuid, nil]
-                                              forKeys:[NSArray arrayWithObjects:@"Cover", @"UUID", nil]];
+                                              dictionaryWithObjects:[NSArray arrayWithObjects:
+                                                                     [jsonResult objectForKey:JSON_PARAM_COVER], 
+                                                                     [jsonResult objectForKey:JSON_PARAM_ALBUM],
+                                                                     uuid, 
+                                                                     nil]
+                                              forKeys:[NSArray arrayWithObjects:@"Cover", @"Album", @"UUID", nil]];
                         [receiver performSelectorOnMainThread:@selector(registred:)
                                                    withObject:dic 
                                                 waitUntilDone:YES];                    
@@ -392,14 +396,14 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                   } itemName:@"Timeslot"] retain];
             
             NSDictionary * dic = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
-                                                                      [jsonResult objectForKey:JSON_PARAM_COVER],
                                                                       [NSNumber numberWithFloat:serverTimeDelta],
                                                                       timeslots,
                                                                       nil] forKeys:
-                                  [NSArray arrayWithObjects:@"Cover", @"Delta", @"Timeslots", nil]];
+                                  [NSArray arrayWithObjects:@"Delta", @"Timeslots", nil]];
             
             [receiver performSelectorOnMainThread:@selector(timeslotsReceived:)
-                                       withObject:dic waitUntilDone:YES];
+                                       withObject:dic 
+                                    waitUntilDone:YES];
             [timeslots release];
             
             if (callback != nil) callback(nil, nil);
@@ -949,6 +953,11 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
         viewsCount:(NSNumber*)viewsCount 
           receiver:(NSObject<SendMessageDelegate> *)receiver
 {
+    NSMutableArray *ga_vars = [NSMutableArray arrayWithArray:[playlistItem getCustomGAVariablesForAction:[GA_EVENT_VIDEO_SEND GA_EVENT_ACTION]]];
+    GA_TRACK_EVENT(GA_EVENT_VIDEO_SEND,
+                   GA_NO_LABEL,
+                   [message length],
+                   ga_vars);
     NSURL* url = [self buildURLWithRequest:SEND_MESSAGE_REQUEST sendAPIVersion:NO sendKey:NO sendTimezone:NO];
     
     NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%d&%@=%@&%@=%@&%@=%@&%@=%@", 

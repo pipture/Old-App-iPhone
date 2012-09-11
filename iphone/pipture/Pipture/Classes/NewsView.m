@@ -134,6 +134,7 @@
 #pragma mark Manage views for categories
 
 -(void)placeCategories:(NSArray*)channelCategories {
+    [channelCategories retain];
     categoryViews = [[NSMutableDictionary alloc] init];
     
     for (Category* category in channelCategories){
@@ -147,6 +148,7 @@
     }
     
     [self placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]];
+    [channelCategories release];
 }
 
 - (void)updateCategoriesOrder:(NSArray *)categoriesOrder {

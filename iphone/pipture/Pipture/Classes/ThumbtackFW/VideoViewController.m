@@ -265,7 +265,7 @@
         GA_TRACK_EVENT(GA_EVENT_VIDEO_PLAY, 
                        item.videoName, 
                        GA_NO_VALUE, 
-                       [item getCustomGAVariables]);
+                       [item getCustomGAVariablesForAction:[GA_EVENT_VIDEO_PLAY GA_EVENT_ACTION]]);
     } else {
         GA_TRACK_EVENT(GA_EVENT_TIMESLOT_PLAY, 
                        item.videoName, 

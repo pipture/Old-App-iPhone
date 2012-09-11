@@ -27,8 +27,6 @@
 @property(retain, nonatomic) NSString *episodeEmailScreenshot;
 @property(retain, nonatomic) NSString *episodeEmailScreenshotLQ;
 
-@property(readonly, nonatomic) Album* album;
-
 - (id)initWithJSON:(NSDictionary*)jsonData;
 - (void)setExternalAlbum:(Album*)album;
 

@@ -10,6 +10,6 @@
 
 @protocol GAEventWithCustomVariablesEmitter <NSObject>
 
-- (NSArray*)getCustomGAVariables;
+- (NSArray*)getCustomGAVariablesForAction: (NSString*)action;
 
 @end

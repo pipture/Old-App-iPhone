@@ -71,6 +71,8 @@
 @property (readonly, nonatomic) NetworkErrorAlerter* networkErrorAlerter;
 @property (readonly, nonatomic) Album *albumForCover;
 
+@property (retain, nonatomic) NSString *uuid;
+
 +(PiptureAppDelegate*) instance;
 
 - (void)powerButtonEnable:(BOOL)enable;
@@ -130,7 +132,5 @@
 
 - (void)setCover:(NSString*)cover;
 - (void)setAlbumForCoverFromJSON:(id)album;
-
-- (NSString*)loadUserUUID;
 
 @end

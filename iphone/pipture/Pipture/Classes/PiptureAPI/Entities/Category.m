@@ -57,7 +57,8 @@ static NSString* const JSON_PARAM_ITEMS = @"items";
                                    jsonArrayParamName:@"items"
                                           itemCreator:^(NSDictionary*jsonIT)
                               {
-                                  return [[[CategoryItem alloc] initWithJSON:jsonIT] autorelease];
+                                  CategoryItem * categoryItem = [[[CategoryItem alloc] initWithJSON:jsonIT] autorelease];
+                                  return categoryItem;
                               } itemName:@"Item"];
 }
 

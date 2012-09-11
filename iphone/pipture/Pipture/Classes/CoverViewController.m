@@ -8,6 +8,7 @@
 
 #import "CoverViewController.h"
 #import "PiptureAppDelegate.h"
+#import "PiptureAppDelegate+GATracking.h"
 
 @implementation CoverViewController
 @synthesize placeHolder;
@@ -69,6 +70,11 @@
 }
 
 -(void)hotNewsCoverClicked {
+    GA_TRACK_EVENT(GA_EVENT_ACTIVITY_HOTNEWSCOVER,
+                   GA_NO_LABEL,
+                   GA_NO_VALUE,
+                   GA_NO_VARS);
+    
     Album *album = [PiptureAppDelegate instance].albumForCover;
     if (album) {
         [self.delegate showAlbumDetails:album];

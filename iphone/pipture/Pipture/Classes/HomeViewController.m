@@ -16,6 +16,7 @@
 #import "SearchViewController.h"
 #import "CategoryEditViewController.h"
 #import "CategoryItemViewController.h"
+#import "PiptureAppDelegate+GATracking.h"
 
 #define TIMESLOT_CHANGE_POLL_INTERVAL 60
 #define TIMESLOT_REGULAR_POLL_INTERVAL 900
@@ -684,6 +685,10 @@
 
                                                      
 - (void)doPower {
+    GA_TRACK_EVENT(GA_EVENT_ACTIVITY_POWERBUTTON,
+                   GA_NO_LABEL,
+                   GA_NO_VALUE,
+                   GA_NO_VARS);
 
     [self doUpdateWithCallback:^(NSDictionary* jsonResult,
         DataRequestError* error){
@@ -835,6 +840,7 @@
 #pragma mark ChannelCategoriesReceiver 
 
 - (void)channelCategoriesReceived:(NSMutableArray*)categories {
+    [categories retain];
     for (int i=0; i<categories.count; i++){
         Category *category = [categories objectAtIndex:i];
         category.index = i + 1;
@@ -864,8 +870,8 @@
         [appDelegate putChannelCategoriesOrder:categoriesOrder];
     }
 //    NSLog(@"channelCategories stored: %@", channelCategories_);
-    
-    [self.newsView placeCategories:channelCategories];
+    [self.newsView placeCategories:categories];
+    [categories release];
 }
 
 

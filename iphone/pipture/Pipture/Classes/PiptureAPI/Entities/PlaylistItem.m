@@ -14,6 +14,7 @@
 @synthesize videoUrl;
 @synthesize videoUrlLQ;
 @synthesize videoSubs;
+@synthesize album = album_;
 
 - (void)dealloc {
     [videoUrl release];
@@ -95,12 +96,18 @@
                                  userInfo:nil];
 }
 
--(NSArray *)getCustomGAVariables {
+-(NSArray *)getCustomGAVariablesForAction:(NSString*)action {
     NSString *itemId = [NSString stringWithFormat:@"%d", [self videoKeyValue]];
+    NSMutableArray* ga_vars = [[NSMutableArray alloc] init];
+    [ga_vars autorelease];
+    if ([action isEqualToString:[GA_EVENT_VIDEO_SEND GA_EVENT_ACTION]]) {
+        NSString *sellStatusStr = [NSString stringWithFormat:@"%d",self.album.sellStatus];
+        [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_ALBUM_SELL_STATUS, @"sellStatus", sellStatusStr)];
+    }
     
-    return [NSArray arrayWithObject:GA_SESSION_VARIABLE(GA_INDEX_ITEM, 
-                                                        [self videoKeyName], 
-                                                        itemId)];
+    [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_ITEM, [self videoKeyName],itemId)];
+    
+    return ga_vars;
 }
 
 @end
