@@ -14,7 +14,7 @@ class AlbumUtils(object):
         purchased_albums = UserPurchasedItems.objects.filter(
                 UserId__Token=user_id,
                 PurchaseItemId__Description='Album').values_list('ItemId')
-        return [int(id) for id in purchased_albums]
+        return [int(id[0]) for id in purchased_albums]
 
     @staticmethod
     def get_cover():
