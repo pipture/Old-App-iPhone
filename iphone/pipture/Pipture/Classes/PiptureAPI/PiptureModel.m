@@ -294,9 +294,12 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                     if (uuid)
                     {
                         NSDictionary * dic = [NSDictionary 
-                                              dictionaryWithObjects:[NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER], 
-                                                                     uuid, nil]
-                                              forKeys:[NSArray arrayWithObjects:@"Cover", @"UUID", nil]];
+                                              dictionaryWithObjects:[NSArray arrayWithObjects:
+                                                                     [jsonResult objectForKey:JSON_PARAM_COVER], 
+                                                                     [jsonResult objectForKey:JSON_PARAM_ALBUM],
+                                                                     uuid, 
+                                                                     nil]
+                                              forKeys:[NSArray arrayWithObjects:@"Cover", @"Album", @"UUID", nil]];
                         [receiver performSelectorOnMainThread:@selector(registred:)
                                                    withObject:dic 
                                                 waitUntilDone:YES];                    
@@ -393,14 +396,14 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                   } itemName:@"Timeslot"] retain];
             
             NSDictionary * dic = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
-                                                                      [jsonResult objectForKey:JSON_PARAM_COVER],
                                                                       [NSNumber numberWithFloat:serverTimeDelta],
                                                                       timeslots,
                                                                       nil] forKeys:
-                                  [NSArray arrayWithObjects:@"Cover", @"Delta", @"Timeslots", nil]];
+                                  [NSArray arrayWithObjects:@"Delta", @"Timeslots", nil]];
             
             [receiver performSelectorOnMainThread:@selector(timeslotsReceived:)
-                                       withObject:dic waitUntilDone:YES];
+                                       withObject:dic 
+                                    waitUntilDone:YES];
             [timeslots release];
             
             if (callback != nil) callback(nil, nil);

@@ -22,11 +22,6 @@ static NSString* const GA_ERROR_MESSAGE = @"Google Analytics tracking error: %@"
     [gaTracker startTrackerWithAccountID:GA_ACCOUNT_ID
                           dispatchPeriod:kGANDispatchPeriodSec
                                 delegate:nil];
-    
-    [self setCustomGAVariable:GA_VARIABLE(GA_INDEX_KEY, 
-                                          GA_VAR_KEY, 
-                                          [self loadUserUUID],
-                                          kGANVisitorScope)];
 }
 
 - (void)stopGoogleAnalyticsTracker {
@@ -36,8 +31,7 @@ static NSString* const GA_ERROR_MESSAGE = @"Google Analytics tracking error: %@"
 - (void)trackPageviewToGoogleAnalytics:(NSString *)page {
     NSError * error;
     
-    if (![gaTracker trackPageview:page
-                        withError:&error]) {
+    if (![gaTracker trackPageview:page withError:&error]) {
         [self printTrackingError:error];
     }        
 }
@@ -71,6 +65,13 @@ static NSString* const GA_ERROR_MESSAGE = @"Google Analytics tracking error: %@"
                         withValue:(NSInteger)value
               withCustomVariables:(NSArray *)customVariables {
     NSError *error;
+    
+    if (self.uuid && ![gaTracker getVisitorCustomVarAtIndex:GA_INDEX_KEY]) {
+        [self setCustomGAVariable:GA_VARIABLE(GA_INDEX_KEY, 
+                                              GA_VAR_KEY, 
+                                              self.uuid,
+                                              kGANVisitorScope)];
+    }
     
     if (customVariables) {
         for (NSArray *variable in customVariables) {
