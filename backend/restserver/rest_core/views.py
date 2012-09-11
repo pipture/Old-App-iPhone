@@ -1267,7 +1267,7 @@ def sendMessage (request):
     key = request.POST.get('Key', None)
     episode_id = request.POST.get('EpisodeId', None)
     trailer_id = request.POST.get('TrailerId', None)
-    message = request.POST.get('Message', None)
+    message = request.POST.get('Message', "")
     #timeslot_id = request.POST.get('TimeslotId', None)
     screenshot_url = request.POST.get('ScreenshotURL', None)
     user_name = request.POST.get('UserName', None)
@@ -1303,14 +1303,29 @@ def sendMessage (request):
     except PipUsers.DoesNotExist:
         response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
-
-    if trailer_id:
-        video_url, subs_url, error = get_video_url_from_episode_or_trailer (id=trailer_id, type_r="T", video_q=0)
+    
+    sell_status = None
+    if episode_id:
+        try:
+            episode = Episodes.objects.get(EpisodeId=episode_id)
+            sell_status = episode.AlbumId.PurchaseStatus
+        except Episodes.DoesNotExist:
+            response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is no episode with id %s." % episode_id}
+            return HttpResponse(json.dumps(response))
+    # todo: clarify  condition, make it based on views_count only
+    if trailer_id or (episode_id and sell_status == Albums.PURCHASE_TYPE_NOT_FOR_SALE):
+        if trailer_id:
+            video_id = trailer_id
+            video_type = "T"
+        else: 
+            video_id = episode_id
+            video_type = "E"
+        video_url, subs_url, error = get_video_url_from_episode_or_trailer (id=video_id, type_r=video_type, video_q=0)
         if error:
             response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % error}
             return HttpResponse(json.dumps(response))
         else:
-            u_url = new_send_message (user=purchaser, video_id=trailer_id, message=message, video_type="T", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
+            u_url = new_send_message (user=purchaser, video_id=video_id, message=message, video_type=video_type, user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
             vhost = PiptureSettings.objects.all()[0].VideoHost
 
             response['MessageURL'] = "%s/%s" % (vhost, u_url)
