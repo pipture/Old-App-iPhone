@@ -205,7 +205,7 @@
 								<string key="NSFrameSize">{232, 58}</string>
 								<reference key="NSSuperview" ref="556824954"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="1042088724"/>
+								<reference key="NSNextKeyView" ref="109375352"/>
 								<string key="NSReuseIdentifierKey">_NS:567</string>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -308,7 +308,7 @@
 								</object>
 								<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 							</object>
-							<object class="IBUIButton" id="1042088724">
+							<object class="IBUIButton" id="109375352">
 								<reference key="NSNextResponder" ref="556824954"/>
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{1, 1}, {174, 43}}</string>
@@ -316,7 +316,7 @@
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="780982004"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
-								<float key="IBUIAlpha">0.0099999997764825821</float>
+								<float key="IBUIAlpha">0.20999999344348907</float>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
@@ -1357,7 +1357,7 @@
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">flipAction:</string>
-						<reference key="source" ref="1042088724"/>
+						<reference key="source" ref="109375352"/>
 						<reference key="destination" ref="372490531"/>
 						<int key="IBEventType">7</int>
 					</object>
@@ -1487,7 +1487,7 @@
 							<reference ref="808224519"/>
 							<reference ref="780982004"/>
 							<reference ref="408601059"/>
-							<reference ref="1042088724"/>
+							<reference ref="109375352"/>
 						</object>
 						<reference key="parent" ref="26185690"/>
 						<string key="objectName">pnPanel</string>
@@ -1709,7 +1709,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">180</int>
-						<reference key="object" ref="1042088724"/>
+						<reference key="object" ref="109375352"/>
 						<reference key="parent" ref="556824954"/>
 						<string key="objectName">flipBtn</string>
 					</object>
