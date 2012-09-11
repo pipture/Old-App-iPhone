@@ -33,7 +33,7 @@
 
 static NSInteger const GA_INDEX_KEY = 1;
 static NSInteger const GA_INDEX_ITEM = 2;
-static NSInteger const GA_INDEX_MESSAGE_LENGTH = 3;
+static NSInteger const GA_INDEX_ALBUM_ID = 3;
 static NSInteger const GA_INDEX_ALBUM_SELL_STATUS = 4;
 
 static NSString* const GA_VAR_KEY = @"key";

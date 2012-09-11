@@ -83,6 +83,9 @@ class Trailers(models.Model):
     def delete(self):
         return "You couldn't delete video. It maybe in timeslot."
 
+    def get_album(self):
+        return self.trailers_set.all()[0]
+
 
 class Series(models.Model):
     SeriesId = models.AutoField(primary_key=True)

@@ -54,6 +54,7 @@
 
 static NSString* const JSON_PARAM_ALBUM_ID = @"AlbumId";
 static NSString* const JSON_PARAM_TITLE = @"Title";
+static NSString* const JSON_PARAM_SERIES_ID = @"SeriesId";
 static NSString* const JSON_PARAM_SERIES_TITLE = @"SeriesTitle";
 static NSString* const JSON_PARAM_STATUS = @"AlbumStatus";
 static NSString* const JSON_PARAM_ALBUM_DESCRIPTION = @"Description";
@@ -142,11 +143,8 @@ static NSString* const CREDITS_ITEM_TAB = @",";
 
 -(void)parseJSON:(NSDictionary*)jsonData
 {
-
-
     self.albumId = [jsonData intValueForKey:JSON_PARAM_ALBUM_ID defaultIfEmpty:self.albumId];
     self.title = [jsonData strValueForKey:JSON_PARAM_TITLE defaultIfEmpty:self.title];
-    self.series.title = [jsonData strValueForKey:JSON_PARAM_SERIES_TITLE defaultIfEmpty:self.series.title];
     self.status = [jsonData intValueForKey:JSON_PARAM_STATUS defaultIfEmpty:self.status];
     self.sellStatus = [jsonData intValueForKey:JSON_PARAM_SELL_STATUS defaultIfEmpty:self.sellStatus];
     self.albumDescription = [jsonData strValueForKey:JSON_PARAM_ALBUM_DESCRIPTION defaultIfEmpty:self.albumDescription];
@@ -154,6 +152,9 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     self.rating = [jsonData strValueForKey:JSON_PARAM_RATING defaultIfEmpty:self.rating];
     self.cover = [jsonData strValueForKey:JSON_PARAM_COVER defaultIfEmpty:self.cover];
 
+    self.series.title = [jsonData strValueForKey:JSON_PARAM_SERIES_TITLE defaultIfEmpty:self.series.title];
+    self.series.seriesId = [jsonData intValueForKey:JSON_PARAM_SERIES_ID defaultIfEmpty:self.series.seriesId];
+    
     NSDictionary * trailerJson = [jsonData objectForKey:JSON_PARAM_TRAILER];
     if (self.sellStatus){
         [trailerJson setValue:[NSNumber numberWithInt: self.sellStatus] forKey:JSON_PARAM_SELL_STATUS];

@@ -67,7 +67,6 @@ class JsonifyModels(object):
             'AlbumId': album.AlbumId,
             'Season': album.Season,
             'Cover': album.Cover.get_url(),
-            'SeriesTitle': album.SeriesId.Title,
             'Title': album.Title,
             'Thumbnail': album.Thumbnail.get_url(),
             'SquareThumbnail': album.SquareThumbnail.get_url(),
@@ -76,7 +75,10 @@ class JsonifyModels(object):
             'Credits': album.Credits,
             'ReleaseDate': released,
             'UpdateDate': updated,
-            'SellStatus': Utils.get_sell_status(album, is_purchased)
+            'SellStatus': Utils.get_sell_status(album, is_purchased),
+
+            'SeriesId': album.SeriesId.SeriesId,
+            'SeriesTitle': album.SeriesId.Title,
         }
 
         if kwargs.get('add_album_status', False):
@@ -107,10 +109,13 @@ class JsonifyModels(object):
         if kwargs.get('add_album_info', False):
             album = episode.AlbumId
             episode_json.update({
+                "AlbumId": album.AlbumId,
                 "AlbumTitle": album.Title,
-                "SeriesTitle": album.SeriesId.Title,
                 "AlbumSeason": album.Season,
                 "AlbumSquareThumbnail": album.SquareThumbnail.get_url(),
+
+                "SeriesId": album.SeriesId.SeriesId,
+                "SeriesTitle": album.SeriesId.Title,
             })
 
         return episode_json
@@ -130,6 +135,7 @@ class JsonifyModels(object):
             "Line1": trailer.Line1,
             "Line2": trailer.Line2,
             "SquareThumbnail": trailer.SquareThumbnail.get_url(),
+            "AlbumId": trailer.get_album(),
         }
 
     def timeslots(self, timeslot, **kwargs):

@@ -244,7 +244,7 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                                withObject:dic 
                                             waitUntilDone:YES];                    
                     break;
-                case 1:
+                case 401:
                     [receiver performSelectorOnMainThread:@selector(loginFailed) 
                                                withObject:nil
                                             waitUntilDone:YES];
@@ -620,7 +620,7 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                                    withObject:playListItem 
                                                 waitUntilDone:YES];
                         break;                                                
-                    case 100:                        
+                    case 401:                        
                         [receiver performSelectorOnMainThread:@selector(authenticationFailed)
                                                    withObject:nil 
                                                 waitUntilDone:YES];
@@ -713,7 +713,7 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                     [albums release];
                     break;
                 }
-                case 100:                        
+                case 401:
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed)
                                                withObject:nil 
                                             waitUntilDone:YES];                    
@@ -869,7 +869,7 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                     [receiver performSelectorOnMainThread:@selector(duplicateTransactionId)
                                                withObject:nil waitUntilDone:YES];
                     break;
-                case 100:
+                case 401:
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed)
                                                withObject:nil waitUntilDone:YES];
                     break;
@@ -922,7 +922,7 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                     }                    
                     break;
                 }                                               
-                case 100:                        
+                case 401:
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed)
                                                withObject:nil 
                                             waitUntilDone:YES];
@@ -1023,7 +1023,7 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                                withObject:playlistItem
                                             waitUntilDone:YES];
                     break;                              
-                case 100:                        
+                case 401:
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed)
                                                withObject:nil 
                                             waitUntilDone:YES];                    
@@ -1231,7 +1231,7 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                     }                    
                     break;
                 }                                               
-                case 100:                        
+                case 401:
                     [receiver performSelectorOnMainThread:@selector(authenticationFailed) 
                                                withObject:nil
                                             waitUntilDone:YES];
