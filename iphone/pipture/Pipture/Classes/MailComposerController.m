@@ -12,6 +12,7 @@
 #import "AlbumScreenshotsController.h"
 #import "Trailer.h"
 #import "Episode.h"
+#import "Album.h"
 #import "MessageComposerController.h"
 
 #define RADIO_BUTTON_ON_IMAGE @"radio-button-pushed.png"
@@ -264,7 +265,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [[PiptureAppDelegate instance] putUserName:nameTextField.text];
     
     if (self.playlistItem) {
-        if (playlistItem_.class == [Trailer class])
+        if ([self isPlaylistItemFree: playlistItem_])
         {
             [self sendMessageURLRequest];
         } else
@@ -294,7 +295,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 -(void)setInfiniteRadiobutonsVisiblity {
-    infiniteRadioButtonsGroupView.hidden = !(playlistItem_.class == [Trailer class]);
+    infiniteRadioButtonsGroupView.hidden = ![self isPlaylistItemFree:playlistItem_];
 }
 
 -(PlaylistItem*)playlistItem
@@ -304,7 +305,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (void)viewUpdate:(PlaylistItem*)playlistItem {
     numberOfViews = DEFAULT_NUMBER_OF_VIEWS;
-    infiniteViews = (playlistItem.class == [Trailer class]);
+    infiniteViews = [self isPlaylistItemFree: playlistItem];
     if (self.view) {
         maxViewsLabel.text = @"100 max.";
         if (playlistItem.class == [Episode class]) {
@@ -806,6 +807,10 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [numberOfViewsTextField resignFirstResponder];    
 }
 
+-(BOOL)isPlaylistItemFree: (PlaylistItem*)playlistItem{
+    return playlistItem.class == [Trailer class] || playlistItem.album.sellStatus == AlbumSellStatus_NotSellable;
+   
+}
 
 
 @end

@@ -396,14 +396,14 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                   } itemName:@"Timeslot"] retain];
             
             NSDictionary * dic = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:
-                                                                      [jsonResult objectForKey:JSON_PARAM_COVER],
                                                                       [NSNumber numberWithFloat:serverTimeDelta],
                                                                       timeslots,
                                                                       nil] forKeys:
-                                  [NSArray arrayWithObjects:@"Cover", @"Delta", @"Timeslots", nil]];
+                                  [NSArray arrayWithObjects:@"Delta", @"Timeslots", nil]];
             
             [receiver performSelectorOnMainThread:@selector(timeslotsReceived:)
-                                       withObject:dic waitUntilDone:YES];
+                                       withObject:dic 
+                                    waitUntilDone:YES];
             [timeslots release];
             
             if (callback != nil) callback(nil, nil);
@@ -953,14 +953,11 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
         viewsCount:(NSNumber*)viewsCount 
           receiver:(NSObject<SendMessageDelegate> *)receiver
 {
-    NSMutableArray *ga_vars = [NSMutableArray arrayWithArray:[playlistItem getCustomGAVariables]];
-    NSArray *messageLength  = [NSArray arrayWithObject:GA_PAGE_VARIABLE(GA_INDEX_ITEM, @"messageLength", message.length )];
-    [ga_vars addObject:messageLength];
+    NSMutableArray *ga_vars = [NSMutableArray arrayWithArray:[playlistItem getCustomGAVariablesForAction:[GA_EVENT_VIDEO_SEND GA_EVENT_ACTION]]];
     GA_TRACK_EVENT(GA_EVENT_VIDEO_SEND,
                    GA_NO_LABEL,
-                   GA_NO_VALUE,
+                   [message length],
                    ga_vars);
-    
     NSURL* url = [self buildURLWithRequest:SEND_MESSAGE_REQUEST sendAPIVersion:NO sendKey:NO sendTimezone:NO];
     
     NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%d&%@=%@&%@=%@&%@=%@&%@=%@", 

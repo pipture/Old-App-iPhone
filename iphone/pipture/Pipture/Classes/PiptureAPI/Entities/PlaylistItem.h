@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "GAEventWithCustomVariablesEmitter.h"
+#import "Album.h"
 
 // Abstract class
 @interface PlaylistItem : NSObject <GAEventWithCustomVariablesEmitter>
@@ -23,6 +24,7 @@
 @property(retain,nonatomic) NSString *videoUrlLQ;
 @property(retain,nonatomic) NSString *videoSubs;
 
+@property(retain, nonatomic) Album* album;
 
 -(BOOL)isVideoUrlLoaded;
 -(BOOL)isVideoUrlLQLoaded;

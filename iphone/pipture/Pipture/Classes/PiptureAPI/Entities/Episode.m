@@ -7,6 +7,7 @@
 //
 
 #import "Episode.h"
+#import "NSDictionary+ValueHelper.h"
 
 @implementation Episode
 
@@ -35,6 +36,7 @@ static NSString* const JSON_PARAM_EMAIL_SCREENSHOT = @"SquareThumbnail";
 static NSString* const JSON_PARAM_SERIES_TITLE = @"SeriesTitle";
 static NSString* const JSON_PARAM_ALBUM_TITLE = @"AlbumTitle";
 static NSString* const JSON_PARAM_ALBUM_SEASON = @"AlbumSeason";
+static NSString* const JSON_PARAM_SELL_STATUS = @"SellStatus";
 static NSString* const JSON_PARAM_ALBUM_EMAIL_SCREENSHOT = @"AlbumSquareThumbnail";
 static NSString* const JSON_PARAM_ALBUM_EMAIL_SCREENSHOTLQ = @"AlbumSquareThumbnailLQ";
 
@@ -82,6 +84,7 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
         NSString* seriesTitle = [jsonData objectForKey:JSON_PARAM_SERIES_TITLE];
         NSString* albumTitle = [jsonData objectForKey:JSON_PARAM_ALBUM_TITLE];
         NSString* albumSeason = [jsonData objectForKey:JSON_PARAM_ALBUM_SEASON];
+        NSInteger sellStatus = [jsonData intValueForKey:JSON_PARAM_SELL_STATUS defaultIfEmpty:self.album.sellStatus];
         NSString* albumEmailScreenshot = [jsonData objectForKey:JSON_PARAM_ALBUM_EMAIL_SCREENSHOT];
         
         if (seriesTitle || albumTitle || albumSeason || albumEmailScreenshot)
@@ -90,7 +93,9 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
             internalAlbum.series.title = seriesTitle;
             internalAlbum.title = albumTitle;
             internalAlbum.season = albumSeason;
+            internalAlbum.sellStatus = sellStatus;
             internalAlbum.emailScreenshot = albumEmailScreenshot;
+            self.album = internalAlbum;
         }                        
     }
     return self;

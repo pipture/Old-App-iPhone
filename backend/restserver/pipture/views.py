@@ -30,46 +30,29 @@ def index (request):
 
 #----------------actual----------------------------
 
-def get_timeslot_entity_by_id (id):
+def get_timeslot_entity_by_id(id):
     try:
-        id = int(id)
-    except:
+        return TimeSlots.objects.get(TimeSlotsId=int(id))
+    except (ValueError, TimeSlots.DoesNotExist):
         return None
-    try:
-        timeslot = TimeSlots.objects.get(TimeSlotsId=id)
-    except:
-        return None
-    else:
-        return timeslot
 
-def get_album_entity_by_id (id):
+def get_album_entity_by_id(id):
     try:
-        id = int(id)
-    except:
+        return Albums.objects.get(AlbumId=int(id))
+    except (ValueError, Albums.DoesNotExist):
         return None
-    try:
-        album = Albums.objects.get(AlbumId=id)
-    except:
-        return None
-    else:
-        return album
 
-
-def get_episode_title_by_id (id):
+def get_episode_title_by_id(id):
     try:
-        episode = Episodes.objects.get(EpisodeId=int(id))
-    except:
+        return Episodes.objects.get(EpisodeId=int(id)).complexName
+    except Episodes.DoesNotExist:
         return None
-    else:
-        return episode.complexName
 
 def get_trailer_title_by_id (id):
     try:
-        trailer = Trailers.objects.get(TrailerId=int(id))
-    except:
+        return Trailers.objects.get(TrailerId=int(id)).complexName
+    except Trailers.DoesNotExist:
         return None
-    else:
-        return trailer.complexName
 
 @staff_member_required
 def get_timeslot_videos(request):
@@ -195,106 +178,13 @@ def update_views (request):
 
 #----------------actual----------------------------
 
-#old
-def get_all_series ():
-    try:
-        all_series = Series.objects.all()
-    except:
-        return None
-    else:
-        return dict([(series.SeriesId, series.Title) for series in all_series])
-
-def get_all_series_get (request):
-    return HttpResponse (json.dumps(get_all_series()))
 
 
 def get_series_entity_by_id(id):
     try:
-        id = int(id)
-    except:
+        series = Series.objects.get(SeriesId=int(id))
+    except (ValueError, Series.DoesNotExist):
         return None
-
-    try:
-        series = Series.objects.get(series_id=id)
-    except:
-        return None
-    else:
-        return series
-
-@staff_member_required
-def set_new_album_post (request):
-    if request.method == 'POST':
-        searches = request.POST.lists()
-        new_album = None
-        chosen_series = None
-
-        for (k, v) in searches:
-            if k == u'csrfmiddlewaretoken':
-                continue
-            elif k == u'chosen_series':
-                try:
-                    chosen_series = int(v[0])
-                except Exception as e:
-                    return HttpResponse ("There is internal error %s (%s)." % (e, type (e)))
-            elif k == u'new_album':
-                try:
-                    new_album = str(v[0]).strip()
-                except Exception as e:
-                    return HttpResponse ("There is internal error %s (%s)." % (e, type (e)))
-
-        if not new_album:
-            return HttpResponse("Nothing to add.")
-        elif not chosen_series:
-            return HttpResponse("Bad chosen series.")
-        chosen_series_entity = get_series_entity_by_id (chosen_series)
-        if not chosen_series_entity:
-            return HttpResponse("There is no : %s series." % (chosen_series))
-        (albums, error) = get_albums_from_series(chosen_series)
-        if error:
-            return HttpResponse("There is error: %s." % (error))
-
-        for id, items in albums.items():
-            if items == new_album:
-                return HttpResponse("There is '%s' album already." % (new_album))
-        album = Albums(Description=new_album, SeriesId=chosen_series_entity)
-        try:
-            album.save()
-        except Exception as e:
-            return HttpResponse ("There is internal error %s (%s)." % (e, type (e)))
-        else:
-            return HttpResponse ("Album '%s' is added." % (new_album))
-    else:
-        return HttpResponse("There is POST method only.")
-
-@staff_member_required
-def set_new_series_post (request):
-    if request.method == 'POST':
-        searches = request.POST.lists()
-        new_series = ""
-        for (k, v) in searches:
-            if k == u'csrfmiddlewaretoken':
-                continue
-            elif k == u'new_series':
-                try:
-                    new_series = str(v[0]).strip()
-                except Exception as e:
-                    return HttpResponse ("There is internal error %s (%s)." % (e, type (e)))
-
-        if not new_series:
-            return HttpResponse("Nothing to add.")
-        all_series = get_all_series()
-        for id, items in all_series.items():
-            if items.strip() == new_series:
-                return HttpResponse("There is '%s' series already." % (new_series))
-        series = Series(Title=new_series)
-        try:
-            series.save()
-        except Exception as e:
-            return HttpResponse ("There is internal error %s (%s)." % (e, type (e)))
-        else:
-            return HttpResponse ("Series '%s' is added." % (new_series))
-    else:
-        return HttpResponse("There is POST method only.")
 
 @staff_member_required
 def get_albums_by_series_get (request):

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "PlaylistItemFactory.h"
+#import "Album.h"
 
 @interface CategoryItem : NSObject
 
@@ -16,12 +17,11 @@
 @property(retain, nonatomic) NSString* line1;
 @property(retain, nonatomic) NSString* line2;
 @property(retain, nonatomic) NSString* episodeNo;
-@property(retain, nonatomic) NSString* albumTitle;
 @property(retain, nonatomic) NSString* seriesTitle;
-@property(retain, nonatomic) NSString* albumSeason;
+@property(retain, nonatomic) Album* album;
 @property(retain, nonatomic) NSString* thumbnail;
 @property(retain, nonatomic) NSString* type;
-@property(retain, nonatomic) PlaylistItem* playlistItem;
+@property(strong, nonatomic) PlaylistItem* playlistItem;
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
 

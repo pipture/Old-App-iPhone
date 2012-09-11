@@ -9,6 +9,7 @@
 
 #import "Album.h"
 #import "NSDictionary+ValueHelper.h"
+#import "Trailer.h"
 
 @interface Album(Private)
 -(void)parseJSON:(NSDictionary*)jsonData;
@@ -154,6 +155,9 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     self.cover = [jsonData strValueForKey:JSON_PARAM_COVER defaultIfEmpty:self.cover];
 
     NSDictionary * trailerJson = [jsonData objectForKey:JSON_PARAM_TRAILER];
+    if (self.sellStatus){
+        [trailerJson setValue:[NSNumber numberWithInt: self.sellStatus] forKey:JSON_PARAM_SELL_STATUS];
+    }
     if (trailerJson != nil) {
         Trailer* trailer = [[Trailer alloc] initWithJSON:trailerJson];
         [trailer retain];
