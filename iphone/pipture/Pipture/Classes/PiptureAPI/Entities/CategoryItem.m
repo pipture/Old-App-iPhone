@@ -28,15 +28,15 @@ static NSString* const JSON_PARAM_LINE1 = @"Line1";
 static NSString* const JSON_PARAM_LINE2 = @"Line2";
 static NSString* const JSON_PARAM_EPISODE_NO = @"EpisodeNo";
 static NSString* const JSON_PARAM_SERIES_TITLE = @"SeriesTitle";
-static NSString* const JSON_PARAM_TYPE  = @"type";
+static NSString* const JSON_PARAM_TYPE  = @"Type";
 static NSString* const JSON_PARAM_THUMBNAIL = @"Thumbnail";
 static NSString* const JSON_PARAM_ALBUM_INFO = @"Album";
 static NSString* const JSON_PARAM_ALBUM_TITLE = @"AlbumTitle";
 static NSString* const JSON_PARAM_ALBUM_SEASON = @"AlbumSeason";
 static NSString* const JSON_PARAM_ALBUM_SELL_STATUS = @"SellStatus";
 
-static NSString* const JSON_PARAM_TYPE_ALBUM   = @"album";
-static NSString* const JSON_PARAM_TYPE_EPISODE = @"episode";
+static NSString* const JSON_PARAM_TYPE_TRAILER   = @"Trailer";
+static NSString* const JSON_PARAM_TYPE_EPISODE = @"Episode";
 static NSString* const JSON_PARAM_EPISODE_ID   = @"EpisodeId";
 static NSString* const JSON_PARAM_TRAILER_ID   = @"TrailerId";
 
@@ -78,7 +78,7 @@ static NSString* const JSON_PARAM_TRAILER_ID   = @"TrailerId";
         if (self.seriesTitle) [playlistItemData setObject:self.seriesTitle forKey:JSON_PARAM_SERIES_TITLE];
         videoType = PLAYLIST_ITEM_TYPE_EPISODE;
     }
-    if ([JSON_PARAM_TYPE_ALBUM isEqualToString:self.type]) {
+    if ([JSON_PARAM_TYPE_TRAILER isEqualToString:self.type]) {
         [playlistItemData setObject:[NSString stringWithFormat:@"%d", self.id] forKey:JSON_PARAM_TRAILER_ID];
         if (self.line1) [playlistItemData setObject:self.line1 forKey:JSON_PARAM_LINE1];
         if (self.line2) [playlistItemData setObject:self.line2 forKey:JSON_PARAM_LINE2];

@@ -55,6 +55,9 @@ class Utils(object):
 
 class JsonifyModels(object):
 
+    def __init__(self, as_category_item=False):
+        self.as_category_item = as_category_item
+
     def __call__(self, model, **kwargs):
         handler_name = model.__class__.__name__.lower()
         return getattr(self, handler_name)(model, **kwargs)
@@ -66,20 +69,22 @@ class JsonifyModels(object):
         album_json = {
             'AlbumId': album.AlbumId,
             'Season': album.Season,
-            'Cover': album.Cover.get_url(),
             'Title': album.Title,
-            'Thumbnail': album.Thumbnail.get_url(),
-            'SquareThumbnail': album.SquareThumbnail.get_url(),
-            'Description': album.Description,
-            'Rating': album.Rating,
-            'Credits': album.Credits,
-            'ReleaseDate': released,
-            'UpdateDate': updated,
             'SellStatus': Utils.get_sell_status(album, is_purchased),
-
-            'SeriesId': album.SeriesId.SeriesId,
-            'SeriesTitle': album.SeriesId.Title,
         }
+        album_json.update(self.__call__(album.SeriesId))
+
+        if not self.as_category_item:
+            album_json.update({
+                'Cover': album.Cover.get_url(),
+                'Thumbnail': album.Thumbnail.get_url(),
+                'SquareThumbnail': album.SquareThumbnail.get_url(),
+                'Description': album.Description,
+                'Rating': album.Rating,
+                'Credits': album.Credits,
+                'ReleaseDate': released,
+                'UpdateDate': updated,
+            })
 
         if kwargs.get('add_album_status', False):
             status =  Utils.get_album_status(album, released, updated)
@@ -96,15 +101,19 @@ class JsonifyModels(object):
         episode_json = {
             "Type": "Episode",
             "EpisodeId": episode.EpisodeId,
-            "Title": episode.Title,
-            "Script": episode.Script,
-            "DateReleased": released,
-            "Subject": episode.Subject,
-            "SenderToReceiver": episode.SenderToReceiver,
             "EpisodeNo": episode.EpisodeNo,
+            "Title": episode.Title,
             "CloseUpThumbnail": episode.CloseUpThumbnail.get_url(),
-            "SquareThumbnail": episode.SquareThumbnail.get_url()
         }
+
+        if not self.as_category_item:
+            episode_json.update({
+                "Script": episode.Script,
+                "DateReleased": released,
+                "Subject": episode.Subject,
+                "SenderToReceiver": episode.SenderToReceiver,
+                "SquareThumbnail": episode.SquareThumbnail.get_url()
+            })
 
         if kwargs.get('add_album_info', False):
             album = episode.AlbumId
@@ -113,10 +122,9 @@ class JsonifyModels(object):
                 "AlbumTitle": album.Title,
                 "AlbumSeason": album.Season,
                 "AlbumSquareThumbnail": album.SquareThumbnail.get_url(),
-
-                "SeriesId": album.SeriesId.SeriesId,
                 "SeriesTitle": album.SeriesId.Title,
             })
+            episode_json.update(self.__call__(album.SeriesId))
 
         return episode_json
 
@@ -128,15 +136,19 @@ class JsonifyModels(object):
         }
 
     def trailers(self, trailer, **kwargs):
-        return {
+        trailer_json = {
             "Type": "Trailer",
             "TrailerId": trailer.TrailerId,
-            "Title": trailer.Title,
             "Line1": trailer.Line1,
             "Line2": trailer.Line2,
-            "SquareThumbnail": trailer.SquareThumbnail.get_url(),
-            "AlbumId": trailer.get_album_id(),
         }
+        if not self.as_category_item:
+            trailer_json.update({
+                "Title": trailer.Title,
+                "SquareThumbnail": trailer.SquareThumbnail.get_url(),
+                "AlbumId": trailer.get_album_id(),
+            })
+        return trailer_json
 
     def timeslots(self, timeslot, **kwargs):
         return {
@@ -150,4 +162,9 @@ class JsonifyModels(object):
             "TimeslotStatus": timeslot.status,
         }
 
+    def series(self, series, **kwargs):
+        return {
+            'SeriesId': series.SeriesId,
+            'SeriesTitle': series.Title,
+        }
 

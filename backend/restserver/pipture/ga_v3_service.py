@@ -82,6 +82,7 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
             sort='-ga:totalEvents',
             max_results='%d' % limit
         ).execute()
+
         return [row[1] for row in feed.get('rows', [])]
 
     def get_episodes_watched_by_user(self, user_uid):
@@ -101,7 +102,6 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
             sort='-ga:totalEvents',
         ).execute()
 
-        print feed
         return [int(row[0]) for row in feed.get('rows', [])]
 
 pipture_ga = PiptureGAClient()
