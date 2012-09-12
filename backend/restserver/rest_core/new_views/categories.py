@@ -1,18 +1,19 @@
-import json
 from datetime import datetime, timedelta
 
-from django.http import HttpResponse
-from django.views.generic.base import View
+from django.db.models.aggregates import Count
 from django.db.models import Q
 
 from pipture.ga_v3_service import pipture_ga
+from pipture.utils import AlbumUtils
 from rest_core.api_view import GetView
-from restserver.pipture.models import UserPurchasedItems, Albums, Episodes, Series
+from rest_core.validation_mixins import PurchaserValidationMixin
+from restserver.pipture.models import Albums, Episodes, Series
 
 
-class CategoryView(View):
-    def get_user_token(self):
-        return self.request.GET.get('Key', '')
+class Category(object):
+
+    def __init__(self, params):
+        self.params = params
 
     def get_context_data(self):
         items = tuple(self.get_item_info(item)
@@ -35,7 +36,7 @@ class VideosMixin(object):
 
     def get_item_info(self, episode):
         print episode.AlbumId.Title
-        return dict(type='episode',
+        return [dict(type='episode',
                     id=episode.EpisodeId,
                     EpisodeNo=episode.EpisodeNo,
                     SeriesTitle=episode.AlbumId.SeriesId.Title,
@@ -46,7 +47,7 @@ class VideosMixin(object):
                         'SellStatus' : Albums.SELL_STATUS_FROM_PURCHASE.get(episode.AlbumId.PurchaseStatus, 0),
                         'Season' : episode.AlbumId.Season
                     }
-                    )
+                )]
 
 
 class SeriesMixin(object):
@@ -72,20 +73,20 @@ class SeriesMixin(object):
                     )
 
 
-class ScheduledSeries(CategoryView):
+class ScheduledSeries(Category):
     category_id = 0
     title = 'Scheduled Series'
     display = 0
 
 
-class MostPopularVideos(CategoryView, VideosMixin):
+class MostPopularVideos(Category, VideosMixin):
     category_id = 1
     title = 'Most Popular'
     days_period = 10
 
     def get_items_queryset(self):
         ids = self.get_data_from_ga()
-        episodes = Episodes.objects.filter(EpisodeId__in=ids)
+        episodes = self.params['episodes'].filter(EpisodeId__in=ids)
         return [episodes.get(EpisodeId=id) for id in ids
                 if episodes.filter(EpisodeId=id)]
 
@@ -98,25 +99,15 @@ class MostPopularVideos(CategoryView, VideosMixin):
                                                   end_date)
 
 
-class RecentlyAddedVideos(CategoryView, VideosMixin):
+class RecentlyAddedVideos(Category, VideosMixin):
     category_id = 2
     title = 'Recently Added'
 
-    def get_purchased_albums_ids(self):
-        user_token = self.get_user_token()
-        return UserPurchasedItems.objects.filter(
-                UserId__Token=user_token,
-                PurchaseItemId__Description='Album'
-            ).values_list('ItemId')
-
     def get_items_queryset(self):
-        return Episodes.objects.filter(
-                Q(AlbumId__in=self.get_purchased_albums_ids()) |
-                Q(AlbumId__PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
-            ).order_by('-DateReleased')
+        return self.params['episodes'].order_by('-DateReleased')
 
 
-class ComingSoonSeries(CategoryView, SeriesMixin):
+class ComingSoonSeries(Category, SeriesMixin):
     category_id = 3
     title = 'Coming Soon'
 
@@ -139,15 +130,43 @@ class ComingSoonSeries(CategoryView, SeriesMixin):
         ''')
 
 
-class Top12VideosForYou(CategoryView, VideosMixin):
+class Top12VideosForYou(Category, VideosMixin):
     category_id = 4
     title = 'Top 12 for You'
 
+    def get_watched_episodes(self):
+        user_uid = self.params['user_uid']
+
+        ids = pipture_ga.get_episodes_watched_by_user(user_uid)
+        episodes = self.params['episodes'].filter(EpisodeId__in=ids)
+        counted_watched = episodes.values('AlbumId__SeriesId')\
+                .annotate(watched_count=Count('AlbumId__SeriesId'))\
+                .order_by('-watched_count')
+        series_ids = [item['AlbumId__SeriesId'] for item in counted_watched]
+
+        print episodes, series_ids
+
+        return episodes, series_ids
+
     def get_items_queryset(self):
-        return Episodes.objects.all()
+#        return Episodes.objects.all()
+        watched, series_ids = self.get_watched_episodes()
+        unwatched = self.params['episodes'].exclude(EpisodeId__in=watched)
+
+        unwatched_episodes = []
+        for id in series_ids:
+            episodes_for_series = Episodes.objects.filter(AlbumId__SeriesId=id)
+            unwatched_episodes.extend(episodes_for_series)
+            if len(unwatched_episodes) >= self.limit:
+                return unwatched_episodes
+
+        episodes_from_unwatched_series = \
+                unwatched.exclude(AlbumId__SeriesId__in=series_ids)
+        unwatched_episodes.extend(episodes_from_unwatched_series)
+        return unwatched_episodes
 
 
-class WatchThatVideosAgain(CategoryView, VideosMixin):
+class WatchThatVideosAgain(Category, VideosMixin):
     category_id = 5
     title = 'Watch Them Again'
 
@@ -155,11 +174,26 @@ class WatchThatVideosAgain(CategoryView, VideosMixin):
         return Episodes.objects.all()
 
 
-class GetAllCategories(GetView):
+class GetAllCategories(GetView, PurchaserValidationMixin):
+
     def get_category_classes(self):
-        return CategoryView.__subclasses__()
+        return Category.__subclasses__()
+
+    def get_available_episodes(self):
+        purchased_albums_ids = AlbumUtils.get_purchased(self.purchaser.UserUID)
+
+        return Episodes.objects.filter(
+                Q(AlbumId__HiddenAlbum=False) & (
+                    Q(AlbumId__AlbumId__in=purchased_albums_ids) |
+                    Q(AlbumId__PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
+                )
+            )
+
+    def get_params(self):
+        return dict(user_uid=self.purchaser.UserUID,
+                    episodes=self.get_available_episodes())
 
     def get_context_data(self):
-        result = tuple(category_class(request=self.request).get_context_data()
+        result = tuple(category_class(self.get_params()).get_context_data()
                        for category_class in self.get_category_classes())
         return dict(ChannelCategories=result)

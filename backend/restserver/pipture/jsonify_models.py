@@ -135,7 +135,7 @@ class JsonifyModels(object):
             "Line1": trailer.Line1,
             "Line2": trailer.Line2,
             "SquareThumbnail": trailer.SquareThumbnail.get_url(),
-            "AlbumId": trailer.get_album(),
+            "AlbumId": trailer.get_album_id(),
         }
 
     def timeslots(self, timeslot, **kwargs):
