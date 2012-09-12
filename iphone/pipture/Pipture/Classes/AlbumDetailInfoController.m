@@ -95,8 +95,8 @@
         [self.navigationController setNavigationBarHidden:NO animated:YES];
         self.navigationFake.hidden = YES;
         heightOffset = buttonsPanel.frame.size.height;
-        buttonsPanel.frame = CGRectMake(0, 0, 
-                                        buttonsPanel.frame.size.width, 
+        buttonsPanel.frame = CGRectMake(0, 0,
+                                        buttonsPanel.frame.size.width,
                                         heightOffset);
         
         self.navigationItem.leftBarButtonItem = back;
