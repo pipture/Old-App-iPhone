@@ -313,7 +313,7 @@ def getVideo (request):
             try:
                 purchaser = PipUsers.objects.get(Token=key)
             except PipUsers.DoesNotExist:
-                response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+                response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
                 return HttpResponse(json.dumps(response))
 
             if episode_id:
@@ -648,7 +648,7 @@ def getAlbums (request):
 
     key = request.GET.get('Key', None)
     if key is None:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 
     response, error = fill_albums_response(user_id=key, sallable=False)
@@ -675,7 +675,7 @@ def getSellableAlbums (request):
 
     key = request.GET.get('Key', None)
     if key is None:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 
     response, error = fill_albums_response(user_id=key, sallable=True)
@@ -747,7 +747,7 @@ def getAlbumDetail (request):
 
     key = request.GET.get('Key', None)
     if key is None:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 
 
@@ -867,7 +867,10 @@ def getSearchResult (request):
 
     #word_search = r'\b'+ searchquery +r'\b'
     #word_search = r'\bhandsome\b'
-    word_search = r'[[:<:]]'+ searchquery +'[[:>:]]'
+    if len(searchquery) > 4:
+        word_search = r'(?:'+ searchquery[0:len(searchquery)-3] + '|' + searchquery +  ')'
+    else:
+        word_search = r''+ searchquery
 
     try:
         series = Series.objects.filter(Title__iregex=word_search)
@@ -906,28 +909,18 @@ def getSearchResult (request):
             else:
                 enlarge_list(list_data=allepisodes, append_data=albepisodes)
 
-    episodes_title = None
-    episodes_subj = None
-    episodes_keys = None
-
+    episodes = None
     try:
-        episodes_title = Episodes.objects.filter(Title__iregex=word_search)
+        episodes = Episodes.objects.filter(
+            Q(Title__iregex=word_search)   |
+            Q(Subject__iregex=word_search) |
+            Q(Keywords__iregex=word_search)|
+            Q(Script__iregex=word_search)
+        )
     except Exception as e:
         pass
 
-    try:
-        episodes_subj = Episodes.objects.filter(Subject__iregex=word_search)
-    except Exception as e:
-        pass
-
-    try:
-        episodes_keys = Episodes.objects.filter(Keywords__iregex=word_search)
-    except Exception as e:
-        pass
-
-    enlarge_list(list_data=allepisodes, append_data=episodes_title)
-    enlarge_list(list_data=allepisodes, append_data=episodes_subj)
-    enlarge_list(list_data=allepisodes, append_data=episodes_keys)
+    enlarge_list(list_data=allepisodes, append_data=episodes)
 
     appendeditems = []
 
@@ -1095,13 +1088,13 @@ def buy (request):
     transaction_id = request.POST.get('TransactionId', None)
 
     if not key or not apple_purchase or not transaction_id:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 
     try:
         purchaser = PipUsers.objects.get(Token=key)
     except PipUsers.DoesNotExist:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 
     #first check transaction in our table
@@ -1207,13 +1200,13 @@ def getBalance (request):
 
     key = request.GET.get('Key', None)
     if not key:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 
     try:
         purchaser = PipUsers.objects.get(Token=key)
     except PipUsers.DoesNotExist:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
     response["Balance"] = "%s" % purchaser.Balance
     return HttpResponse(json.dumps(response))
@@ -1242,7 +1235,7 @@ def free_viewers(purchaser, episode_id):
         episode = Episodes.objects.get(EpisodeId=episode_id);
     except Episodes.DoesNotExist:
         return None
-        
+
     is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=purchaser.Token)
     if not is_purchased:
         return None
@@ -1251,7 +1244,7 @@ def free_viewers(purchaser, episode_id):
     except FreeMsgViewers.DoesNotExist:
         free_viewers = FreeMsgViewers(UserId=purchaser, EpisodeId=episode, Rest=settings.MESSAGE_VIEWS_LOWER_LIMIT)
         free_viewers.save()
-        
+
     return free_viewers
 
 @csrf_exempt
@@ -1274,7 +1267,7 @@ def sendMessage (request):
     key = request.POST.get('Key', None)
     episode_id = request.POST.get('EpisodeId', None)
     trailer_id = request.POST.get('TrailerId', None)
-    message = request.POST.get('Message', None)
+    message = request.POST.get('Message', "")
     #timeslot_id = request.POST.get('TimeslotId', None)
     screenshot_url = request.POST.get('ScreenshotURL', None)
     user_name = request.POST.get('UserName', None)
@@ -1302,22 +1295,37 @@ def sendMessage (request):
         return HttpResponse(json.dumps(response))
 
     if not key:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 
     try:
         purchaser = PipUsers.objects.get(Token=key)
     except PipUsers.DoesNotExist:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 
-    if trailer_id:
-        video_url, subs_url, error = get_video_url_from_episode_or_trailer (id=trailer_id, type_r="T", video_q=0)
+    sell_status = None
+    if episode_id:
+        try:
+            episode = Episodes.objects.get(EpisodeId=episode_id)
+            sell_status = episode.AlbumId.PurchaseStatus
+        except Episodes.DoesNotExist:
+            response["Error"] = {"ErrorCode": "2", "ErrorDescription": "There is no episode with id %s." % episode_id}
+            return HttpResponse(json.dumps(response))
+    # todo: clarify  condition, make it based on views_count only
+    if trailer_id or (episode_id and sell_status == Albums.PURCHASE_TYPE_NOT_FOR_SALE):
+        if trailer_id:
+            video_id = trailer_id
+            video_type = "T"
+        else:
+            video_id = episode_id
+            video_type = "E"
+        video_url, subs_url, error = get_video_url_from_episode_or_trailer (id=video_id, type_r=video_type, video_q=0)
         if error:
             response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % error}
             return HttpResponse(json.dumps(response))
         else:
-            u_url = new_send_message (user=purchaser, video_id=trailer_id, message=message, video_type="T", user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
+            u_url = new_send_message (user=purchaser, video_id=video_id, message=message, video_type=video_type, user_name=user_name, views_count=views_count, screenshot_url=(screenshot_url or ''))
             vhost = PiptureSettings.objects.all()[0].VideoHost
 
             response['MessageURL'] = "%s/%s" % (vhost, u_url)
@@ -1361,11 +1369,11 @@ def sendMessage (request):
     if free and free.Rest > 0:
         message_cost -= int(SEND_EP.Price) * free.Rest
         if message_cost<0: message_cost = 0
-        
+
         rest = free.Rest - int(views_count)
         rest = (rest if rest > 0 else 0)
         freeViews =  free.Rest - rest;
-        
+
         free.Rest = rest
         free.save()
 
@@ -1438,7 +1446,7 @@ def getAlbumScreenshots (request):
     EpisodeId = request.GET.get('EpisodeId', None)
 
     if not EpisodeId:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "There is no EpisodeId."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "There is no EpisodeId."}
         return HttpResponse(json.dumps(response))
 
     return getAlbumScreenshotByEpisodeId(EpisodeId)
@@ -1460,13 +1468,13 @@ def getUnusedMessageViews (request):
 
     key = request.GET.get('Key', None)
     if not key:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 
     try:
         purchaser = PipUsers.objects.get(Token=key)
     except PipUsers.DoesNotExist:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 
     try:
@@ -1523,7 +1531,7 @@ def deactivateMessageViews (request):
 
     key = request.POST.get('Key', None)
     if not key:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 
     try:
@@ -1534,7 +1542,7 @@ def deactivateMessageViews (request):
     try:
         purchaser = PipUsers.objects.get(Token=key)
     except PipUsers.DoesNotExist:
-        response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
+        response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 
     try:

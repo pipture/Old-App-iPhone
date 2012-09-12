@@ -34,6 +34,7 @@ static NSString* const JSON_PARAM_SENDER_TO_RECEIVER = @"SenderToReceiver";
 static NSString* const JSON_PARAM_EPISODE_NO = @"EpisodeNo";
 static NSString* const JSON_PARAM_EMAIL_SCREENSHOT = @"SquareThumbnail";
 static NSString* const JSON_PARAM_SERIES_TITLE = @"SeriesTitle";
+static NSString* const JSON_PARAM_SERIES_ID = @"SeriesId";
 static NSString* const JSON_PARAM_ALBUM_TITLE = @"AlbumTitle";
 static NSString* const JSON_PARAM_ALBUM_SEASON = @"AlbumSeason";
 static NSString* const JSON_PARAM_SELL_STATUS = @"SellStatus";
@@ -81,16 +82,19 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
         self.episodeNo =  [jsonData objectForKey:JSON_PARAM_EPISODE_NO];
         self.episodeEmailScreenshot = [jsonData objectForKey:JSON_PARAM_EMAIL_SCREENSHOT];
         
-        NSString* seriesTitle = [jsonData objectForKey:JSON_PARAM_SERIES_TITLE];
         NSString* albumTitle = [jsonData objectForKey:JSON_PARAM_ALBUM_TITLE];
         NSString* albumSeason = [jsonData objectForKey:JSON_PARAM_ALBUM_SEASON];
         NSInteger sellStatus = [jsonData intValueForKey:JSON_PARAM_SELL_STATUS defaultIfEmpty:self.album.sellStatus];
         NSString* albumEmailScreenshot = [jsonData objectForKey:JSON_PARAM_ALBUM_EMAIL_SCREENSHOT];
         
-        if (seriesTitle || albumTitle || albumSeason || albumEmailScreenshot)
+        NSString* seriesTitle = [jsonData objectForKey:JSON_PARAM_SERIES_TITLE];
+        NSInteger seriesId = [jsonData intValueForKey:JSON_PARAM_SERIES_ID defaultIfEmpty:0];
+        
+        if (seriesTitle || seriesId || albumTitle || albumSeason || albumEmailScreenshot)
         {
             internalAlbum = [[Album alloc] init];
             internalAlbum.series.title = seriesTitle;
+            internalAlbum.series.seriesId = seriesId;
             internalAlbum.title = albumTitle;
             internalAlbum.season = albumSeason;
             internalAlbum.sellStatus = sellStatus;

@@ -97,16 +97,22 @@
 }
 
 -(NSArray *)getCustomGAVariablesForAction:(NSString*)action {
+    NSMutableArray* ga_vars = [[[NSMutableArray alloc] init] autorelease];
+    
     NSString *itemId = [NSString stringWithFormat:@"%d", [self videoKeyValue]];
-    NSMutableArray* ga_vars = [[NSMutableArray alloc] init];
-    [ga_vars autorelease];
+    NSString *seriesId = [NSString stringWithFormat:@"%d", self.album.series.seriesId];
+    NSString *albumId = [NSString stringWithFormat:@"%d", self.album.albumId];
+    
+    // Variable with name=itemType, value=itemId
+    [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_ITEM, [self videoKeyName], itemId)];
+    
+    // Variable with name=seriesId, value=albumId
+    [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_ALBUM_ID, seriesId, albumId)];
+    
     if ([action isEqualToString:[GA_EVENT_VIDEO_SEND GA_EVENT_ACTION]]) {
         NSString *sellStatusStr = [NSString stringWithFormat:@"%d",self.album.sellStatus];
         [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_ALBUM_SELL_STATUS, @"sellStatus", sellStatusStr)];
     }
-    
-    [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_ITEM, [self videoKeyName],itemId)];
-    
     return ga_vars;
 }
 

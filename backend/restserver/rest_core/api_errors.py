@@ -17,30 +17,30 @@ class ApiError(Exception):
 
 
 class EmptyError(ApiError):
-    code = ""
+    code = 0
     message = ""
 
 
 class BadRequest(ApiError):
-    code = '400'
+    code = 400
 
 
 class UnauthorizedError(ApiError):
-    code = '401'
+    code = 401
     message = 'Authentication error.'
 
 
 class Forbidden(ApiError):
-    code = '403'
+    code = 403
     message = 'Not enough money.'
 
 
 class NotFound(ApiError):
-    code = '404'
+    code = 404
 
 
 class InternalServerError(ApiError):
-    code = '500'
+    code = 500
     message = 'Internal server error: %s (%s)'
 
     def __init__(self, *args, **kwargs):

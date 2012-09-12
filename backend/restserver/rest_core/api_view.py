@@ -45,11 +45,11 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
             context.update(EmptyError().get_dict())
         except ApiError as error:
             context = error.get_dict()
-        except Exception as error:
-            if not settings.DEBUG:
-                context = InternalServerError(error=error).get_dict()
-            else:
-               raise error
+#        except Exception as error:
+#            if not settings.DEBUG:
+#                context = InternalServerError(error=error).get_dict()
+#            else:
+#               raise error
 
         return HttpResponse(json.dumps(context))
 

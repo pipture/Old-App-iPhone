@@ -13,6 +13,8 @@ settings_staging.py
 *.swo
 *.db
 *.ipa
+*.patch
+*.orig
 backend/bin/
 backend/share/
 backend/lib/

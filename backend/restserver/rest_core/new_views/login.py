@@ -37,8 +37,11 @@ class Register(PostView):
         pip_user = self.get_pip_user()
 
         cover, album = AlbumUtils.get_cover()
+        if album:
+            album = self.jsonify(album)
+        
         return dict(Cover=cover,
-                    Album=self.jsonify(album),
+                    Album=album,
                     UUID=str(pip_user.UserUID),
                     SessionKey=str(pip_user.Token))
 
