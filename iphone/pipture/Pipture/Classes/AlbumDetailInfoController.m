@@ -70,6 +70,20 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    if (withNavigationBar && self.navigationController.navigationBarHidden) {
+        int heightOffset = self.navigationFake.frame.size.height + buttonsPanel.frame.size.height;
+        self.navigationFake.hidden = NO;
+        buttonsPanel.frame = CGRectMake(0,
+                                        self.navigationFake.frame.size.height,
+                                        buttonsPanel.frame.size.width,
+                                        buttonsPanel.frame.size.height);
+    
+        subViewContainer.frame = CGRectMake(0,
+                                            heightOffset,
+                                            buttonsPanel.frame.size.width,
+                                            self.view.frame.size.height-heightOffset);
+    }
+    
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
 }
 
@@ -141,6 +155,7 @@
     titleView.view.frame = CGRectMake(0, 0, 170,44);
     if (withNavigationBar) {
         self.navigationItem.titleView = titleView.view;
+        self.navigationItemFake.title = @"";
     } else {
         self.navigationItemFake.titleView = titleView.view;
     }
