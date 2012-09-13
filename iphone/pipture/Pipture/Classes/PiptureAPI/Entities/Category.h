@@ -17,7 +17,7 @@
 @property(assign, nonatomic) BOOL display;
 @property(assign, nonatomic) NSInteger columns;
 @property(assign, nonatomic) NSInteger rows;
-@property(retain, nonatomic) NSArray *items;
+@property(retain, nonatomic) NSArray *categoryItems;
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
 

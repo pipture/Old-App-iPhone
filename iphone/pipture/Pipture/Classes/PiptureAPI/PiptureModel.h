@@ -141,8 +141,8 @@
 @protocol ChannelCategoriesReceiver <PiptureModelDelegate>
 @required
 -(void)channelCategoriesReceived:(NSMutableArray*)categories;
--(void)updateCategories:(NSArray *)categories byOrder:(NSArray *)newCategoriesOrder updateViews:(BOOL)update;
-@property (retain, nonatomic) NSMutableArray *channelCategories;
+-(void)updateCategoriesByOrder:(NSArray *)newCategoriesOrder updateViews:(BOOL)update;
+@property (retain, nonatomic) NSArray *channelCategories;
 @property (retain, nonatomic) NSArray *categoriesOrder;
 @end
 

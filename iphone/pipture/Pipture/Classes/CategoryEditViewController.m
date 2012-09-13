@@ -90,8 +90,7 @@
 
 - (void)doneAction {
     // Saving changes for last edit session
-    [self.delegate updateCategories:self.delegate.channelCategories
-                            byOrder:categoriesOrder_ 
+    [self.delegate updateCategoriesByOrder:categoriesOrder_
                         updateViews:YES];
     [self.delegate dismissEditCategory];
 }

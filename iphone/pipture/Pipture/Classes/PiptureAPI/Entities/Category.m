@@ -18,14 +18,14 @@
 @synthesize display;
 @synthesize columns;
 @synthesize rows;
-@synthesize items;
+@synthesize categoryItems;
 
 static NSString* const JSON_PARAM_CATEGORY_ID = @"id";
 static NSString* const JSON_PARAM_TITLE = @"title";
 static NSString* const JSON_PARAM_DISPLAY = @"display";
 static NSString* const JSON_PARAM_COLUMNS = @"columns";
 static NSString* const JSON_PARAM_ROWS = @"rows";
-static NSString* const JSON_PARAM_ITEMS = @"items";
+static NSString* const JSON_PARAM_CATEGORY_ITEMS = @"categoryItems";
 
 -(id)initWithJSON:(NSDictionary*)jsonData{
     self = [self init];
@@ -38,7 +38,7 @@ static NSString* const JSON_PARAM_ITEMS = @"items";
 - (void)dealloc {
     [title release];
     [categoryId release];
-    [items release];
+    [categoryItems release];
     [super dealloc];
 }
 
@@ -53,13 +53,20 @@ static NSString* const JSON_PARAM_ITEMS = @"items";
     self.categoryId = [[channelData strValueForKey:JSON_PARAM_CATEGORY_ID defaultIfEmpty:self.categoryId] retain];
     self.display    = [channelData  intValueForKey:JSON_PARAM_DISPLAY     defaultIfEmpty:self.display] == 1 ? YES : NO;
     
-    self.items = [PiptureModel parseItems:jsonData
-                                   jsonArrayParamName:@"items"
-                                          itemCreator:^(NSDictionary*jsonIT)
-                              {
-                                  CategoryItem * categoryItem = [[[CategoryItem alloc] initWithJSON:jsonIT] autorelease];
-                                  return categoryItem;
-                              } itemName:@"Item"];
+    NSArray* parsedCategoryItems = [jsonData objectForKey:JSON_PARAM_CATEGORY_ITEMS];
+    if (parsedCategoryItems)
+    {
+        NSMutableArray *tempCategoryItem = [NSMutableArray arrayWithCapacity:categoryItems.count];
+        for (NSArray *categoryItemData in parsedCategoryItems) {
+            CategoryItem * categoryItem = [[CategoryItem alloc] initWithData:categoryItemData];
+            [tempCategoryItem addObject:categoryItem];
+            [categoryItem release];
+        }
+        [tempCategoryItem retain];
+        [categoryItems release];
+        categoryItems=tempCategoryItem;
+        
+    }
 }
 
 

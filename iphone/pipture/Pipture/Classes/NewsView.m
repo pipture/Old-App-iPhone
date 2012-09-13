@@ -134,11 +134,10 @@
 #pragma mark Manage views for categories
 
 -(void)placeCategories:(NSArray*)channelCategories {
-    [channelCategories retain];
     categoryViews = [[NSMutableDictionary alloc] init];
     
     for (Category* category in channelCategories){
-        if (category.display == YES){
+        if (category.display == YES && category.categoryItems.count>0){
             CategoryViewController *vc = [[CategoryViewController alloc] initWithNibName:@"CategoryViewController"
                                                                               bundle:nil];
             [vc fillWithContent:category];
@@ -148,7 +147,6 @@
     }
     
     [self placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]];
-    [channelCategories release];
 }
 
 - (void)updateCategoriesOrder:(NSArray *)categoriesOrder {

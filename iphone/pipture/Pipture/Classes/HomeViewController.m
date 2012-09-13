@@ -721,8 +721,10 @@
             [placeholder release];
         }
         else {
-            for(CategoryItem* categoryItem in category.items){
-                [playlist addObject: categoryItem.playlistItem];
+            for(CategoryItem* categoryItem in category.categoryItems){
+                for(CategoryItemVideo* video in categoryItem.videos){
+                    [playlist addObject: video.playlistItem];
+                }
             }
         }
     }
@@ -839,8 +841,7 @@
 #pragma mark -
 #pragma mark ChannelCategoriesReceiver 
 
-- (void)channelCategoriesReceived:(NSMutableArray*)categories {
-    [categories retain];
+- (void)channelCategoriesReceived:(NSArray*)categories {
     for (int i=0; i<categories.count; i++){
         Category *category = [categories objectAtIndex:i];
         category.index = i + 1;
@@ -852,36 +853,33 @@
     
     // Revealing categories order from UserDefaults
     NSArray *storedCategoriesOrder = [appDelegate getChannelCategoriesOrder];
-    
+    self.channelCategories = categories;
     if (storedCategoriesOrder && categories.count == storedCategoriesOrder.count) {
-        [self updateCategories:categories 
-                       byOrder:storedCategoriesOrder
+        [self updateCategoriesByOrder:storedCategoriesOrder
                    updateViews:NO];
         self.categoriesOrder = [storedCategoriesOrder retain];
     } else {
-        self.channelCategories = categories;
         
         NSMutableArray *newCategoriesOrder = [[NSMutableArray alloc] init];
         for (Category *category in channelCategories) {
             [newCategoriesOrder addObject:category.categoryId];
         }
-        self.categoriesOrder = [[NSArray alloc] initWithArray:newCategoriesOrder];
+        self.categoriesOrder = [NSArray arrayWithArray:newCategoriesOrder];
+        [newCategoriesOrder release];
         
         [appDelegate putChannelCategoriesOrder:categoriesOrder];
     }
 //    NSLog(@"channelCategories stored: %@", channelCategories_);
     [self.newsView placeCategories:categories];
-    [categories release];
 }
 
 
-- (void)updateCategories:(NSArray *)categories 
-                 byOrder:(NSMutableArray *)newCategoriesOrder
+- (void)updateCategoriesByOrder:(NSMutableArray *)newCategoriesOrder
              updateViews:(BOOL)updateViews {
     NSMutableArray *reorderedCategories = [[NSMutableArray alloc] init];
     NSMutableDictionary *categoriesById = [[NSMutableDictionary alloc] init];
     
-    for (Category *category in categories) {
+    for (Category *category in self.channelCategories) {
         [categoriesById setValue:category 
                           forKey:category.categoryId];
     }
