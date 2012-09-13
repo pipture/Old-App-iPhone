@@ -112,9 +112,9 @@
     [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_SERIES_AND_ALBUM, 
                                         seriesTitle, 
                                         albumTitle)];
-    
+    NSString *sellStatusName = [NSString stringWithFormat:@"%d",GA_INDEX_ALBUM_SELL_STATUS];
     [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_ALBUM_SELL_STATUS, 
-                                        GA_VAR_ALBUM_SELL_STATUS, 
+                                        sellStatusName, 
                                         [self.album formatSellStatus])];
     return ga_vars;
 }

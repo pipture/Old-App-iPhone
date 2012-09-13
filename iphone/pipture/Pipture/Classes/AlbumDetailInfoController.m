@@ -223,7 +223,8 @@
     [super viewDidUnload];
 }
 
-- (void)dealloc {
+- (void)dealloc {    
+    [scrollingHintController release];
     [emptyCell release];
     [album release];
     [scheduleModel release];
@@ -244,7 +245,7 @@
     [asyncImageViews release];
     [cardSectionViewController release];
     [purchasedInfoView release];
-    [scrollingHintController release];
+    
     [progressView release];
     [super dealloc];
 }
