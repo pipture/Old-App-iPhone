@@ -787,7 +787,7 @@ NSInteger networkActivityIndecatorCount;
         [self tabbarSelect:[sender tag]];
         
         if (![self homeViewVisible]) {
-            [self.homeNavigationController popToRootViewControllerAnimated:YES];
+            [self.homeNavigationController popToRootViewControllerAnimated:NO];
         }
     }
 }

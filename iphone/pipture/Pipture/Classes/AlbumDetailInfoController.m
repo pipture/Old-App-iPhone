@@ -70,19 +70,19 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    if (withNavigationBar && self.navigationController.navigationBarHidden) {
-        int heightOffset = self.navigationFake.frame.size.height + buttonsPanel.frame.size.height;
-        self.navigationFake.hidden = NO;
-        buttonsPanel.frame = CGRectMake(0,
-                                        self.navigationFake.frame.size.height,
-                                        buttonsPanel.frame.size.width,
-                                        buttonsPanel.frame.size.height);
-    
-        subViewContainer.frame = CGRectMake(0,
-                                            heightOffset,
-                                            buttonsPanel.frame.size.width,
-                                            self.view.frame.size.height-heightOffset);
-    }
+//    if (withNavigationBar && self.navigationController.navigationBarHidden) {
+//        int heightOffset = self.navigationFake.frame.size.height + buttonsPanel.frame.size.height;
+//        self.navigationFake.hidden = NO;
+//        buttonsPanel.frame = CGRectMake(0,
+//                                        self.navigationFake.frame.size.height,
+//                                        buttonsPanel.frame.size.width,
+//                                        buttonsPanel.frame.size.height);
+//    
+//        subViewContainer.frame = CGRectMake(0,
+//                                            heightOffset,
+//                                            buttonsPanel.frame.size.width,
+//                                            self.view.frame.size.height-heightOffset);
+//    }
     
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
 }
