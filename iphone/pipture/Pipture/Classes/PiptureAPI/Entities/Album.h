@@ -54,6 +54,7 @@ enum AlbumSellStatus{
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
 -(void)updateWithDetails:(NSDictionary*)jsonData episodes:(NSArray*)episodes;
+-(NSString*)formatSellStatus;
 
 -(BOOL)compareTo:(Album*)alb;
 

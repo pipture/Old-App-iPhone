@@ -66,9 +66,9 @@ static NSString* const GA_ERROR_MESSAGE = @"Google Analytics tracking error: %@"
               withCustomVariables:(NSArray *)customVariables {
     NSError *error;
     
-    if (self.uuid && ![gaTracker getVisitorCustomVarAtIndex:GA_INDEX_KEY]) {
-        [self setCustomGAVariable:GA_VARIABLE(GA_INDEX_KEY, 
-                                              GA_VAR_KEY, 
+    if (self.uuid && ![gaTracker getVisitorCustomVarAtIndex:GA_INDEX_USER]) {
+        [self setCustomGAVariable:GA_VARIABLE(GA_INDEX_USER, 
+                                              GA_VAR_USER, 
                                               self.uuid,
                                               kGANVisitorScope)];
     }
