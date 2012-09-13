@@ -10,6 +10,8 @@
 #import "PiptureAppDelegate.h"
 #import "AsyncImageView.h"
 #import "PlaylistItemFactory.h"
+#import "CategoryItem.h"
+#import "CategoryItemVideo.h"
 
 @implementation CategoryItemViewController
 
@@ -19,7 +21,11 @@
 static NSInteger const MARGIN_RIGHT = 15;
 
 - (IBAction)playChannelCategoryVideo:(id)sender {
-    [[PiptureAppDelegate instance] showVideo:[NSArray arrayWithObject:self.categoryItem.playlistItem]
+    NSMutableArray * playlist = [NSMutableArray arrayWithCapacity:self.categoryItem.videos.count];
+    for (CategoryItemVideo* video in self.categoryItem.videos){
+        [playlist addObject:video.playlistItem];
+    }
+    [[PiptureAppDelegate instance] showVideo:playlist
                                       noNavi:YES
                                   timeslotId:nil
                                    fromStore:NO];
@@ -41,8 +47,8 @@ static NSInteger const MARGIN_RIGHT = 15;
                                                                                    rect.size.height)] autorelease];
     
     [self.thumbnailButton addSubview:imageView];
-    
-    [imageView loadImageFromURL:[NSURL URLWithString:self.categoryItem.thumbnail]
+    CategoryItemVideo *firstCategoryItemVideo = [self.categoryItem.videos objectAtIndex:0];
+    [imageView loadImageFromURL:[NSURL URLWithString:firstCategoryItemVideo.thumbnail]
                    withDefImage:nil
                         spinner:AsyncImageSpinnerType_Small
                      localStore:YES

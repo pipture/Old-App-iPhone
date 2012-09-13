@@ -86,11 +86,11 @@ static NSInteger const MEDIUM_THUMBS = 3;
                                  frame.size.height - deltaHeight);
     
     int i = 0;
-    int len = category.items.count;
+    int len = category.categoryItems.count;
     int offset = self.itemContainer.frame.origin.y;
     for (int y = 0; y < category.rows; y++) {
         for (int x = 0; x < category.columns; x++) {
-            CategoryItemViewController *item = [self categoryItemByCategory:category categoryItem:[category.items objectAtIndex:i++]];
+            CategoryItemViewController *item = [self categoryItemByCategory:category categoryItem:[category.categoryItems objectAtIndex:i++]];
             [item prepareWithX:x withY:y withOffset:offset];
             [self.view addSubview: item.view];
             if (i>=len) break;
