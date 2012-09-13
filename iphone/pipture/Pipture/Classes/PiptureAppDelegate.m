@@ -14,7 +14,7 @@
 #import "UILabel+ResizeForVerticalAlign.h"
 #import "MailComposerController.h"
 #import "Appirater.h"
-
+#import "AlbumDetailInfoController.h"
 
 @implementation PiptureAppDelegate
 @synthesize busyView;
@@ -784,11 +784,18 @@ NSInteger networkActivityIndecatorCount;
                 break;
         }
         
-        [self tabbarSelect:[sender tag]];
-        
         if (![self homeViewVisible]) {
+            UIViewController * visible = [homeNavigationController visibleViewController];
+            if (visible.class == [AlbumDetailInfoController class]) {
+                AlbumDetailInfoController * det = (AlbumDetailInfoController*)visible;
+                [det tabChanged:det.detailsButton];
+            }
+            
+            
             [self.homeNavigationController popToRootViewControllerAnimated:NO];
         }
+        
+        [self tabbarSelect:[sender tag]];
     }
 }
 
