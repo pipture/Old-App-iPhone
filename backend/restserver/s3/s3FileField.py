@@ -56,7 +56,7 @@ class S3Storage(FileSystemStorage):
 
         fileName, fileExtension = os.path.splitext(name)
 
-        sha1_hash, error_code = get_sha1_from_file (content)
+        sha1_hash, error_code = get_sha1_from_file(content)
         if error_code:
             content.close()
             raise error_code
@@ -68,7 +68,7 @@ class S3Storage(FileSystemStorage):
             content = content.temporary_file_path()
             key.set_contents_from_filename(content)
         elif isinstance(content, File):
-            key.set_contents_from_file(content)
+            key.set_contents_from_file(content, rewind=True)
         else:
             key.set_contents_from_string(content)
         key.make_public()

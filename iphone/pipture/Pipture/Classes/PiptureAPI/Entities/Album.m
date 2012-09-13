@@ -238,6 +238,21 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     return compareId && compareDesc && comapreTitle && compareSeason && compareRating && compareCover && compareRDate && compareUDate && compareThumb && compareBack && comparePrice && compareStatus && compareSStatus;
 }
 
+-(NSString *)formatSellStatus {
+    switch (self.sellStatus) {
+        case AlbumSellStatus_NotSellable:
+            return @"Not for sale";
+        case AlbumSellStatus_Buy:
+            return @"Buy album";
+        case AlbumSellStatus_Pass:
+            return @"Album pass";
+        case AlbumSellStatus_Purchased:
+            return @"Purchased";
+        default:
+            return @"";
+    }
+}
+
 @end
 
 

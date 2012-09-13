@@ -106,7 +106,9 @@ class JsonifyModels(object):
             "CloseUpThumbnail": episode.CloseUpThumbnail.get_url(),
         }
 
-        if not self.as_category_item:
+        if self.as_category_item:
+            episode_json['Album'] = self.__call__(episode.AlbumId)
+        else:
             episode_json.update({
                 "Script": episode.Script,
                 "DateReleased": released,
@@ -115,16 +117,16 @@ class JsonifyModels(object):
                 "SquareThumbnail": episode.SquareThumbnail.get_url()
             })
 
-        if kwargs.get('add_album_info', False):
-            album = episode.AlbumId
-            episode_json.update({
-                "AlbumId": album.AlbumId,
-                "AlbumTitle": album.Title,
-                "AlbumSeason": album.Season,
-                "AlbumSquareThumbnail": album.SquareThumbnail.get_url(),
-                "SeriesTitle": album.SeriesId.Title,
-            })
-            episode_json.update(self.__call__(album.SeriesId))
+            if kwargs.get('add_album_info', False):
+                album = episode.AlbumId
+                episode_json.update({
+                    "AlbumId": album.AlbumId,
+                    "AlbumTitle": album.Title,
+                    "AlbumSeason": album.Season,
+                    "AlbumSquareThumbnail": album.SquareThumbnail.get_url(),
+                })
+                episode_json.update(self.__call__(album.SeriesId))
+
 
         return episode_json
 

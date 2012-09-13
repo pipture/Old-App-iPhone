@@ -953,9 +953,14 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
         viewsCount:(NSNumber*)viewsCount 
           receiver:(NSObject<SendMessageDelegate> *)receiver
 {
-    NSMutableArray *ga_vars = [NSMutableArray arrayWithArray:[playlistItem getCustomGAVariablesForAction:[GA_EVENT_VIDEO_SEND GA_EVENT_ACTION]]];
-    GA_TRACK_EVENT(GA_EVENT_VIDEO_SEND,
-                   GA_NO_LABEL,
+    NSArray *event = GA_EVENT_VIDEO_SEND;
+    NSMutableArray *ga_vars = [NSMutableArray arrayWithArray:[playlistItem getCustomGAVariables:event]];
+    
+    [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_VIEWERS_IN_MESSAGE,
+                                        GA_VAR_VIEWERS_IN_MESSAGE,
+                                        viewsCount)];
+    GA_TRACK_EVENT(event,
+                   [playlistItem videoName],
                    [message length],
                    ga_vars);
     NSURL* url = [self buildURLWithRequest:SEND_MESSAGE_REQUEST sendAPIVersion:NO sendKey:NO sendTimezone:NO];

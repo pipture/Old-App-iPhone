@@ -195,10 +195,18 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     return YES;
 }
 
+- (void)clearMessage {
+    if (message_) {
+        [message_ release];
+        message_ = nil;
+    }
+}
+
 -(void)onCancel:(id)sender
 {
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
     //[self dismissModalViewControllerAnimated:YES];
+    [self clearMessage];
     [[PiptureAppDelegate instance] closeMailComposer];
     
     //[self.navigationController popViewControllerAnimated:YES];
@@ -531,6 +539,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     //TODO: process result
     [controller dismissModalViewControllerAnimated:NO];//first std mailer
 //    [self dismissModalViewControllerAnimated:YES];//second our composer
+    [self clearMessage];
     [[PiptureAppDelegate instance] closeMailComposer];
 }
 

@@ -8,6 +8,7 @@
 
 #import "VideoViewController.h"
 #import "PlaylistItem.h"
+#import "Trailer.h"
 #import "PiptureAppDelegate.h"
 #import "PiptureAppDelegate+GATracking.h"
 #import "CategoryEditViewController.h"
@@ -249,8 +250,14 @@
     
     static const NSString *ItemStatusContext;
     
-    [item addObserver:self forKeyPath:@"status" options:0 context:&ItemStatusContext];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieFinishedCallback:) name:AVPlayerItemDidPlayToEndTimeNotification object:item];
+    [item addObserver:self
+           forKeyPath:@"status"
+              options:0 
+              context:&ItemStatusContext];
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(movieFinishedCallback:) 
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification 
+                                               object:item];
     
     return item;
 }
@@ -265,7 +272,7 @@
         GA_TRACK_EVENT(GA_EVENT_VIDEO_PLAY, 
                        item.videoName, 
                        GA_NO_VALUE, 
-                       [item getCustomGAVariablesForAction:[GA_EVENT_VIDEO_PLAY GA_EVENT_ACTION]]);
+                       [item getCustomGAVariables:nil]);
     } else {
         GA_TRACK_EVENT(GA_EVENT_TIMESLOT_PLAY, 
                        item.videoName, 

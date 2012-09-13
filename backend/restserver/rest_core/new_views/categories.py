@@ -24,10 +24,10 @@ class Category(object):
         self.popular_series = params['popular_series']
 
     def get_context_data(self):
-        items = tuple(self.get_item_info(item)
-                      for item in self.get_items_queryset()[:self.limit]) \
-                if hasattr(self, 'get_items_queryset') else tuple()
-        return dict(items=items,
+        queryset = self.get_items_queryset()[:self.limit] \
+                   if hasattr(self, 'get_items_queryset') else tuple()
+        items = tuple(self.get_item_info(item) for item in queryset)
+        return dict(categoryItems=items,
                     data={
                         'id': self.category_id,
                         'title': self.title,
@@ -43,7 +43,7 @@ class VideosMixin(object):
     columns = 4
 
     def get_item_info(self, episode):
-        return tuple(self.jsonify(episode, add_album_info=True))
+        return [self.jsonify(episode, add_album_info=True)]
 
 
 class SeriesMixin(object):
@@ -58,16 +58,16 @@ class SeriesMixin(object):
         first_album = series.albums_set.all()[0]
         item_info = self.jsonify(first_album.TrailerId)
         item_info.update({
-            'Thumbnail': first_album.Thumbnail.get_url(),
+            'CloseUpThumbnail': first_album.Thumbnail.get_url(),
             'Title': series.Title,
             'Album': self.jsonify(first_album),
         })
-        return item_info
+        return [item_info]
 
     def get_info_with_episodes(self, series):
         episodes_for_series = self.episodes.filter(AlbumId__SeriesId=series)
-        return tuple(self.jsonify(episode, add_album_info=True)
-                     for episode in episodes_for_series)
+        return [self.jsonify(episode, add_album_info=True)
+                for episode in episodes_for_series]
 
     def get_item_info(self, series):
         if self.item_view == 'with_episodes':
