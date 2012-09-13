@@ -50,7 +50,9 @@ static NSString* const GA_ERROR_MESSAGE = @"Google Analytics tracking error: %@"
                                    withError:&error]) {
         [self printTrackingError:error];
     }
-    NSLog(@"Set variable at index %@, %@ = %@", [variableMacro objectAtIndex:0], [variableMacro objectAtIndex:1], [variableMacro objectAtIndex:2]);
+//    NSLog(@"Set variable at index %@, %@ = %@", [variableMacro objectAtIndex:0],
+//                                                [variableMacro objectAtIndex:1],
+//                                                [variableMacro objectAtIndex:2]);
 }
 
 - (void)clearCustomGAVariableAtIndex:(NSInteger)index {
@@ -66,11 +68,11 @@ static NSString* const GA_ERROR_MESSAGE = @"Google Analytics tracking error: %@"
               withCustomVariables:(NSArray *)customVariables {
     NSError *error;
     
-    if (self.uuid && ![gaTracker getVisitorCustomVarAtIndex:GA_INDEX_USER]) {
+    if (self.uuid) {
         [self setCustomGAVariable:GA_VARIABLE(GA_INDEX_USER, 
                                               GA_VAR_USER, 
                                               self.uuid,
-                                              kGANVisitorScope)];
+                                              kGANSessionScope)];
     }
     
     if (customVariables) {
@@ -94,6 +96,8 @@ static NSString* const GA_ERROR_MESSAGE = @"Google Analytics tracking error: %@"
             [self clearCustomGAVariableAtIndex:index];
         }
     }
+    NSLog(@"Tracked event: %@ + %@", [eventMacro objectAtIndex:0],
+                                     [eventMacro objectAtIndex:1]);
     
     return YES;    
 }
