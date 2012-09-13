@@ -114,7 +114,7 @@
                                         albumTitle)];
     
     [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_ALBUM_SELL_STATUS, 
-                                        GA_INDEX_ALBUM_SELL_STATUS, 
+                                        GA_VAR_ALBUM_SELL_STATUS, 
                                         [self.album formatSellStatus])];
     return ga_vars;
 }
