@@ -30,6 +30,7 @@ static NSString* const VIDEO_KEY_NAME = @"TrailerId";
 static NSString* const JSON_PARAM_ALBUM_TITLE = @"AlbumTitle";
 static NSString* const JSON_PARAM_ALBUM_SEASON = @"AlbumSeason";
 static NSString* const JSON_PARAM_ALBUM_SELL_STATUS = @"SellStatus";
+static NSString* const JSON_PARAM_ALBUM_SERIES_TITLE = @"SeriesTitle";
 
 
 - (void)dealloc {
@@ -73,10 +74,11 @@ static NSString* const JSON_PARAM_ALBUM_SELL_STATUS = @"SellStatus";
         self.thumbnail = [jsonData objectForKey:JSON_PARAM_THUMBNAIL];                    
         self.trailerEmailScreenshot = [jsonData objectForKey:JSON_PARAM_EMAIL_SCREENSHOT];                    
 
-//        self.album = [[Album alloc] init];
+        self.album = [[Album alloc] init];
         self.album.title = [jsonData objectForKey:JSON_PARAM_ALBUM_TITLE];
         self.album.season = [jsonData objectForKey:JSON_PARAM_ALBUM_SEASON];
         self.album.sellStatus = [jsonData intValueForKey:JSON_PARAM_ALBUM_SELL_STATUS defaultIfEmpty:self.album.sellStatus];
+        self.album.series.title = [jsonData objectForKey:JSON_PARAM_ALBUM_SERIES_TITLE];
     }
     return self;
 }
