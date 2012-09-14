@@ -9,7 +9,7 @@ urlpatterns = patterns('',
 #    (r'^getAlbumDetail$', rest_view.getAlbumDetail),
 #    (r'^getAlbumScreenshots$', rest_view.getAlbumScreenshots),
 
-    (r'^getTimeslots$', rest_view.getTimeslots),
+#    (r'^getTimeslots$', rest_view.getTimeslots),
     (r'^getVideo$', rest_view.getVideo),
     (r'^getPlaylist$', rest_view.getPlaylist),
 
@@ -34,7 +34,7 @@ urlpatterns += patterns('',
 
     (r'^getCategories$', new_views.GetAllCategories.as_view()),
 
-#    (r'^getTimeslots$', new_views.GetTimeslots.as_view()),
+    (r'^getTimeslots$', new_views.GetTimeslots.as_view()),
 #    (r'^getVideo$', new_views.GetVideo.as_view()),
 #    (r'^getPlaylist$', new_views.GetPlaylist.as_view()),
 

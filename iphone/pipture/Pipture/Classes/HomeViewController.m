@@ -685,9 +685,10 @@
 
                                                      
 - (void)doPower {
+    NSString *clicksAsString = [NSString stringWithFormat:@"%d", ++clicksOnPowerButton];
     GA_TRACK_EVENT(GA_EVENT_ACTIVITY_POWERBUTTON,
-                   GA_NO_LABEL,
-                   GA_NO_VALUE,
+                   clicksAsString,
+                   clicksOnPowerButton,
                    GA_NO_VARS);
 
     [self doUpdateWithCallback:^(NSDictionary* jsonResult,
