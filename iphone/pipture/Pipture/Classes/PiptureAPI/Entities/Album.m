@@ -69,6 +69,9 @@ static NSString* const JSON_PARAM_CREDITS = @"Credits";
 static NSString* const JSON_PARAM_SELL_STATUS = @"SellStatus";
 static NSString* const JSON_PARAM_TRAILER = @"Trailer";
 
+static NSString* const JSON_PARAM_ALBUM_TITLE = @"AlbumTitle";
+static NSString* const JSON_PARAM_ALBUM_SEASON = @"AlbumSeason";
+
 static NSString* const CREDITS_SEPARATOR = @".";
 static NSString* const CREDITS_TITLE_SEPARATOR = @":";
 static NSString* const CREDITS_ITEM_SEPARATOR = @";";
@@ -156,9 +159,10 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     self.series.seriesId = [jsonData intValueForKey:JSON_PARAM_SERIES_ID defaultIfEmpty:self.series.seriesId];
     
     NSDictionary * trailerJson = [jsonData objectForKey:JSON_PARAM_TRAILER];
-    if (self.sellStatus){
-        [trailerJson setValue:[NSNumber numberWithInt: self.sellStatus] forKey:JSON_PARAM_SELL_STATUS];
-    }
+    if (self.title) [trailerJson setValue:self.title forKey:JSON_PARAM_ALBUM_TITLE];
+    if (self.season) [trailerJson setValue:self.season forKey:JSON_PARAM_ALBUM_SEASON];
+    if (self.sellStatus) [trailerJson setValue:[NSNumber numberWithInt: self.sellStatus] forKey:JSON_PARAM_SELL_STATUS];
+    if (self.series.title) [trailerJson setValue:self.series.title forKey:JSON_PARAM_SERIES_TITLE];
     if (trailerJson != nil) {
         Trailer* trailer = [[Trailer alloc] initWithJSON:trailerJson];
         [trailer retain];

@@ -102,6 +102,8 @@
     NSString *itemId = [NSString stringWithFormat:@"%d", [self videoKeyValue]];
     NSString *seriesTitle = self.album.series.title;
     NSString *albumTitle = self.album.title;
+    if (!seriesTitle) seriesTitle = @"";
+    if (!albumTitle) albumTitle = @"";
     
     // Variable with name=itemType, value=itemId
     [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_VIDEO_ITEM, 

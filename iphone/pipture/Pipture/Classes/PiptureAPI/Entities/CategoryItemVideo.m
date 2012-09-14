@@ -79,12 +79,12 @@ static NSString* const JSON_PARAM_TRAILER_ID   = @"TrailerId";
     NSMutableDictionary *playlistItemData = [[NSMutableDictionary alloc] init];
     [playlistItemData setObject:self.title forKey:JSON_PARAM_TITLE];
     NSString* videoType = nil;
+    if (self.album.title) [playlistItemData setObject:self.album.title forKey:JSON_PARAM_ALBUM_TITLE];
+    if (self.album.season) [playlistItemData setObject:self.album.season forKey:JSON_PARAM_ALBUM_SEASON];
+    if (self.album.series.title) [playlistItemData setObject:self.album.series.title forKey:JSON_PARAM_SERIES_TITLE];
     if ([JSON_PARAM_TYPE_EPISODE isEqualToString:self.type]) {
         [playlistItemData setObject:[NSString stringWithFormat:@"%d", self.id] forKey:JSON_PARAM_EPISODE_ID];
         if (self.episodeNo) [playlistItemData setObject:self.episodeNo forKey:JSON_PARAM_EPISODE_NO];
-        if (self.album.title) [playlistItemData setObject:self.album.title forKey:JSON_PARAM_ALBUM_TITLE];
-        if (self.album.season) [playlistItemData setObject:self.album.season forKey:JSON_PARAM_ALBUM_SEASON];
-        if (self.album.series.title) [playlistItemData setObject:self.album.series.title forKey:JSON_PARAM_SERIES_TITLE];
         videoType = PLAYLIST_ITEM_TYPE_EPISODE;
     }
     if ([JSON_PARAM_TYPE_TRAILER isEqualToString:self.type]) {
