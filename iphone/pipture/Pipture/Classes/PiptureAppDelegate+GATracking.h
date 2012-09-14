@@ -16,7 +16,7 @@
 #define GA_EVENT_VIDEO_PLAY                 [NSArray arrayWithObjects:@"Video", @"Play", nil]
 #define GA_EVENT_VIDEO_SEND                 [NSArray arrayWithObjects:@"Video", @"Send", nil]
 #define GA_EVENT_TIMESLOT_PLAY              [NSArray arrayWithObjects:@"Timeslot", @"Play", nil]
-#define GA_EVENT_PURCHASE_VIDEO             [NSArray arrayWithObjects:@"Purchase", @"Video", nil]
+#define GA_EVENT_PURCHASE_VIEWS             [NSArray arrayWithObjects:@"Purchase", @"Views", nil]
 #define GA_EVENT_PURCHASE_ALBUM             [NSArray arrayWithObjects:@"Purchase", @"Album", nil]
 #define GA_EVENT_PURCHASE_ERROR             [NSArray arrayWithObjects:@"Purchase", @"Error", nil]
 

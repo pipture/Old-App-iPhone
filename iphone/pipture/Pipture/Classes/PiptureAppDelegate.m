@@ -610,7 +610,6 @@ static PiptureAppDelegate *instance;
         [videoViewController initVideo];
     }
     
-//    (@"Open Activity", @"Video player");
     GA_TRACK_EVENT(GA_EVENT_ACTIVITY_OPENPLAYER,
                    GA_NO_LABEL,
                    GA_NO_VALUE, 

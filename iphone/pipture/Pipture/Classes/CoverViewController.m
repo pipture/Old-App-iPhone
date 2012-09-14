@@ -70,9 +70,10 @@
 }
 
 -(void)hotNewsCoverClicked {
+    NSString *clicksAsString = [NSString stringWithFormat:@"%d", ++clicksOnHotNewsCover];
     GA_TRACK_EVENT(GA_EVENT_ACTIVITY_HOTNEWSCOVER,
-                   GA_NO_LABEL,
-                   GA_NO_VALUE,
+                   clicksAsString,
+                   clicksOnHotNewsCover,
                    GA_NO_VARS);
     
     Album *album = [PiptureAppDelegate instance].albumForCover;

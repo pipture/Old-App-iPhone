@@ -245,11 +245,11 @@ static NSString* const CREDITS_ITEM_TAB = @",";
 -(NSString *)formatSellStatus {
     switch (self.sellStatus) {
         case AlbumSellStatus_NotSellable:
-            return @"Not for sale";
+            return @"NotForSale";
         case AlbumSellStatus_Buy:
-            return @"Buy album";
+            return @"BuyAlbum";
         case AlbumSellStatus_Pass:
-            return @"Album pass";
+            return @"AlbumPass";
         case AlbumSellStatus_Purchased:
             return @"Purchased";
         default:
