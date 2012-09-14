@@ -8,7 +8,6 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-     ('MBoyarskiy', 'mboyarskiy@thumbtack.net'),
 )
 
 

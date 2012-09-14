@@ -1,7 +1,7 @@
 import calendar
 from datetime import datetime
 
-from pipture.models import Episodes, UserPurchasedItems, \
+from pipture.models import Episodes, Albums, UserPurchasedItems, \
                            PiptureSettings, TimeSlotVideos, SendMessage
 
 from annoying.functions import get_object_or_None
@@ -59,3 +59,16 @@ class EpisodeUtils(object):
                                      EpisodeId=episode_id,
                                      AlbumId__AlbumId__in=purchased_ids)
         return bool(episode)
+
+    @staticmethod
+    def is_available(episode_id, user_id):
+        try:
+            episodes = Episodes.objects.get(EpisodeId=int(episode_id))
+        except Episodes.DoesNotExist:
+            return False
+        print "stat", episodes.AlbumId.PurchaseStatus
+        print "const", Albums.PURCHASE_TYPE_NOT_FOR_SALE
+        print "purchased", EpisodeUtils.is_in_purchased_album(episode_id, user_id)
+        
+        return (episodes.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE\
+                or EpisodeUtils.is_in_purchased_album(episode_id, user_id))

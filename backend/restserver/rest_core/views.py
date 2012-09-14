@@ -23,6 +23,8 @@ from restserver.pipture.models import AppleProducts, PurchaseItems, UserPurchase
                                       TimeSlots, TimeSlotVideos, AlbumScreenshotGallery,\
                                       Transactions, PipUsers, PiptureSettings, SendMessage,\
                                       FreeMsgViewers
+                                      
+from restserver.pipture.utils import AlbumUtils, EpisodeUtils
 
 from django.db.models import Q
 
@@ -309,20 +311,20 @@ def getVideo (request):
 
 
     else:
+        try:
+            purchaser = PipUsers.objects.get(Token=key)
+        except PipUsers.DoesNotExist:
+            response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
+            return HttpResponse(json.dumps(response))
+        
         if video_preview != 1:
-            try:
-                purchaser = PipUsers.objects.get(Token=key)
-            except PipUsers.DoesNotExist:
-                response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
-                return HttpResponse(json.dumps(response))
-
             if episode_id:
-                is_purchased = episode_in_purchased_album(videoid=episode_id, purchaser=key)
+                accessed = EpisodeUtils.is_available(episode_id,purchaser)
             else:
-                is_purchased = True
+                accessed = True
         else:
             # TODO: for preview always purchased. sequrity warning
-            is_purchased = True
+            accessed = True
 
         video_url, subs_url, error = get_video_url_from_episode_or_trailer (id = episode_id, type_r = video_type, video_q=video_quality)
         if error:
@@ -331,7 +333,7 @@ def getVideo (request):
 
         WATCH_EP = PurchaseItems.objects.get(Description="WatchEpisode")
 
-        if is_purchased:
+        if accessed:
             response['VideoURL'] = video_url
             response['Subs'] = readSubtitles(subs_url=subs_url)
             response['Balance'] = "%s" % purchaser.Balance

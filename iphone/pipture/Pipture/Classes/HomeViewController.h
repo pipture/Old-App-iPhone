@@ -30,6 +30,8 @@
                                                       
     BOOL redrawDiscarding;
     int lastHS_mode;
+    
+    NSInteger clicksOnPowerButton;
 }
 
 //returns current visible page in scrollview

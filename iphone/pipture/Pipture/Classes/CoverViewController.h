@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "HomeScreenDelegate.h"
 
-@interface CoverViewController : UIViewController<NewsItem>
+@interface CoverViewController : UIViewController<NewsItem> {
+    NSInteger clicksOnHotNewsCover;
+}
 @property (assign, nonatomic) id<HomeScreenDelegate> delegate;
 @property (retain, nonatomic) IBOutlet UIView *placeHolder;
 
