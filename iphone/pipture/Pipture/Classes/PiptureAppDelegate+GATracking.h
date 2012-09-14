@@ -35,11 +35,10 @@ static NSInteger const GA_INDEX_USER = 1;
 static NSInteger const GA_INDEX_VIDEO_ITEM = 2;
 static NSInteger const GA_INDEX_SERIES_AND_ALBUM = 3;
 static NSInteger const GA_INDEX_ALBUM_SELL_STATUS = 4;
-static NSInteger const GA_INDEX_VIEWERS_IN_MESSAGE = 5;
+static NSInteger const GA_INDEX_MESSAGE_LENGTH_AND_VIEWS = 5;
 
 static NSString* const GA_VAR_USER = @"UserUID";
 static NSString* const GA_VAR_ALBUM_SELL_STATUS = @"Album sell status";
-static NSString* const GA_VAR_VIEWERS_IN_MESSAGE = @"Views";
 
 
 @interface PiptureAppDelegate (GATracking)
