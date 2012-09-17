@@ -6,7 +6,7 @@ from annoying.functions import get_object_or_None
 
 from pipture.models import TimeSlots, TimeSlotVideos, Episodes, SendMessage, Trailers, PurchaseItems
 from pipture.utils import EpisodeUtils
-from rest_core.api_errors import WrongParameter, BadRequest, NotFound, Forbidden, UnauthorizedError
+from rest_core.api_errors import WrongParameter, BadRequest, NotFound, Forbidden, UnauthorizedError, ParameterExpected
 from rest_core.api_view import GetView
 from rest_core.validation_mixins import TimezoneValidationMixin, KeyValidationMixin, \
                                         PurchaserValidationMixin, EpisodeAndTrailerValidationMixin
@@ -145,7 +145,10 @@ class GetVideo(GetView, TimezoneValidationMixin,
 class GetPlaylist(GetView, TimezoneValidationMixin):
 
     def clean_timeslot(self):
-        timeslot_id = self.params.get('TimeslotId', None)
+        timeslot_id = self.params.get('TimeslotId', 0)
+
+        if not timeslot_id:
+            raise ParameterExpected(parameter='TimeslotId')
 
         try:
             self.timeslot = TimeSlots.objects.get(TimeSlotsId=timeslot_id)
@@ -173,7 +176,6 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
         if not self.timeslot_videos:
             raise NotFound(
                 message="There are no videos in timeslot %s" % self.timeslot)
-
 
     def get_autoepisode(self, StartEpisodeId, start_time):
         d1 = datetime.now();

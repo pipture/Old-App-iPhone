@@ -6,7 +6,7 @@ from restserver.rest_core import views as rest_view
 urlpatterns = patterns('',
 #    (r'^getTimeslots$', rest_view.getTimeslots),
     (r'^getVideo$', rest_view.getVideo),
-    (r'^getPlaylist$', rest_view.getPlaylist),
+#    (r'^getPlaylist$', rest_view.getPlaylist),
 
 #    (r'^getSearchRes$', rest_view.getSearchResult),
 
@@ -27,7 +27,7 @@ urlpatterns += patterns('',
 
     (r'^getTimeslots$', new_views.GetTimeslots.as_view()),
     (r'^getVideo__$', new_views.GetVideo.as_view()),
-    (r'^getPlaylist__$', new_views.GetPlaylist.as_view()),
+    (r'^getPlaylist$', new_views.GetPlaylist.as_view()),
 
     (r'^getSearchRes$', new_views.GetSearchResult.as_view()),
 
