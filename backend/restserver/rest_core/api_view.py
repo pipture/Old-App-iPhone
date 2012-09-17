@@ -19,6 +19,8 @@ class ParameterValidationMixin(object):
     def validate_parameters(self):
         clean_methods = [method for method in dir(self)
                                 if method.startswith(self.validate_prefix)]
+        clean_methods.sort()
+
         if self.validate_prefix in clean_methods:
             clean_methods.remove(self.validate_prefix)
             clean_methods.append(self.validate_prefix)
