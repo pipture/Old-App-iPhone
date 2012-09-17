@@ -77,6 +77,7 @@ class JsonifyModels(object):
         if not self.as_category_item:
             album_json.update({
                 'Cover': album.Cover.get_url(),
+                'CloseUpBackground': album.CloseUpBackground.get_url(),
                 'Thumbnail': album.Thumbnail.get_url(),
                 'SquareThumbnail': album.SquareThumbnail.get_url(),
                 'Description': album.Description,
