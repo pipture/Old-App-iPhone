@@ -21,8 +21,27 @@ class EmptyError(ApiError):
     message = ""
 
 
+class NoCurrentTimeslot(ApiError):
+    code = 204
+
+
 class BadRequest(ApiError):
     code = 400
+
+
+class WrongParameter(BadRequest):
+    message = 'Invalid parameter %s.'
+
+    def __init__(self, *args, **kwargs):
+        super(WrongParameter, self).__init__(*args, **kwargs)
+        self.parameter = kwargs['parameter']
+
+    def get_description(self):
+        return self.message % self.parameter
+
+
+class ParameterExpected(WrongParameter):
+    message = 'Parameter %s expected.'
 
 
 class UnauthorizedError(ApiError):
@@ -30,9 +49,13 @@ class UnauthorizedError(ApiError):
     message = 'Authentication error.'
 
 
+class NotEnoughMoney(ApiError):
+    code = 402
+    message = 'Not enough money.'
+
+
 class Forbidden(ApiError):
     code = 403
-    message = 'Not enough money.'
 
 
 class NotFound(ApiError):
@@ -50,20 +73,6 @@ class InternalServerError(ApiError):
     def get_description(self):
         return self.message % (self.caught_error, type(self.caught_error))
 
-
-class WrongParameter(BadRequest):
-    message = 'Invalid parameter %s.'
-
-    def __init__(self, *args, **kwargs):
-        super(WrongParameter, self).__init__(*args, **kwargs)
-        self.parameter = kwargs['parameter']
-
-    def get_description(self):
-        return self.message % self.parameter
-
-
-class ParameterExpected(WrongParameter):
-    message = 'Parameter %s expected.'
 
 
 

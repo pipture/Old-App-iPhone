@@ -8,7 +8,7 @@ from pipture.models import PiptureSettings, SendMessage, Trailers,\
                            PurchaseItems
 from pipture.utils import EpisodeUtils
 from rest_core.api_errors import BadRequest, ParameterExpected, \
-                                 NotFound, Forbidden, WrongParameter
+                                 NotFound, Forbidden, WrongParameter, NotEnoughMoney
 from rest_core.api_view import PostView, GetView
 from rest_core.validation_mixins import PurchaserValidationMixin, \
                                         EpisodeAndTrailerValidationMixin
@@ -84,7 +84,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
         user_balance = self.purchaser.Balance
         if user_balance - message_cost <= 0:
-            raise Forbidden()
+            raise NotEnoughMoney()
 
         self.video_url = self.create_message_and_return_url(episode)
 
