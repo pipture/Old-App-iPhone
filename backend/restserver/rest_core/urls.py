@@ -4,26 +4,17 @@ from restserver.rest_core import views as rest_view
 
 
 urlpatterns = patterns('',
-#    (r'^getAlbums$', rest_view.getAlbums),
-#    (r'^getSellableAlbums$', rest_view.getSellableAlbums),
-#    (r'^getAlbumDetail$', rest_view.getAlbumDetail),
-#    (r'^getAlbumScreenshots$', rest_view.getAlbumScreenshots),
-
-    (r'^getTimeslots$', rest_view.getTimeslots),
+#    (r'^getTimeslots$', rest_view.getTimeslots),
     (r'^getVideo$', rest_view.getVideo),
     (r'^getPlaylist$', rest_view.getPlaylist),
 
 #    (r'^getSearchRes$', rest_view.getSearchResult),
 
-#    (r'^register$', rest_view.register),
-#    (r'^login$', rest_view.login),
     (r'^buy$', rest_view.buy),
-#    (r'^getBalance$', rest_view.getBalance),
 
     (r'^sendMessage$', rest_view.sendMessage),
     (r'^getUnusedMessageViews$', rest_view.getUnusedMessageViews),
     (r'^deactivateMessageViews$', rest_view.deactivateMessageViews),
-#    (r'^getCategories$', AllCategoriesView.as_view()),
 )
 
 urlpatterns += patterns('',
@@ -34,9 +25,9 @@ urlpatterns += patterns('',
 
     (r'^getCategories$', new_views.GetAllCategories.as_view()),
 
-#    (r'^getTimeslots$', new_views.GetTimeslots.as_view()),
-#    (r'^getVideo$', new_views.GetVideo.as_view()),
-#    (r'^getPlaylist$', new_views.GetPlaylist.as_view()),
+    (r'^getTimeslots$', new_views.GetTimeslots.as_view()),
+    (r'^getVideo__$', new_views.GetVideo.as_view()),
+    (r'^getPlaylist__$', new_views.GetPlaylist.as_view()),
 
     (r'^getSearchRes$', new_views.GetSearchResult.as_view()),
 

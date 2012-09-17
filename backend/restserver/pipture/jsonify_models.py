@@ -1,25 +1,33 @@
 import calendar
 from datetime import datetime, timedelta
+import pytz
 
 
 class Utils(object):
+
+    @classmethod
+    def get_timestamp(cls, datetime_instance):
+        return calendar.timegm(datetime_instance.timetuple())
+
+    @classmethod
+    def get_utc_now_as_local(cls, local_timezone):
+        today = datetime.utcnow().replace(tzinfo=pytz.UTC)\
+                                 .astimezone(local_timezone)\
+                                 .replace(tzinfo=None)
+        return calendar.timegm(today.timetuple())
 
     @staticmethod
     def get_sell_status(album, is_purchased=False):
         purchase_status = 'purchased' if is_purchased else album.PurchaseStatus
         return album.SELL_STATUS_FROM_PURCHASE.get(purchase_status, 0)
 
-    @staticmethod
-    def get_timestamp(datetime_instance):
-        return calendar.timegm(datetime_instance.timetuple())
-
-    @staticmethod
-    def get_album_status(album, released, updated):
+    @classmethod
+    def get_album_status(cls, album, released, updated):
         date_utc_now = datetime.utcnow()
 
         if not album.episodes.all():
             status = album.STATUS_NORMAL
-        elif released > Utils.get_timestamp(date_utc_now):
+        elif released > cls.get_timestamp(date_utc_now):
             status = album.STATUS_COMING_SOON
         else:
             # TODO: move PiptureSettings from huge models file and remove inline import
@@ -28,15 +36,15 @@ class Utils(object):
 
             premiere_days = PiptureSettings.get_premiere_period()
             premiere_period = timedelta(days=premiere_days)
-            if updated >= Utils.get_timestamp(date_utc_now - premiere_period):
+            if updated >= cls.get_timestamp(date_utc_now - premiere_period):
                 status = album.STATUS_PREMIERE
             else:
                 status = album.STATUS_NORMAL
 
         return status
 
-    @staticmethod
-    def get_release_and_update_dates(album):
+    @classmethod
+    def get_release_and_update_dates(cls, album):
         episodes_dates = album.episodes.values_list('DateReleased')
         episodes_dates = [date[0] for date in episodes_dates]
 
@@ -50,10 +58,24 @@ class Utils(object):
             if album.TopAlbum:
                 updated = high_datetime
 
-        return Utils.get_timestamp(released), Utils.get_timestamp(updated)
+        return cls.get_timestamp(released), cls.get_timestamp(updated)
+
+    @classmethod
+    def get_timeslot_status(cls, timeslot, local_timezone):
+        sec_utc_now = cls.get_utc_now_as_local(local_timezone)
+
+        if timeslot.is_current(sec_utc_now):
+            status = 2
+        elif timeslot.StartTimeUTC > sec_utc_now:
+            status = 1
+        else:
+            status = 0
+        return status
 
 
 class JsonifyModels(object):
+
+    # instance variable local_timezone must be set on timezone validation
 
     def __init__(self, as_category_item=False):
         self.as_category_item = as_category_item
@@ -162,7 +184,8 @@ class JsonifyModels(object):
             "Title": timeslot.AlbumId.SeriesId.Title,
             "AlbumId": timeslot.AlbumId.AlbumId,
             "CloseupBackground": timeslot.AlbumId.CloseUpBackground.get_url(),
-            "TimeslotStatus": timeslot.status,
+            "TimeslotStatus": Utils.get_timeslot_status(timeslot,
+                                                        self.local_timezone),
         }
 
     def series(self, series, **kwargs):

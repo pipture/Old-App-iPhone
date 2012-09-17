@@ -321,18 +321,6 @@ class TimeSlots(models.Model):
                                                self.StartTime,
                                                self.EndTime)
 
-    @property
-    def status(self):
-        sec_utc_now = self.now_seconds()
-
-        if self.is_current(sec_utc_now):
-            status = 2
-        elif self.StartTimeUTC > sec_utc_now:
-            status = 1
-        else:
-            status = 0
-        return status
-
     def __unicode__(self):
         return self.complexName
 
@@ -350,7 +338,7 @@ class TimeSlots(models.Model):
             return False
 
     def is_in_time_period(self, local_time):
-        if (local_time < self.EndTimeUTC and local_time > self.StartTimeUTC):
+        if self.EndTimeUTC > local_time > self.StartTimeUTC:
             return True
         else:
             return False

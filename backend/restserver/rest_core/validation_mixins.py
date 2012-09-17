@@ -45,9 +45,10 @@ class TimezoneValidationMixin(object):
         if param_name not in self.params:
             raise ParameterExpected(parameter=param_name)
 
-        self.timezone = self.params[param_name]
+        timezone = self.params[param_name]
         try:
-            self.local_timezone = pytz.timezone(self.timezone)
+            self.local_timezone = pytz.timezone(timezone)
+            self.set_to_jsonify(local_timezone=self.local_timezone)
         except pytz.exceptions.UnknownTimeZoneError:
             raise BadRequest(message='Unknown timezone.')
 

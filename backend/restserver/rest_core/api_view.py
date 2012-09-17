@@ -36,6 +36,17 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
     def get_context_data(self):
         raise NotImplementedError
 
+    def json_dumps(self, context):
+        if settings.DEBUG:
+            json_context = json.dumps(context, sort_keys=True, indent=2)
+        else:
+            json_context = json.dumps(context)
+        return json_context
+
+    def set_to_jsonify(self, **kwargs):
+        for key, value in kwargs.iteritems():
+            setattr(self.jsonify, key, value)
+
     def process(self, request, *args, **kwargs):
         self.params = request.GET or request.POST or {}
 
@@ -45,13 +56,13 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
             context.update(EmptyError().get_dict())
         except ApiError as error:
             context = error.get_dict()
-#        except Exception as error:
-#            if not settings.DEBUG:
-#                context = InternalServerError(error=error).get_dict()
-#            else:
-#               raise error
+        except Exception as error:
+            if settings.DEBUG:
+                raise
+            else:
+                context = InternalServerError(error=error).get_dict()
 
-        return HttpResponse(json.dumps(context))
+        return HttpResponse(self.json_dumps(context))
 
 
 class GetView(GeneralView):
