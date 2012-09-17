@@ -43,7 +43,7 @@ class Utils(object):
         low_datetime, high_datetime = datetime(1970, 1, 1), datetime(3790, 1, 1)
 
         if not episodes_dates:
-            return low_datetime, high_datetime
+            released, updated = low_datetime, high_datetime
         else:
             released, updated  = min(episodes_dates), max(episodes_dates)
 
