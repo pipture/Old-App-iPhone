@@ -23,7 +23,7 @@ from restserver.pipture.models import AppleProducts, PurchaseItems, UserPurchase
                                       TimeSlots, TimeSlotVideos, AlbumScreenshotGallery,\
                                       Transactions, PipUsers, PiptureSettings, SendMessage,\
                                       FreeMsgViewers
-                                      
+
 from restserver.pipture.utils import AlbumUtils, EpisodeUtils
 
 from django.db.models import Q
@@ -136,7 +136,6 @@ def getTimeslots (request):
 
     response['Timeslots'] = timeslots_json
     response['CurrentTime'] = sec_utc_now
-    response['Cover'], response['Album'] = get_cover()
     return HttpResponse(json.dumps(response))
 
 def get_video_url_from_episode_or_trailer (id, type_r, video_q, is_url = True):
@@ -316,7 +315,7 @@ def getVideo (request):
         except PipUsers.DoesNotExist:
             response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
             return HttpResponse(json.dumps(response))
-        
+
         if video_preview != 1:
             if episode_id:
                 accessed = EpisodeUtils.is_available(episode_id,purchaser)

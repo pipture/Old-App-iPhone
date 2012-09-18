@@ -2,12 +2,13 @@ from datetime import timedelta, datetime
 from decimal import Decimal
 
 from django.conf import settings
+from django.db.models import F
 
 from pipture.models import PiptureSettings, SendMessage, Trailers,\
                            PurchaseItems
 from pipture.utils import EpisodeUtils
 from rest_core.api_errors import BadRequest, ParameterExpected, \
-                                 NotFound, Forbidden, WrongParameter
+                                 NotFound, Forbidden, WrongParameter, NotEnoughMoney
 from rest_core.api_view import PostView, GetView
 from rest_core.validation_mixins import PurchaserValidationMixin, \
                                         EpisodeAndTrailerValidationMixin
@@ -83,7 +84,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
         user_balance = self.purchaser.Balance
         if user_balance - message_cost <= 0:
-            raise Forbidden()
+            raise NotEnoughMoney()
 
         self.video_url = self.create_message_and_return_url(episode)
 
@@ -100,7 +101,21 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         }
 
 
-class GetUnusedMessageViews(GetView, PurchaserValidationMixin):
+class MessageValidationMixin(object):
+
+    def clean(self):
+        self.messages = SendMessage.objects\
+                                   .filter(UserId=self.purchaser,
+                                           LinkType=SendMessage.TYPE_EPISODE)\
+                                   .exclude(ViewsLimit=F('FreeViews'))
+
+        if not self.messages:
+            raise NotFound(
+                message='There is no messages for user %s.' % self.purchaser)
+
+
+class GetUnusedMessageViews(GetView, PurchaserValidationMixin,
+                            MessageValidationMixin):
 
     def perform_operations(self):
         messages = SendMessage.objects.filter(UserId=self.purchaser,
@@ -119,7 +134,7 @@ class GetUnusedMessageViews(GetView, PurchaserValidationMixin):
                                                               self.purchaser)
             if is_purchased:
                 rest = message.ViewsLimit - message.ViewsCount\
-                                          - settings.MESSAGE_VIEWS_LOWER_LIMIT
+                                          - message.FreeViews
                 if rest > 0:
                     cnt = rest
 
@@ -141,22 +156,14 @@ class GetUnusedMessageViews(GetView, PurchaserValidationMixin):
             }
 
 
-class DeactivateMessageViews(PostView, PurchaserValidationMixin):
+class DeactivateMessageViews(PostView, PurchaserValidationMixin,
+                             MessageValidationMixin):
 
     def clean_period(self):
         try:
             self.period = int(self.params.get('Period', 0))
         except ValueError:
             self.period = 0
-
-    def clean(self):
-        self.messages = SendMessage.objects.filter(
-                                UserId=self.purchaser,
-                                LinkType=SendMessage.TYPE_EPISODE)
-
-        if not self.messages:
-            raise NotFound(
-                message='There is no messages for user %s.' % self.purchaser)
 
     def perform_operations(self):
         weekdate = datetime.now() - timedelta(7)
@@ -172,7 +179,7 @@ class DeactivateMessageViews(PostView, PurchaserValidationMixin):
                 cnt = 0
                 if is_purchased:
                     rest = message.ViewsLimit - message.ViewsCount \
-                            - settings.MESSAGE_VIEWS_LOWER_LIMIT
+                                              - message.FreeViews
                     if rest > 0:
                         cnt = rest
 
