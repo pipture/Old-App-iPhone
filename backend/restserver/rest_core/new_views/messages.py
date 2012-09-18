@@ -97,7 +97,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
         return {
             'MessageURL': "%s/%s" % (video_host, self.video_url),
-            'Balance': '%s' % self.purchaser.Balance,
+            'Balance': str(self.purchaser.Balance),
         }
 
 

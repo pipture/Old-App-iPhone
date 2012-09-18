@@ -15,6 +15,7 @@ from restserver.rest_core.validation_mixins import ApiValidationMixin
 class ParameterValidationMixin(object):
 
     validate_prefix = 'clean'
+    disabled_validators = tuple()
 
     def validate_parameters(self):
         clean_methods = [method for method in dir(self)
@@ -26,9 +27,10 @@ class ParameterValidationMixin(object):
             clean_methods.append(self.validate_prefix)
 
         for method_name in clean_methods:
-            handler = getattr(self, method_name)
-            if isinstance(handler, Callable):
-                handler()
+            if method_name not in self.disabled_validators:
+                handler = getattr(self, method_name)
+                if isinstance(handler, Callable):
+                    handler()
 
 
 class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
@@ -44,10 +46,6 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
         else:
             json_context = json.dumps(context)
         return json_context
-
-    def set_to_jsonify(self, **kwargs):
-        for key, value in kwargs.iteritems():
-            setattr(self.jsonify, key, value)
 
     def process(self, request, *args, **kwargs):
         self.params = request.GET or request.POST or {}

@@ -1,10 +1,22 @@
 import calendar
 from datetime import datetime
+import pytz
 
 from pipture.models import Episodes, Albums, UserPurchasedItems, \
                            PiptureSettings, TimeSlotVideos, SendMessage
 
 from annoying.functions import get_object_or_None
+
+
+class TimeUtils(object):
+
+    @classmethod
+    def get_utc_now_as_local(cls, local_timezone):
+        today = datetime.utcnow().replace(tzinfo=pytz.UTC)\
+                                 .astimezone(local_timezone)\
+                                 .replace(tzinfo=None)
+        return calendar.timegm(today.timetuple())
+
 
 
 class AlbumUtils(object):

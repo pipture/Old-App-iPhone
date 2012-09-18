@@ -1,9 +1,10 @@
 from datetime import datetime
+from apiclient.errors import HttpError
 from django.conf import settings
 import httplib2
 
 from apiclient.discovery import build
-from oauth2client.client import SignedJwtAssertionCredentials
+from oauth2client.client import SignedJwtAssertionCredentials, AccessTokenRefreshError
 
 
 class GoogleAnalyticsV3Client(object):
@@ -63,16 +64,28 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
 
     int_regexp = '^[1-9][0-9]*$'
 
+    def __init__(self, **kwargs):
+        super(PiptureGAClient, self).__init__()
+        self.exception_class = kwargs.get('exception_class')
 
     def get_event_filter(self, event_name):
         return 'ga:eventCategory==%s;ga:eventAction==%s' % self.events[event_name]
+
+    def run_query(self, **kwargs):
+        try:
+            return self.service.data().ga().get(**kwargs).execute()
+        except (HttpError, AccessTokenRefreshError):
+            if self.exception_class:
+                raise self.exception_class
+            else:
+                raise
 
     def get_most_popular_videos(self, limit, start_date, end_date):
         video_type = self.custom_vars['video_type']
         video_id = self.custom_vars['video_id']
         event = self.get_event_filter('video_play')
 
-        feed = self.service.data().ga().get(
+        feed = self.run_query(
             ids=self.GA_PROFILE_ID,
             start_date=self.get_formatted_date(start_date),
             end_date=self.get_formatted_date(end_date),
@@ -81,7 +94,7 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
             filters='%s;%s==EpisodeId' % (event, video_type),
             sort='-ga:totalEvents',
             max_results='%d' % limit
-        ).execute()
+        )
 
         return [row[1] for row in feed.get('rows', [])]
 
@@ -91,7 +104,7 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
         video_type = self.custom_vars['video_type']
         video_id = self.custom_vars['video_id']
 
-        feed = self.service.data().ga().get(
+        feed = self.run_query(
             ids=self.GA_PROFILE_ID,
             start_date=self.get_formatted_date(self.default_min_date),
             end_date=self.get_formatted_date(self.default_max_date),
@@ -100,7 +113,7 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
             filters='%s;%s==EpisodeId;%s==%s' %
                     (event, video_type, key_value, user_uid),
             sort='-ga:totalEvents',
-        ).execute()
+        )
 
         return [int(row[0]) for row in feed.get('rows', [])]
 

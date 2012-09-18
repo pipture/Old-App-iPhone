@@ -8,22 +8,13 @@ from decimal import Decimal
 from base64 import b64encode
 
 from django.db import models
-#from django.db.models import F
-#from django.conf import settings
-#from django.core.exceptions import ValidationError
 from django.db.models.deletion import SET_NULL
 from django.db.models.signals import post_save, post_syncdb
-#from django.contrib import admin
-#from django.contrib.contenttypes.models import ContentType
-#from django.contrib.contenttypes import generic
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
-#from django.core.context_processors import csrf
-#from django.http import HttpResponse
 from django.contrib.auth.models import User
 
 from restserver.s3.s3FileField import S3EnabledFileField
-#from restserver.rest_core.views import local_date_time_date_time_to_UTC_sec
 
 
 class Videos(models.Model):
@@ -80,7 +71,7 @@ class Trailers(models.Model):
         verbose_name_plural = "Trailers"
         ordering = ['Title', 'Line1', 'Line2']
 
-    def delete(self):
+    def delete(self, using=None):
         return "You couldn't delete video. It maybe in timeslot."
 
     def get_album_id(self):
@@ -203,7 +194,7 @@ class AlbumScreenshotGallery(models.Model):
                                                self.Description)
 
     def get_queryset(self):
-        return AlbumScreenshotGallery.objects.sort('Description')
+        return AlbumScreenshotGallery.objects.order_by('Description')
 
     class Admin:
         pass
@@ -259,7 +250,7 @@ class Episodes(models.Model):
         ordering = ['AlbumId__SeriesId__Title', 'AlbumId__Season',
                     'AlbumId__Title', 'EpisodeNo', 'Title']
 
-    def delete(self):
+    def delete(self, using=None):
         return "You couldn't delete video. It maybe in timeslot."
 
 
@@ -310,10 +301,6 @@ class TimeSlots(models.Model):
 
     @property
     def complexName(self):
-        from restserver.pipture.middleware import threadlocals
-#        from restserver.pipture.admin import from_utc_to_local_time
-        user = threadlocals.get_current_user()
-        user_tz = user.get_profile().timezone
         return "%s, A%s, %s - %s (%s - %s)" % (self.AlbumId.SeriesId.Title,
                                                self.AlbumId.Title,
                                                self.StartDate,
@@ -332,7 +319,7 @@ class TimeSlots(models.Model):
         return calendar.timegm(today.timetuple())
 
     def is_in_date_period(self, local_time):
-        if (self.StartDateUTC < local_time < self.EndDateUTC):
+        if self.StartDateUTC < local_time < self.EndDateUTC:
             return True
         else:
             return False
@@ -370,7 +357,7 @@ class TimeSlots(models.Model):
                                   context_instance=RequestContext(request))
 
     @staticmethod
-    def timeslot_is_current (timeslot_id, sec_local_now):
+    def timeslot_is_current(timeslot_id, local_utcnow):
         try:
             timeslot_id = int(timeslot_id)
         except ValueError:
@@ -381,7 +368,7 @@ class TimeSlots(models.Model):
         except TimeSlots.DoesNotExist:
             return False
         else:
-            return timeslot.is_current(sec_local_now)
+            return timeslot.is_current(local_utcnow)
 
     class Admin:
         pass
@@ -633,7 +620,7 @@ class SendMessage(models.Model):
 
     try:
         urlenc = uuid2shortid
-    except Exception as e:
+    except NameError:
         urlenc = uuid.uuid4
 
     Url = models.CharField(max_length=36, primary_key=True, default=urlenc)
@@ -703,9 +690,9 @@ class UserProfile(User):
         return "%s's profile" % self.user
 
 
-def create_user_profile(sender, instance, created, **kwargs):
+def create_user_profile(instance, created, **kwargs):
     if created:
-        profile, created = UserProfile.objects.get_or_create(user=instance)
+        UserProfile.objects.get_or_create(user=instance)
 
 def install(**kwargs):
 

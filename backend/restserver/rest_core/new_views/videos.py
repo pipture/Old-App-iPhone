@@ -1,18 +1,15 @@
-import calendar
 from datetime import datetime, timedelta
-from decimal import Decimal
 import urllib2
 from annoying.functions import get_object_or_None
-from pipture.jsonify_models import Utils
 
-from pipture.models import TimeSlots, TimeSlotVideos, Episodes, SendMessage, Trailers, PurchaseItems
+from pipture.models import TimeSlots, TimeSlotVideos, Episodes, \
+                           SendMessage, Trailers, PurchaseItems
 from pipture.utils import EpisodeUtils
-from rest_core.api_errors import WrongParameter, BadRequest, NotFound, Forbidden, UnauthorizedError, ParameterExpected, NotEnoughMoney, NoCurrentTimeslot
+from rest_core.api_errors import WrongParameter, NotFound, Forbidden, \
+                                 ParameterExpected, NotEnoughMoney, NoContent
 from rest_core.api_view import GetView
-from rest_core.validation_mixins import TimezoneValidationMixin, KeyValidationMixin, \
-                                        PurchaserValidationMixin, EpisodeAndTrailerValidationMixin
-
-import pytz
+from rest_core.validation_mixins import TimezoneValidationMixin, \
+                                        EpisodeAndTrailerValidationMixin, PurchaserValidationMixin
 
 
 class GetTimeslots(GetView, TimezoneValidationMixin):
@@ -24,23 +21,21 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
         yesterday = today_utc - one_day
 
         # local time
-        today = today_utc.replace(tzinfo=pytz.UTC)\
-                         .astimezone(self.local_timezone)\
-                         .replace(tzinfo=None)
-        sec_utc_now = calendar.timegm(today.timetuple())
-
         timeslots = TimeSlots.objects.select_related(depth=2)\
                                      .filter(EndDate__gte=yesterday,
                                              StartDate__lte=tomorrow)\
                                      .order_by('StartTime')
         return {
-            'CurrentTime': sec_utc_now,
-            'Timeslots': [self.jsonify(timeslot) for timeslot in timeslots],
+            'CurrentTime': self.local_utcnow,
+            'Timeslots': [self.jsonify(timeslot, local_utcnow=self.local_utcnow)
+                          for timeslot in timeslots],
         }
 
 
-class GetVideo(GetView, TimezoneValidationMixin,
+class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
                EpisodeAndTrailerValidationMixin):
+
+    disabled_validators = ('clean_key',)
 
     def clean_quality(self):
         try:
@@ -60,10 +55,11 @@ class GetVideo(GetView, TimezoneValidationMixin,
     def clean(self):
         self.timeslot_id = self.params.get('TimeslotId', None)
         self.force_buy = self.params.get('ForceBuy', None)
-        self.key = self.params.get('Key', None)
 
-        if self.force_buy and not self.key:
-            raise UnauthorizedError()
+        if self.force_buy:
+            self.clean_key()
+        else:
+            self.key = self.params.get('Key', None)
 
         if self.episode_id:
             self.video = self._clean_episode()
@@ -78,30 +74,20 @@ class GetVideo(GetView, TimezoneValidationMixin,
 
     def get_video_and_subtitles(self, video_item, quality):
         video = video_item.VideoId
-
         subtitles = video.VideoSubtitles
-        if subtitles.name == '':
-            substitles_url= ''
-        else:
-            substitles_url= subtitles.get_url()
 
-        if quality == 0:
-            video_file = video.VideoUrl
-        else:
-            try:
-                video_file = video.VideoLQUrl
-            except Exception:
-                video_file = video.VideoUrl
+        subtitles_url= '' if not subtitles.name else subtitles.get_url()
+        video_file = video.VideoUrl if quality == 0 else video.VideoLQUrl
+
         if video_file.name == '':
             video_file = video.VideoUrl
 
-        return video_file.get_url(), substitles_url
+        return video_file.get_url(), subtitles_url
 
     def perform_timeslot_operations(self):
-        sec_local_now = Utils.get_utc_now_as_local()
-
-        if not TimeSlots.timeslot_is_current(self.timeslot_id, sec_local_now):
-            raise NoCurrentTimeslot(message='Timeslot expired')
+        if not TimeSlots.timeslot_is_current(self.timeslot_id,
+                                             self.local_utcnow):
+            raise NoContent(message='Timeslot is not current')
 
     def perform_episode_operations(self):
         is_purchased = (self.video_preview == 1) or\
@@ -131,11 +117,11 @@ class GetVideo(GetView, TimezoneValidationMixin,
         video_url, subtitles_url = \
                 self.get_video_and_subtitles(self.video, self.video_quality)
         response = {
-            'VideoUrl': video_url,
+            'VideoURL': video_url,
             'Subs': self.read_subtitles(subtitles_url),
         }
         if hasattr(self, 'purchaser'):
-            response['Balance'] = self.purchaser.Balance
+            response['Balance'] = str(self.purchaser.Balance)
 
         return response
 
@@ -157,16 +143,11 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
                 (message='There is no timeslot with id %s' % timeslot_id)
 
     def clean(self):
-        today = datetime.utcnow().replace(tzinfo=pytz.UTC)\
-                                 .astimezone(self.local_timezone)\
-                                 .replace(tzinfo=None)
-        sec_utc_now = calendar.timegm(today.timetuple())
+        if self.timeslot.StartTimeUTC > self.local_utcnow:
+            raise NoContent(message='Timeslot is in the future')
 
-        if self.timeslot.StartTimeUTC > sec_utc_now:
-            raise NoCurrentTimeslot(message='Timeslot is in the future')
-
-        if  sec_utc_now > self.timeslot.EndTimeUTC:
-            raise NoCurrentTimeslot(message='Timeslot is in the past')
+        if  self.local_utcnow > self.timeslot.EndTimeUTC:
+            raise NoContent(message='Timeslot is in the past')
 
         self.timeslot_videos = TimeSlotVideos.objects\
                                              .filter(TimeSlotsId=self.timeslot)\

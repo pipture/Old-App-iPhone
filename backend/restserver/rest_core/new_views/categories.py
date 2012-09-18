@@ -3,9 +3,10 @@ from datetime import datetime, timedelta
 from django.db.models.aggregates import Count
 from django.db.models import Q
 
-from pipture.ga_v3_service import pipture_ga
+from pipture.ga_v3_service import PiptureGAClient
 from pipture.jsonify_models import JsonifyModels
 from pipture.utils import AlbumUtils
+from rest_core.api_errors import ServiceUnavailable
 from rest_core.api_view import GetView
 from rest_core.validation_mixins import PurchaserValidationMixin
 from restserver.pipture.models import Albums, Episodes, Series
@@ -13,6 +14,8 @@ from restserver.pipture.models import Albums, Episodes, Series
 
 class Category(object):
 
+    category_id = ''
+    title = ''
     jsonify = JsonifyModels(as_category_item=True)
 
     def __init__(self, params):
@@ -22,6 +25,7 @@ class Category(object):
         self.episodes = params['episodes']
         self.watched_episodes = params['watched_episodes']
         self.popular_series = params['popular_series']
+        self.ga = params['ga']
 
     def get_context_data(self):
         queryset = self.get_items_queryset()[:self.limit] \
@@ -98,7 +102,7 @@ class MostPopularVideos(Category, VideosMixin):
         end_date = datetime.today()
         start_date = end_date - timedelta(days=self.days_period)
 
-        return pipture_ga.get_most_popular_videos(self.limit,
+        return self.ga.get_most_popular_videos(self.limit,
                                                   start_date,
                                                   end_date)
 
@@ -169,6 +173,9 @@ class WatchThatVideosAgain(Category, SeriesMixin):
 
 class GetAllCategories(GetView, PurchaserValidationMixin):
 
+#    ga = PiptureGAClient()
+    ga = PiptureGAClient(exception_class=ServiceUnavailable)
+
     def get_category_classes(self):
         return Category.__subclasses__()
 
@@ -183,7 +190,7 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
             )
 
     def get_watched_episodes_and_series(self, available_episodes):
-        ids = pipture_ga.get_episodes_watched_by_user(self.purchaser.UserUID)
+        ids = self.ga.get_episodes_watched_by_user(self.purchaser.UserUID)
         episodes = available_episodes.filter(EpisodeId__in=ids)
         counted_watched = episodes.values('AlbumId__SeriesId')\
                 .annotate(watched_count=Count('AlbumId__SeriesId'))\
@@ -197,7 +204,8 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
         watched, series_ids = self.get_watched_episodes_and_series(episodes)
         return dict(popular_series=series_ids,
                     watched_episodes=watched,
-                    episodes=episodes)
+                    episodes=episodes,
+                    ga=self.ga)
 
     def get_context_data(self):
         params = self.get_params()

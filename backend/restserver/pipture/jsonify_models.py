@@ -1,6 +1,5 @@
 import calendar
 from datetime import datetime, timedelta
-import pytz
 
 
 class Utils(object):
@@ -8,13 +7,6 @@ class Utils(object):
     @classmethod
     def get_timestamp(cls, datetime_instance):
         return calendar.timegm(datetime_instance.timetuple())
-
-    @classmethod
-    def get_utc_now_as_local(cls, local_timezone):
-        today = datetime.utcnow().replace(tzinfo=pytz.UTC)\
-                                 .astimezone(local_timezone)\
-                                 .replace(tzinfo=None)
-        return calendar.timegm(today.timetuple())
 
     @staticmethod
     def get_sell_status(album, is_purchased=False):
@@ -61,12 +53,10 @@ class Utils(object):
         return cls.get_timestamp(released), cls.get_timestamp(updated)
 
     @classmethod
-    def get_timeslot_status(cls, timeslot, local_timezone):
-        sec_utc_now = cls.get_utc_now_as_local(local_timezone)
-
-        if timeslot.is_current(sec_utc_now):
+    def get_timeslot_status(cls, timeslot, local_utcnow):
+        if timeslot.is_current(local_utcnow):
             status = 2
-        elif timeslot.StartTimeUTC > sec_utc_now:
+        elif timeslot.StartTimeUTC > local_utcnow:
             status = 1
         else:
             status = 0
@@ -74,8 +64,6 @@ class Utils(object):
 
 
 class JsonifyModels(object):
-
-    # instance variable local_timezone must be set on timezone validation
 
     def __init__(self, as_category_item=False):
         self.as_category_item = as_category_item
@@ -176,6 +164,8 @@ class JsonifyModels(object):
         return trailer_json
 
     def timeslots(self, timeslot, **kwargs):
+        local_utcnow = kwargs.get('local_utcnow')
+
         return {
             "TimeSlotId": timeslot.TimeSlotsId,
             "StartTime": str(timeslot.StartTimeUTC),
@@ -184,8 +174,7 @@ class JsonifyModels(object):
             "Title": timeslot.AlbumId.SeriesId.Title,
             "AlbumId": timeslot.AlbumId.AlbumId,
             "CloseupBackground": timeslot.AlbumId.CloseUpBackground.get_url(),
-            "TimeslotStatus": Utils.get_timeslot_status(timeslot,
-                                                        self.local_timezone),
+            "TimeslotStatus": Utils.get_timeslot_status(timeslot, local_utcnow),
         }
 
     def series(self, series, **kwargs):

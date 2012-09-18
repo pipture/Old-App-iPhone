@@ -1,7 +1,7 @@
 
 
 class ApiError(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         self.message = kwargs.get('message', self.message)
 
     def get_description(self):
@@ -21,7 +21,7 @@ class EmptyError(ApiError):
     message = ""
 
 
-class NoCurrentTimeslot(ApiError):
+class NoContent(ApiError):
     code = 204
 
 
@@ -32,8 +32,8 @@ class BadRequest(ApiError):
 class WrongParameter(BadRequest):
     message = 'Invalid parameter %s.'
 
-    def __init__(self, *args, **kwargs):
-        super(WrongParameter, self).__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
+        super(WrongParameter, self).__init__(**kwargs)
         self.parameter = kwargs['parameter']
 
     def get_description(self):
@@ -66,13 +66,14 @@ class InternalServerError(ApiError):
     code = 500
     message = 'Internal server error: %s (%s)'
 
-    def __init__(self, *args, **kwargs):
-        super(InternalServerError, self).__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
+        super(InternalServerError, self).__init__(**kwargs)
         self.caught_error = kwargs['error']
 
     def get_description(self):
         return self.message % (self.caught_error, type(self.caught_error))
 
 
-
-
+class ServiceUnavailable(ApiError):
+    code = 503
+    message = 'Third-party service is unavailable'

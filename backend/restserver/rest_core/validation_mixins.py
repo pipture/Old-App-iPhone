@@ -1,5 +1,7 @@
 import pytz
+
 from pipture.models import PipUsers, Trailers, Episodes
+from pipture.utils import TimeUtils
 from rest_core.api_errors import ParameterExpected, WrongParameter, \
                                  UnauthorizedError, BadRequest, NotFound
 
@@ -23,7 +25,7 @@ class KeyValidationMixin(object):
     def clean_key(self):
         self.key = self.params.get('Key', None)
         if self.key is None:
-            raise UnauthorizedError()
+            raise ParameterExpected(parameter='Key')
 
 
 class PurchaserValidationMixin(KeyValidationMixin):
@@ -47,8 +49,8 @@ class TimezoneValidationMixin(object):
 
         timezone = self.params[param_name]
         try:
-            self.local_timezone = pytz.timezone(timezone)
-            self.set_to_jsonify(local_timezone=self.local_timezone)
+            local_timezone = pytz.timezone(timezone)
+            self.local_utcnow = TimeUtils.get_utc_now_as_local(local_timezone)
         except pytz.exceptions.UnknownTimeZoneError:
             raise BadRequest(message='Unknown timezone.')
 

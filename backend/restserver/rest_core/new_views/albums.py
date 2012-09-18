@@ -3,7 +3,7 @@ from django.db.models.query_utils import Q
 from pipture.models import Albums, TimeSlots, Episodes, AlbumScreenshotGallery
 from pipture.utils import AlbumUtils, EpisodeUtils
 from rest_core.api_errors import BadRequest, ParameterExpected,\
-                                 WrongParameter, NotFound
+                                 WrongParameter, NotFound, NoContent
 from rest_core.api_view import GetView
 from rest_core.validation_mixins import KeyValidationMixin
 
@@ -121,7 +121,7 @@ class GetAlbumScreenshots(GetView):
                                 .filter(AlbumId=self.episode.AlbumId)\
                                 .extra(order_by=['Description'])
         if not self.screenshots:
-            raise NotFound(message='There is no screenshots for this album.')
+            raise NoContent(message='There is no screenshots for this album.')
 
     def get_context_data(self):
         return {
