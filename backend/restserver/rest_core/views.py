@@ -1272,7 +1272,7 @@ def sendMessage (request):
     #timeslot_id = request.POST.get('TimeslotId', None)
     screenshot_url = request.POST.get('ScreenshotURL', None)
     user_name = request.POST.get('UserName', None)
-    views_count = request.POST.get('ViewsCount', None)
+    views_count = request.POST.get('ViewsCount', 0)
 
     if episode_id and trailer_id:
         response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There are EpisodeId and TrailerId. Should be only one param."}

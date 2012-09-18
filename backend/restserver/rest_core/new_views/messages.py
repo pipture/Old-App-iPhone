@@ -18,7 +18,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
                       EpisodeAndTrailerValidationMixin):
 
     def clean_message(self):
-        self.message = self.params.get('Message', None)
+        self.message = self.params.get('Message', '')
 
         if len(self.message) > 200:
             raise BadRequest(message='Message is too long.')
@@ -70,7 +70,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
     def perform_episode_operations(self):
         episode = self._clean_episode()
 
-        price = PurchaseItems.objects.get(Description="SendEpisode").Price
+        price = PurchaseItems.objects.get(Description='SendEpisode').Price
         message_cost = price * self.views_count
 
         is_purchased = EpisodeUtils.is_in_purchased_album(episode.EpisodeId,
@@ -79,8 +79,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         limit = settings.MESSAGE_VIEWS_LOWER_LIMIT
         #if album is purchased, then settings.MESSAGE_VIEWS_LOWER_LIMIT views are free
         if is_purchased:
-            message_cost = 0 if self.views_count <= limit\
-                           else price * limit
+            message_cost = 0 if self.views_count <= limit else price * limit
 
         user_balance = self.purchaser.Balance
         if user_balance - message_cost <= 0:
@@ -96,7 +95,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         video_host = PiptureSettings.get_video_host()
 
         return {
-            'MessageURL': "%s/%s" % (video_host, self.video_url),
+            'MessageURL': '%s/%s' % (video_host, self.video_url),
             'Balance': str(self.purchaser.Balance),
         }
 
