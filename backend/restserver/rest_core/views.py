@@ -1088,7 +1088,7 @@ def buy (request):
     apple_purchase = request.POST.get('AppleReceiptData', None)
     transaction_id = request.POST.get('TransactionId', None)
 
-    if not key or not apple_purchase or not transaction_id:
+    if not key or not apple_purchase:
         response["Error"] = {"ErrorCode": "401", "ErrorDescription": "Authentication error."}
         return HttpResponse(json.dumps(response))
 

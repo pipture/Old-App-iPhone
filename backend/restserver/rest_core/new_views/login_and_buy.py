@@ -2,12 +2,13 @@ import json
 import uuid
 import urllib2
 from decimal import Decimal
+from apiclient.errors import HttpError
 
 from django.db import IntegrityError
 from pipture.utils import AlbumUtils
 
 from rest_core.api_errors import WrongParameter, UnauthorizedError,\
-                                 BadRequest, ParameterExpected, NotFound
+                                 BadRequest, ParameterExpected, NotFound, Forbidden, ServiceUnavailable
 from rest_core.api_view import GetView, PostView
 from rest_core.validation_mixins import PurchaserValidationMixin
 
@@ -39,7 +40,7 @@ class Register(PostView):
         cover, album = AlbumUtils.get_cover()
         if album:
             album = self.jsonify(album)
-        
+
         return dict(Cover=cover,
                     Album=album,
                     UUID=str(pip_user.UserUID),
@@ -84,16 +85,13 @@ class Buy(PostView, PurchaserValidationMixin):
         self.apple_purchase = self.params.get('AppleReceiptData', None)
 
         if self.apple_purchase is None:
-            raise UnauthorizedError()
+            raise Forbidden(message='Expected apple purchase')
 
         self.product, self.quantity, self.transaction_id = \
                 self.response_from_apple_server()
 
     def clean_transaction_id(self):
         transaction_id = self.params.get('TransactionId', None)
-
-        if transaction_id is None:
-            raise UnauthorizedError()
 
         self.apple_transaction = \
             get_object_or_None(Transactions, AppleTransactionId=transaction_id)
@@ -102,11 +100,14 @@ class Buy(PostView, PurchaserValidationMixin):
         data_json = json.dumps({"receipt-data": str(self.apple_purchase)})
         request = urllib2.Request(url=self.url, data=data_json)
 
-        response = urllib2.urlopen(request)
+        try:
+            response = urllib2.urlopen(request)
+        except HttpError:
+            raise ServiceUnavailable()
         result_json = json.loads(response.read())
 
         if result_json['status'] != 0:
-            raise BadRequest(message='Purchase Validation error.')
+            raise Forbidden(message='Invalid apple purchase')
         else:
             receipt = result_json['receipt']
             return receipt['product_id'], \
@@ -131,7 +132,7 @@ class Buy(PostView, PurchaserValidationMixin):
         except AppleProducts.DoesNotExist:
             raise WrongParameter(parameter='Product')
 
-        cost = Decimal(self.product.Price * self.quantity)
+        cost = Decimal(apple_product.ViewsCount * self.quantity)
 
         try:
             transaction = Transactions(UserId=self.purchaser,
@@ -141,7 +142,7 @@ class Buy(PostView, PurchaserValidationMixin):
                                        AppleTransactionId=self.transaction_id)
             transaction.save()
         except IntegrityError:
-            raise BadRequest(message='Duplicate transaction Id.')
+            raise BadRequest(message='Duplicated transaction.')
 
         self.purchaser.Balance += cost
         self.purchaser.save()
@@ -158,10 +159,9 @@ class Buy(PostView, PurchaserValidationMixin):
         if album_id is None:
             raise WrongParameter(parameter='Product')
 
-        ALBUM_EP = PurchaseItems.objects.get(Description="Album")
         purchased_item = UserPurchasedItems(UserId=self.purchaser,
                                             ItemId=int(album_id),
-                                            PurchaseItemId=ALBUM_EP,
+                                            PurchaseItemId__Description="Album",
                                             ItemCost=0)
         purchased_item.save()
 

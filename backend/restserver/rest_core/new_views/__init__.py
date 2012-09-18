@@ -1,7 +1,7 @@
 from restserver.rest_core.new_views.albums import GetAlbums, GetAlbumScreenshots, \
                                                   GetSellableAlbums, GetAlbumDetail
-from restserver.rest_core.new_views.login import Login, Register, Buy, \
-                                                 GetBalance, Index
+from restserver.rest_core.new_views.login_and_buy import Login, Register, Buy, \
+                                                         GetBalance, Index
 from restserver.rest_core.new_views.messages import SendMessageView as SendMessage, \
                                                     DeactivateMessageViews, \
                                                     GetUnusedMessageViews

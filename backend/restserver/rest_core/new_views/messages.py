@@ -8,7 +8,7 @@ from pipture.models import PiptureSettings, SendMessage, Trailers,\
                            PurchaseItems
 from pipture.utils import EpisodeUtils
 from rest_core.api_errors import BadRequest, ParameterExpected, \
-                                 NotFound, Forbidden, WrongParameter, NotEnoughMoney
+                                 NotFound, WrongParameter, NotEnoughMoney
 from rest_core.api_view import PostView, GetView
 from rest_core.validation_mixins import PurchaserValidationMixin, \
                                         EpisodeAndTrailerValidationMixin
@@ -101,6 +101,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
 
 class MessageValidationMixin(object):
+    """ Requires PurchaserValidationMixin """
 
     def clean(self):
         self.messages = SendMessage.objects\
