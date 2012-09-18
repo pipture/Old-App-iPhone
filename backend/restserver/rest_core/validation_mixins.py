@@ -25,7 +25,7 @@ class KeyValidationMixin(object):
     def clean_key(self):
         self.key = self.params.get('Key', None)
         if self.key is None:
-            raise ParameterExpected(parameter='Key')
+            raise UnauthorizedError()
 
 
 class PurchaserValidationMixin(KeyValidationMixin):

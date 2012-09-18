@@ -1,6 +1,8 @@
 
 
 class ApiError(Exception):
+    message = ''
+
     def __init__(self, **kwargs):
         self.message = kwargs.get('message', self.message)
 
@@ -18,7 +20,7 @@ class ApiError(Exception):
 
 class EmptyError(ApiError):
     code = 0
-    message = ""
+    message = ''
 
 
 class NoContent(ApiError):
@@ -60,6 +62,10 @@ class Forbidden(ApiError):
 
 class NotFound(ApiError):
     code = 404
+
+
+class Conflict(ApiError):
+    code = 409
 
 
 class InternalServerError(ApiError):

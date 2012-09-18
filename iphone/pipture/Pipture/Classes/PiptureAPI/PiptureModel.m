@@ -447,29 +447,25 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                                   
                                               } itemName:@"Playlist item"] retain];
                     [receiver performSelectorOnMainThread:@selector(playlistReceived:) 
-                                               withObject:playlistItems waitUntilDone:YES];
+                                               withObject:playlistItems
+                                            waitUntilDone:YES];
                     [playlistItems release];
                     break;
                 }
-                case 1:
-                    if ([receiver respondsToSelector:@selector(playlistCantBeReceivedForExpiredTimeslot:)])
+                case 204:
+                    if ([receiver respondsToSelector:@selector(playlistCantBeReceivedForUnavailableTimeslot:)])
                     {
-                        [receiver performSelectorOnMainThread:@selector(playlistCantBeReceivedForExpiredTimeslot:) 
-                                                   withObject:timeslotId waitUntilDone:YES];
+                        [receiver performSelectorOnMainThread:@selector(playlistCantBeReceivedForUnavailableTimeslot:) 
+                                                   withObject:timeslotId
+                                                waitUntilDone:YES];
                     }
                     break;
-                case 2:
+                case 404:
                     if ([receiver respondsToSelector:@selector(playlistCantBeReceivedForUnknownTimeslot:)])
                     {
                         [receiver performSelectorOnMainThread:@selector(playlistCantBeReceivedForUnknownTimeslot:) 
-                                                   withObject:timeslotId waitUntilDone:YES];
-                    }
-                    break;
-                case 3:
-                    if ([receiver respondsToSelector:@selector(playlistCantBeReceivedForFutureTimeslot:)])
-                    {
-                        [receiver performSelectorOnMainThread:@selector(playlistCantBeReceivedForFutureTimeslot:)
-                                                   withObject:timeslotId waitUntilDone:YES];
+                                                   withObject:timeslotId
+                                                waitUntilDone:YES];
                     }
                     break;
                 default:
@@ -605,17 +601,17 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                         }
                         break;
                     }
-                    case 1:
+                    case 204:
                         [receiver performSelectorOnMainThread:@selector(timeslotExpiredForVideo:)
                                                    withObject:playListItem 
                                                 waitUntilDone:YES];                    
                         break;
-                    case 2:
+                    case 403:
                         [receiver performSelectorOnMainThread:@selector(videoNotPurchased:) 
                                                    withObject:playListItem
                                                 waitUntilDone:YES];
                         break;                        
-                    case 3:
+                    case 402:
                         [receiver performSelectorOnMainThread:@selector(notEnoughMoneyForWatch:) 
                                                    withObject:playListItem 
                                                 waitUntilDone:YES];
@@ -858,15 +854,15 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                     }
                     break;
                 }
-                case 1:
+                case 403:
                     [receiver performSelectorOnMainThread:@selector(purchaseNotConfirmed) 
                                                withObject:nil waitUntilDone:YES];
                     break;
-                case 2:
+                case 400:
                     [receiver performSelectorOnMainThread:@selector(unknownProductPurchased)
                                                withObject:nil waitUntilDone:YES];
                     break;
-                case 3:
+                case 409:
                     [receiver performSelectorOnMainThread:@selector(duplicateTransactionId)
                                                withObject:nil waitUntilDone:YES];
                     break;
@@ -1026,7 +1022,7 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                     }                    
                     break;
                 }
-                case 3:
+                case 402:
                     [receiver performSelectorOnMainThread:@selector(notEnoughMoneyForSend:) 
                                                withObject:playlistItem
                                             waitUntilDone:YES];

@@ -8,7 +8,7 @@ from django.db import IntegrityError
 from pipture.utils import AlbumUtils
 
 from rest_core.api_errors import WrongParameter, UnauthorizedError,\
-                                 BadRequest, ParameterExpected, NotFound, Forbidden, ServiceUnavailable
+                                 BadRequest, ParameterExpected, NotFound, Forbidden, ServiceUnavailable, Conflict
 from rest_core.api_view import GetView, PostView
 from rest_core.validation_mixins import PurchaserValidationMixin
 
@@ -142,7 +142,7 @@ class Buy(PostView, PurchaserValidationMixin):
                                        AppleTransactionId=self.transaction_id)
             transaction.save()
         except IntegrityError:
-            raise BadRequest(message='Duplicated transaction.')
+            raise Conflict(message='Duplicated transaction.')
 
         self.purchaser.Balance += cost
         self.purchaser.save()

@@ -817,13 +817,8 @@
     [self goBack];
 }
 
--(void)playlistCantBeReceivedForExpiredTimeslot:(NSNumber*)timeslotId {
-    NSLog(@"Expired timeslot");
-    [self goBack];
-}
-
--(void)playlistCantBeReceivedForFutureTimeslot:(NSNumber*)timeslotId {
-    NSLog(@"Future timeslot");
+-(void)playlistCantBeReceivedForUnavailableTimeslot:(NSNumber*)timeslotId {
+    NSLog(@"Timeslot is currently unavailable");
     [self goBack];
 }
 

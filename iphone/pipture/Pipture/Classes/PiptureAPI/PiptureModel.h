@@ -57,9 +57,8 @@
 @required
 -(void)playlistReceived:(NSArray*)playlistItems;
 @optional
+-(void)playlistCantBeReceivedForUnavailableTimeslot:(NSNumber*)timeslotId;
 -(void)playlistCantBeReceivedForUnknownTimeslot:(NSNumber*)timeslotId;
--(void)playlistCantBeReceivedForExpiredTimeslot:(NSNumber*)timeslotId;
--(void)playlistCantBeReceivedForFutureTimeslot:(NSNumber*)timeslotId;
 
 @end
 
