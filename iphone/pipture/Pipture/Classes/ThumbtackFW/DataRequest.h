@@ -28,6 +28,7 @@ typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
     DataRequestCallback callback_;
     BOOL cancellable;
     BOOL canceled;
+    BOOL enqueued;
     BOOL progressShown;    
 }
 
@@ -43,6 +44,8 @@ typedef void (^DataRequestCallback)(NSDictionary*, DataRequestError* error);
 - (BOOL)startExecute;
 - (void)setCanceled;
 - (void)blockCancel;
+- (BOOL)enqueued;
+- (void)setEnqueued;
 - (BOOL)cancellable;
 @end
 
