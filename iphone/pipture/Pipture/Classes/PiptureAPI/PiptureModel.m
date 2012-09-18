@@ -634,7 +634,7 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
             [PiptureModel setModelRequestingState:NO receiver:receiver];        
         }];
         [PiptureModel setModelRequestingState:YES receiver:receiver];
-        if (timeslotId) //For timeslot it is called inside player. Can do retries unless player is closed. For other cases retries inappropriate 
+        if (timeslotId) //For timeslot it is called inside player. Can do retries unless player is closed. For other cases retries inappropriate
         {
             request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy]; 
         } else {
@@ -677,7 +677,8 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
-    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];    
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
+    [request setEnqueued];
     return [request startExecute];
  
 }
@@ -1286,7 +1287,7 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
     if ([receiver respondsToSelector:@selector(unexpectedAPIError:)])
     {
         [receiver unexpectedAPIError:code description:description];
-    }    
+    }
     NSLog(@"Unexpected API error: %@, code: %d", description, code);
 }
 
@@ -1395,7 +1396,23 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
 
 @end
 
-@implementation DefaultDataRequestFactory 
+@implementation DefaultDataRequestFactory
+
+-(id)init
+{
+    self = [super init];
+    if (self){
+        requestQueue = [[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
+-(void)dealloc
+{
+    [requestQueue release];
+    [current release];
+    [super dealloc];
+}
 
 - (DataRequest*)createDataRequestWithURL:(NSURL*)url callback:(DataRequestCallback)callback
 {
@@ -1404,8 +1421,10 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                  callback:callback];
 }
 
-DataRequest*current = nil;
-BOOL needInvokeCallback;
+NSMutableArray * requestQueue;
+
+@synthesize needInvokeCallback;
+@synthesize current;
 
 -(void)cancelCurrentRequest
 {
@@ -1443,7 +1462,7 @@ BOOL needInvokeCallback;
                              {
                                  if (needInvokeCallback)
                                  {
-                                     needInvokeCallback = NO;
+//                                     needInvokeCallback = NO;
                                      NSLog(@"callback perform: %@", url);
                                      callback(jsonResult, error);
                                  } else {
@@ -1456,20 +1475,40 @@ BOOL needInvokeCallback;
 }
 
 
+-(void)addRequestToQueue:(DataRequest*)request
+{
+    //TODO: figure out why requests are duplicated
+    if ([requestQueue count] > 0){
+        for (DataRequest *item in requestQueue){
+            if ([item isEqual:request]){
+//                [request release];
+                NSLog(@"Request has NOT been enqueued");
+                return;
+            }
+        }
+    }
+    
+    [requestQueue addObject:request];
+    NSLog(@"Request has been enqueued");
+}
+
 -(BOOL)addRequest:(DataRequest*)request
 {
     @synchronized(self)
     {
         if (current)
         {
-            NSLog(@"Request manager busy. Skip launching");                    
+            if ([request enqueued]) {
+                [self addRequestToQueue:request];
+            }
+            else {
+                NSLog(@"Request manager busy. Skip launching");
+            }
             return NO;
         }
         else
         {
             NSLog(@"Request manager launching with: %@", request.url.description);
-            current = request;
-            needInvokeCallback = YES;
             return YES;
         }
     }
@@ -1485,7 +1524,16 @@ BOOL needInvokeCallback;
             NSLog(@"Request manager unexpected state. Two request were runned in same time");                    
         } else
         {
+            if ([request enqueued]){
+                [requestQueue removeObject:current];
+                NSLog(@"Request has been removed from queue");
+            }
             current = nil;
+            if (requestQueue.count >0){
+                DataRequest * next_request = [requestQueue objectAtIndex:0];
+                [next_request startExecute];
+                NSLog(@"Next request has been ran");
+            }
         }
     }    
 }

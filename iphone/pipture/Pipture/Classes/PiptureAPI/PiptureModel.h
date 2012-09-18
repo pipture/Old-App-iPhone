@@ -25,6 +25,9 @@
 
 -(void)cancelCurrentRequest;
 
+@property(assign, nonatomic) BOOL needInvokeCallback;
+@property(retain, nonatomic) DataRequest *current;
+
 @end
 
 #pragma mark -

@@ -23,7 +23,7 @@
 @synthesize retryStrategy = retryStrategy_;
 
 
-id<DataRequestManager> requestManager_;
+DefaultDataRequestFactory* requestManager_;
 
 -(void)showProgress {
     if (progress && !progressShown) 
@@ -83,6 +83,7 @@ id<DataRequestManager> requestManager_;
     {
         cancellable = YES;
         canceled = NO;
+        enqueued = NO;
         callback_ = [callback copy];
         url_ = [url retain];
         requestManager_ = [requestManager retain];
@@ -109,6 +110,15 @@ id<DataRequestManager> requestManager_;
 #endif
 }
 
+-(BOOL)isEqual:(id)compared
+{
+    if ( ![[self class] isEqual:[compared class]] || ![[self url] isEqual:[compared url]] ){
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
 - (BOOL)startExecute 
 {
     canceled = NO;
@@ -119,6 +129,9 @@ id<DataRequestManager> requestManager_;
             return NO;
         }
     }      
+
+    requestManager_.current = self;
+    requestManager_.needInvokeCallback = YES;
 	NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url_
                                                 cachePolicy:NSURLRequestUseProtocolCachePolicy
                                             timeoutInterval:[self timeoutInterval]];
@@ -227,6 +240,14 @@ id<DataRequestManager> requestManager_;
 
 - (BOOL)cancellable {
     return cancellable;
+}
+
+- (void)setEnqueued {
+    enqueued = YES;
+}
+
+- (BOOL)enqueued {
+    return enqueued;
 }
 
 @end
