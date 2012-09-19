@@ -88,7 +88,6 @@ class Conflict(ApiError):
 
 
 class InternalServerError(ApiError):
-    log_level = logging.ERROR
     code = 500
     _message = 'Internal server error: %s (%s)'
 
@@ -100,8 +99,7 @@ class InternalServerError(ApiError):
         return self._message % (self.caught_error, type(self.caught_error))
 
     def log(self, message):
-        exc_info = (sys.exc_info()[1], )
-        logger.error(message, exc_info=exc_info)
+        logger.exception(message)
 
 
 class ServiceUnavailable(InternalServerError):

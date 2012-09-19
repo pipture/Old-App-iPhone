@@ -173,8 +173,9 @@ class WatchThatVideosAgain(Category, SeriesMixin):
 
 class GetAllCategories(GetView, PurchaserValidationMixin):
 
-#    ga = PiptureGAClient()
-    ga = PiptureGAClient(exception_class=ServiceUnavailable)
+    def __init__(self, **kwargs):
+        super(GetAllCategories, self).__init__(**kwargs)
+        self.ga = PiptureGAClient(exception_class=ServiceUnavailable)
 
     def get_category_classes(self):
         return Category.__subclasses__()
