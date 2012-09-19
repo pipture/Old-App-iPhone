@@ -186,7 +186,7 @@ def index(request, u_url):
                 response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
                 return HttpResponse (json.dumps(response))'''
 
-
+    isMobile=1
     if isMobile:
         #template_h = 'video_mobile.html'
         template_h = 'mobilepage.html'
@@ -199,8 +199,8 @@ def index(request, u_url):
     message_empty = len(text_m) == 0
 
     limit = urs_instance.ViewsLimit
-    if urs_instance.ViewsLimit == -1:
-        limit = "infinite"
+#    if urs_instance.ViewsLimit == -1:
+#        limit = "infinite"
 
     if not message_empty:
         from django.utils.html import urlize
