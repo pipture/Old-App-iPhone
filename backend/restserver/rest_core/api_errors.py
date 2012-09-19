@@ -89,14 +89,15 @@ class Conflict(ApiError):
 
 class InternalServerError(ApiError):
     code = 500
-    _message = 'Internal server error: %s (%s)'
+#    _message = 'Internal server error: %s (%s)'
+    _message = 'Internal server error'
 
     def __init__(self, **kwargs):
         super(InternalServerError, self).__init__(**kwargs)
         self.caught_error = kwargs['error']
 
-    def get_description(self):
-        return self._message % (self.caught_error, type(self.caught_error))
+#    def get_description(self):
+#        return self._message % (self.caught_error, type(self.caught_error))
 
     def log(self, message):
         logger.exception(message)
