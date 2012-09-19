@@ -1,22 +1,22 @@
 import logging
+import sys
 
 
 logger = logging.getLogger('restserver.rest_core')
 
 
 class ApiError(Exception):
-    log_level = logging.INFO
     _message = ''
 
     def __init__(self, **kwargs):
-        self._message = kwargs.get('_message', self._message)
+        self._message = kwargs.get('message', self._message)
 
     def get_description(self):
         return self._message
 
     def get_dict(self):
         info = self.get_log_information()
-        logger.log(self.log_level, info)
+        self.log(info)
 
         return {
             'Error': {
@@ -30,10 +30,16 @@ class ApiError(Exception):
                                self.code,
                                self.get_description())
 
+    def log(self, message):
+        logger.info(message)
+
 
 class EmptyError(ApiError):
     code = 0
     _message = ''
+
+    def log(self, message):
+        pass
 
 
 class NoContent(ApiError):
@@ -92,6 +98,10 @@ class InternalServerError(ApiError):
 
     def get_description(self):
         return self._message % (self.caught_error, type(self.caught_error))
+
+    def log(self, message):
+        exc_info = (sys.exc_info()[1], )
+        logger.error(message, exc_info=exc_info)
 
 
 class ServiceUnavailable(InternalServerError):
