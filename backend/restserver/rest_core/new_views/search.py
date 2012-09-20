@@ -1,9 +1,12 @@
+from itertools import chain
 from django.db.models.query_utils import Q
 
 from rest_core.api_errors import ParameterExpected
-from restserver.pipture.models import Albums, Episodes
+from restserver.pipture.models import Episodes
 from restserver.pipture.utils import EpisodeUtils
 from restserver.rest_core.api_view import GetView
+
+from stemming import porter2
 
 
 class GetSearchResult(GetView):
@@ -13,31 +16,28 @@ class GetSearchResult(GetView):
         if not query:
             raise ParameterExpected(parameter='query')
 
-#        self.search_regex = r'[[:<:]]' + query + '[[:>:]]'
-        self.search_regex = query
+        self.search_query = porter2.stem(query)
 
     def do_search(self):
-        query = self.search_regex
-        found_episodes = []
+        query = self.search_query
 
-        found_albums = Albums.objects.filter(
-                Q(Description__icontains=query) |
-                Q(Credits__icontains=query) |
-                Q(SeriesId__Title__icontains=query)
-            )
+        title_filter = Q(Title__icontains=query)
+        keywords_filter = Q(Keywords__icontains=query)
+        series_name_filter = Q(AlbumId__SeriesId__Title__icontains=query)
 
-        for album in found_albums:
-            album_episodes = album.episodes.order_by('EpisodeNo')
-            found_episodes.extend(album_episodes)
+        episodes = Episodes.objects.filter(title_filter |
+                                           keywords_filter |
+                                           series_name_filter)
+        episodes_by_title = episodes.filter(title_filter)
+        episodes_by_keywords = episodes.filter(keywords_filter)\
+                                       .exclude(title_filter)
+        episodes_by_series = episodes.filter(series_name_filter)\
+                                     .exclude(title_filter | keywords_filter)\
+                                     .order_by('AlbumId')
 
-        search_episodes = Episodes.objects.filter(
-                Q(Title__icontains=query) |
-                Q(Subject__icontains=query) |
-                Q(Keywords__icontains=query)
-            )
-
-        found_episodes.extend(search_episodes)
-        return found_episodes
+        return [episode for episode in chain(episodes_by_title,
+                                             episodes_by_keywords,
+                                             episodes_by_series)]
 
     def get_context_data(self):
         episodes = self.do_search()[:100]

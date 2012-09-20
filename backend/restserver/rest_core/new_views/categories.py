@@ -90,7 +90,7 @@ class ScheduledSeries(Category):
 class MostPopularVideos(Category, VideosMixin):
     category_id = 1
     title = 'Most Popular'
-    days_period = 10
+    days_period = 4
     ga_pull_limit = 50
 
     def get_items_queryset(self):
