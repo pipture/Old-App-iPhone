@@ -80,6 +80,8 @@ def index(request, u_url):
     try:
         urs_instance = SendMessage.objects.get(Url=u_url)
     except SendMessage.DoesNotExist:
+        return render_to_response("empty.html", None,
+                                       context_instance=RequestContext(request))
         response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Url not found"}
         return HttpResponse (json.dumps(response))
 
