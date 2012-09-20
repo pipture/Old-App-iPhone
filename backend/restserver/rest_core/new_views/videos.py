@@ -196,7 +196,8 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
         timeslot_videos = self.get_episodes_and_trailers()
 
         return {
-            'Videos': [self.jsonify(item) for item in timeslot_videos]
+            'Videos': [self.jsonify(item, add_album_info=True)
+                       for item in timeslot_videos]
         }
 
 
