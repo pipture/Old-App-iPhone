@@ -412,7 +412,8 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
         [PiptureModel setModelRequestingState:NO receiver:receiver];        
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];
-    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];    
+    request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
+    [request setEnqueued];
     return [request startExecute];
 }
 
