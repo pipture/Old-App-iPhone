@@ -7,6 +7,7 @@ import uuid
 from decimal import Decimal
 from base64 import b64encode
 
+from django.conf import settings
 from django.db import models
 from django.db.models.deletion import SET_NULL
 from django.db.models.signals import post_save, post_syncdb
@@ -525,7 +526,7 @@ class FreeMsgViewers(models.Model):
     FreeMsgViewersId = models.AutoField(primary_key=True)
     UserId = models.ForeignKey(PipUsers, editable=False)
     EpisodeId = models.ForeignKey(Episodes, editable=False)
-    Rest = models.IntegerField()
+    Rest = models.IntegerField(default=settings.MESSAGE_VIEWS_LOWER_LIMIT)
 
     def __unicode__(self):
         return "%s: %s, %s free views" % (self.UserId.UserUID, self.EpisodeId.Title, self.Rest)

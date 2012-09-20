@@ -1,11 +1,10 @@
 from datetime import timedelta, datetime
 from decimal import Decimal
 
-from django.conf import settings
 from django.db.models import F
 
 from pipture.models import PiptureSettings, SendMessage, Trailers,\
-                           PurchaseItems
+                           PurchaseItems, FreeMsgViewers
 from pipture.utils import EpisodeUtils
 from rest_core.api_errors import BadRequest, ParameterExpected, \
                                  NotFound, WrongParameter, NotEnoughMoney
@@ -71,24 +70,35 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         episode = self._clean_episode()
 
         price = PurchaseItems.objects.get(Description='SendEpisode').Price
-        message_cost = price * self.views_count
+        free_viewers = self.get_free_viewers(episode)
 
-        is_purchased = EpisodeUtils.is_in_purchased_album(episode.EpisodeId,
-                                                          self.purchaser)
+        message_cost = 0 if free_viewers and free_viewers.Rest >= 0 \
+                       else price * self.views_count
 
-        limit = settings.MESSAGE_VIEWS_LOWER_LIMIT
-        #if album is purchased, then settings.MESSAGE_VIEWS_LOWER_LIMIT views are free
-        if is_purchased:
-            message_cost = 0 if self.views_count <= limit else price * limit
-
-        user_balance = self.purchaser.Balance
-        if user_balance - message_cost <= 0:
+        self.purchaser.Balance -= message_cost
+        if self.purchaser.Balance <= 0:
             raise NotEnoughMoney()
 
         self.video_url = self.create_message_and_return_url(episode)
 
-        self.purchaser.Balance = Decimal(user_balance - message_cost)
         self.purchaser.save()
+        free_viewers.save()
+
+    def get_free_viewers(self, episode):
+        is_purchased = EpisodeUtils.is_in_purchased_album(episode,
+                                                          self.purchaser)
+        if not is_purchased:
+            return None
+
+        views = FreeMsgViewers.objects.get_or_create(UserId=self.purchaser,
+                                                     EpisodeId=episode)
+        remaining_free = views.Rest - self.views_count
+        if remaining_free <= 0:
+            self.views_count -= views.Rest
+            views.Rest = 0
+        else:
+            views.Rest = remaining_free
+        return views
 
     def get_context_data(self):
         self.perform_operations()
