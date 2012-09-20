@@ -91,6 +91,7 @@ class MostPopularVideos(Category, VideosMixin):
     category_id = 1
     title = 'Most Popular'
     days_period = 10
+    ga_pull_limit = 50
 
     def get_items_queryset(self):
         ids = self.get_data_from_ga()
@@ -102,9 +103,9 @@ class MostPopularVideos(Category, VideosMixin):
         end_date = datetime.today()
         start_date = end_date - timedelta(days=self.days_period)
 
-        return self.ga.get_most_popular_videos(self.limit,
-                                                  start_date,
-                                                  end_date)
+        return self.ga.get_most_popular_videos(self.ga_pull_limit,
+                                               start_date,
+                                               end_date)
 
 
 class RecentlyAddedVideos(Category, VideosMixin):
@@ -173,8 +174,9 @@ class WatchThatVideosAgain(Category, SeriesMixin):
 
 class GetAllCategories(GetView, PurchaserValidationMixin):
 
-#    ga = PiptureGAClient()
-    ga = PiptureGAClient(exception_class=ServiceUnavailable)
+    def __init__(self, **kwargs):
+        super(GetAllCategories, self).__init__(**kwargs)
+        self.ga = PiptureGAClient(exception_class=ServiceUnavailable)
 
     def get_category_classes(self):
         return Category.__subclasses__()

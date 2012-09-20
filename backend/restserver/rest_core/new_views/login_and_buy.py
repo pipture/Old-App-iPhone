@@ -159,9 +159,10 @@ class Buy(PostView, PurchaserValidationMixin):
         if album_id is None:
             raise WrongParameter(parameter='Product')
 
+        album_purchase_item = PurchaseItems.objects.get(Description='Album')
         purchased_item = UserPurchasedItems(UserId=self.purchaser,
                                             ItemId=int(album_id),
-                                            PurchaseItemId__Description="Album",
+                                            PurchaseItemId=album_purchase_item,
                                             ItemCost=0)
         purchased_item.save()
 
