@@ -38,7 +38,7 @@
 					<object class="IBUIImageView" id="345882576">
 						<reference key="NSNextResponder" ref="239020952"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{2, 4}, {69, 110}}</string>
+						<string key="NSFrame">{{8, 3}, {60, 87}}</string>
 						<reference key="NSSuperview" ref="239020952"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="679242606"/>
@@ -48,16 +48,15 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
 							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">Thumbnail-default3.png</string>
+							<string key="NSResourceName">VideoThumbnail-default.png</string>
 						</object>
 					</object>
 					<object class="IBUIView" id="679242606">
 						<reference key="NSNextResponder" ref="239020952"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{6, 6}, {61, 102}}</string>
+						<string key="NSFrame">{{12, 6}, {52, 80}}</string>
 						<reference key="NSSuperview" ref="239020952"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:196</string>
 						<object class="NSColor" key="IBUIBackgroundColor" id="649069227">
 							<int key="NSColorSpace">3</int>
@@ -67,7 +66,7 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
 				</array>
-				<string key="NSFrameSize">{72, 115}</string>
+				<string key="NSFrameSize">{74, 97}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="345882576"/>
@@ -192,8 +191,8 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NS.key.0">Thumbnail-default3.png</string>
-			<string key="NS.object.0">{69, 110}</string>
+			<string key="NS.key.0">VideoThumbnail-default.png</string>
+			<string key="NS.object.0">{60, 87}</string>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">1498</string>
 	</data>

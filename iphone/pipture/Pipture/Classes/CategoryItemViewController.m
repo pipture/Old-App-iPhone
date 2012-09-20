@@ -18,7 +18,7 @@
 @synthesize categoryItem = categoryItem_;
 @synthesize thumbnailButton;
 
-static NSInteger const MARGIN_RIGHT = 15;
+static NSInteger const MARGIN_RIGHT = 11;
 
 - (IBAction)playChannelCategoryVideo:(id)sender {
     NSMutableArray * playlist = [NSMutableArray arrayWithCapacity:self.categoryItem.videos.count];
