@@ -66,6 +66,84 @@ ADMIN_MEDIA_PREFIX = '/media/'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '&#a%(19x83i%5gre1$v10)exjq6taz!=e%o8vjv6&x-b3um0d)'
 
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'root': {
+        'level': 'WARNING',
+        'handlers': ['console'],
+        },
+    # Loggers
+    # A logger is the entry point into the logging system. Each logger is a named bucket to which messages
+    # can be written for processing.
+    #  DEBUG:     Low level system information for debugging purposes
+    #  INFO:      General system information
+    #  WARNING:   Information describing a minor problem that has occurred.
+    #  ERROR:     Information describing a major problem that has occurred.
+    #  CRITICAL:  Information describing a critical problem that has occurred.
+    'loggers': {
+        'django': {
+            'handlers':['null'],
+            'level':'INFO',
+            'propagate': True,
+            },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+            },
+
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+            },
+
+        'restserver.rest_core': {
+            'handlers': ['console', 'dev_console'],
+            'level': 'INFO',
+            },
+        },
+
+    'handlers': {
+        'null': {
+            'level': 'INFO',
+            'class': 'django.utils.log.NullHandler',
+            },
+        'console': {
+            'level': 'WARNING',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+            },
+        'mail_admins': {
+            'level': 'DEBUG',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+            },
+        'dev_console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+            },
+        },
+    # Formatters
+    # Ultimately, a log record needs to be rendered as text. Formatters describe the exact format of that text.
+    # A formatter usually consists of a Python formatting string; however, you can also write custom formatters
+    # to implement specific formatting behavior.
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+            },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+            },
+        },
+    }
+
+
+
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
