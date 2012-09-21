@@ -62,7 +62,7 @@ class SeriesMixin(object):
         first_album = series.albums_set.all()[0]
         item_info = self.jsonify(first_album.TrailerId)
         item_info.update({
-            'CloseUpThumbnail': first_album.Thumbnail.get_url(),
+            'CloseUpThumbnail': first_album.CoverThumbnail.get_url(),
             'Title': series.Title,
             'Album': self.jsonify(first_album),
         })
@@ -70,8 +70,15 @@ class SeriesMixin(object):
 
     def get_info_with_episodes(self, series):
         episodes_for_series = self.episodes.filter(AlbumId__SeriesId=series)
-        return [self.jsonify(episode, add_album_info=True)
-                for episode in episodes_for_series]
+        episodes = [self.jsonify(episode, add_album_info=True)
+                    for episode in episodes_for_series]
+
+        thumbnail_url = series.albums_set.all()[0].CoverThumbnail.get_url()
+        for episode in episodes:
+            episode['CloseUpThumbnail'] = thumbnail_url
+
+        return episodes
+
 
     def get_item_info(self, series):
         if self.item_view == 'with_episodes':
@@ -90,7 +97,7 @@ class ScheduledSeries(Category):
 class MostPopularVideos(Category, VideosMixin):
     category_id = 1
     title = 'Most Popular'
-    days_period = 10
+    days_period = 4
     ga_pull_limit = 50
 
     def get_items_queryset(self):
