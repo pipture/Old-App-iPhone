@@ -149,15 +149,17 @@ class ComingSoonSeries(Category, SeriesMixin):
 class Top12VideosForYou(Category, VideosMixin):
     category_id = 4
     title = 'Top 12 for You'
+    limit_for_one_series = 4
 
 
     def get_items_queryset(self):
-#        return Episodes.objects.all()
         unwatched = self.episodes.exclude(EpisodeId__in=self.watched_episodes)
 
         unwatched_episodes = []
         for id in self.popular_series:
             episodes_for_series = Episodes.objects.filter(AlbumId__SeriesId=id)
+            episodes_for_series = episodes_for_series[:self.limit_for_one_series]
+
             unwatched_episodes.extend(episodes_for_series)
             if len(unwatched_episodes) >= self.limit:
                 return unwatched_episodes
