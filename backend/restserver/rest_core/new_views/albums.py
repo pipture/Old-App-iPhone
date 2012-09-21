@@ -64,6 +64,7 @@ class GetAlbumDetail(GetView, KeyValidationMixin):
 class GetAlbums(GetView, KeyValidationMixin):
 
     def get_context_data(self):
+        print self.key
         purchased_ids = AlbumUtils.get_purchased(self.key)
 
         albums_list = Albums.objects.select_related(depth=1).filter(

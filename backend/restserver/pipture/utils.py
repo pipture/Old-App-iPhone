@@ -23,9 +23,11 @@ class AlbumUtils(object):
 
     @staticmethod
     def get_purchased(user_id):
+        print "user_id", user_id
         purchased_albums = UserPurchasedItems.objects.filter(
                 UserId__Token=user_id,
                 PurchaseItemId__Description='Album').values_list('ItemId')
+        print "purchased_albums", purchased_albums
         return [int(id[0]) for id in purchased_albums]
 
     @staticmethod
@@ -67,6 +69,8 @@ class EpisodeUtils(object):
     @staticmethod
     def is_in_purchased_album(episode_id, user_id):
         purchased_ids = AlbumUtils.get_purchased(user_id)
+        if isinstance(episode_id, Episodes):
+            return episode_id.AlbumId.AlbumId in purchased_ids
         episode = get_object_or_None(Episodes,
                                      EpisodeId=episode_id,
                                      AlbumId__AlbumId__in=purchased_ids)

@@ -11,7 +11,7 @@ from rest_core.api_errors import BadRequest, ParameterExpected, \
 from rest_core.api_view import PostView, GetView
 from rest_core.validation_mixins import PurchaserValidationMixin, \
                                         EpisodeAndTrailerValidationMixin
-
+from django.conf import settings
 
 class SendMessageView(PostView, PurchaserValidationMixin,
                       EpisodeAndTrailerValidationMixin):
@@ -67,16 +67,25 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         self.video_url = self.create_message_and_return_url(trailer)
 
     def perform_episode_operations(self):
+        if not self.views_count:
+            raise ParameterExpected(parameter='ViewsCount')
         episode = self._clean_episode()
 
         price = PurchaseItems.objects.get(Description='SendEpisode').Price
         free_viewers = self.get_free_viewers(episode)
+        
+        message_cost = price * self.views_count
 
-        message_cost = 0 if free_viewers and free_viewers.Rest >= 0 \
-                       else price * self.views_count
-
+        if free_viewers and free_viewers.Rest > 0:
+            message_cost -= int(price) * free_viewers.Rest
+            if message_cost<0: message_cost = 0
+    
+            rest = free_viewers.Rest - int(self.views_count)
+            rest = (rest if rest > 0 else 0)
+            free_viewers.Rest = rest
+            
         self.purchaser.Balance -= message_cost
-        if self.purchaser.Balance <= 0:
+        if self.purchaser.Balance < 0:
             raise NotEnoughMoney()
 
         self.video_url = self.create_message_and_return_url(episode)
@@ -86,18 +95,12 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
     def get_free_viewers(self, episode):
         is_purchased = EpisodeUtils.is_in_purchased_album(episode,
-                                                          self.purchaser)
+                                                          self.purchaser.Token)
         if not is_purchased:
             return None
 
-        views = FreeMsgViewers.objects.get_or_create(UserId=self.purchaser,
-                                                     EpisodeId=episode)
-        remaining_free = views.Rest - self.views_count
-        if remaining_free <= 0:
-            self.views_count -= views.Rest
-            views.Rest = 0
-        else:
-            views.Rest = remaining_free
+
+        views, pipture_freemsgviewers = FreeMsgViewers.objects.get_or_create(UserId=self.purchaser,EpisodeId=episode, defaults={'Rest': settings.MESSAGE_VIEWS_LOWER_LIMIT})
         return views
 
     def get_context_data(self):
