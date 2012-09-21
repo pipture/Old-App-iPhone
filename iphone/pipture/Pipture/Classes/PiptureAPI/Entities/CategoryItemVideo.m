@@ -19,6 +19,7 @@
 @synthesize seriesTitle;
 @synthesize thumbnail;
 @synthesize type;
+@synthesize squareThumbnail;
 @synthesize playlistItem;
 @synthesize album;
 
@@ -39,6 +40,8 @@ static NSString* const JSON_PARAM_TYPE_TRAILER   = @"Trailer";
 static NSString* const JSON_PARAM_TYPE_EPISODE = @"Episode";
 static NSString* const JSON_PARAM_EPISODE_ID   = @"EpisodeId";
 static NSString* const JSON_PARAM_TRAILER_ID   = @"TrailerId";
+static NSString* const JSON_PARAM_EMAIL_SCREENSHOT = @"SquareThumbnail";
+static NSString* const JSON_PARAM_ALBUM_EMAIL_SCREENSHOT = @"AlbumSquareThumbnail";
 
 -(id)initWithJSON:(NSDictionary*)jsonData{
     self = [super init];
@@ -49,6 +52,15 @@ static NSString* const JSON_PARAM_TRAILER_ID   = @"TrailerId";
 }
 
 -(void)dealloc{
+    [self.title release];
+    [self.line1 release];
+    [self.line2 release];
+    [self.type  release];
+    [self.episodeNo   release];
+    [self.seriesTitle release];
+    [self.thumbnail   release];
+    [self.squareThumbnail release];
+    [self.playlistItem release];
     [self.album release];
     [super dealloc];
 }
@@ -68,6 +80,7 @@ static NSString* const JSON_PARAM_TRAILER_ID   = @"TrailerId";
     self.episodeNo = [jsonData strValueForKey:JSON_PARAM_EPISODE_NO defaultIfEmpty:self.episodeNo];
     self.line1 = [jsonData strValueForKey:JSON_PARAM_LINE1 defaultIfEmpty:self.line1];
     self.line2 = [jsonData strValueForKey:JSON_PARAM_LINE2 defaultIfEmpty:self.line2];
+    self.squareThumbnail = [jsonData strValueForKey:JSON_PARAM_EMAIL_SCREENSHOT defaultIfEmpty:self.squareThumbnail];
     
     NSDictionary *albumJson = [jsonData objectForKey:JSON_PARAM_ALBUM_INFO];
     self.album = [[Album alloc] initWithJSON: albumJson];
@@ -81,7 +94,9 @@ static NSString* const JSON_PARAM_TRAILER_ID   = @"TrailerId";
     NSString* videoType = nil;
     if (self.album.title) [playlistItemData setObject:self.album.title forKey:JSON_PARAM_ALBUM_TITLE];
     if (self.album.season) [playlistItemData setObject:self.album.season forKey:JSON_PARAM_ALBUM_SEASON];
+    if (self.album.squareThumbnail) [playlistItemData setObject:self.album.squareThumbnail forKey:JSON_PARAM_ALBUM_EMAIL_SCREENSHOT];
     if (self.album.series.title) [playlistItemData setObject:self.album.series.title forKey:JSON_PARAM_SERIES_TITLE];
+    if (self.squareThumbnail) [playlistItemData setObject:self.squareThumbnail forKey:JSON_PARAM_EMAIL_SCREENSHOT];
     if ([JSON_PARAM_TYPE_EPISODE isEqualToString:self.type]) {
         [playlistItemData setObject:[NSString stringWithFormat:@"%d", self.id] forKey:JSON_PARAM_EPISODE_ID];
         if (self.episodeNo) [playlistItemData setObject:self.episodeNo forKey:JSON_PARAM_EPISODE_NO];

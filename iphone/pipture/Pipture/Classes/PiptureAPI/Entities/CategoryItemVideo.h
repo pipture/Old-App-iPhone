@@ -21,6 +21,7 @@
 @property(retain, nonatomic) Album* album;
 @property(retain, nonatomic) NSString* thumbnail;
 @property(retain, nonatomic) NSString* type;
+@property(retain, nonatomic) NSString* squareThumbnail;
 @property(strong, nonatomic) PlaylistItem* playlistItem;
 
 -(id)initWithJSON:(NSDictionary*)jsonData;
