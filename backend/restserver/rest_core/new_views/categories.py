@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from itertools import chain
 
 from django.db.models.aggregates import Count
 from django.db.models import Q
@@ -151,23 +152,22 @@ class Top12VideosForYou(Category, VideosMixin):
     title = 'Top 12 for You'
     limit_for_one_series = 4
 
-
     def get_items_queryset(self):
+        limit = self.limit_for_one_series
         unwatched = self.episodes.exclude(EpisodeId__in=self.watched_episodes)
+        unwatched_series = [int(id[0]) for id in
+                    Series.objects.exclude(SeriesId__in=self.popular_series)\
+                                  .values_list('SeriesId')]
 
-        unwatched_episodes = []
-        for id in self.popular_series:
-            episodes_for_series = Episodes.objects.filter(AlbumId__SeriesId=id)
-            episodes_for_series = episodes_for_series[:self.limit_for_one_series]
+        top_episodes = []
+        for id in chain(self.popular_series, unwatched_series):
+            episodes_for_series = unwatched.filter(AlbumId__SeriesId=id)
 
-            unwatched_episodes.extend(episodes_for_series)
-            if len(unwatched_episodes) >= self.limit:
-                return unwatched_episodes
+            top_episodes.extend(episodes_for_series[:limit])
+            if len(top_episodes) >= self.limit:
+                return top_episodes
 
-        episodes_from_unwatched_series = \
-                unwatched.exclude(AlbumId__SeriesId__in=self.popular_series)
-        unwatched_episodes.extend(episodes_from_unwatched_series)
-        return unwatched_episodes
+        return top_episodes
 
 
 class WatchThatVideosAgain(Category, SeriesMixin):

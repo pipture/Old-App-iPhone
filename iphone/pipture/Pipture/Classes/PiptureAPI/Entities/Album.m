@@ -41,6 +41,7 @@
 @synthesize releaseDate;
 @synthesize updateDate;
 @synthesize thumbnail;
+@synthesize squareThumbnail;
 @synthesize closeupBackground;
 @synthesize emailScreenshot;
 @synthesize credits = credits_;
@@ -64,6 +65,7 @@ static NSString* const JSON_PARAM_COVER = @"Cover";
 static NSString* const JSON_PARAM_RELEASE_DATE = @"ReleaseDate";
 static NSString* const JSON_PARAM_UPDATE_DATE = @"UpdateDate";
 static NSString* const JSON_PARAM_THUMBNAIL = @"Thumbnail";
+static NSString* const JSON_PARAM_EMAIL_SCREENSHOT = @"SquareThumbnail";
 static NSString* const JSON_PARAM_CLOSEUP = @"CloseUpBackground";
 static NSString* const JSON_PARAM_CREDITS = @"Credits";
 static NSString* const JSON_PARAM_SELL_STATUS = @"SellStatus";
@@ -88,6 +90,7 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     [releaseDate release];
     [updateDate release];
     [thumbnail release];
+    [squareThumbnail release];
     [closeupBackground release];
     [emailScreenshot release];
     [credits_ release];
@@ -177,7 +180,8 @@ static NSString* const CREDITS_ITEM_TAB = @",";
     self.updateDate = [NSDate dateWithTimeIntervalSince1970:[millisecs doubleValue]];
 
     self.thumbnail = [jsonData strValueForKey:JSON_PARAM_THUMBNAIL defaultIfEmpty:self.thumbnail];
-    self.closeupBackground = [jsonData strValueForKey:JSON_PARAM_CLOSEUP defaultIfEmpty:self.closeupBackground];    
+    self.squareThumbnail = [jsonData strValueForKey:JSON_PARAM_EMAIL_SCREENSHOT defaultIfEmpty:self.squareThumbnail];
+    self.closeupBackground = [jsonData strValueForKey:JSON_PARAM_CLOSEUP defaultIfEmpty:self.closeupBackground];
     
     NSString* creditsStr = [jsonData objectForKey:JSON_PARAM_CREDITS];
     if (creditsStr && creditsStr.length > 0)
