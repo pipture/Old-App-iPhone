@@ -32,7 +32,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         self.screenshot_url = self.params.get('ScreenshotURL', '')
 
         try:
-            self.views_count = int(self.params.get('ViewsCount', 0))
+            self.views_count = int(self.params.get('ViewsCount', None))
         except ValueError:
             raise WrongParameter(parameter='ViewsCount')
 
@@ -67,23 +67,22 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         self.video_url = self.create_message_and_return_url(trailer)
 
     def perform_episode_operations(self):
-        if not self.views_count:
-            raise ParameterExpected(parameter='ViewsCount')
         episode = self._clean_episode()
 
         price = PurchaseItems.objects.get(Description='SendEpisode').Price
         free_viewers = self.get_free_viewers(episode)
-        
+
         message_cost = price * self.views_count
 
         if free_viewers and free_viewers.Rest > 0:
             message_cost -= int(price) * free_viewers.Rest
-            if message_cost<0: message_cost = 0
-    
+            if message_cost < 0:
+                message_cost = 0
+
             rest = free_viewers.Rest - int(self.views_count)
-            rest = (rest if rest > 0 else 0)
+            rest = rest if rest > 0 else 0
             free_viewers.Rest = rest
-            
+
         self.purchaser.Balance -= message_cost
         if self.purchaser.Balance < 0:
             raise NotEnoughMoney()
@@ -99,8 +98,8 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         if not is_purchased:
             return None
 
-
-        views, pipture_freemsgviewers = FreeMsgViewers.objects.get_or_create(UserId=self.purchaser,EpisodeId=episode, defaults={'Rest': settings.MESSAGE_VIEWS_LOWER_LIMIT})
+        views, _  = FreeMsgViewers.objects.get_or_create(UserId=self.purchaser,
+                                                         EpisodeId=episode)
         return views
 
     def get_context_data(self):
