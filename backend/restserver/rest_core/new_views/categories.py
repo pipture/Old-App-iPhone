@@ -14,10 +14,8 @@ from restserver.pipture.models import Albums, Episodes, Series
 
 
 class Category(object):
-
     category_id = ''
     title = ''
-    jsonify = JsonifyModels(as_category_item=True)
 
     def __init__(self, params):
 #        more simple but unclear:
@@ -27,6 +25,7 @@ class Category(object):
         self.watched_episodes = params['watched_episodes']
         self.popular_series = params['popular_series']
         self.ga = params['ga']
+        self.jsonify = params['jsonify']
 
     def get_context_data(self):
         queryset = self.get_items_queryset()[:self.limit] \
@@ -191,11 +190,11 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
         return Category.__subclasses__()
 
     def get_available_episodes(self):
-        purchased_albums_ids = AlbumUtils.get_purchased(self.purchaser.UserUID)
+        self.purchased_albums = AlbumUtils.get_purchased(self.purchaser.UserUID)
 
         return Episodes.objects.filter(
                 Q(AlbumId__HiddenAlbum=False) & (
-                    Q(AlbumId__AlbumId__in=purchased_albums_ids) |
+                    Q(AlbumId__AlbumId__in=self.purchased_albums) |
                     Q(AlbumId__PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
                 )
             )
@@ -213,9 +212,13 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
     def get_params(self):
         episodes = self.get_available_episodes()
         watched, series_ids = self.get_watched_episodes_and_series(episodes)
+        jsonify = JsonifyModels(as_category_item=True,
+                                purchased_albums=self.purchased_albums)
+
         return dict(popular_series=series_ids,
                     watched_episodes=watched,
                     episodes=episodes,
+                    jsonify=jsonify,
                     ga=self.ga)
 
     def get_context_data(self):
