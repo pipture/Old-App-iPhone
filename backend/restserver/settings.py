@@ -4,7 +4,7 @@ import os.path
 
 APP_DIR = os.path.dirname( globals()[ '__file__' ] )
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
