@@ -81,6 +81,7 @@ class JsonifyModels(object):
             'Season': album.Season,
             'Title': album.Title,
             'SellStatus': Utils.get_sell_status(album, is_purchased),
+            'SquareThumbnail': album.SquareThumbnail.get_url()
         }
         album_json.update(self.__call__(album.SeriesId))
 
@@ -89,7 +90,6 @@ class JsonifyModels(object):
                 'Cover': album.Cover.get_url(),
                 'CloseUpBackground': album.CloseUpBackground.get_url(),
                 'Thumbnail': album.Thumbnail.get_url(),
-                'SquareThumbnail': album.SquareThumbnail.get_url(),
                 'Description': album.Description,
                 'Rating': album.Rating,
                 'Credits': album.Credits,
@@ -119,6 +119,9 @@ class JsonifyModels(object):
 
         if self.as_category_item:
             episode_json['Album'] = self.__call__(episode.AlbumId)
+            episode_json.update({
+                "SquareThumbnail": episode.SquareThumbnail.get_url()
+            })
         else:
             episode_json.update({
                 "Script": episode.Script,
@@ -154,11 +157,11 @@ class JsonifyModels(object):
             "TrailerId": trailer.TrailerId,
             "Line1": trailer.Line1,
             "Line2": trailer.Line2,
+            "SquareThumbnail": trailer.SquareThumbnail.get_url()
         }
         if not self.as_category_item:
             trailer_json.update({
                 "Title": trailer.Title,
-                "SquareThumbnail": trailer.SquareThumbnail.get_url(),
                 "AlbumId": trailer.get_album_id(),
             })
         return trailer_json
