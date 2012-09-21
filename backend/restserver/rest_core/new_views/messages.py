@@ -76,12 +76,13 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
         if free_viewers and free_viewers.Rest > 0:
             message_cost -= int(price) * free_viewers.Rest
-            if message_cost < 0:
-                message_cost = 0
 
             rest = free_viewers.Rest - int(self.views_count)
             rest = rest if rest > 0 else 0
             free_viewers.Rest = rest
+
+        if message_cost < 0:
+            message_cost = 0
 
         self.purchaser.Balance -= message_cost
         if self.purchaser.Balance < 0:
@@ -90,7 +91,8 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         self.video_url = self.create_message_and_return_url(episode)
 
         self.purchaser.save()
-        free_viewers.save()
+        if free_viewers:
+            free_viewers.save()
 
     def get_free_viewers(self, episode):
         is_purchased = EpisodeUtils.is_in_purchased_album(episode,
