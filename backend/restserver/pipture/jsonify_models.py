@@ -65,8 +65,9 @@ class Utils(object):
 
 class JsonifyModels(object):
 
-    def __init__(self, as_category_item=False):
+    def __init__(self, as_category_item=False, purchased_albums=[]):
         self.as_category_item = as_category_item
+        self.purchased_albums = purchased_albums
 
     def __call__(self, model, **kwargs):
         handler_name = model.__class__.__name__.lower()
@@ -74,7 +75,8 @@ class JsonifyModels(object):
 
     def albums(self, album, **kwargs):
         released, updated = Utils.get_release_and_update_dates(album)
-        is_purchased = kwargs.get('is_purchased', False)
+        is_purchased = kwargs.get('is_purchased', False) or \
+                       album.AlbumId in self.purchased_albums
 
         album_json = {
             'AlbumId': album.AlbumId,
