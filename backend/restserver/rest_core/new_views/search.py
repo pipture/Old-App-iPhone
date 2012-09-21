@@ -43,7 +43,8 @@ class GetSearchResult(GetView):
         episodes = self.do_search()[:100]
 
         return {
-            'Episodes': [self.jsonify(episode) for episode in episodes
+            'Episodes': [self.jsonify(episode, add_album_info=True)
+                         for episode in episodes
                          if EpisodeUtils.is_on_air(episode) and
                             not episode.AlbumId.HiddenAlbum]
         }
