@@ -62,7 +62,7 @@ class SeriesMixin(object):
         first_album = series.albums_set.all()[0]
         item_info = self.jsonify(first_album.TrailerId)
         item_info.update({
-            'CloseUpThumbnail': first_album.CoverThumbnail.get_url(),
+            'CloseUpThumbnail': first_album.Thumbnail.get_url(),
             'Title': series.Title,
             'Album': self.jsonify(first_album),
         })
@@ -73,7 +73,7 @@ class SeriesMixin(object):
         episodes = [self.jsonify(episode, add_album_info=True)
                     for episode in episodes_for_series]
 
-        thumbnail_url = series.albums_set.all()[0].CoverThumbnail.get_url()
+        thumbnail_url = series.albums_set.all()[0].Thumbnail.get_url()
         for episode in episodes:
             episode['CloseUpThumbnail'] = thumbnail_url
 
