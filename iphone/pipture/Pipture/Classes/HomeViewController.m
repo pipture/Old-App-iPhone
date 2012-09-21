@@ -18,6 +18,7 @@
 #import "CategoryItemViewController.h"
 #import "PiptureAppDelegate+GATracking.h"
 #import "CoverViewController.h"
+#import "EditNewsViewController.h"
 
 #define TIMESLOT_CHANGE_POLL_INTERVAL 60
 #define TIMESLOT_REGULAR_POLL_INTERVAL 900
@@ -877,6 +878,7 @@
     [cover setCoverImage];
     
     [self.newsView placeCategories:categories];
+    [self.newsView placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]];
 }
 
 

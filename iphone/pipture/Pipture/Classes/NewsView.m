@@ -10,7 +10,6 @@
 #import "Timeslot.h"
 #import "PiptureAppDelegate.h"
 #import "TimeslotFormatter.h"
-#import "EditNewsViewController.h"
 #import "CategoryViewController.h"
 
 @implementation NewsView
@@ -142,7 +141,6 @@
         }
     }
     
-    [self placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]];
 }
 
 - (void)updateCategoriesOrder:(NSArray *)categoriesOrder {

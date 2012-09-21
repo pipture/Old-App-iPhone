@@ -283,7 +283,6 @@
 		884D41DD15063BE500C91986 /* special-close-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 884D41D915063BE500C91986 /* special-close-button.png */; };
 		884D41DE15063BE500C91986 /* special-close-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 884D41DA15063BE500C91986 /* special-close-button@2x.png */; };
 		88606F1B14C415F9009FB5FD /* ScheduleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88606F1A14C415F9009FB5FD /* ScheduleModel.m */; };
-		886904C815E505440054E01F /* Thumbnail-default3.png in Resources */ = {isa = PBXBuildFile; fileRef = 886904C715E505440054E01F /* Thumbnail-default3.png */; };
 		886904CC15E5E1810054E01F /* CategoryItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 886904CB15E5E1810054E01F /* CategoryItemViewController.m */; };
 		8869CB66160081DD00854BAE /* CategoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8869CB65160081DD00854BAE /* CategoryItem.m */; };
 		88751791148CAD3B00AFFFAC /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 88751779148CAD3B00AFFFAC /* NSObject+SBJson.m */; };
@@ -677,7 +676,6 @@
 		884D41DA15063BE500C91986 /* special-close-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "special-close-button@2x.png"; sourceTree = "<group>"; };
 		88606F1914C415F9009FB5FD /* ScheduleModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScheduleModel.h; path = Classes/ScheduleModel.h; sourceTree = "<group>"; };
 		88606F1A14C415F9009FB5FD /* ScheduleModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScheduleModel.m; path = Classes/ScheduleModel.m; sourceTree = "<group>"; };
-		886904C715E505440054E01F /* Thumbnail-default3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Thumbnail-default3.png"; sourceTree = "<group>"; };
 		886904CA15E5E1810054E01F /* CategoryItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryItemViewController.h; sourceTree = "<group>"; };
 		886904CB15E5E1810054E01F /* CategoryItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryItemViewController.m; sourceTree = "<group>"; };
 		8869CB64160081DD00854BAE /* CategoryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryItem.h; sourceTree = "<group>"; };
@@ -1053,7 +1051,6 @@
 				18F18F9B15DCEBC6003CE769 /* CategoryViewController.xib */,
 				1801D73E15DE2DE90086D163 /* CategoryEditViewController.xib */,
 				88F2D69215E48E6D002510F1 /* CategoryItemMView.xib */,
-				886904C715E505440054E01F /* Thumbnail-default3.png */,
 				88F2D69415E48ED0002510F1 /* CategoryItemSView.xib */,
 			);
 			path = Resources;
@@ -1697,7 +1694,6 @@
 				1801D73F15DE2DE90086D163 /* CategoryEditViewController.xib in Resources */,
 				88F2D69315E48E6D002510F1 /* CategoryItemMView.xib in Resources */,
 				88F2D69515E48ED0002510F1 /* CategoryItemSView.xib in Resources */,
-				886904C815E505440054E01F /* Thumbnail-default3.png in Resources */,
 				18D2940F15EE1670009868A2 /* bluebutton-left.png in Resources */,
 				18D2941015EE1670009868A2 /* bluebutton-left@2x.png in Resources */,
 				18D2941115EE1670009868A2 /* bluebutton-pushed-left.png in Resources */,

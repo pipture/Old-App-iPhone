@@ -70,7 +70,7 @@ static NSInteger const MEDIUM_THUMBS = 3;
     CategoryItemViewController *sampleItem = [self categoryItemByCategory:category categoryItem:nil];
     if (!sampleItem) return;
 
-    NSInteger contentHeight = sampleItem.view.frame.size.height * (len / category.columns);
+    NSInteger contentHeight = sampleItem.view.frame.size.height * ceil((float)len / (float)category.columns);
     NSInteger deltaHeight = self.itemContainer.frame.size.height - contentHeight;
     CGRect frame;
     
