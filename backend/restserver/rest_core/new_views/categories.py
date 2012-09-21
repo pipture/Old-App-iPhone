@@ -62,7 +62,7 @@ class SeriesMixin(object):
         first_album = series.albums_set.all()[0]
         item_info = self.jsonify(first_album.TrailerId)
         item_info.update({
-            'CloseUpThumbnail': first_album.CoverThumbnail.get_url(),
+            'CloseUpThumbnail': first_album.Thumbnail.get_url(),
             'Title': series.Title,
             'Album': self.jsonify(first_album),
         })
@@ -73,7 +73,7 @@ class SeriesMixin(object):
         episodes = [self.jsonify(episode, add_album_info=True)
                     for episode in episodes_for_series]
 
-        thumbnail_url = series.albums_set.all()[0].CoverThumbnail.get_url()
+        thumbnail_url = series.albums_set.all()[0].Thumbnail.get_url()
         for episode in episodes:
             episode['CloseUpThumbnail'] = thumbnail_url
 
@@ -149,15 +149,17 @@ class ComingSoonSeries(Category, SeriesMixin):
 class Top12VideosForYou(Category, VideosMixin):
     category_id = 4
     title = 'Top 12 for You'
+    limit_for_one_series = 4
 
 
     def get_items_queryset(self):
-#        return Episodes.objects.all()
         unwatched = self.episodes.exclude(EpisodeId__in=self.watched_episodes)
 
         unwatched_episodes = []
         for id in self.popular_series:
             episodes_for_series = Episodes.objects.filter(AlbumId__SeriesId=id)
+            episodes_for_series = episodes_for_series[:self.limit_for_one_series]
+
             unwatched_episodes.extend(episodes_for_series)
             if len(unwatched_episodes) >= self.limit:
                 return unwatched_episodes

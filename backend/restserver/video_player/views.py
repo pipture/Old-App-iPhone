@@ -1,9 +1,18 @@
-from django.template.context import RequestContext
-from django.shortcuts import render_to_response
-from django.http import HttpResponse
-
+import datetime
+import time
+import calendar
 import json
-from pipture.models import Trailers
+from base64 import b64encode, b64decode
+
+from django.template.context import RequestContext
+from django.shortcuts import render_to_response, get_object_or_404
+from django.http import HttpResponse
+from django.db.models import Min
+
+from restserver.pipture.models import Episodes, Trailers, Albums, SendMessage
+from restserver.rest_core.views import get_video_url_from_episode_or_trailer
+
+
 # list of mobile User Agents
 mobile_uas = [
     'w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
@@ -26,7 +35,7 @@ def mobileBrowser(request):
     mobile_browser = False
     ua = request.META['HTTP_USER_AGENT'].lower()[0:4]
 
-    if (ua in mobile_uas):
+    if ua in mobile_uas:
         mobile_browser = True
     else:
         for hint in mobile_ua_hints:
@@ -35,65 +44,50 @@ def mobileBrowser(request):
 
     return mobile_browser
 
-import datetime
-import time
-import calendar
-
-from decimal import Decimal
-from base64 import b64encode
-from base64 import b64decode
 
 def restoreDateTime(b64str):
     stored_datetime = b64decode(b64str)
     return float(stored_datetime)
 
+
 def storeDateTime(sec):
     return b64encode(str(sec))
+
 
 def todaySeconds():
     utc_time = datetime.datetime.utcnow()
     res_date = time.mktime(utc_time.timetuple())
     return res_date
 
-def index(request, u_url):
-    '''Render the index page'''
 
-    from restserver.pipture.models import Albums
-    from restserver.pipture.models import SendMessage
-    from restserver.rest_core.views import get_video_url_from_episode_or_trailer
-    from restserver.rest_core.views import get_album_status
+def index(request, u_url):
+    """Render the index page"""
 
     response = {}
 
     try:
-        last_visiting = restoreDateTime(request.session["Pipture"+u_url])
+        last_visiting = restoreDateTime(request.session["Pipture" + u_url])
     except KeyError:
         last_visiting = 0
 
     if last_visiting == 0:
         last_visiting = float(todaySeconds())
-        request.session["Pipture"+u_url] = storeDateTime(last_visiting)
+        request.session["Pipture" + u_url] = storeDateTime(last_visiting)
         obsolete_url = True
     else:
-        obsolete_url = (todaySeconds() - last_visiting) > 5*60
+        obsolete_url = (todaySeconds() - last_visiting) > 5 * 60
 
-    try:
-        urs_instance = SendMessage.objects.get(Url=u_url)
-    except SendMessage.DoesNotExist:
-        return render_to_response("empty.html", None,
-                                       context_instance=RequestContext(request))
-        response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Url not found"}
-        return HttpResponse (json.dumps(response))
+    urs_instance = get_object_or_404(SendMessage, Url=u_url)
 
     isMobile = mobileBrowser(request)
 
-    video_instance, error = get_video_url_from_episode_or_trailer (id=urs_instance.LinkId, type_r=urs_instance.LinkType, video_q=0, is_url=False)
+    video_instance, error = get_video_url_from_episode_or_trailer(id=urs_instance.LinkId,
+                                                                  type_r=urs_instance.LinkType,
+                                                                  video_q=0,
+                                                                  is_url=False)
     if error:
-        response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % (error)}
+        response["Error"] = {"ErrorCode": "888", "ErrorDescription": "There is error: %s." % error}
         return HttpResponse (json.dumps(response))
-
-    from restserver.pipture.models import Episodes
-    from restserver.pipture.models import Trailers
 
     show_shortinfo = True
     try:
@@ -101,14 +95,15 @@ def index(request, u_url):
     except ValueError as e:
         return None, "There is internal error - %s (%s)." % (e, type (e))
     if urs_instance.LinkType not in ['E', 'T']:
-        return None, "There is unknown type %s" % (urs_instance.LinkType)
+        return None, "There is unknown type %s" % urs_instance.LinkType
+
     if urs_instance.LinkType == "E":
         try:
             #video = Episodes.objects.select_related(depth=1).get(EpisodeId=id)
             video = Episodes.objects.get(EpisodeId=id)
             album = video.AlbumId
         except Episodes.DoesNotExist as e:
-            return None, "There is no episode with id %s" % (id)
+            return None, "There is no episode with id %s" % id
     else:
         try:
             video = Trailers.objects.get(TrailerId=id)
@@ -135,10 +130,9 @@ def index(request, u_url):
         else:
             seriesname = video.Line2
             info_line = video.Line1
-        from django.db.models import Min
         res = Episodes.objects.filter(AlbumId=album).aggregate(Min('DateReleased'))
-        min_date = res['DateReleased__min']
-        min_date = min_date or datetime.datetime(1970, 1, 1, 00, 00)
+        min_date = res['DateReleased__min'] or datetime.datetime(1970, 1, 1, 00, 00)
+
         released_date = min_date.strftime('Released in %h %d, %Y')
 
     sent_date = calendar.timegm(urs_instance.Timestamp.timetuple()) #urs_instance.Timestamp.strftime('%B %d at %I:%M%p')
@@ -151,7 +145,10 @@ def index(request, u_url):
 
     if not message_blocked:
         if isMobile:
-            video_url, subs_url, error = get_video_url_from_episode_or_trailer (id=urs_instance.LinkId, type_r=urs_instance.LinkType, video_q=1, is_url=True)
+            video_url, subs_url, error = get_video_url_from_episode_or_trailer(id=urs_instance.LinkId,
+                                                                               type_r=urs_instance.LinkType,
+                                                                               video_q=1,
+                                                                               is_url=True)
         else:
             video_url = video_instance.VideoUrl.get_url()
 
@@ -159,36 +156,10 @@ def index(request, u_url):
 
     if obsolete_url:
         if urs_instance.ViewsCount < urs_instance.ViewsLimit or urs_instance.ViewsLimit == -1:
-            urs_instance.ViewsCount = urs_instance.ViewsCount + 1
+            urs_instance.ViewsCount += 1
             urs_instance.save()
         request.session["Pipture"+u_url] = storeDateTime(float(todaySeconds()))
 
-        #remove purchasing
-        '''if urs_instance.LinkType == 'E':
-            from restserver.pipture.models import PipUsers
-
-            try:
-                purchaser = urs_instance.UserId #PipUsers.objects.get(Token=urs_instance.UserId.)
-            except PipUsers.DoesNotExist:
-                response["Error"] = {"ErrorCode": "100", "ErrorDescription": "Authentication error."}
-                return HttpResponse (json.dumps(response))
-
-
-            from restserver.pipture.models import PurchaseItems
-            from restserver.pipture.models import UserPurchasedItems
-            SEND_EP = PurchaseItems.objects.get(Description="SendEpisode")
-
-            #TODO: show inficcient funds message
-            if (purchaser.Balance - SEND_EP.Price) >= 0:
-                new_p = UserPurchasedItems(UserId=purchaser, ItemId=urs_instance.LinkId, PurchaseItemId = SEND_EP, ItemCost=SEND_EP.Price)
-                new_p.save()
-                purchaser.Balance = Decimal (purchaser.Balance - SEND_EP.Price)
-                purchaser.save()
-            else:
-                response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Not enough money."}
-                return HttpResponse (json.dumps(response))'''
-
-    isMobile=1
     if isMobile:
         #template_h = 'video_mobile.html'
         template_h = 'mobilepage.html'
@@ -208,9 +179,7 @@ def index(request, u_url):
         from django.utils.html import urlize
         text_m = urlize(text=text_m)
 
-    #for grp in grps:
-    image_url = urs_instance.ScreenshotURL
-    image_url = image_url.replace("https://", "http://")
+    image_url = urs_instance.ScreenshotURL.replace("https://", "http://")
 
     data = {'video_url': video_url,
             'message_id': u_url,
@@ -219,9 +188,9 @@ def index(request, u_url):
             'text_2': text_m,
             'views_limit': limit,
             'views_count': urs_instance.ViewsCount,
-            'message_blocked':message_blocked,
-            'message_empty':message_empty,
-            'show_info':show_shortinfo,
+            'message_blocked': message_blocked,
+            'message_empty': message_empty,
+            'show_info': show_shortinfo,
             'disclaimer': disclaimer,
             'seriesname': seriesname,
             'title': title,
@@ -229,6 +198,6 @@ def index(request, u_url):
             'released_date': released_date,
             'cover_pic': cover_pic,
             'sent_date': sent_date,
-            'from': "%s" % (urs_instance.UserName)}
+            'from': "%s" % urs_instance.UserName}
     return render_to_response(template_h, data,
-                                       context_instance=RequestContext(request))
+                              context_instance=RequestContext(request))
