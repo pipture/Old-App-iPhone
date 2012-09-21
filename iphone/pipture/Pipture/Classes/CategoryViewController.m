@@ -63,13 +63,14 @@ static NSInteger const MEDIUM_THUMBS = 3;
 - (void)fillWithContent:(Category*) category {
     UIView* v = self.view;
     v = nil;
+    int len = [category.categoryItems count];
     
     self.categoryTitle.text = [category title];
     
     CategoryItemViewController *sampleItem = [self categoryItemByCategory:category categoryItem:nil];
     if (!sampleItem) return;
 
-    NSInteger contentHeight = sampleItem.view.frame.size.height * category.rows;
+    NSInteger contentHeight = sampleItem.view.frame.size.height * (len / category.columns);
     NSInteger deltaHeight = self.itemContainer.frame.size.height - contentHeight;
     CGRect frame;
     
@@ -86,7 +87,6 @@ static NSInteger const MEDIUM_THUMBS = 3;
                                  frame.size.height - deltaHeight);
     
     int i = 0;
-    int len = category.categoryItems.count;
     int offset = self.itemContainer.frame.origin.y;
     for (int y = 0; y < category.rows; y++) {
         for (int x = 0; x < category.columns; x++) {

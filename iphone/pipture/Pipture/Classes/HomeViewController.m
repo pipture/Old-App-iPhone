@@ -17,6 +17,7 @@
 #import "CategoryEditViewController.h"
 #import "CategoryItemViewController.h"
 #import "PiptureAppDelegate+GATracking.h"
+#import "CoverViewController.h"
 
 #define TIMESLOT_CHANGE_POLL_INTERVAL 60
 #define TIMESLOT_REGULAR_POLL_INTERVAL 900
@@ -871,6 +872,10 @@
         [appDelegate putChannelCategoriesOrder:categoriesOrder];
     }
 //    NSLog(@"channelCategories stored: %@", channelCategories_);
+    CoverViewController *cover = [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil];
+    [self.newsView placeViewController: cover];
+    [cover setCoverImage];
+    
     [self.newsView placeCategories:categories];
 }
 
