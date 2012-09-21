@@ -64,7 +64,6 @@ class GetAlbumDetail(GetView, KeyValidationMixin):
 class GetAlbums(GetView, KeyValidationMixin):
 
     def get_context_data(self):
-        print self.key
         purchased_ids = AlbumUtils.get_purchased(self.key)
 
         albums_list = Albums.objects.select_related(depth=1).filter(
@@ -86,13 +85,14 @@ class GetAlbums(GetView, KeyValidationMixin):
 class GetSellableAlbums(GetView, KeyValidationMixin):
 
     def get_context_data(self):
+        purchased_ids = AlbumUtils.get_purchased(self.key)
 
         albums_list = Albums.objects.select_related(depth=1).filter(
                 Q(HiddenAlbum=False) & (
                     Q(PurchaseStatus=Albums.PURCHASE_TYPE_BUY_ALBUM) |
                     Q(PurchaseStatus=Albums.PURCHASE_TYPE_ALBUM_PASS)
                 )
-            )
+            ).exclude(AlbumId__in=purchased_ids)
 
         return {
             'Albums': [self.jsonify(album,

@@ -23,11 +23,9 @@ class AlbumUtils(object):
 
     @staticmethod
     def get_purchased(user_id):
-        print "user_id", user_id
         purchased_albums = UserPurchasedItems.objects.filter(
                 UserId__Token=user_id,
                 PurchaseItemId__Description='Album').values_list('ItemId')
-        print "purchased_albums", purchased_albums
         return [int(id[0]) for id in purchased_albums]
 
     @staticmethod
