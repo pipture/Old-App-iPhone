@@ -849,22 +849,20 @@
         Category *category = [categories objectAtIndex:i];
         category.index = i + 1;
     }
-//    TODO: remove logging
-//    NSLog(@"channelCategories received: %@", categories);
     
     PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
     
     // Revealing categories order from UserDefaults
     NSArray *storedCategoriesOrder = [appDelegate getChannelCategoriesOrder];
     self.channelCategories = categories;
+
     if (storedCategoriesOrder && categories.count == storedCategoriesOrder.count) {
         [self updateCategoriesByOrder:storedCategoriesOrder
-                   updateViews:NO];
-        self.categoriesOrder = [storedCategoriesOrder retain];
+                          updateViews:NO];
     } else {
         
         NSMutableArray *newCategoriesOrder = [[NSMutableArray alloc] init];
-        for (Category *category in channelCategories) {
+        for (Category *category in self.channelCategories) {
             [newCategoriesOrder addObject:category.categoryId];
         }
         self.categoriesOrder = [NSArray arrayWithArray:newCategoriesOrder];
@@ -872,12 +870,11 @@
         
         [appDelegate putChannelCategoriesOrder:categoriesOrder];
     }
-//    NSLog(@"channelCategories stored: %@", channelCategories_);
     CoverViewController *cover = [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil];
     [self.newsView placeViewController: cover];
     [cover setCoverImage];
     
-    [self.newsView placeCategories:categories];
+    [self.newsView placeCategories:self.channelCategories];
     [self.newsView placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]];
 }
 
