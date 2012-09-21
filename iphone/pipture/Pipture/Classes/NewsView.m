@@ -10,7 +10,6 @@
 #import "Timeslot.h"
 #import "PiptureAppDelegate.h"
 #import "TimeslotFormatter.h"
-#import "CoverViewController.h"
 #import "EditNewsViewController.h"
 #import "CategoryViewController.h"
 
@@ -114,9 +113,6 @@
     
     // TODO: move to proper place (or keep it here if this place is proper)
     [self.delegate requestChannelCategories];
-    CoverViewController *cover = [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil];
-    [self placeViewController: cover];
-    [cover setCoverImage];
 }
 
 - (void)dealloc {
