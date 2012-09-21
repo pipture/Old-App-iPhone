@@ -90,7 +90,8 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         self.video_url = self.create_message_and_return_url(episode)
 
         self.purchaser.save()
-        free_viewers.save()
+        if free_viewers:
+            free_viewers.save()
 
     def get_free_viewers(self, episode):
         is_purchased = EpisodeUtils.is_in_purchased_album(episode,
