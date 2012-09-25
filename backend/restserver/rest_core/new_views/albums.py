@@ -5,10 +5,10 @@ from pipture.utils import AlbumUtils, EpisodeUtils
 from rest_core.api_errors import BadRequest, ParameterExpected,\
                                  WrongParameter, NotFound, NoContent
 from rest_core.api_view import GetView
-from rest_core.validation_mixins import KeyValidationMixin
+from rest_core.validation_mixins import PurchaserValidationMixin
 
 
-class GetAlbumDetail(GetView, KeyValidationMixin):
+class GetAlbumDetail(GetView, PurchaserValidationMixin):
 
     def clean_album_and_timeslot(self):
         album_id = self.params.get('AlbumId', None)
@@ -44,7 +44,7 @@ class GetAlbumDetail(GetView, KeyValidationMixin):
         self.include_episodes = self.params.get('IncludeEpisodes', False)
 
     def get_context_data(self):
-        purchased_ids = AlbumUtils.get_purchased(self.key)
+        purchased_ids = AlbumUtils.get_purchased(self.purchaser)
         is_purchased = self.album.AlbumId in purchased_ids
 
         response = {
@@ -61,10 +61,10 @@ class GetAlbumDetail(GetView, KeyValidationMixin):
         return response
 
 
-class GetAlbums(GetView, KeyValidationMixin):
+class GetAlbums(GetView, PurchaserValidationMixin):
 
     def get_context_data(self):
-        purchased_ids = AlbumUtils.get_purchased(self.key)
+        purchased_ids = AlbumUtils.get_purchased(self.purchaser)
 
         albums_list = Albums.objects.select_related(depth=1).filter(
             Q(HiddenAlbum=False) & (
@@ -82,10 +82,10 @@ class GetAlbums(GetView, KeyValidationMixin):
         }
 
 
-class GetSellableAlbums(GetView, KeyValidationMixin):
+class GetSellableAlbums(GetView, PurchaserValidationMixin):
 
     def get_context_data(self):
-        purchased_ids = AlbumUtils.get_purchased(self.key)
+        purchased_ids = AlbumUtils.get_purchased(self.purchaser)
 
         albums_list = Albums.objects.select_related(depth=1).filter(
                 Q(HiddenAlbum=False) & (

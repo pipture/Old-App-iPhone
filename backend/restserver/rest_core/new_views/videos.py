@@ -90,8 +90,8 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
             raise NoContent(message='Timeslot is not current')
 
     def perform_episode_operations(self):
-        is_purchased = (self.video_preview == 1) or\
-                       EpisodeUtils.is_available(self.episode_id, self.key)
+        is_purchased = (self.video_preview == 1) or \
+                       EpisodeUtils.is_available(self.episode_id, self.purchaser)
 
         if not is_purchased:
             if self.force_buy == '0':

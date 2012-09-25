@@ -190,7 +190,7 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
         return Category.__subclasses__()
 
     def get_available_episodes(self):
-        self.purchased_albums = AlbumUtils.get_purchased(self.purchaser.UserUID)
+        self.purchased_albums = AlbumUtils.get_purchased(self.purchaser)
 
         return Episodes.objects.filter(
                 Q(AlbumId__HiddenAlbum=False) & (

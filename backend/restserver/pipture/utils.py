@@ -22,9 +22,9 @@ class TimeUtils(object):
 class AlbumUtils(object):
 
     @staticmethod
-    def get_purchased(user_id):
+    def get_purchased(purchaser):
         purchased_albums = UserPurchasedItems.objects.filter(
-                UserId__Token=user_id,
+                UserId=purchaser,
                 PurchaseItemId__Description='Album').values_list('ItemId')
         return [int(id[0]) for id in purchased_albums]
 
@@ -65,21 +65,22 @@ class EpisodeUtils(object):
         return bool(timeslot_videos)
 
     @staticmethod
-    def is_in_purchased_album(episode_id, user_id):
-        purchased_ids = AlbumUtils.get_purchased(user_id)
+    def is_in_purchased_album(episode_id, purchaser):
+        purchased_ids = AlbumUtils.get_purchased(purchaser)
         if isinstance(episode_id, Episodes):
             return episode_id.AlbumId.AlbumId in purchased_ids
+
         episode = get_object_or_None(Episodes,
                                      EpisodeId=episode_id,
                                      AlbumId__AlbumId__in=purchased_ids)
         return bool(episode)
 
     @staticmethod
-    def is_available(episode_id, user_id):
+    def is_available(episode_id, purchaser):
         try:
-            episodes = Episodes.objects.get(EpisodeId=episode_id)
+            episode = Episodes.objects.get(EpisodeId=episode_id)
         except Episodes.DoesNotExist:
             return False
 
-        return episodes.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE\
-                or EpisodeUtils.is_in_purchased_album(episode_id, user_id)
+        return episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE\
+                or EpisodeUtils.is_in_purchased_album(episode, purchaser)
