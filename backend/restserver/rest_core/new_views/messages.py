@@ -137,10 +137,6 @@ class MessageValidationMixin(object):
                                    .exclude(Q(FreeViews__isnull=True) |
                                             Q(ViewsLimit=F('FreeViews')))
 
-        if not self.messages:
-            raise NotFound(
-                message='There is no messages for user %s.' % self.purchaser)
-
 
 class GetUnusedMessageViews(GetView, PurchaserValidationMixin,
                             MessageValidationMixin):
