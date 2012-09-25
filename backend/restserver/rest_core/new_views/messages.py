@@ -36,7 +36,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         except ValueError:
             raise WrongParameter(parameter='ViewsCount')
 
-    def create_message_and_return_url(self, video, free_views):
+    def create_message_and_return_url(self, video, free_views=0):
         if isinstance(video, Trailers):
             video_id, video_type = video.TrailerId, SendMessage.TYPE_TRAILER
         else:  # isinstance(video, Episodes):
