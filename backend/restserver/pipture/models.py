@@ -615,8 +615,8 @@ class SendMessage(models.Model):
     TYPE_TRAILER = 'T'
 
     LINKTYPE_CHOICES = (
-        ('E', 'Episodes'),
-        ('T', 'Trailer'),
+        (TYPE_EPISODE, 'Episodes'),
+        (TYPE_TRAILER, 'Trailer'),
     )
 
     try:
@@ -625,12 +625,11 @@ class SendMessage(models.Model):
         urlenc = uuid.uuid4
 
     Url = models.CharField(max_length=36, primary_key=True, default=urlenc)
-    #Url = models.CharField(max_length=36, primary_key=True, default=uuid.uuid4)
     UserId = models.ForeignKey(PipUsers)
     Text = models.CharField(max_length=200)
     Timestamp = models.DateTimeField(default=datetime.datetime.now)
     LinkId = models.IntegerField(db_index=True)
-    LinkType=  models.CharField(db_index=True, max_length=1, choices=LINKTYPE_CHOICES)
+    LinkType = models.CharField(db_index=True, max_length=1, choices=LINKTYPE_CHOICES)
     UserName = models.CharField(max_length=200)
     ScreenshotURL = models.CharField(blank=True, null=True,  max_length=200)
     ViewsCount = models.IntegerField()

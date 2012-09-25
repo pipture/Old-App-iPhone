@@ -11,7 +11,7 @@ from rest_core.api_errors import BadRequest, ParameterExpected, \
 from rest_core.api_view import PostView, GetView
 from rest_core.validation_mixins import PurchaserValidationMixin, \
                                         EpisodeAndTrailerValidationMixin
-from django.conf import settings
+
 
 class SendMessageView(PostView, PurchaserValidationMixin,
                       EpisodeAndTrailerValidationMixin):
@@ -121,7 +121,8 @@ class MessageValidationMixin(object):
         self.messages = SendMessage.objects\
                                    .filter(UserId=self.purchaser,
                                            LinkType=SendMessage.TYPE_EPISODE)\
-                                   .exclude(ViewsLimit=F('FreeViews'))
+                                   .exclude(FreeViews__isnull=True,
+                                            ViewsLimit=F('FreeViews'))
 
         if not self.messages:
             raise NotFound(
@@ -132,17 +133,11 @@ class GetUnusedMessageViews(GetView, PurchaserValidationMixin,
                             MessageValidationMixin):
 
     def perform_operations(self):
-        messages = SendMessage.objects.filter(UserId=self.purchaser,
-                                              LinkType=SendMessage.TYPE_EPISODE)
-
-        if not messages:
-            raise BadRequest(
-                message='There is no messages for user %s.' % self.purchaser)
 
         week_date = datetime.now() - timedelta(7)
         group1, group2 = 0, 0
 
-        for message in messages:
+        for message in self.messages:
             cnt = 0
             is_purchased = EpisodeUtils.is_in_purchased_album(message.LinkId,
                                                               self.purchaser)
