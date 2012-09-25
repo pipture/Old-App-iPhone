@@ -534,12 +534,10 @@ class FreeMsgViewers(models.Model):
     def __str__(self):
         return "%s: %s, %s free views" % (self.UserId.UserUID, self.EpisodeId.Title, self.Rest)
 
-    class Admin:
-        pass
-
     class Meta:
         verbose_name = "Free Message Viewers"
         verbose_name_plural = "Free Message Viewers"
+        unique_together = ('UserId', 'EpisodeId')
 
 
 class AppleProducts(models.Model):

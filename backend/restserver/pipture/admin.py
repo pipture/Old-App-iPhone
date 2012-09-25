@@ -1,25 +1,12 @@
 # -*- coding: utf-8 -*-
 
-#from django.template import loader, RequestContext, Context, Template
-from django.http import HttpResponse, HttpResponseRedirect
-#from django.utils.translation import ugettext as _
-#from django.utils.functional import update_wrapper
-#from django.utils.encoding import force_unicode
-#from django.shortcuts import get_object_or_404
-#from django.utils.safestring import mark_safe
-#from django.contrib.admin.util import unquote
-#from django.contrib.admin import helpers
-#from django.utils.text import capfirst
-#from django.utils.html import escape
+from django.http import HttpResponseRedirect
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
-#from django.http import QueryDict
 
 from restserver.pipture.models import Videos, Trailers, Series, Albums, Episodes, TimeSlots, TimeSlotVideos,\
                                       PiptureSettings, PipUsers, AppleProducts,Transactions, PurchaseItems,\
-                                      UserPurchasedItems,SendMessage, AlbumScreenshotGallery, UserProfile,\
-                                      FreeMsgViewers
-from restserver.pipture.forms import AdminTimeSlotsForm
+                                      UserPurchasedItems,SendMessage, AlbumScreenshotGallery, UserProfile
 
 admin.site.register(PiptureSettings)
 admin.site.register(PipUsers)
@@ -29,10 +16,9 @@ admin.site.register(PurchaseItems)
 admin.site.register(UserPurchasedItems)
 admin.site.register(SendMessage)
 admin.site.register(UserProfile)
-admin.site.register(FreeMsgViewers)
+#admin.site.register(FreeMsgViewers)
 #admin.site.register(TimeSlotVideos)
 
-from pytz import timezone
 import pytz
 import datetime
 
