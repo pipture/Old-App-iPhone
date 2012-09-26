@@ -1,7 +1,7 @@
 import pytz
 
 from pipture.models import PipUsers, Trailers, Episodes
-from pipture.utils import TimeUtils
+from pipture.time_utils import TimeUtils
 from rest_core.api_errors import ParameterExpected, WrongParameter, \
                                  UnauthorizedError, BadRequest, NotFound
 

@@ -1,12 +1,9 @@
-import calendar
 from datetime import datetime, timedelta
+
+from pipture.time_utils import TimeUtils
 
 
 class Utils(object):
-
-    @classmethod
-    def get_timestamp(cls, datetime_instance):
-        return calendar.timegm(datetime_instance.timetuple())
 
     @staticmethod
     def get_sell_status(album, is_purchased=False):
@@ -19,7 +16,7 @@ class Utils(object):
 
         if not album.episodes.all():
             status = album.STATUS_NORMAL
-        elif released > cls.get_timestamp(date_utc_now):
+        elif released > TimeUtils.get_timestamp(date_utc_now):
             status = album.STATUS_COMING_SOON
         else:
             # TODO: move PiptureSettings from huge models file and remove inline import
@@ -28,7 +25,7 @@ class Utils(object):
 
             premiere_days = PiptureSettings.get_premiere_period()
             premiere_period = timedelta(days=premiere_days)
-            if updated >= cls.get_timestamp(date_utc_now - premiere_period):
+            if updated >= TimeUtils.get_timestamp(date_utc_now - premiere_period):
                 status = album.STATUS_PREMIERE
             else:
                 status = album.STATUS_NORMAL
@@ -50,7 +47,8 @@ class Utils(object):
             if album.TopAlbum:
                 updated = high_datetime
 
-        return cls.get_timestamp(released), cls.get_timestamp(updated)
+        return TimeUtils.get_timestamp(released), \
+               TimeUtils.get_timestamp(updated)
 
     @classmethod
     def get_timeslot_status(cls, timeslot, local_utcnow):
@@ -65,9 +63,9 @@ class Utils(object):
 
 class JsonifyModels(object):
 
-    def __init__(self, as_category_item=False, purchased_albums=[]):
+    def __init__(self, as_category_item=False, purchased_albums=None):
         self.as_category_item = as_category_item
-        self.purchased_albums = purchased_albums
+        self.purchased_albums = purchased_albums or []
 
     def __call__(self, model, **kwargs):
         handler_name = model.__class__.__name__.lower()
@@ -109,7 +107,7 @@ class JsonifyModels(object):
         return album_json
 
     def episodes(self, episode, **kwargs):
-        released = Utils.get_timestamp(episode.DateReleased)
+        released = TimeUtils.get_timestamp(episode.DateReleased)
 
         episode_json = {
             "Type": "Episode",
@@ -142,7 +140,6 @@ class JsonifyModels(object):
                     "AlbumSquareThumbnail": album.SquareThumbnail.get_url(),
                 })
                 episode_json.update(self.__call__(album.SeriesId))
-
 
         return episode_json
 

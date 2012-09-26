@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
-import time
-import calendar
+from datetime import datetime, timedelta
 import uuid
 from decimal import Decimal
 from base64 import b64encode
@@ -14,6 +12,7 @@ from django.db.models.signals import post_save, post_syncdb
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.contrib.auth.models import User
+from pipture.time_utils import TimeUtils
 
 from restserver.s3.s3FileField import S3EnabledFileField
 
@@ -31,18 +30,15 @@ class Videos(models.Model):
                                         verbose_name="Upload subtitles here",
                                         blank=True)
 
+    class Meta:
+        verbose_name = "Video"
+        verbose_name_plural = "Videos"
+
     def __unicode__(self):
         return "%s" % self.VideoDescription
 
     def __str__(self):
         return "%s" % self.VideoDescription
-
-    class Admin ():
-        pass
-
-    class Meta:
-        verbose_name = "Video"
-        verbose_name_plural = "Videos"
 
 
 class Trailers(models.Model):
@@ -54,9 +50,10 @@ class Trailers(models.Model):
     SquareThumbnail = S3EnabledFileField(upload_to=u'documents/',
                                          verbose_name="Screenshot")
 
-    @property
-    def complexName(self):
-        return "%s, %s, %s" % (self.Title, self.Line1, self.Line2)
+    class Meta:
+        verbose_name = "Trailer"
+        verbose_name_plural = "Trailers"
+        ordering = ['Title', 'Line1', 'Line2']
 
     def __unicode__(self):
         return self.complexName
@@ -64,13 +61,9 @@ class Trailers(models.Model):
     def __str__(self):
         return self.complexName
 
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = "Trailer"
-        verbose_name_plural = "Trailers"
-        ordering = ['Title', 'Line1', 'Line2']
+    @property
+    def complexName(self):
+        return "%s, %s, %s" % (self.Title, self.Line1, self.Line2)
 
     def delete(self, using=None):
         return "You couldn't delete video. It maybe in timeslot."
@@ -85,29 +78,27 @@ class Series(models.Model):
     SeriesId = models.AutoField(primary_key=True)
     Title = models.CharField(unique=True, max_length=100)
 
+    class Meta:
+        verbose_name = "Series"
+        verbose_name_plural = "Series"
+        ordering = ['Title']
+
     def __unicode__(self):
         return "%s" % self.Title
 
     def __str__(self):
         return "%s" % self.Title
 
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = "Series"
-        verbose_name_plural = "Series"
-        ordering = ['Title']
-
 
 class Albums(models.Model):
     PURCHASE_TYPE_NOT_FOR_SALE = 'N'
     PURCHASE_TYPE_ALBUM_PASS = 'P'
     PURCHASE_TYPE_BUY_ALBUM = 'B'
+
     PURCHASETYPE_CHOICES = (
-        ('N', 'Not for sale'),
-        ('P', 'Album pass'),
-        ('B', 'Buy album'),
+        (PURCHASE_TYPE_NOT_FOR_SALE, 'Not for sale'),
+        (PURCHASE_TYPE_ALBUM_PASS, 'Album pass'),
+        (PURCHASE_TYPE_BUY_ALBUM, 'Buy album'),
     )
 
     STATUS_NORMAL = 1
@@ -115,9 +106,9 @@ class Albums(models.Model):
     STATUS_COMING_SOON = 3
 
     SELL_STATUS_FROM_PURCHASE = {
-        'N': 0,
-        'P': 1,
-        'B': 2,
+        PURCHASE_TYPE_NOT_FOR_SALE: 0,
+        PURCHASE_TYPE_ALBUM_PASS: 1,
+        PURCHASE_TYPE_BUY_ALBUM: 2,
         'purchased': 100,
     }
 
@@ -148,10 +139,10 @@ class Albums(models.Model):
     HiddenAlbum = models.BooleanField(verbose_name='Album hidden:', default=False)
     TopAlbum = models.BooleanField(verbose_name='Album highlighted:', default=False)
 
-    @property
-    def complexName(self):
-        return "%s, S%s, A%s (Id: %s)" % (self.SeriesId.Title, self.Season,
-                                          self.Title, self.AlbumId)
+    class Meta:
+        verbose_name = "Album"
+        verbose_name_plural = "Albums"
+        ordering = ['SeriesId__Title', 'Season', 'Title']
 
     def __unicode__(self):
         return self.complexName
@@ -159,13 +150,10 @@ class Albums(models.Model):
     def __str__(self):
         return self.complexName
 
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = "Album"
-        verbose_name_plural = "Albums"
-        ordering = ['SeriesId__Title', 'Season', 'Title']
+    @property
+    def complexName(self):
+        return "%s, S%s, A%s (Id: %s)" % (self.SeriesId.Title, self.Season,
+                                          self.Title, self.AlbumId)
 
 
 class AlbumScreenshotGallery(models.Model):
@@ -174,6 +162,18 @@ class AlbumScreenshotGallery(models.Model):
                                    max_length=100)
     Screenshot = S3EnabledFileField(upload_to=u'documents/')
     ScreenshotLow = S3EnabledFileField(upload_to=u'documents/', blank=True)
+
+    class Meta:
+        verbose_name = "Album Screenshot Gallery"
+        verbose_name_plural = "Album Screenshots Gallery"
+
+    def __unicode__(self):
+        return "Album: %s; Screenshot: %s." % (self.AlbumId.Description,
+                                               self.Description)
+
+    def __str__(self):
+        return "Album: %s; Screenshot: %s." % (self.AlbumId.Description,
+                                               self.Description)
 
     @property
     def ScreenshotURL(self):
@@ -186,23 +186,6 @@ class AlbumScreenshotGallery(models.Model):
 
         return self.Screenshot.get_url()
 
-    def __unicode__(self):
-        return "Album: %s; Screenshot: %s." % (self.AlbumId.Description,
-                                               self.Description)
-
-    def __str__(self):
-        return "Album: %s; Screenshot: %s." % (self.AlbumId.Description,
-                                               self.Description)
-
-    def get_queryset(self):
-        return AlbumScreenshotGallery.objects.order_by('Description')
-
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = "Album Screenshot Gallery"
-        verbose_name_plural = "Album Screenshots Gallery"
 
 class Episodes(models.Model):
     EpisodeId = models.AutoField(primary_key=True)
@@ -224,6 +207,18 @@ class Episodes(models.Model):
     SenderToReceiver = models.CharField(verbose_name="Sender to receiver",
                                         max_length=500)
 
+    class Meta:
+        verbose_name = "Episode"
+        verbose_name_plural = "Episodes"
+        ordering = ['AlbumId__SeriesId__Title', 'AlbumId__Season',
+                    'AlbumId__Title', 'EpisodeNo', 'Title']
+
+    def __unicode__(self):
+        return self.complexName
+
+    def __str__(self):
+        return self.complexName
+
     @property
     def complexName(self):
         return "%s, S%s, A%s, E%s ,%s" % (self.AlbumId.SeriesId.Title,
@@ -235,21 +230,6 @@ class Episodes(models.Model):
     @property
     def episodeNoInt(self):
         return '%0*d' % (4, self.EpisodeNo)
-
-    def __unicode__(self):
-        return self.complexName
-
-    def __str__(self):
-        return self.complexName
-
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = "Episode"
-        verbose_name_plural = "Episodes"
-        ordering = ['AlbumId__SeriesId__Title', 'AlbumId__Season',
-                    'AlbumId__Title', 'EpisodeNo', 'Title']
 
     def delete(self, using=None):
         return "You couldn't delete video. It maybe in timeslot."
@@ -267,38 +247,16 @@ class TimeSlots(models.Model):
                                            max_length=50,
                                            verbose_name="Schedule description")
 
-    @property
-    def StartDateUTC(self):
-        utc_time = datetime.datetime(self.StartDate.year,
-                                     self.StartDate.month,
-                                     self.StartDate.day)
-        res_date = time.mktime(utc_time.timetuple())
-        return res_date
+    class Meta:
+        verbose_name = "Time slot"
+        verbose_name_plural = "Time slots"
+        ordering = ['AlbumId__SeriesId__Title', 'AlbumId__Title', 'StartTime']
 
-    @property
-    def EndDateUTC(self):
-        utc_time = datetime.datetime(self.EndDate.year,
-                                     self.EndDate.month,
-                                     self.EndDate.day,
-                                     23, 59, 59)
-        res_date = time.mktime(utc_time.timetuple())
-        return res_date
+    def __unicode__(self):
+        return self.complexName
 
-    @property
-    def StartTimeUTC(self):
-        #res_now = self.now_seconds()
-        res_sdate = self.get_startTime()
-        return res_sdate
-
-    @property
-    def EndTimeUTC(self):
-        res_edate = self.get_endTime()
-        res_sdate = self.get_startTime()
-
-        if res_edate <= res_sdate:
-            res_edate += 86400  # tomorrow AM time
-
-        return res_edate
+    def __str__(self):
+        return self.complexName
 
     @property
     def complexName(self):
@@ -309,43 +267,49 @@ class TimeSlots(models.Model):
                                                self.StartTime,
                                                self.EndTime)
 
-    def __unicode__(self):
-        return self.complexName
+    @property
+    def StartDateUTC(self):
+        return TimeUtils.get_timestamp(self.StartDate)
 
-    def __str__(self):
-        return self.complexName
+    @property
+    def EndDateUTC(self):
+        utc_time = datetime(self.EndDate.year,
+                            self.EndDate.month,
+                            self.EndDate.day,
+                            23, 59, 59)
+        return TimeUtils.get_timestamp(utc_time)
 
-    def now_seconds(self):
-        today = datetime.datetime.utcnow()
-        return calendar.timegm(today.timetuple())
+    @property
+    def StartTimeUTC(self):
+        return TimeUtils.get_timestamp(self.get_start_time())
+
+    @property
+    def EndTimeUTC(self):
+        end_datetime = self.get_end_time()
+        start_datetime = self.get_start_time()
+
+        if end_datetime <= start_datetime:
+            end_datetime += timedelta(days=1)  # tomorrow AM time
+
+        return TimeUtils.get_timestamp(end_datetime)
 
     def is_in_date_period(self, local_time):
-        if self.StartDateUTC < local_time < self.EndDateUTC:
-            return True
-        else:
-            return False
+        return self.StartDateUTC < local_time < self.EndDateUTC
 
     def is_in_time_period(self, local_time):
-        if self.EndTimeUTC > local_time > self.StartTimeUTC:
-            return True
-        else:
-            return False
+        return self.StartTimeUTC < local_time < self.EndTimeUTC
 
-    def get_startTime(self):
-        cur_date = datetime.date.today()
-        utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day,
-                                     self.StartTime.hour, self.StartTime.minute, self.StartTime.second)
-        res_date = time.mktime(utc_time.timetuple())
-        return res_date
+    def get_start_time(self):
+        return datetime.now().replace(hour=self.StartTime.hour,
+                                      minute=self.StartTime.minute,
+                                      second=self.StartTime.second)
 
-    def get_endTime(self):
-        cur_date = datetime.date.today()
-        utc_time = datetime.datetime(cur_date.year, cur_date.month, cur_date.day,
-                                     self.EndTime.hour, self.EndTime.minute, self.EndTime.second)
-        res_date = time.mktime(utc_time.timetuple())
-        return res_date
+    def get_end_time(self):
+        return datetime.now().replace(hour=self.EndTime.hour,
+                                      minute=self.EndTime.minute,
+                                      second=self.EndTime.second)
 
-    def is_current (self, local_time):
+    def is_current(self, local_time):
         return self.is_in_date_period(local_time) and\
                self.is_in_time_period(local_time)
 
@@ -356,28 +320,6 @@ class TimeSlots(models.Model):
         return render_to_response('tsinline.html',
                                   data,
                                   context_instance=RequestContext(request))
-
-    @staticmethod
-    def timeslot_is_current(timeslot_id, local_utcnow):
-        try:
-            timeslot_id = int(timeslot_id)
-        except ValueError:
-            return False
-
-        try:
-            timeslot = TimeSlots.objects.get(TimeSlotsId=timeslot_id)
-        except TimeSlots.DoesNotExist:
-            return False
-        else:
-            return timeslot.is_current(local_utcnow)
-
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = "Time slot"
-        verbose_name_plural = "Time slots"
-        ordering = ['AlbumId__SeriesId__Title', 'AlbumId__Title', 'StartTime']
 
 
 class TimeSlotVideos(models.Model):
@@ -397,6 +339,16 @@ class TimeSlotVideos(models.Model):
                                 choices=LINKTYPE_CHOICES)
     AutoMode = models.IntegerField(max_length=1)
 
+    class Meta:
+        verbose_name = u"Video in time slot"
+        verbose_name_plural = u"Videos in time slot"
+
+    def __unicode__(self):
+        return "%s" % self.TimeSlotVideosId
+
+    def __str__(self):
+        return "%s" % self.TimeSlotVideosId
+
     @staticmethod
     def is_contain_id(timeslot_id, video_id, video_type):
         try:
@@ -414,19 +366,6 @@ class TimeSlotVideos(models.Model):
         except TimeSlots.DoesNotExist, TimeSlotVideos.DoesNotExist:
             return False
 
-    def __unicode__(self):
-        return "%s" % self.TimeSlotVideosId
-
-    def __str__(self):
-        return "%s" % self.TimeSlotVideosId
-
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = u"Video in time slot"
-        verbose_name_plural = u"Videos in time slot"
-
 
 class PiptureSettings(models.Model):
     PremierePeriod = models.IntegerField(help_text='Count of days after premiere',
@@ -437,17 +376,14 @@ class PiptureSettings(models.Model):
     VideoHost = models.CharField(verbose_name="Enter URL for video messages",
                                  max_length=100)
 
+    class Meta:
+        verbose_name = "Pipture setting"
+        verbose_name_plural = "Pipture settings"
+
     def validate_unique(self, exclude = None):
         from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
         if PiptureSettings.objects.count() == 1 and self.id != PiptureSettings.objects.all()[0].id:
             raise ValidationError({NON_FIELD_ERRORS: ["There can be only one!"]})
-
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = "Pipture setting"
-        verbose_name_plural = "Pipture settings"
 
     @staticmethod
     def get_premiere_period():
@@ -462,22 +398,19 @@ class PiptureSettings(models.Model):
 class PipUsers(models.Model):
     UserUID= models.CharField(max_length=36, primary_key=True, default=uuid.uuid1)
     Token = models.CharField(unique=True, max_length=36, default=uuid.uuid1)
-    RegDate = models.DateField(default=datetime.datetime.now)
+    RegDate = models.DateField(default=datetime.now)
     Balance = models.DecimalField(default=Decimal('0'), max_digits=10, decimal_places=0)
+
+    class Meta:
+        verbose_name = "Pipture User"
+        verbose_name_plural = "Pipture Users"
+        ordering = ['RegDate']
 
     def __unicode__(self):
         return "%s" % self.UserUID
 
     def __str__(self):
         return "%s" % self.UserUID
-
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = "Pipture User"
-        verbose_name_plural = "Pipture Users"
-        ordering = ['RegDate']
 
 
 class PurchaseItems(models.Model):
@@ -486,40 +419,34 @@ class PurchaseItems(models.Model):
                                    verbose_name="Internal purchase description")
     Price = models.DecimalField(max_digits=7, decimal_places=0)
 
+    class Meta:
+        verbose_name = "Purchase Item"
+        verbose_name_plural = "Purchase Items"
+
     def __unicode__(self):
         return "%s" % self.Description
 
     def __str__(self):
         return "%s" % self.Description
 
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = "Purchase Item"
-        verbose_name_plural = "Purchase Items"
-
 
 class UserPurchasedItems(models.Model):
     UserPurchasedItemsId = models.AutoField(primary_key=True)
-    Date = models.DateField(default=datetime.datetime.now)
+    Date = models.DateField(default=datetime.now)
     UserId = models.ForeignKey(PipUsers, editable=False)
     PurchaseItemId = models.ForeignKey(PurchaseItems, editable=False)
     ItemId = models.CharField(editable=False, max_length=100)
     ItemCost = models.DecimalField(editable=False, max_digits=7, decimal_places=0)
 
+    class Meta:
+        verbose_name = "User Purchased Item"
+        verbose_name_plural = "User Purchased Items"
+
     def __unicode__(self):
         return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemId)
 
     def __str__(self):
         return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemId)
-
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = "User Purchased Item"
-        verbose_name_plural = "User Purchased Items"
 
 
 class FreeMsgViewers(models.Model):
@@ -528,16 +455,16 @@ class FreeMsgViewers(models.Model):
     EpisodeId = models.ForeignKey(Episodes, editable=False)
     Rest = models.IntegerField(default=settings.MESSAGE_VIEWS_LOWER_LIMIT)
 
+    class Meta:
+        verbose_name = "Free Message Viewers"
+        verbose_name_plural = "Free Message Viewers"
+        unique_together = ('UserId', 'EpisodeId')
+
     def __unicode__(self):
         return "%s: %s, %s free views" % (self.UserId.UserUID, self.EpisodeId.Title, self.Rest)
 
     def __str__(self):
         return "%s: %s, %s free views" % (self.UserId.UserUID, self.EpisodeId.Title, self.Rest)
-
-    class Meta:
-        verbose_name = "Free Message Viewers"
-        verbose_name_plural = "Free Message Viewers"
-        unique_together = ('UserId', 'EpisodeId')
 
 
 class AppleProducts(models.Model):
@@ -550,18 +477,15 @@ class AppleProducts(models.Model):
     Price = models.DecimalField(max_digits=7, decimal_places=4)
     ViewsCount = models.IntegerField()
 
+    class Meta:
+        verbose_name = "Apple Product"
+        verbose_name_plural = "Apple Products"
+
     def __unicode__(self):
         return "%s" % self.Description
 
     def __str__(self):
         return "%s" % self.Description
-
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = "Apple Product"
-        verbose_name_plural = "Apple Products"
 
 
 class Transactions(models.Model):
@@ -569,23 +493,20 @@ class Transactions(models.Model):
     UserId = models.ForeignKey(PipUsers, editable=False)
     ProductId = models.ForeignKey(AppleProducts, editable=False)
     AppleTransactionId = models.CharField(unique=True, max_length=36)
-    Timestamp = models.DateField(default=datetime.datetime.now)
+    Timestamp = models.DateField(default=datetime.now)
     Cost = models.DecimalField(editable=False, max_digits=7, decimal_places=4)
     ViewsCount = models.IntegerField()
+
+    class Meta:
+        verbose_name = "Transaction"
+        verbose_name_plural = "Transactions"
+        ordering = ['Timestamp']
 
     def __unicode__(self):
         return "%s: %s - %s" % (self.Timestamp, self.UserId.UserUID, self.ProductId.Description)
 
     def __str__(self):
         return "%s: %s - %s" % (self.Timestamp, self.UserId.UserUID, self.ProductId.Description)
-
-    class Admin:
-        pass
-
-    class Meta:
-        verbose_name = "Transaction"
-        verbose_name_plural = "Transactions"
-        ordering = ['Timestamp']
 
 
 def to_uuid(value):
@@ -625,7 +546,7 @@ class SendMessage(models.Model):
     Url = models.CharField(max_length=36, primary_key=True, default=urlenc)
     UserId = models.ForeignKey(PipUsers)
     Text = models.CharField(max_length=200)
-    Timestamp = models.DateTimeField(default=datetime.datetime.now)
+    Timestamp = models.DateTimeField(default=datetime.now)
     LinkId = models.IntegerField(db_index=True)
     LinkType = models.CharField(db_index=True, max_length=1, choices=LINKTYPE_CHOICES)
     UserName = models.CharField(max_length=200)
@@ -696,8 +617,8 @@ def install(**kwargs):
 
     if not PurchaseItems.objects.count():
         PurchaseItems(Description="WatchEpisode", Price=Decimal('1')).save()
-        PurchaseItems( Description="SendEpisode", Price=Decimal('1')).save()
-        PurchaseItems( Description="Album", Price=Decimal('0')).save()
+        PurchaseItems(Description="SendEpisode", Price=Decimal('1')).save()
+        PurchaseItems(Description="Album", Price=Decimal('0')).save()
 
     if not AppleProducts.objects.count():
         AppleProducts(ProductId="com.pipture.Pipture.credits",

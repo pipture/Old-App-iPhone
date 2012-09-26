@@ -812,29 +812,25 @@ def getAlbumDetail (request):
     if include_episodes == "1":
         response["Episodes"] = []
 
-        try:
-            episodes = Episodes.objects.filter(AlbumId=album).order_by('EpisodeNo')
-        except Exception:
-            pass
-        else:
-            today = datetime.datetime.utcnow()
-            sec_utc_now = calendar.timegm(today.timetuple())
-            today_utc = datetime.date.fromtimestamp(sec_utc_now)
-            for episode in episodes:
-                if not is_episode_on_air (episode, today_utc):
-                    continue
-                response["Episodes"].append({
-                    "Type": "Episode",
-                    "EpisodeId": episode.EpisodeId,
-                    "Title": episode.Title,
-                    "Script": episode.Script,
-                    "DateReleased": local_date_time_date_time_to_UTC_sec(episode.DateReleased),
-                    "Subject": episode.Subject,
-                    "SenderToReceiver": episode.SenderToReceiver,
-                    "EpisodeNo": episode.EpisodeNo,
-                    "CloseUpThumbnail": episode.CloseUpThumbnail.get_url(),
-                    "SquareThumbnail": episode.SquareThumbnail.get_url()
-                })
+        episodes = Episodes.objects.filter(AlbumId=album).order_by('EpisodeNo')
+        today = datetime.datetime.utcnow()
+        sec_utc_now = calendar.timegm(today.timetuple())
+        today_utc = datetime.date.fromtimestamp(sec_utc_now)
+        for episode in episodes:
+            if not is_episode_on_air (episode, today_utc):
+                continue
+            response["Episodes"].append({
+                "Type": "Episode",
+                "EpisodeId": episode.EpisodeId,
+                "Title": episode.Title,
+                "Script": episode.Script,
+                "DateReleased": local_date_time_date_time_to_UTC_sec(episode.DateReleased),
+                "Subject": episode.Subject,
+                "SenderToReceiver": episode.SenderToReceiver,
+                "EpisodeNo": episode.EpisodeNo,
+                "CloseUpThumbnail": episode.CloseUpThumbnail.get_url(),
+                "SquareThumbnail": episode.SquareThumbnail.get_url()
+            })
 
     return HttpResponse(json.dumps(response))
 

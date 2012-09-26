@@ -20,11 +20,11 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
         tomorrow = today_utc + one_day
         yesterday = today_utc - one_day
 
-        # local time
         timeslots = TimeSlots.objects.select_related(depth=2)\
                                      .filter(EndDate__gte=yesterday,
                                              StartDate__lte=tomorrow)\
                                      .order_by('StartTime')
+
         return {
             'CurrentTime': self.local_utcnow,
             'Timeslots': [self.jsonify(timeslot, local_utcnow=self.local_utcnow)
@@ -52,8 +52,13 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
         except ValueError:
             raise WrongParameter(parameter='preview')
 
+    def clean_timeslot(self):
+        timeslot_id = self.params.get('TimeslotId', None)
+
+        self.timeslot = get_object_or_None(TimeSlots, TimeSlotsId=timeslot_id)
+
+
     def clean(self):
-        self.timeslot_id = self.params.get('TimeslotId', None)
         self.force_buy = self.params.get('ForceBuy', None)
 
         if self.force_buy:
@@ -85,8 +90,7 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
         return video_file.get_url(), subtitles_url
 
     def perform_timeslot_operations(self):
-        if not TimeSlots.timeslot_is_current(self.timeslot_id,
-                                             self.local_utcnow):
+        if not self.timeslot or not self.timeslot.is_current(self.local_utcnow):
             raise NoContent(message='Timeslot is not current')
 
     def perform_episode_operations(self):
