@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from django.db.models import Q
+
 from pipture.models import Episodes, Albums, UserPurchasedItems, \
                            PiptureSettings, TimeSlotVideos, SendMessage
 from pipture.time_utils import TimeUtils
@@ -9,15 +11,19 @@ from annoying.functions import get_object_or_None
 
 class AlbumUtils(object):
 
-    @staticmethod
-    def get_purchased(purchaser):
-        purchased_albums = UserPurchasedItems.objects.filter(
-                UserId=purchaser,
-                PurchaseItemId__Description='Album').values_list('ItemId')
-        return [int(id[0]) for id in purchased_albums]
+    _purchased_albums = None
 
-    @staticmethod
-    def get_cover():
+    @classmethod
+    def get_purchased(cls, purchaser):
+        if cls._purchased_albums is None:
+            purchased_albums = UserPurchasedItems.objects.filter(
+                    UserId=purchaser,
+                    PurchaseItemId__Description='Album').values_list('ItemId')
+            cls._purchased_albums = [int(id[0]) for id in purchased_albums]
+        return cls._purchased_albums
+
+    @classmethod
+    def get_cover(cls):
         try:
             pipture_settings = PiptureSettings.objects.all()[0]
             cover = pipture_settings.Cover
@@ -30,11 +36,22 @@ class AlbumUtils(object):
 
         return cover, pipture_settings.Album
 
+    @classmethod
+    def get_available_albums(cls, purchaser):
+        purchased_albums = cls.get_purchased(purchaser)
+
+        return Albums.objects.select_related(depth=1).filter(
+                Q(HiddenAlbum=False) & (
+                    Q(AlbumId__in=purchased_albums) |
+                    Q(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
+                )
+            )
+
 
 class EpisodeUtils(object):
 
-    @staticmethod
-    def is_on_air(episode):
+    @classmethod
+    def is_on_air(cls, episode):
         now = datetime.utcnow()
         today = now.date()
         date_released = episode.DateReleased.date()
@@ -55,8 +72,8 @@ class EpisodeUtils(object):
 
         return bool(timeslot_videos)
 
-    @staticmethod
-    def is_in_purchased_album(episode_id, purchaser):
+    @classmethod
+    def is_in_purchased_album(cls, episode_id, purchaser):
         purchased_ids = AlbumUtils.get_purchased(purchaser)
         if isinstance(episode_id, Episodes):
             return episode_id.AlbumId.AlbumId in purchased_ids
@@ -66,8 +83,8 @@ class EpisodeUtils(object):
                                      AlbumId__AlbumId__in=purchased_ids)
         return bool(episode)
 
-    @staticmethod
-    def is_available(episode_id, purchaser):
+    @classmethod
+    def is_available(cls, episode_id, purchaser):
         try:
             episode = Episodes.objects.get(EpisodeId=episode_id)
         except Episodes.DoesNotExist:
@@ -75,3 +92,14 @@ class EpisodeUtils(object):
 
         return episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE\
                 or EpisodeUtils.is_in_purchased_album(episode, purchaser)
+
+    @classmethod
+    def get_available_episodes(cls, purchaser):
+        purchased_albums = AlbumUtils.get_purchased(purchaser)
+        return Episodes.objects.filter(
+            Q(AlbumId__HiddenAlbum=False) & (
+                Q(AlbumId__AlbumId__in=purchased_albums) |
+                Q(AlbumId__PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
+            )
+        )
+

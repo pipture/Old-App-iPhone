@@ -2,15 +2,14 @@ from datetime import datetime, timedelta
 from itertools import chain
 
 from django.db.models.aggregates import Count
-from django.db.models import Q
 
 from pipture.ga_v3_service import PiptureGAClient
 from pipture.jsonify_models import JsonifyModels
-from pipture.utils import AlbumUtils
+from pipture.utils import AlbumUtils, EpisodeUtils
 from rest_core.api_errors import ServiceUnavailable
 from rest_core.api_view import GetView
 from rest_core.validation_mixins import PurchaserValidationMixin
-from restserver.pipture.models import Albums, Episodes, Series
+from restserver.pipture.models import Series
 
 
 class Category(object):
@@ -189,16 +188,6 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
     def get_category_classes(self):
         return Category.__subclasses__()
 
-    def get_available_episodes(self):
-        self.purchased_albums = AlbumUtils.get_purchased(self.purchaser)
-
-        return Episodes.objects.filter(
-                Q(AlbumId__HiddenAlbum=False) & (
-                    Q(AlbumId__AlbumId__in=self.purchased_albums) |
-                    Q(AlbumId__PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
-                )
-            )
-
     def get_watched_episodes_and_series(self, available_episodes):
         ids = self.ga.get_episodes_watched_by_user(self.purchaser.UserUID)
         episodes = available_episodes.filter(EpisodeId__in=ids)
@@ -210,10 +199,11 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
         return episodes, series_ids
 
     def get_params(self):
-        episodes = self.get_available_episodes()
+        purchased_albums = AlbumUtils.get_purchased(self.purchaser)
+        episodes = EpisodeUtils.get_available_episodes(self.purchaser)
         watched, series_ids = self.get_watched_episodes_and_series(episodes)
         jsonify = JsonifyModels(as_category_item=True,
-                                purchased_albums=self.purchased_albums)
+                                purchased_albums=purchased_albums)
 
         return dict(popular_series=series_ids,
                     watched_episodes=watched,
