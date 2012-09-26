@@ -53,11 +53,12 @@ class Utils(object):
     @classmethod
     def get_timeslot_status(cls, timeslot, local_utcnow):
         if timeslot.is_current(local_utcnow):
-            status = 2
-        elif timeslot.StartTimeUTC > local_utcnow:
-            status = 1
+            status = timeslot.STATUS_CURRENT
+        elif timeslot.StartTimeUTC > local_utcnow or \
+                timeslot.EndDate > datetime.utcnow().date():
+            status = timeslot.STATUS_NEXT
         else:
-            status = 0
+            status = timeslot.STATUS_EXPIRED
         return status
 
 

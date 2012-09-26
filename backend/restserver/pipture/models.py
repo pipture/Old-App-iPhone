@@ -236,6 +236,11 @@ class Episodes(models.Model):
 
 
 class TimeSlots(models.Model):
+
+    STATUS_EXPIRED = 0
+    STATUS_NEXT = 1
+    STATUS_CURRENT = 2
+
     TimeSlotsId = models.AutoField(primary_key=True)
     StartDate = models.DateField(verbose_name="Start date",
                                  help_text="Should be set to minimum +2 days from today")

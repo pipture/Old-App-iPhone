@@ -15,14 +15,11 @@ from rest_core.validation_mixins import TimezoneValidationMixin, \
 class GetTimeslots(GetView, TimezoneValidationMixin):
 
     def get_context_data(self):
-        today_utc = datetime.utcnow()
-        one_day = timedelta(days=1)
-        tomorrow = today_utc + one_day
-        yesterday = today_utc - one_day
+        today_utc = datetime.utcnow().date()
 
         timeslots = TimeSlots.objects.select_related(depth=2)\
-                                     .filter(EndDate__gte=yesterday,
-                                             StartDate__lte=tomorrow)\
+                                     .filter(EndDate__gte=today_utc,
+                                             StartDate__lte=today_utc)\
                                      .order_by('StartTime')
 
         return {
