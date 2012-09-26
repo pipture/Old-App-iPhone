@@ -47,6 +47,7 @@
 @synthesize prompt1Label;
 @synthesize prompt2Label;
 @synthesize numberOfViewsLabel;
+@synthesize fromHotNews;
 
 
 #pragma mark - View lifecycle
@@ -366,14 +367,13 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section != 0) {
         if (indexPath.row %2 == 0) {
-            BOOL sellable = album.sellStatus == AlbumSellStatus_Buy || album.sellStatus == AlbumSellStatus_Pass;
             Episode * episode = [album.episodes objectAtIndex:indexPath.row / 2];
             NSArray * playlist = [NSArray arrayWithObject:episode];
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
             [[PiptureAppDelegate instance] showVideo:playlist
                                               noNavi:YES 
                                           timeslotId:nil
-                                           fromStore:sellable];
+                                           fromStore:[self isFromStore]];
             //[[PiptureAppDelegate instance] getVideoURL:episode forTimeslotId:nil receiver:self];
             
         }
@@ -488,11 +488,10 @@
 
 -(void)videoURLReceived:(PlaylistItem*)playlistItem {
     NSArray * playlist = [NSArray arrayWithObject:playlistItem];
-    BOOL sellable = album.sellStatus == AlbumSellStatus_Buy || album.sellStatus == AlbumSellStatus_Pass;
     [[PiptureAppDelegate instance] showVideo:playlist 
                                       noNavi:YES 
                                   timeslotId:nil
-                                   fromStore:sellable];
+                                   fromStore:[self isFromStore]];
 }
 
 -(void)videoNotPurchased:(PlaylistItem*)playlistItem {
@@ -649,11 +648,10 @@
     if (album && album.trailer) {
         NSLog(@"Trailer Show");
         NSArray * playlist = [NSArray arrayWithObject:album.trailer];
-        BOOL sellable = album.sellStatus == AlbumSellStatus_Buy || album.sellStatus == AlbumSellStatus_Pass;
         [[PiptureAppDelegate instance] showVideo:playlist
                                           noNavi:YES
                                       timeslotId:nil
-                                       fromStore:sellable];
+                                       fromStore:[self isFromStore]];
     }
 }
 
@@ -696,5 +694,10 @@
     [scrollingHintController showHintIfNeeded];
 }
 
+- (BOOL)isFromStore {
+    BOOL sellable = album.sellStatus == AlbumSellStatus_Buy ||
+                    album.sellStatus == AlbumSellStatus_Pass;
+    return sellable && !fromHotNews;
+}
 
 @end

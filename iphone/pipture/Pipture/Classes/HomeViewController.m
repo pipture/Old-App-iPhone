@@ -763,7 +763,9 @@
 - (void)openDetails:(BOOL)withNavigation 
               album:(Album*)album 
          timeslotId:(NSInteger)timeslotId {
-    [[PiptureAppDelegate instance] putHomescreenState:HomeScreenMode_Cover];
+    PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
+    BOOL isFromHotNews = homeScreenMode == HomeScreenMode_Cover;
+    [appDelegate putHomescreenState:HomeScreenMode_Cover];
     
     NSLog(@"details open");
     self.navigationItem.title = @"Back";
@@ -771,7 +773,7 @@
     if (self.navigationController.visibleViewController.class != [AlbumDetailInfoController class]) {
         redrawDiscarding = YES;
         [scheduleView scrollToCurPage];
-        [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+        [[appDelegate model] cancelCurrentRequest];
         
         AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo" 
                                                                                       bundle:nil];
@@ -779,6 +781,8 @@
         adic.album = album;
         adic.timeslotId = timeslotId;
         adic.scheduleModel = scheduleModel;
+        adic.fromHotNews = isFromHotNews;
+        
         [self.navigationController pushViewController:adic animated:YES];
         [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
         [adic release];

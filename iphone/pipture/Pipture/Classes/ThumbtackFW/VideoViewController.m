@@ -73,10 +73,11 @@
         player = nil;
     }
     
-    if (fromStore)
+    if (fromStore) {
         [[PiptureAppDelegate instance] openPiptureStore];
-    else
+    } else {
         [[PiptureAppDelegate instance] openHome];
+    }
 }
 
 - (void)enableControls:(BOOL)enabled {
