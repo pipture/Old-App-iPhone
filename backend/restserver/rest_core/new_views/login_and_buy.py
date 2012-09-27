@@ -3,17 +3,20 @@ import uuid
 import urllib2
 from decimal import Decimal
 from apiclient.errors import HttpError
+from django.conf import settings
 
 from django.db import IntegrityError
-from pipture.utils import AlbumUtils
+from pipture.utils import AlbumUtils, EpisodeUtils
 
 from rest_core.api_errors import WrongParameter, UnauthorizedError,\
-                                 BadRequest, ParameterExpected, NotFound, Forbidden, ServiceUnavailable, Conflict
+                                 ParameterExpected, NotFound, Forbidden, \
+                                 ServiceUnavailable, Conflict
 from rest_core.api_view import GetView, PostView
 from rest_core.validation_mixins import PurchaserValidationMixin
 
 from restserver.pipture.models import AppleProducts, PurchaseItems,\
-                                      UserPurchasedItems, Transactions, PipUsers
+                                      UserPurchasedItems, Transactions, \
+                                      PipUsers, Episodes, FreeMsgViewers
 
 from annoying.functions import get_object_or_None
 
@@ -68,8 +71,29 @@ class Login(Register):
 
 class GetBalance(GetView, PurchaserValidationMixin):
 
+    def clean_episode(self):
+        episode_id = self.params.get('EpisodeId', None)
+        self.episode = None if not episode_id \
+                       else get_object_or_None(Episodes, EpisodeId=episode_id)
+
+    def get_free_viewers_for_episode(self):
+        free_viewers = None
+
+        if self.episode:
+            free_viewers = get_object_or_None(FreeMsgViewers,
+                                              UserId=self.purchaser,
+                                              EpisodeId=self.episode)
+            if free_viewers:
+                free_viewers = int(free_viewers.Rest)
+            elif EpisodeUtils.is_in_purchased_album(self.episode, self.purchaser):
+                free_viewers = settings.MESSAGE_VIEWS_LOWER_LIMIT
+
+        return free_viewers
+
     def get_context_data(self):
-        return dict(Balance=str(self.purchaser.Balance))
+
+        return dict(Balance=str(self.purchaser.Balance),
+                    FreeViewersForEpisode=self.get_free_viewers_for_episode())
 
 
 class Buy(PostView, PurchaserValidationMixin):

@@ -29,8 +29,6 @@
 #define TABBARITEM_CHANNEL 1
 #define TABBARITEM_LIBRARY 2
 
-#define GET_CREDITS [[PiptureAppDelegate instance] getBalance];
-
 #define SET_BALANCE(balance) [[PiptureAppDelegate instance] setBalance:balance];
 #define SHOW_ERROR(title, msg) [[PiptureAppDelegate instance] showError:title message:msg];
 
@@ -100,7 +98,7 @@
 - (void)setBalance:(NSDecimalNumber*)newBalance;
 - (float)getBalance;
 - (void)updateBalance;
-
+- (void)updateBalanceWithFreeViewersForEpisode:(NSNumber*)episodeId;
 
 - (IBAction)actionButton:(id)sender;
 - (IBAction)onStoreClick:(id)sender;

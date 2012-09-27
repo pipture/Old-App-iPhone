@@ -688,7 +688,12 @@ NSInteger networkActivityIndecatorCount;
 }
 
 - (void)updateBalance {
-    [self.model getBalanceWithReceiver:self];
+    [self.model getBalanceAndFreeViewersForEpisode:nil 
+                                      withReceiver:self];
+}
+- (void)updateBalanceWithFreeViewersForEpisode:(NSNumber*)episodeId {
+    [self.model getBalanceAndFreeViewersForEpisode:episodeId
+                                      withReceiver:self];
 }
 
 

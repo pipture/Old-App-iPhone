@@ -69,7 +69,7 @@
 	<key>Rest Get albums request</key>
 	<string>getAlbums?</string>
 	<key>Rest Get balance</key>
-	<string>getBalance?</string>
+	<string>getBalance?EpisodeId=%@</string>
 	<key>Rest Get channel categories request</key>
 	<string>getCategories?</string>
 	<key>Rest Get current timeslots</key>

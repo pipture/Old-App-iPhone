@@ -102,6 +102,7 @@ static NSString* const JSON_PARAM_UUID = @"UUID";
 static NSString* const JSON_PARAM_SCREENSHOTS = @"Screenshots";
 static NSString* const JSON_PARAM_UNREADED = @"Unreaded";
 static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
+static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpisode";
 
 
 
@@ -887,10 +888,10 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
     
 }
 
--(BOOL)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver
+-(BOOL)getBalanceAndFreeViewersForEpisode:(NSNumber*)episodeId withReceiver:(NSObject<BalanceReceiver>*)receiver
 {
-    
-    NSURL* url = [self buildURLWithRequest:GET_BALANCE_REQUEST];
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_BALANCE_REQUEST, 
+                                            episodeId ? episodeId : @""]];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url
                                                                callback:^(NSDictionary* jsonResult, 
@@ -908,16 +909,22 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                 case 0:   
                 {
                     id bal = [jsonResult objectForKey:JSON_PARAM_BALANCE];                         
-                    if (bal)
-                    {
+                    if (bal) {
                         [receiver performSelectorOnMainThread:@selector(balanceReceived:)
                                                    withObject:bal 
                                                 waitUntilDone:YES];                                                        
-                    }
-                    else
-                    {
+                    } else {
                         NSLog(@"Balance was not sent from server"); 
                     }                    
+                    
+                    id freeViewersForEpisode = [jsonResult objectForKey:JSON_PARAM_FREE_VIEWERS_FOR_EPISODE];
+                    if (freeViewersForEpisode != [NSNull null]) {
+                        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:freeViewersForEpisode 
+                                                                             forKey:@"FreeViewers"];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:FREE_VIEWERS_UPDATED_NOTIFICATION
+                                                                            object:[PiptureAppDelegate instance]
+                                                                          userInfo:userInfo];
+                    }
                     break;
                 }                                               
                 case 401:
@@ -1021,6 +1028,15 @@ static NSString* const JSON_PARAM_CHANNEL_CATEGORIES = @"ChannelCategories";
                                                    withObject:(NSDecimalNumber*)bal
                                                 waitUntilDone:YES];                                                        
                     }                    
+                    
+                    id freeViewersForEpisode = [jsonResult objectForKey:JSON_PARAM_FREE_VIEWERS_FOR_EPISODE];
+                    if (freeViewersForEpisode != [NSNull null]) {
+                        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:freeViewersForEpisode 
+                                                                             forKey:@"FreeViewers"];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:FREE_VIEWERS_UPDATED_NOTIFICATION
+                                                                            object:[PiptureAppDelegate instance]
+                                                                          userInfo:userInfo];
+                    }
                     break;
                 }
                 case 402:

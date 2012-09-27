@@ -116,5 +116,3 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
         )
 
         return [int(row[0]) for row in feed.get('rows', [])]
-
-pipture_ga = PiptureGAClient()
