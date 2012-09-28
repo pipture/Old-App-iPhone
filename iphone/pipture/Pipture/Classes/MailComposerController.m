@@ -620,7 +620,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
             
         case COMPOSETYPE_TWEET: {
             TWTweetComposeViewController *messageComposeCtr = [[TWTweetComposeViewController alloc] init];
-            [messageComposeCtr setInitialText:[NSString stringWithFormat:@"%@\nVideo message via Pipture app for iPhone", newUrl]];
+            [messageComposeCtr setInitialText:[NSString stringWithFormat:@"Video message via Pipture app for iPhone %@", newUrl]];
             [self presentModalViewController:messageComposeCtr animated:YES];
             
             messageComposeCtr.completionHandler = ^(TWTweetComposeViewControllerResult res) {
