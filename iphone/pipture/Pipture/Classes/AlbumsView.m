@@ -92,6 +92,8 @@
         
     CGRect rect = self.frame;
     
+    self.noAlbumsLabel.hidden = !((filteredAlbums.count == 0) && filterOnPurchasedAlbums);
+    
     int rows = ([filteredAlbums count] + (3 - 1)) / 3;
     int hightRows = MAX(2, rows);
     scrollView.contentSize = CGSizeMake(rect.size.width,
@@ -220,6 +222,7 @@
     [allAlbumsButtonEnchancer release];
     [purchasedAlbumsButtonEnchancer release];
     [scrollingHintController release];
+    [_noAlbumsLabel release];
     [super dealloc];
 }
 

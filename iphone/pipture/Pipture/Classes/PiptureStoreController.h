@@ -21,6 +21,7 @@
 @property (retain, nonatomic) IBOutlet UILabel *priceLabel;
 @property (retain, nonatomic) IBOutlet UIView *navigationPanel;
 @property (retain, nonatomic) IBOutlet UIView *progressView;
+@property (retain, nonatomic) IBOutlet UILabel *noAlbumsLabel;
 
 - (IBAction)onCloseTap:(id)sender;
 - (IBAction)onLibraryCardTap:(id)sender;

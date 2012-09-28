@@ -221,6 +221,7 @@
     [self setEmptyCell:nil];
     [self setPurchasedInfoView:nil];
     [self setProgressView:nil];
+    [self setNoVideosLabel:nil];
     [super viewDidUnload];
 }
 
@@ -248,6 +249,7 @@
     [purchasedInfoView release];
     
     [progressView release];
+    [_noVideosLabel release];
     [super dealloc];
 }
 
@@ -385,10 +387,14 @@
     switch (section) {
         case 0: return 1;
         default:
-            if (album.episodes.count > 0)
+            if (album.episodes.count > 0) {
+                self.noVideosLabel.hidden = YES;
                 return album.episodes.count*2;
-            else
+            } else {
+                self.noVideosLabel.hidden = NO;
                 return 0;
+            }
+            
     }
 }
 

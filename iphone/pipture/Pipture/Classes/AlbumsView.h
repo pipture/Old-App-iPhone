@@ -34,6 +34,7 @@
 @property (retain, nonatomic) IBOutlet UIView *purchasedAlbumsButtonEnchancer;
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (readonly, nonatomic) LibraryCardController* libraryCardController;
+@property (retain, nonatomic) IBOutlet UILabel *noAlbumsLabel;
 
 -(void)setNeedToUpdate;
 -(BOOL)needToUpdate;

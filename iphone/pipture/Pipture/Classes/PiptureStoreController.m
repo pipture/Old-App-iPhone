@@ -239,6 +239,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 - (void) onAlbumsUpdate:(NSNotification *) notification {
     progressView.hidden = YES;
+    self.noAlbumsLabel.hidden = [model albumsCount] != 0;
     [self updateAlbums];
 }
 
@@ -286,6 +287,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     [super loadView];
     if (!model) {
         model = [[PiptureStoreModel alloc] init];
+        self.noAlbumsLabel.hidden = YES;
         [self subscribeModel];
     }
 
@@ -338,6 +340,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     [self setNavigationPanel:nil];
     [self setScrollView:nil];
     [self setProgressView:nil];
+    [self setNoAlbumsLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -354,6 +357,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     [self unsubscribeModel];
     [model release];
     [progressView release];
+    [_noAlbumsLabel release];
     [super dealloc];
 }
 

@@ -55,6 +55,7 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) IBOutlet UINavigationItem *navigationItemFake;
 @property (retain, nonatomic) IBOutlet UITableViewCell *emptyCell;
 @property (retain, nonatomic) IBOutlet UIView *progressView;
+@property (retain, nonatomic) IBOutlet UILabel *noVideosLabel;
 
 @property (retain, nonatomic) IBOutlet UILabel *prompt1Label;
 @property (retain, nonatomic) IBOutlet UILabel *prompt2Label;
