@@ -1,5 +1,7 @@
+from datetime import datetime
 import json
 from collections import Callable
+import logging
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -10,6 +12,9 @@ from django.views.generic.base import View
 from restserver.pipture.jsonify_models import JsonifyModels
 from rest_core.api_errors import ApiError, EmptyError, InternalServerError
 from restserver.rest_core.validation_mixins import ApiValidationMixin
+
+
+logger = logging.getLogger('restserver.rest_core')
 
 
 class ParameterValidationMixin(object):
@@ -62,7 +67,16 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
             else:
                 context = InternalServerError(error=error).get_dict()
 
-        return HttpResponse(self.json_dumps(context))
+        response = HttpResponse(self.json_dumps(context))
+        return response
+
+    def dispatch(self, request, *args, **kwargs):
+        entry_time = datetime.now()
+        result = super(GeneralView, self).dispatch(request, *args, **kwargs)
+        working_time = datetime.now() - entry_time
+        logger.info('%s: working time = %f seconds' %
+                    (self.__class__.__name__, working_time.total_seconds()))
+        return result
 
 
 class GetView(GeneralView):
