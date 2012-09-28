@@ -1030,7 +1030,7 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
                     }                    
                     
                     id freeViewersForEpisode = [jsonResult objectForKey:JSON_PARAM_FREE_VIEWERS_FOR_EPISODE];
-                    if (freeViewersForEpisode != [NSNull null]) {
+                    if (freeViewersForEpisode && freeViewersForEpisode != [NSNull null]) {
                         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:freeViewersForEpisode 
                                                                              forKey:@"FreeViewers"];
                         [[NSNotificationCenter defaultCenter] postNotificationName:FREE_VIEWERS_UPDATED_NOTIFICATION
