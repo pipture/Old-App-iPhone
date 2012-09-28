@@ -30,6 +30,7 @@
 @synthesize purchasedAlbumsButton;
 @synthesize purchasedAlbumsButtonEnchancer;
 @synthesize libraryCardController;
+@synthesize noAlbumsLabel = _noAlbumsLabel;
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent {
     //prepare scrollView

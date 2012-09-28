@@ -12,5 +12,6 @@
 @interface TimeslotFormatter : NSObject
 
 + (NSString*)formatTimeslot:(Timeslot*)timeslot ignoreStatus:(BOOL)ignoreStatus;
++ (NSString*)representTime:(NSDate*)date;
 
 @end

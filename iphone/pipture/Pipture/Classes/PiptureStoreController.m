@@ -18,6 +18,7 @@
 @synthesize priceLabel;
 @synthesize navigationPanel;
 @synthesize progressView;
+@synthesize noAlbumsLabel = _noAlbumsLabel;
 
 
 static NSString* const activeImage = @"active-librarycard.png";

@@ -11,6 +11,7 @@
 #import "Episode.h"
 #import "AsyncImageView.h"
 #import "UILabel+ResizeForVerticalAlign.h"
+#import "TimeslotFormatter.h"
 
 #define SEND_VIDEO_PRESSED_ICON @"button-send-episode-press.png"
 #define SEND_VIDEO_ICON @"button-send-episode.png"
@@ -133,11 +134,7 @@
         
         self.navigationItemFake.leftBarButtonItem = back;
     }
-    
-    NSString *albumScheduleInfo = [self albumSchedule];
-    if (albumScheduleInfo) {
-        scheduleLabel.text = albumScheduleInfo;
-    }
+
         
     [back release];
     [backButton release];
@@ -146,6 +143,17 @@
                                         buttonsPanel.frame.size.width, 
                                         self.view.frame.size.height-heightOffset);
     
+    /*
+    For feature #17844
+     
+    NSString *albumScheduleInfo = [self albumSchedule];
+    if (albumScheduleInfo) {
+        scheduleLabel.text = albumScheduleInfo;
+        scheduleLabel.hidden = NO;
+    } else {
+        scheduleLabel.hidden = YES;
+    } 
+     */
     
     [self updateDetails];
 }
@@ -733,7 +741,8 @@
     Timeslot *timeslotForAlbum = [scheduleModel getAlbumTimeslot:album.albumId];
     if (timeslotForAlbum) {
         return [NSString stringWithFormat:@"Scheduled at %@ to %@",
-                timeslotForAlbum.startTime, timeslotForAlbum.endTime];
+                [TimeslotFormatter representTime:timeslotForAlbum.startTime], 
+                [TimeslotFormatter representTime:timeslotForAlbum.endTime]];
     }
     return nil;
 }

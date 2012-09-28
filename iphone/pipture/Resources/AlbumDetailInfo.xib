@@ -178,11 +178,11 @@
 								<int key="IBUIBaselineAdjustment">1</int>
 								<float key="IBUIMinimumFontSize">10</float>
 								<int key="IBUITextAlignment">1</int>
-								<object class="IBUIFontDescription" key="IBUIFontDescription" id="506514153">
+								<object class="IBUIFontDescription" key="IBUIFontDescription">
 									<int key="type">1</int>
 									<double key="pointSize">17</double>
 								</object>
-								<object class="NSFont" key="IBUIFont" id="248819508">
+								<object class="NSFont" key="IBUIFont">
 									<string key="NSName">Helvetica</string>
 									<double key="NSSize">17</double>
 									<int key="NSfFlags">16</int>
@@ -397,22 +397,22 @@
 						<string key="NSFrameSize">{320, 165}</string>
 						<reference key="NSSuperview" ref="991280464"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="1071462172"/>
+						<reference key="NSNextKeyView" ref="297858698"/>
 						<string key="NSReuseIdentifierKey">_NS:196</string>
 						<reference key="IBUIBackgroundColor" ref="582805439"/>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
-					<object class="IBUILabel" id="1071462172">
+					<object class="IBUILabel" id="297858698">
 						<reference key="NSNextResponder" ref="991280464"/>
 						<int key="NSvFlags">-2147483356</int>
-						<string key="NSFrame">{{145, 337}, {175, 21}}</string>
+						<string key="NSFrame">{{107, 164}, {208, 21}}</string>
 						<reference key="NSSuperview" ref="991280464"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
-						<int key="IBUIContentMode">7</int>
+						<int key="IBUIContentMode">12</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<string key="IBUIText">Label</string>
@@ -424,8 +424,16 @@
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">0</int>
 						<float key="IBUIMinimumFontSize">10</float>
-						<reference key="IBUIFontDescription" ref="506514153"/>
-						<reference key="IBUIFont" ref="248819508"/>
+						<int key="IBUITextAlignment">2</int>
+						<object class="IBUIFontDescription" key="IBUIFontDescription">
+							<int key="type">1</int>
+							<double key="pointSize">14</double>
+						</object>
+						<object class="NSFont" key="IBUIFont">
+							<string key="NSName">Helvetica</string>
+							<double key="NSSize">14</double>
+							<int key="NSfFlags">16</int>
+						</object>
 					</object>
 				</array>
 				<string key="NSFrameSize">{320, 368}</string>
@@ -831,7 +839,7 @@
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">scheduleLabel</string>
 						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="1071462172"/>
+						<reference key="destination" ref="297858698"/>
 					</object>
 					<int key="connectionID">91</int>
 				</object>
@@ -933,7 +941,7 @@
 						<reference key="object" ref="991280464"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="830043620"/>
-							<reference ref="1071462172"/>
+							<reference ref="297858698"/>
 						</array>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">detailsScrollView</string>
@@ -947,6 +955,7 @@
 					<object class="IBObjectRecord">
 						<int key="objectID">26</int>
 						<reference key="object" ref="830043620"/>
+						<array class="NSMutableArray" key="children"/>
 						<reference key="parent" ref="991280464"/>
 						<string key="objectName">poster</string>
 					</object>
@@ -1116,7 +1125,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">90</int>
-						<reference key="object" ref="1071462172"/>
+						<reference key="object" ref="297858698"/>
 						<reference key="parent" ref="991280464"/>
 						<string key="objectName">Schedule label</string>
 					</object>
