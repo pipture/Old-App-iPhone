@@ -87,6 +87,14 @@ static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
+- (UIView*)selCardSectionViewController {
+    if (self.playlistItem.album.sellStatus == AlbumSellStatus_NotSellable) {
+        return nil;
+    } else {
+        return cardSectionViewController.view;
+    }
+}
+
 - (void)displayNumberOfViewsTextField {
     numberOfViewsTextField.text = [NSString stringWithFormat:@"%d", numberOfViews];    
 }
@@ -516,7 +524,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self displayInfiniteViewsRadioButtons];
     [self setInfiniteRadiobutonsVisiblity];
     [self displayScreenshot];
-    [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
+    [self moveView:[self selCardSectionViewController].frame.size.height + 15];
     
     [self showScrollingHintIfNeeded];    
 }
@@ -612,7 +620,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
             
         case COMPOSETYPE_TWEET: {
             TWTweetComposeViewController *messageComposeCtr = [[TWTweetComposeViewController alloc] init];
-            [messageComposeCtr setInitialText:[NSString stringWithFormat:@"%@\nVideo message via Pipture app for iPhone", newUrl]];
+            [messageComposeCtr setInitialText:[NSString stringWithFormat:@"Video message via Pipture app for iPhone %@", newUrl]];
             [self presentModalViewController:messageComposeCtr animated:YES];
             
             messageComposeCtr.completionHandler = ^(TWTweetComposeViewControllerResult res) {
@@ -796,14 +804,17 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     NSNumber *episodeId;
     switch (section) {
-        case 0:
-            episodeId = [NSNumber numberWithInt:[playlistItem_ videoKeyValue]];
-            [cardSectionViewController refreshViewsInfoAndFreeViewersForEpisode:episodeId];
-            [scrollingHintController onHintUsed];
-            return cardSectionViewController.view;
+        case 0: {
+            UIView * sectView = [self selCardSectionViewController];
+            if (sectView) {
+                episodeId = [NSNumber numberWithInt:[playlistItem_ videoKeyValue]];
+                [cardSectionViewController refreshViewsInfoAndFreeViewersForEpisode:episodeId];
+                [scrollingHintController onHintUsed];
+            }
+            return sectView;
+        }
         case 4:
-            return toSectionView;
-            break;            
+            return toSectionView;            
         default:
             return nil;
     }
@@ -812,10 +823,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     switch (section) {
         case 0:
-            return cardSectionViewController.view.frame.size.height;
+            return [self selCardSectionViewController].frame.size.height;
         case 4:
-            return toSectionView.frame.size.height;
-            break;            
+            return toSectionView.frame.size.height;            
         default:
             return 0;
     }
