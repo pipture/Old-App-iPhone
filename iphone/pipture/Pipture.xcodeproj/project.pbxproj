@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1801D73F15DE2DE90086D163 /* CategoryEditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1801D73E15DE2DE90086D163 /* CategoryEditViewController.xib */; };
 		1801D74315DE2E050086D163 /* CategoryEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1801D74215DE2E050086D163 /* CategoryEditViewController.m */; };
+		186E035C16145A41005C35A7 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 186E035B16145A41005C35A7 /* Twitter.framework */; };
 		18D2940F15EE1670009868A2 /* bluebutton-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 18D2940915EE1670009868A2 /* bluebutton-left.png */; };
 		18D2941015EE1670009868A2 /* bluebutton-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18D2940A15EE1670009868A2 /* bluebutton-left@2x.png */; };
 		18D2941115EE1670009868A2 /* bluebutton-pushed-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 18D2940B15EE1670009868A2 /* bluebutton-pushed-left.png */; };
@@ -359,6 +360,7 @@
 		1801D73E15DE2DE90086D163 /* CategoryEditViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoryEditViewController.xib; sourceTree = "<group>"; };
 		1801D74115DE2E050086D163 /* CategoryEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryEditViewController.h; sourceTree = "<group>"; };
 		1801D74215DE2E050086D163 /* CategoryEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryEditViewController.m; sourceTree = "<group>"; };
+		186E035B16145A41005C35A7 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		18D2940915EE1670009868A2 /* bluebutton-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bluebutton-left.png"; sourceTree = "<group>"; };
 		18D2940A15EE1670009868A2 /* bluebutton-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bluebutton-left@2x.png"; sourceTree = "<group>"; };
 		18D2940B15EE1670009868A2 /* bluebutton-pushed-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bluebutton-pushed-left.png"; sourceTree = "<group>"; };
@@ -778,6 +780,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				186E035C16145A41005C35A7 /* Twitter.framework in Frameworks */,
 				38A82D6414ED1D1800F86809 /* SystemConfiguration.framework in Frameworks */,
 				38318D761499A8F10060D0FE /* MediaPlayer.framework in Frameworks */,
 				38D51006149741C6009BF5E9 /* StoreKit.framework in Frameworks */,
@@ -961,6 +964,7 @@
 				38D50FF914963EEC009BF5E9 /* GA */,
 				88751776148CAD3B00AFFFAC /* SBJSON */,
 				38D5100014964123009BF5E9 /* libsqlite3.0.dylib */,
+				186E035B16145A41005C35A7 /* Twitter.framework */,
 				38A82D6314ED1D1800F86809 /* SystemConfiguration.framework */,
 				38318D751499A8F10060D0FE /* MediaPlayer.framework */,
 				38D51005149741C6009BF5E9 /* StoreKit.framework */,
