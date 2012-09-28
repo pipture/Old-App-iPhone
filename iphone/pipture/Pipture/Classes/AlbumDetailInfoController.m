@@ -390,7 +390,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
-        case 0: return 1;
+        case 0: return (album.sellStatus != AlbumSellStatus_NotSellable)?1:0;
         default:
             if (album.episodes.count > 0) {
                 self.noVideosLabel.hidden = YES;
@@ -417,6 +417,9 @@
 }
 
 - (UIView *)topSectionView:(BOOL)updateData {
+    if (album.sellStatus == AlbumSellStatus_NotSellable) {
+        return nil;
+    }
     if (album.sellStatus == AlbumSellStatus_Purchased) {
         return purchasedInfoView;        
     } else {
