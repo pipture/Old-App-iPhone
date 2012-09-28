@@ -47,7 +47,9 @@
 @synthesize prompt1Label;
 @synthesize prompt2Label;
 @synthesize numberOfViewsLabel;
+@synthesize scheduleLabel;
 @synthesize fromHotNews;
+@synthesize noVideosLabel;
 
 @synthesize store;
 
@@ -130,6 +132,11 @@
                                         buttonsPanel.frame.size.height);
         
         self.navigationItemFake.leftBarButtonItem = back;
+    }
+    
+    NSString *albumScheduleInfo = [self albumSchedule];
+    if (albumScheduleInfo) {
+        scheduleLabel.text = albumScheduleInfo;
     }
         
     [back release];
@@ -227,6 +234,7 @@
     [self setPurchasedInfoView:nil];
     [self setProgressView:nil];
     [self setNoVideosLabel:nil];
+    [self setScheduleLabel:nil];
     [super viewDidUnload];
 }
 
@@ -254,7 +262,8 @@
     [purchasedInfoView release];
     
     [progressView release];
-    [_noVideosLabel release];
+    [noVideosLabel release];
+    [scheduleLabel release];
     [super dealloc];
 }
 
@@ -715,6 +724,15 @@
     BOOL sellable = album.sellStatus == AlbumSellStatus_Buy ||
                     album.sellStatus == AlbumSellStatus_Pass;
     return sellable && fromHotNews;
+}
+
+- (NSString*)albumSchedule {
+    Timeslot *timeslotForAlbum = [scheduleModel getAlbumTimeslot:album.albumId];
+    if (timeslotForAlbum) {
+        return [NSString stringWithFormat:@"Scheduled at %@ to %@",
+                timeslotForAlbum.startTime, timeslotForAlbum.endTime];
+    }
+    return nil;
 }
 
 @end

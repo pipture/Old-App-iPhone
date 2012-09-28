@@ -30,6 +30,7 @@
  */
 
 - (BOOL) albumIsPlayingNow:(NSInteger)albumId;
+- (Timeslot*) getAlbumTimeslot:(NSInteger)albumId;
 - (Timeslot*) currentTimeslotForPage:(NSInteger)page;
 - (Timeslot*) currentOrNextTimeslot;
 - (NSInteger) currentOrNextTimeslotIndex;

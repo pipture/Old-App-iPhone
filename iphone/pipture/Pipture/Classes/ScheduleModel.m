@@ -161,6 +161,15 @@
     return NO;
 }
 
+- (Timeslot *)getAlbumTimeslot:(NSInteger)albumId {
+    for (Timeslot *timeslot in timeslots_) {
+        if (timeslot.albumId == albumId) {
+            return timeslot;
+        }
+    }
+    return nil;
+}
+
 - (Timeslot*) currentTimeslotForPage:(NSInteger)page
 {
     if ([self pageInRange:page])
