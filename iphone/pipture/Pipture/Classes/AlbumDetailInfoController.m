@@ -49,6 +49,8 @@
 @synthesize numberOfViewsLabel;
 @synthesize fromHotNews;
 
+@synthesize store;
+
 
 #pragma mark - View lifecycle
 
@@ -115,6 +117,9 @@
                                         heightOffset);
         
         self.navigationItem.leftBarButtonItem = back;
+        if ([self isSellableFromHotNews]) {
+            self.navigationItem.rightBarButtonItem = store;
+        }
     } else {
         [self.navigationController setNavigationBarHidden:YES animated:NO];
         self.navigationFake.hidden = NO;
@@ -698,6 +703,12 @@
     BOOL sellable = album.sellStatus == AlbumSellStatus_Buy ||
                     album.sellStatus == AlbumSellStatus_Pass;
     return sellable && !fromHotNews;
+}
+
+- (BOOL)isSellableFromHotNews {
+    BOOL sellable = album.sellStatus == AlbumSellStatus_Buy ||
+                    album.sellStatus == AlbumSellStatus_Pass;
+    return sellable && fromHotNews;
 }
 
 @end

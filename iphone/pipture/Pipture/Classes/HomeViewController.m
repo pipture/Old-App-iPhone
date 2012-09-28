@@ -781,6 +781,7 @@
         adic.album = album;
         adic.timeslotId = timeslotId;
         adic.scheduleModel = scheduleModel;
+        adic.store = [[UIBarButtonItem alloc] initWithCustomView:storeButton];
         adic.fromHotNews = isFromHotNews;
         
         [self.navigationController pushViewController:adic animated:YES];
