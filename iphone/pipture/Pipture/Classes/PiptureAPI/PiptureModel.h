@@ -187,7 +187,7 @@
 
 -(BOOL)buyCredits:(NSString*)transactionId withData:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver;
 
--(BOOL)getBalanceWithReceiver:(NSObject<BalanceReceiver>*)receiver;
+-(BOOL)getBalanceAndFreeViewersForEpisode:(NSNumber*)episodeId withReceiver:(NSObject<BalanceReceiver>*)receiver;
 
 -(BOOL)sendMessage:(NSString*)message playlistItem:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId screenshotImage:(NSString*)screenshotImage userName:(NSString*)userName viewsCount:(NSNumber*)viewsCount receiver:(NSObject<SendMessageDelegate>*)receiver;
 

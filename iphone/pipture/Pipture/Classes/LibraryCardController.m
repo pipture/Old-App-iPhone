@@ -14,7 +14,9 @@
 
 @synthesize prompt1Label;
 @synthesize prompt2Label;
+@synthesize prompt4Label;
 @synthesize numberOfViewsLabel;
+@synthesize numberOfFreeViewsLabel;
 @synthesize libraryCardButton;
 @synthesize returnViewsView;
 
@@ -25,11 +27,13 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
 -(void)setNumberOfViews:(NSInteger)numberOfViews {
     [libraryCardButton setBackgroundImage:[UIImage imageNamed:(numberOfViews > 0 ? activeImage : inactiveImage )] forState:UIControlStateNormal];
     
-    NSString* text = [NSString stringWithFormat:@"%d",numberOfViews,nil];
+    NSString* text = [NSString stringWithFormat:@"%d",numberOfViews, nil];
     if (prompt1Label.frame.origin.y == prompt2Label.frame.origin.y) {
         // Need to move prompt 2 and resize number of views
         
-        NSInteger newwidth = [text sizeWithFont:numberOfViewsLabel.font constrainedToSize:CGSizeMake(100, numberOfViewsLabel.frame.size.height) lineBreakMode:UILineBreakModeTailTruncation].width;
+        NSInteger newwidth = [text sizeWithFont:numberOfViewsLabel.font 
+                              constrainedToSize:CGSizeMake(100, numberOfViewsLabel.frame.size.height)
+                                  lineBreakMode:UILineBreakModeTailTruncation].width;
         CGRect rect = numberOfViewsLabel.frame;
         rect.size.width = newwidth;
         numberOfViewsLabel.frame = rect;
@@ -38,8 +42,23 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
         prompt2Label.frame = rect2;
     }
     numberOfViewsLabel.text = text;
+}
+
+-(void)setNumberOfFreeViews:(NSInteger)numberOfFreeViews {
+    NSString* text = [NSString stringWithFormat:@"%d",numberOfFreeViews, nil];
     
+    // Need to move prompt 4 and resize number of views
+    NSInteger newwidth = [text sizeWithFont:numberOfFreeViewsLabel.font 
+                          constrainedToSize:CGSizeMake(100, numberOfFreeViewsLabel.frame.size.height) 
+                              lineBreakMode:UILineBreakModeTailTruncation].width;
+    CGRect rect = numberOfFreeViewsLabel.frame;
+    rect.size.width = newwidth;
+    numberOfFreeViewsLabel.frame = rect;
+    CGRect rect4 = prompt4Label.frame;
+    rect4.origin.x = rect.origin.x + rect.size.width + 5;
+    prompt4Label.frame = rect4;
     
+    numberOfFreeViewsLabel.text = text;    
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -69,7 +88,16 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(onNewBalance:) 
+                                                 name:NEW_BALANCE_NOTIFICATION 
+                                               object:[PiptureAppDelegate instance]];    
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(onFreeViewersUpdated:) 
+                                                 name:FREE_VIEWERS_UPDATED_NOTIFICATION 
+                                               object:[PiptureAppDelegate instance]];    
+    
     [self setNumberOfViews:[[PiptureAppDelegate instance] getBalance]];
     
     UITapGestureRecognizer * returnViewsAction = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
@@ -89,10 +117,14 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
 {
     [self setPrompt1Label:nil];
     [self setPrompt2Label:nil];
+    [self setPrompt4Label:nil];
     [self setNumberOfViewsLabel:nil];
+    [self setNumberOfFreeViewsLabel:nil];
     [self setLibraryCardButton:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];    
     [self setReturnViewsView:nil];
+    [self setNumberOfFreeViewsLabel:nil];
+    [self setPrompt4Label:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -101,9 +133,13 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
 - (void)dealloc {
     [prompt1Label release];
     [prompt2Label release];
+    [prompt4Label release];
     [numberOfViewsLabel release];
+    [numberOfFreeViewsLabel release];
     [libraryCardButton release];
     [returnViewsView release];
+    [numberOfFreeViewsLabel release];
+    [prompt4Label release];
     [super dealloc];
 }
 
@@ -117,8 +153,12 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
     [[PiptureAppDelegate instance] buyViews];
 }
 
--(void)refreshViewsInfo{
+-(void)refreshViewsInfo {
     [[PiptureAppDelegate instance] updateBalance];    
+}
+
+-(void)refreshViewsInfoAndFreeViewersForEpisode:(NSNumber *)episodeId {
+    [[PiptureAppDelegate instance] updateBalanceWithFreeViewersForEpisode:episodeId];    
 }
 
 #pragma mark ActionSheet Delegate
@@ -159,6 +199,11 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
 
 -(void)authenticationFailed {
     NSLog(@"auth failed!");
+}
+
+-(void) onFreeViewersUpdated:(NSNotification *) notification {
+    NSNumber *freeViewers = [notification.userInfo valueForKey:@"FreeViewers"];
+    [self setNumberOfFreeViews:[freeViewers intValue]];
 }
 
 @end

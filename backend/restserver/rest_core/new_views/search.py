@@ -1,11 +1,10 @@
 from itertools import chain
 
 from django.db.models.query_utils import Q
-from pipture.models import Trailers
 
 from rest_core.api_errors import ParameterExpected
 from rest_core.validation_mixins import PurchaserValidationMixin
-from restserver.pipture.utils import EpisodeUtils, AlbumUtils
+from restserver.pipture.utils import EpisodeUtils
 from restserver.rest_core.api_view import GetView
 
 from stemming import porter2

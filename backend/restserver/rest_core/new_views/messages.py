@@ -81,6 +81,8 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
         self.video_url = self.create_message_and_return_url(episode,
                                                             message_free_views)
+        self.free_viewers_for_episode = None if not episode_free_viewers \
+                                        else message_free_views
 
         self.purchaser.save()
         if episode_free_viewers:
@@ -106,9 +108,8 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         if not is_purchased:
             return None
 
-        #
-        # Don't use get_or_create here because of custom table scheme
-        #
+        # Don't use get_or_create here because we save model
+        # only when there are no errors
         try:
             views = FreeMsgViewers.objects.get(UserId=self.purchaser,
                                                EpisodeId=episode)
@@ -124,6 +125,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         return {
             'MessageURL': '%s/%s' % (video_host, self.video_url),
             'Balance': str(self.purchaser.Balance),
+            'FreeViewersForEpisode': self.free_viewers_for_episode,
         }
 
 

@@ -28,6 +28,7 @@ BOOL finished;
 //        [mock connectionDidFinishLoading:nil];
 //    } ] startExecute];
 //    return mock;    
+    return nil;
 }
 @end
 

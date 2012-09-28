@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import urllib2
 from annoying.functions import get_object_or_None
 
@@ -50,9 +50,10 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
             raise WrongParameter(parameter='preview')
 
     def clean_timeslot(self):
-        timeslot_id = self.params.get('TimeslotId', None)
+        self.timeslot_id = self.params.get('TimeslotId', None)
 
-        self.timeslot = get_object_or_None(TimeSlots, TimeSlotsId=timeslot_id)
+        self.timeslot = get_object_or_None(TimeSlots,
+                                           TimeSlotsId=self.timeslot_id)
 
 
     def clean(self):

@@ -794,9 +794,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    NSNumber *episodeId;
     switch (section) {
         case 0:
-            [cardSectionViewController refreshViewsInfo];
+            episodeId = [NSNumber numberWithInt:[playlistItem_ videoKeyValue]];
+            [cardSectionViewController refreshViewsInfoAndFreeViewersForEpisode:episodeId];
             [scrollingHintController onHintUsed];
             return cardSectionViewController.view;
         case 4:
