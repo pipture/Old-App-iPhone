@@ -6,6 +6,7 @@
 //  Copyright (c) 2011 Thumbtack Technology Inc. All rights reserved.
 //
 
+#import <Twitter/Twitter.h>
 #import "MailComposerController.h"
 #import "PiptureAppDelegate.h"
 #import "PiptureModel.h"
@@ -255,8 +256,42 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [inactiveBtn setImage:img forState:UIControlStateNormal];
 }
 
--(void)sendMessageURLRequest {
+-(void)sendMessageURLRequest:(enum ComposeType)type {
+    composeType = type;
     [[[PiptureAppDelegate instance] model] sendMessage:message_ ? message_ : @"" playlistItem:self.playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot userName:nameTextField.text viewsCount:[NSNumber numberWithInt:(infiniteViews? -1 : numberOfViews)] receiver:self];
+}
+
+- (void)sendEmail {
+    if ([self isPlaylistItemFree: playlistItem_]) {
+        [self sendMessageURLRequest:COMPOSETYPE_EMAIL];
+    } else {
+        int purchViews = numberOfViews;
+        Episode * ep = (Episode*)playlistItem_;
+        purchViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)?purchViews - FREE_NUMBER_OF_VIEWS:purchViews;
+        
+        if (purchViews < NOT_CONFIRMABLE_NUMBER_OF_VIEWS) {
+            [self sendMessageURLRequest:COMPOSETYPE_EMAIL];
+        } else {
+            NSString*alertmessage = [NSString stringWithFormat:@"Debit %d views?",purchViews,nil ];
+            
+            UIAlertView *alertView =[[UIAlertView alloc] initWithTitle:@"Confirm Message" message:alertmessage delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];
+            [alertView show];
+            [alertView release];
+        }
+    }
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0://Tweet
+            [self sendMessageURLRequest:COMPOSETYPE_TWEET];
+            break;
+        case 1://Email
+            [self sendEmail];
+            break;
+        default://Cancel
+            break;
+    }
 }
 
 - (IBAction)onConfirmMessageTap:(id)sender {
@@ -273,32 +308,23 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [[PiptureAppDelegate instance] putUserName:nameTextField.text];
     
     if (self.playlistItem) {
-        if ([self isPlaylistItemFree: playlistItem_])
-        {
-            [self sendMessageURLRequest];
-        } else
-        {
-            int purchViews = numberOfViews;
-            Episode * ep = (Episode*)playlistItem_;
-            purchViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)?purchViews - FREE_NUMBER_OF_VIEWS:purchViews;
-            
-            if (purchViews < NOT_CONFIRMABLE_NUMBER_OF_VIEWS) {
-                [self sendMessageURLRequest];
-            } else {
-                NSString*alertmessage = [NSString stringWithFormat:@"Debit %d views?",purchViews,nil ];
-                
-                UIAlertView *alertView =[[UIAlertView alloc] initWithTitle:@"Confirm Message" message:alertmessage delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];  
-                [alertView show];
-                [alertView release];
-            }            
+        if (infiniteViews && [TWTweetComposeViewController canSendTweet]) {
+            [[[UIActionSheet alloc] initWithTitle:nil
+                                         delegate:self
+                                cancelButtonTitle:@"Cancel"
+                           destructiveButtonTitle:nil
+                                otherButtonTitles:@"Tweet", @"Email", nil]
+             showInView:self.view];
+        } else {
+            [self sendEmail];
         }
     }
-    
+
 }
 
 -(void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
-        [self sendMessageURLRequest];
+        [self sendMessageURLRequest:composeType];
     }
 }
 
@@ -545,9 +571,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 -(void)messageSiteURLreceived:(NSString*)url
 {
-    
-    NSString *snippet = [[NSBundle mainBundle] pathForResource:@"snippet" ofType:@"html"];  
-    NSMutableString * htmlData = [[NSMutableString alloc] initWithContentsOfFile:snippet encoding:NSUTF8StringEncoding error:nil];
     NSString * newUrl;
     if ([[url substringToIndex:1] compare:@"/"] == NSOrderedSame) {
         NSString * endPoint = [[[PiptureAppDelegate instance] model] getEndPoint];
@@ -556,29 +579,58 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         newUrl = url;
     }
     
-    [htmlData replaceOccurrencesOfString:HTML_MACROS_MESSAGE_URL withString:newUrl options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
-    [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:screenshotImage_ ? screenshotImage_.imageURLLQ : self.playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
-    
-    NSString * nameField = nameTextField.text;
-    if (nameField.length >= 32) {
-        nameField = [nameField substringToIndex:31];
-        nameField = [nameField stringByAppendingString:@"..."];
+    switch (composeType) {
+        case COMPOSETYPE_EMAIL: {
+            NSString *snippet = [[NSBundle mainBundle] pathForResource:@"snippet" ofType:@"html"];
+            NSMutableString * htmlData = [[NSMutableString alloc] initWithContentsOfFile:snippet encoding:NSUTF8StringEncoding error:nil];
+            
+            [htmlData replaceOccurrencesOfString:HTML_MACROS_MESSAGE_URL withString:newUrl options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
+            [htmlData replaceOccurrencesOfString:HTML_MACROS_EMAIL_SCREENSHOT withString:screenshotImage_ ? screenshotImage_.imageURLLQ : self.playlistItem.emailScreenshot options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
+            
+            NSString * nameField = nameTextField.text;
+            if (nameField.length >= 32) {
+                nameField = [nameField substringToIndex:31];
+                nameField = [nameField stringByAppendingString:@"..."];
+            }
+            
+            [htmlData replaceOccurrencesOfString:HTML_MACROS_FROM_NAME withString:nameField options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];
+            
+            
+            MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
+            controller.mailComposeDelegate = self;
+            [controller setSubject:self.playlistItem.emailSubject];
+            
+            [controller setMessageBody:htmlData isHTML:YES];
+            if (controller) {
+                [self presentModalViewController:controller animated:YES];
+            }
+            [htmlData release];
+            self.mailComposer = controller; // to work around #8901
+            [controller release];
+        }
+            break;
+            
+        case COMPOSETYPE_TWEET: {
+            TWTweetComposeViewController *messageComposeCtr = [[TWTweetComposeViewController alloc] init];
+            [messageComposeCtr setInitialText:[NSString stringWithFormat:@"%@\nVideo message via Pipture app for iPhone", newUrl]];
+            [self presentModalViewController:messageComposeCtr animated:YES];
+            
+            messageComposeCtr.completionHandler = ^(TWTweetComposeViewControllerResult res) {
+                [self dismissModalViewControllerAnimated:YES];
+                [self clearMessage];
+                [[PiptureAppDelegate instance] closeMailComposer];
+                //TODO: maybe not close mailcomposer if Twitter Canceled
+//                if(res == TWTweetComposeViewControllerResultDone)
+//                {
+//                }else if(res == TWTweetComposeViewControllerResultCancelled)
+//                {
+//                }
+            };
+        }
+            break;
     }
     
-    [htmlData replaceOccurrencesOfString:HTML_MACROS_FROM_NAME withString:nameField options:NSCaseInsensitiveSearch range:NSMakeRange(0, [htmlData length])];    
     
-    
-    MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
-    controller.mailComposeDelegate = self;
-    [controller setSubject:self.playlistItem.emailSubject];
-
-    [controller setMessageBody:htmlData isHTML:YES]; 
-    if (controller) {
-        [self presentModalViewController:controller animated:YES];
-    }
-    [htmlData release];
-    self.mailComposer = controller; // to work around #8901
-    [controller release];    
 }
 
 - (void) setScreenshotImage:(ScreenshotImage*)screenshotImage

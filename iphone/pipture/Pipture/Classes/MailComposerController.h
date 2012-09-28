@@ -15,7 +15,12 @@
 #import "LibraryCardController.h"
 #import "ScrollingHintPopupController.h"
 
-@interface MailComposerController : UIViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate>{
+enum ComposeType {
+    COMPOSETYPE_EMAIL = 0,
+    COMPOSETYPE_TWEET = 1,
+    };
+
+@interface MailComposerController : UIViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate, UIActionSheetDelegate>{
 
     @private
     NSString * message_;
@@ -23,7 +28,8 @@
     ScreenshotImage* defaultScreenshotImage_;
     PlaylistItem* playlistItem_;
     AsyncImageView * lastScreenshotView;
-    BOOL infiniteViews;    
+    BOOL infiniteViews;
+    enum ComposeType composeType;
     NSInteger numberOfViews;
     NSArray* screenshotImages_;    
     NSNumberFormatter * viewsNumberFormatter;
