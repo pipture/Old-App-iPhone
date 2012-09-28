@@ -75,7 +75,7 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
         result = super(GeneralView, self).dispatch(request, *args, **kwargs)
         working_time = datetime.now() - entry_time
         logger.info('%s: working time = %f seconds' %
-                    (self.__class__.__name__, working_time.total_seconds()))
+                    (self.__class__.__name__, working_time.microseconds * 1e-6))
         return result
 
 
