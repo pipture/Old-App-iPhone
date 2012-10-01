@@ -66,6 +66,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         trailer = self._clean_trailer()
 
         self.video_url = self.create_message_and_return_url(trailer)
+        self.free_viewers_for_episode = None
 
     def perform_episode_operations(self):
         episode = self._clean_episode()
