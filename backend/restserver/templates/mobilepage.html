@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    
+
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
     <meta name="viewport" content="width=400" />
     <title>PIPTURE VIDEO MESSAGE</title>
@@ -38,7 +38,7 @@
         </div>
         <div style="margin-left: 0px; position: relative; width: 400px; z-index: 5; " id="body_layer">
           <div style="height: 0px; line-height: 0px; " class="bumper"> </div>
-          
+
           <div id="id3" style="height: 75px; left: -4px; position: absolute; top: 60px; width: 403px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
             <div class="text-content graphic_shape_layout_style_default_External_403_75" style="padding: 0px; ">
               <div class="graphic_shape_layout_style_default"></div>
@@ -54,7 +54,7 @@
             </div>
           </div>
 
-		
+
 
           <div style="height: 30px; width: 250px;  height: 30px; left: 149px; position: absolute; top: 17px; width: 250px; z-index: 1; " class="tinyText">
             <a  class="download_app_link" href="http://www.pipture.com/iphoneapp/">
@@ -78,16 +78,15 @@
             	<img src="{{MEDIA_URL}}webpage_files/logowhite-innershadows30.png" alt="" style="border: none; height: 35px; width: 105px; " />
             </a>
           </div>
-                   
+
           <div id="id9" style="height: 8px; left: -39px; position: absolute; top: 825px; width: 37px; z-index: 1; " class="style_SkipStroke_6 shape-with-text">
             <div class="text-content graphic_shape_layout_style_default_External_37_8" style="padding: 0px; ">
               <div class="graphic_shape_layout_style_default"></div>
             </div>
           </div>
 
-          
 
-          
+
 
 		<div style="width: 403px;  height: auto; position: absolute; top: 125px; z-index: 1;" class="tinyText">
 		  	<table cellpadding="0" cellspacing="0" class="noborder">
@@ -138,6 +137,17 @@
 			          	</div>
 			        </td></tr>
 			    {% endif %}
+
+                {% if views_limit == -1 %}
+                  <tr>
+                    <td>
+                      <div id="id13" style="margin-bottom: 7px;">
+                        {% include "like_buttons.html" %}
+                      </div>
+                    </td>
+                  </tr>
+                {% endif %}
+
 		        {% if show_info %}
 		          <tr><td width="403" height="230">
 		          	<div style="width: 403px;  height: auto; z-index: 1;" class="tinyText">
@@ -148,19 +158,19 @@
 						              <div class="graphic_shape_layout_style_default"></div>
 						            </div>
 						          </div>
-						          
+
 						          <div style="height: 200px; width: 380px;  left: 9px; top: -215px; z-index: 1; position: relative; " class="tinyText">
 						            <div style="position: relative; width: 380px; ">
 						              <img src="{{MEDIA_URL}}webpage_files/shapeimage_1.png" alt="" style="height: 200px; width: 380px; " />
 						            </div>
 						          </div>
-						
+
 								  <div style="height: 150px; width: 89px;  height: 150px; left: 26px; position: relative; top: -390px; width: 89px; z-index: 1; " class="tinyText">
 						            <div style="position: relative; width: 89px; ">
 						              <img src="{{ cover_pic }}" alt="" style="height: 150px; left: 0px; position: relative; top: 0px; width: 89px; " />
 						            </div>
 						          </div>
-						
+
 						          <div id="id5" style="height: 108px; left: 132px; position: relative; top: -500px; width: 205px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
 						            <div class="text-content style_External_205_108" style="padding: 0px; ">
 						              <div class="style_2">
@@ -172,33 +182,33 @@
 						              </div>
 						            </div>
 						          </div>
-						
+
 						          <div id="id6" style="height: 58px; left: 132px; position: relative; top: -650px; width: 215px; z-index: 1; " class="style_SkipStroke_3 shape-with-text">
 						            <div class="text-content graphic_textbox_layout_style_default_External_215_58" style="padding: 0px; ">
 						              <div class="graphic_textbox_layout_style_default">
 						                <p style="padding-top: 0pt; " class="paragraph_style_4">Did you see the series {{seriesname}} on
-						                	<a href="http://www.pipture.com/iphoneapp/"> 
+						                	<a href="http://www.pipture.com/iphoneapp/">
 						                		<span class="style_3">Pipture</span></a>?  <br />
 						                </p>
-						                	
+
 						                <p style="padding-bottom: 0pt; " class="paragraph_style_4">{{ disclaimer }}</p>
 						              </div>
 						            </div>
 						          </div>
-						
-						          
+
+
 						         </td></tr>
 						    </table>
 						</div>
 					</td></tr>
 		       	{% endif %}
-		        
+
         	</table>
         </div>
 
 		{% if not message_empty and not message_blocked %}
 			<div style="width: 403px;  height: auto; position: absolute; top: 125px; z-index: 1;" class="tinyText">
-				<table cellpadding="0" cellspacing="0" class="noborder">	
+				<table cellpadding="0" cellspacing="0" class="noborder">
 			  		<tr><td width="403" height="10" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_top.png">
 			  		<tr><td width="403" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_middle.png" >
 			  			{% autoescape off %}
@@ -209,7 +219,7 @@
 		  		</table>
 			</div>
        {% endif %}
-          
+
           <div style="height: 1200px; line-height: 1200px; " class="spacer"> </div>
         </div>
         <div style="height: 0px; line-height: 0px; margin-left: 0px; position: relative; width: 400px; z-index: 15; " id="footer_layer">
@@ -217,26 +227,26 @@
         </div>
       </div>
     </div>
-    
+
     <script type="text/javascript">
-    	    	
+
     	function onLoadDoc() {
-    		
+
  			var video = document.getElementById('video');
  			if (video) {
 				video.addEventListener('click',function(){
 	  				video.play();
 				},false);
 			}
-		
+
 			var d1 = new Date({{sent_date}}*1000);
 			dstr = d1.toString('MMMM dd') + ' at ' + d1.toString('hh:mmtt');
 			var sentdate = document.getElementById('sentdate');
-			sentdate.innerHTML = dstr;   
+			sentdate.innerHTML = dstr;
 		}
      	window.onload = onLoadDoc;
-     	
+
     </script>
-    
+
   </body>
 </html>

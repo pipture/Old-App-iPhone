@@ -144,8 +144,14 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     CGFloat offset = scrollView.contentOffset.x; 
     NSLog(@"Page Offset %f, page width %f", offset, pageW);
     CGFloat page = floor((offset - pageW / 2) / pageW);
-    if (page < -1) return -1;
-    if (page > coverItems.count - 2) return coverItems.count - 2;
+
+    NSUInteger albumsCount = [model albumsCount];
+
+    if (page < -1) {
+        page = -1;
+    } else if (page > albumsCount) {
+        page = albumsCount;
+    }
     return page;
 }
 
