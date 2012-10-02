@@ -61,6 +61,9 @@
 
 
 - (Album*) albumForPage:(NSInteger)page {
+    NSInteger maxIndex = [albums_ count] - 1;
+    page = page < 0 ? maxIndex : (page > maxIndex ? 0 : page);
+
     return [albums_ objectAtIndex:page];    
 }
 
