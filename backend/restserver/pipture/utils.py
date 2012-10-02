@@ -11,16 +11,15 @@ from annoying.functions import get_object_or_None
 
 class AlbumUtils(object):
 
-    _purchased_albums = None
+    purchased_albums = None
 
     @classmethod
     def get_purchased(cls, purchaser):
-        if cls._purchased_albums is None:
-            purchased_albums = UserPurchasedItems.objects.filter(
-                    UserId=purchaser,
-                    PurchaseItemId__Description='Album').values_list('ItemId')
-            cls._purchased_albums = [int(id[0]) for id in purchased_albums]
-        return cls._purchased_albums
+        purchased_albums = UserPurchasedItems.objects.filter(
+                UserId=purchaser,
+                PurchaseItemId__Description='Album').values_list('ItemId')
+        cls.purchased_albums = [int(id[0]) for id in purchased_albums]
+        return cls.purchased_albums
 
     @classmethod
     def get_cover(cls):
