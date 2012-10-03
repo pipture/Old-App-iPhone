@@ -49,6 +49,7 @@
 @synthesize prompt2Label;
 @synthesize numberOfViewsLabel;
 @synthesize scheduleLabel;
+@synthesize scheduleLabelView;
 @synthesize fromHotNews;
 @synthesize noVideosLabel;
 
@@ -134,7 +135,8 @@
         
         self.navigationItemFake.leftBarButtonItem = back;
     }
-
+    
+//    [self updateScheduleLabel];
         
     [back release];
     [backButton release];
@@ -142,19 +144,7 @@
                                         heightOffset, 
                                         buttonsPanel.frame.size.width, 
                                         self.view.frame.size.height-heightOffset);
-    
-    /*
-    For feature #17844
-     
-    NSString *albumScheduleInfo = [self albumSchedule];
-    if (albumScheduleInfo) {
-        scheduleLabel.text = albumScheduleInfo;
-        scheduleLabel.hidden = NO;
-    } else {
-        scheduleLabel.hidden = YES;
-    } 
-     */
-    
+   
     [self updateDetails];
 }
 
@@ -217,6 +207,8 @@
     
     asyncImageViews = [[NSMutableDictionary alloc] init];    
     [self tabChanged:detailsButton];
+    
+    [self setupScheduleLabelView];
 }
 
 - (void)viewDidUnload
@@ -243,6 +235,7 @@
     [self setProgressView:nil];
     [self setNoVideosLabel:nil];
     [self setScheduleLabel:nil];
+    [self setScheduleLabelView:nil];
     [super viewDidUnload];
 }
 
@@ -272,6 +265,7 @@
     [progressView release];
     [noVideosLabel release];
     [scheduleLabel release];
+    [scheduleLabelView release];
     [super dealloc];
 }
 
@@ -705,6 +699,7 @@
                                                 updateDate:[album.updateDate timeIntervalSince1970]];
     [[PiptureAppDelegate instance] powerButtonEnable:([scheduleModel albumIsPlayingNow:album.albumId])];        
 
+    [self updateScheduleLabel];
 }
 
 -(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album {
@@ -740,11 +735,29 @@
 - (NSString*)albumSchedule {
     Timeslot *timeslotForAlbum = [scheduleModel getAlbumTimeslot:album.albumId];
     if (timeslotForAlbum) {
-        return [NSString stringWithFormat:@"Scheduled at %@ to %@",
-                [TimeslotFormatter representTime:timeslotForAlbum.startTime], 
-                [TimeslotFormatter representTime:timeslotForAlbum.endTime]];
+        return [NSString stringWithFormat:@"Watch the Series at %@",
+                [TimeslotFormatter representTime:timeslotForAlbum.startTime]];
     }
     return nil;
 }
+
+- (void)updateScheduleLabel {
+    NSString *albumScheduleInfo = [self albumSchedule];
+    if (albumScheduleInfo) {
+        scheduleLabel.text = albumScheduleInfo;
+    }
+    
+    scheduleLabelView.hidden = !albumScheduleInfo;
+}
+
+- (void)setupScheduleLabelView {
+    double height = scheduleLabelView.frame.size.height;
+    scheduleLabelView.frame = CGRectMake(scheduleLabelView.frame.origin.x,
+                                         detailPage.posterPlaceholder.frame.origin.y + 
+                                         detailPage.posterPlaceholder.frame.size.height - height,
+                                         scheduleLabelView.frame.size.width,
+                                         height);
+}
+
 
 @end

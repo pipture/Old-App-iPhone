@@ -41,6 +41,7 @@
 @synthesize newsView;
 @synthesize channelCategories;
 @synthesize categoriesOrder;
+@synthesize scheduleModel;
 
 
 #pragma mark - View lifecycle
@@ -403,6 +404,10 @@
             [albumsView setLibraryCardVisibility:NO withAnimation:NO];
             [albumsView showScrollingHintIfNeeded];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
+            
+            if (![scheduleModel timeslotsCount]) {
+                [scheduleModel updateTimeslots];
+            }
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
