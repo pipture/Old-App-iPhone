@@ -91,16 +91,15 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
     def get_message_attrs(self, episode_free_viewers):
         price = PurchaseItems.objects.get(Description='SendEpisode').Price
-        message_cost = price * self.views_count
-        message_free_viewers = 0
+        message_cost = message_free_viewers = 0
 
         if episode_free_viewers and episode_free_viewers.Rest > 0:
-            message_cost -= int(price) * episode_free_viewers.Rest
+            views_to_pay = self.views_count - episode_free_viewers.Rest
+            message_cost = price * max(views_to_pay, 0)
 
-            rest = max(episode_free_viewers.Rest - self.views_count, 0)
+            rest = max(-views_to_pay, 0)
             episode_free_viewers.Rest = message_free_viewers = rest
 
-        message_cost = max(message_cost, 0)
         return message_cost, message_free_viewers
 
     def get_free_viewers(self, episode):
