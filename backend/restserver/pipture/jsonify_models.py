@@ -1,6 +1,22 @@
 from datetime import datetime, timedelta
+import decimal
+from django.utils import simplejson
 
 from pipture.time_utils import TimeUtils
+from restserver.s3.s3FileField import CustomFieldFile
+
+
+class ApiJSONEncoder(simplejson.JSONEncoder):
+
+    def default(self, o):
+        if isinstance(o, datetime):
+            return str(TimeUtils.get_timestamp(o))
+        elif isinstance(o, decimal.Decimal):
+            return str(o)
+        elif isinstance(o, CustomFieldFile):
+            return o.get_url()
+        else:
+            return super(ApiJSONEncoder, self).default(o)
 
 
 class Utils(object):
@@ -12,11 +28,11 @@ class Utils(object):
 
     @classmethod
     def get_album_status(cls, album, released, updated):
-        date_utc_now = datetime.utcnow()
+        utcnow = datetime.utcnow()
 
         if not album.episodes.all():
             status = album.STATUS_NORMAL
-        elif released > TimeUtils.get_timestamp(date_utc_now):
+        elif released > utcnow:
             status = album.STATUS_COMING_SOON
         else:
             # TODO: move PiptureSettings from huge models file and remove inline import
@@ -25,7 +41,7 @@ class Utils(object):
 
             premiere_days = PiptureSettings.get_premiere_period()
             premiere_period = timedelta(days=premiere_days)
-            if updated >= TimeUtils.get_timestamp(date_utc_now - premiere_period):
+            if updated >= utcnow - premiere_period:
                 status = album.STATUS_PREMIERE
             else:
                 status = album.STATUS_NORMAL
@@ -47,14 +63,13 @@ class Utils(object):
             if album.TopAlbum:
                 updated = high_datetime
 
-        return TimeUtils.get_timestamp(released), \
-               TimeUtils.get_timestamp(updated)
+        return released, updated
 
     @classmethod
     def get_timeslot_status(cls, timeslot, local_utcnow):
         if timeslot.is_current(local_utcnow):
             status = timeslot.STATUS_CURRENT
-        elif timeslot.StartTimeUTC > local_utcnow or \
+        elif timeslot.next_start_time > local_utcnow or \
                 timeslot.EndDate > datetime.utcnow().date():
             status = timeslot.STATUS_NEXT
         else:
@@ -82,15 +97,15 @@ class JsonifyModels(object):
             'Season': album.Season,
             'Title': album.Title,
             'SellStatus': Utils.get_sell_status(album, is_purchased),
-            'SquareThumbnail': album.SquareThumbnail.get_url()
+            'SquareThumbnail': album.SquareThumbnail
         }
         album_json.update(self.__call__(album.SeriesId))
 
         if not self.as_category_item:
             album_json.update({
-                'Cover': album.Cover.get_url(),
-                'CloseUpBackground': album.CloseUpBackground.get_url(),
-                'Thumbnail': album.Thumbnail.get_url(),
+                'Cover': album.Cover,
+                'CloseUpBackground': album.CloseUpBackground,
+                'Thumbnail': album.Thumbnail,
                 'Description': album.Description,
                 'Rating': album.Rating,
                 'Credits': album.Credits,
@@ -108,28 +123,26 @@ class JsonifyModels(object):
         return album_json
 
     def episodes(self, episode, **kwargs):
-        released = TimeUtils.get_timestamp(episode.DateReleased)
-
         episode_json = {
             "Type": "Episode",
             "EpisodeId": episode.EpisodeId,
             "EpisodeNo": episode.EpisodeNo,
             "Title": episode.Title,
-            "CloseUpThumbnail": episode.CloseUpThumbnail.get_url(),
+            "CloseUpThumbnail": episode.CloseUpThumbnail,
         }
 
         if self.as_category_item:
             episode_json['Album'] = self.__call__(episode.AlbumId)
             episode_json.update({
-                "SquareThumbnail": episode.SquareThumbnail.get_url()
+                "SquareThumbnail": episode.SquareThumbnail
             })
         else:
             episode_json.update({
                 "Script": episode.Script,
-                "DateReleased": released,
+                "DateReleased": episode.DateReleased,
                 "Subject": episode.Subject,
                 "SenderToReceiver": episode.SenderToReceiver,
-                "SquareThumbnail": episode.SquareThumbnail.get_url()
+                "SquareThumbnail": episode.SquareThumbnail
             })
 
             if kwargs.get('add_album_info', False):
@@ -138,7 +151,7 @@ class JsonifyModels(object):
                     "AlbumId": album.AlbumId,
                     "AlbumTitle": album.Title,
                     "AlbumSeason": album.Season,
-                    "AlbumSquareThumbnail": album.SquareThumbnail.get_url(),
+                    "AlbumSquareThumbnail": album.SquareThumbnail,
                 })
                 episode_json.update(self.__call__(album.SeriesId))
 
@@ -157,7 +170,7 @@ class JsonifyModels(object):
             "TrailerId": trailer.TrailerId,
             "Line1": trailer.Line1,
             "Line2": trailer.Line2,
-            "SquareThumbnail": trailer.SquareThumbnail.get_url()
+            "SquareThumbnail": trailer.SquareThumbnail
         }
         if not self.as_category_item:
             trailer_json.update({
@@ -171,12 +184,12 @@ class JsonifyModels(object):
 
         return {
             "TimeSlotId": timeslot.TimeSlotsId,
-            "StartTime": str(timeslot.StartTimeUTC),
-            "EndTime": str(timeslot.EndTimeUTC),
+            "StartTime": timeslot.next_start_time,
+            "EndTime": timeslot.next_end_time,
             "ScheduleDescription": timeslot.ScheduleDescription,
             "Title": timeslot.AlbumId.SeriesId.Title,
             "AlbumId": timeslot.AlbumId.AlbumId,
-            "CloseupBackground": timeslot.AlbumId.CloseUpBackground.get_url(),
+            "CloseupBackground": timeslot.AlbumId.CloseUpBackground,
             "TimeslotStatus": Utils.get_timeslot_status(timeslot, local_utcnow),
         }
 

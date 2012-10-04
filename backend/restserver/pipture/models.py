@@ -273,50 +273,32 @@ class TimeSlots(models.Model):
                                                self.EndTime)
 
     @property
-    def StartDateUTC(self):
-        return TimeUtils.get_timestamp(self.StartDate)
+    def next_start_time(self):
+        utcnow = datetime.utcnow()
+        start_datetime = utcnow.replace(hour=self.StartTime.hour,
+                                    minute=self.StartTime.minute,
+                                    second=self.StartTime.second)
+        if start_datetime < utcnow:
+            start_datetime += timedelta(days=1)  # tomorrow AM time
+
+        return start_datetime
 
     @property
-    def EndDateUTC(self):
-        utc_time = datetime(self.EndDate.year,
-                            self.EndDate.month,
-                            self.EndDate.day,
-                            23, 59, 59)
-        return TimeUtils.get_timestamp(utc_time)
-
-    @property
-    def StartTimeUTC(self):
-        return TimeUtils.get_timestamp(self.get_start_time())
-
-    @property
-    def EndTimeUTC(self):
-        end_datetime = self.get_end_time()
-        start_datetime = self.get_start_time()
-
-        if end_datetime <= start_datetime:
-            end_datetime += timedelta(days=1)  # tomorrow AM time
-
-        return TimeUtils.get_timestamp(end_datetime)
-
-    def is_in_date_period(self, local_time):
-        return self.StartDateUTC < local_time < self.EndDateUTC
-
-    def is_in_time_period(self, local_time):
-        return self.StartTimeUTC < local_time < self.EndTimeUTC
-
-    def get_start_time(self):
-        return datetime.now().replace(hour=self.StartTime.hour,
-                                      minute=self.StartTime.minute,
-                                      second=self.StartTime.second)
-
-    def get_end_time(self):
-        return datetime.now().replace(hour=self.EndTime.hour,
+    def next_end_time(self):
+        utcnow = datetime.utcnow()
+        end_datetime = utcnow.replace(hour=self.EndTime.hour,
                                       minute=self.EndTime.minute,
                                       second=self.EndTime.second)
+        if end_datetime < utcnow:
+            end_datetime += timedelta(days=1)  # tomorrow AM time
+
+        if end_datetime <= self.next_start_time:
+            end_datetime += timedelta(days=1)  # tomorrow AM time
+
+        return end_datetime
 
     def is_current(self, local_time):
-        return self.is_in_date_period(local_time) and\
-               self.is_in_time_period(local_time)
+        return self.next_start_time < local_time < self.next_end_time
 
     def manager_call(self, request):
         data = {'chosen_timeslot': self.TimeSlotsId,

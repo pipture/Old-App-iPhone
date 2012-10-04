@@ -1,20 +1,21 @@
 from datetime import datetime
-import json
 from collections import Callable
 import logging
 
 from django.conf import settings
 from django.http import HttpResponse
+from django.utils import simplejson
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 
-from restserver.pipture.jsonify_models import JsonifyModels
+from restserver.pipture.jsonify_models import JsonifyModels, ApiJSONEncoder
 from rest_core.api_errors import ApiError, EmptyError, InternalServerError
 from restserver.rest_core.validation_mixins import ApiValidationMixin
 
 
 logger = logging.getLogger('restserver.rest_core')
+
 
 
 class ParameterValidationMixin(object):
@@ -47,10 +48,12 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
 
     def json_dumps(self, context):
         if settings.DEBUG:
-            json_context = json.dumps(context, sort_keys=True, indent=2)
+            kwargs = dict(sort_keys=True, indent=2)
         else:
-            json_context = json.dumps(context)
-        return json_context
+            kwargs = dict()
+
+        kwargs['cls'] = ApiJSONEncoder
+        return simplejson.dumps(context, **kwargs)
 
     def process(self, request, *args, **kwargs):
         self.params = request.GET or request.POST or {}
@@ -71,9 +74,9 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
         return response
 
     def dispatch(self, request, *args, **kwargs):
-        entry_time = datetime.now()
+        entry_time = datetime.utcnow()
         result = super(GeneralView, self).dispatch(request, *args, **kwargs)
-        working_time = datetime.now() - entry_time
+        working_time = datetime.utcnow() - entry_time
         logger.info('%s: working time = %f seconds' %
                     (self.__class__.__name__, working_time.microseconds * 1e-6))
         return result

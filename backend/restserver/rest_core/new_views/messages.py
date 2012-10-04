@@ -125,7 +125,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
         return {
             'MessageURL': '%s/%s' % (video_host, self.video_url),
-            'Balance': str(self.purchaser.Balance),
+            'Balance': self.purchaser.Balance,
             'FreeViewersForEpisode': self.free_viewers_for_episode,
         }
 
@@ -146,7 +146,7 @@ class GetUnusedMessageViews(GetView, PurchaserValidationMixin,
 
     def perform_operations(self):
 
-        week_date = datetime.now() - timedelta(7)
+        week_date = datetime.utcnow() - timedelta(7)
         group1, group2 = 0, 0
 
         for message in self.messages:
@@ -187,7 +187,7 @@ class DeactivateMessageViews(PostView, PurchaserValidationMixin,
             self.period = 0
 
     def perform_operations(self):
-        weekdate = datetime.now() - timedelta(7)
+        weekdate = datetime.utcnow() - timedelta(7)
         group = 0
 
         for message in self.messages:
@@ -219,5 +219,5 @@ class DeactivateMessageViews(PostView, PurchaserValidationMixin,
 
         return {
             'Restored': str(group),
-            'Balance': str(self.purchaser.Balance),
+            'Balance': self.purchaser.Balance,
         }

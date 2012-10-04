@@ -14,6 +14,13 @@ from rest_core.validation_mixins import TimezoneValidationMixin, \
 
 class GetTimeslots(GetView, TimezoneValidationMixin):
 
+    @staticmethod
+    def cmp_timeslots(t1, t2):
+        if t1['StartTime'] >= t2['StartTime']:
+            return 1
+        else:
+            return -1
+
     def get_context_data(self):
         today_utc = datetime.utcnow().date()
 
@@ -22,16 +29,19 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
                                              StartDate__lte=today_utc)\
                                      .order_by('StartTime')
 
+        timeslots = [self.jsonify(timeslot, local_utcnow=self.local_utcnow)
+                     for timeslot in timeslots]
+
+        timeslots.sort(cmp=GetTimeslots.cmp_timeslots)
+
         return {
             'CurrentTime': self.local_utcnow,
-            'Timeslots': [self.jsonify(timeslot, local_utcnow=self.local_utcnow)
-                          for timeslot in timeslots],
+            'Timeslots': timeslots,
         }
 
 
 class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
                EpisodeAndTrailerValidationMixin):
-
     disabled_validators = ('clean_key',)
 
     def clean_quality(self):
@@ -123,7 +133,7 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
             'Subs': self.read_subtitles(subtitles_url),
         }
         if hasattr(self, 'purchaser'):
-            response['Balance'] = str(self.purchaser.Balance)
+            response['Balance'] = self.purchaser.Balance
 
         return response
 
@@ -145,10 +155,10 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
                 (message='There is no timeslot with id %s' % timeslot_id)
 
     def clean(self):
-        if self.timeslot.StartTimeUTC > self.local_utcnow:
+        if self.timeslot.next_start_time > self.local_utcnow:
             raise NoContent(message='Timeslot is in the future')
 
-        if  self.local_utcnow > self.timeslot.EndTimeUTC:
+        if  self.local_utcnow > self.timeslot.next_end_time:
             raise NoContent(message='Timeslot is in the past')
 
         self.timeslot_videos = TimeSlotVideos.objects\
@@ -159,7 +169,7 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
                 message='There are no videos in timeslot %s' % self.timeslot)
 
     def get_autoepisode(self, StartEpisodeId, start_time):
-        d1 = datetime.now()
+        d1 = datetime.utcnow()
         delta = d1 - datetime(start_time.year, start_time.month, start_time.day)
 
         video = Episodes.objects.select_related(depth=2)\

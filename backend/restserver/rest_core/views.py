@@ -113,8 +113,8 @@ def getTimeslots (request):
     for ts in timeslots:
         slot = {
             "TimeSlotId": ts.TimeSlotsId,
-            "StartTime": str(ts.StartTimeUTC),
-            "EndTime": str(ts.EndTimeUTC),
+            "StartTime": str(ts.next_start_time),
+            "EndTime": str(ts.next_end_time),
             "ScheduleDescription": ts.ScheduleDescription,
             "Title": ts.AlbumId.SeriesId.Title,
             "AlbumId": ts.AlbumId.AlbumId,
@@ -123,7 +123,7 @@ def getTimeslots (request):
         if ts.is_current(sec_utc_now):
             slot["TimeslotStatus"] = 2
             current_ts = True
-        elif wait_next_ts and (current_ts or ts.StartTimeUTC > sec_utc_now):
+        elif wait_next_ts and (current_ts or ts.next_start_time > sec_utc_now):
             current_ts = False
             wait_next_ts = False
             slot["TimeslotStatus"] = 1
@@ -414,11 +414,11 @@ def getPlaylist (request):
 
 #    today = datetime.datetime.utcnow()
 #    sec_utc_now = calendar.timegm(today.timetuple())
-    if timeslot.StartTimeUTC > sec_utc_now:
+    if timeslot.next_start_time > sec_utc_now:
         response["Error"] = {"ErrorCode": "3", "ErrorDescription": "Timeslot in future"}
         return HttpResponse(json.dumps(response))
 
-    if  sec_utc_now > timeslot.EndTimeUTC:
+    if  sec_utc_now > timeslot.next_end_time:
         response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Timeslot is no current"}
         return HttpResponse(json.dumps(response))
 
@@ -728,7 +728,7 @@ def is_episode_on_air (episode, today):
     sec_utc_now = calendar.timegm(today.timetuple())
 
     for t in timeslotvideos:
-        if t.TimeSlotsId.StartTimeUTC < sec_utc_now:
+        if t.TimeSlotsId.next_start_time < sec_utc_now:
             return True
     return False
 

@@ -51,8 +51,8 @@ class EpisodeUtils(object):
 
     @classmethod
     def is_on_air(cls, episode):
-        now = datetime.utcnow()
-        today = now.date()
+        utcnow = datetime.utcnow()
+        today = utcnow.date()
         date_released = episode.DateReleased.date()
 
         if date_released > today:
@@ -60,13 +60,12 @@ class EpisodeUtils(object):
         if date_released < today:
             return True
 
-        utc_now_timestamp = TimeUtils.get_timestamp(now)
         timeslot_videos = TimeSlotVideos.objects.select_related(depth=1).filter(
                 LinkType=SendMessage.TYPE_EPISODE,
                 LinkId=episode.EpisodeId)
 
         for video in timeslot_videos:
-            if video.TimeSlotsId.StartTimeUTC < utc_now_timestamp:
+            if video.TimeSlotsId.next_start_time < utcnow:
                 return True
 
         return bool(timeslot_videos)
