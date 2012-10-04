@@ -65,17 +65,6 @@ class Utils(object):
 
         return released, updated
 
-    @classmethod
-    def get_timeslot_status(cls, timeslot, local_utcnow):
-        if timeslot.is_current(local_utcnow):
-            status = timeslot.STATUS_CURRENT
-        elif timeslot.next_start_time > local_utcnow or \
-                timeslot.EndDate > datetime.utcnow().date():
-            status = timeslot.STATUS_NEXT
-        else:
-            status = timeslot.STATUS_EXPIRED
-        return status
-
 
 class JsonifyModels(object):
 
@@ -180,8 +169,6 @@ class JsonifyModels(object):
         return trailer_json
 
     def timeslots(self, timeslot, **kwargs):
-        local_utcnow = kwargs.get('local_utcnow')
-
         return {
             "TimeSlotId": timeslot.TimeSlotsId,
             "StartTime": timeslot.next_start_time,
@@ -190,7 +177,7 @@ class JsonifyModels(object):
             "Title": timeslot.AlbumId.SeriesId.Title,
             "AlbumId": timeslot.AlbumId.AlbumId,
             "CloseupBackground": timeslot.AlbumId.CloseUpBackground,
-            "TimeslotStatus": Utils.get_timeslot_status(timeslot, local_utcnow),
+            "TimeslotStatus": timeslot.get_status(),
         }
 
     def series(self, series, **kwargs):

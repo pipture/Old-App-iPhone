@@ -1,4 +1,5 @@
 import pytz
+from pipture.middleware.threadlocals import LocalUserMiddleware
 
 from pipture.models import PipUsers, Trailers, Episodes
 from pipture.time_utils import TimeUtils
@@ -49,8 +50,12 @@ class TimezoneValidationMixin(object):
 
         timezone = self.params[param_name]
         try:
-            local_timezone = pytz.timezone(timezone)
-            self.local_utcnow = TimeUtils.get_utc_now_as_local(local_timezone)
+            user_timezone = pytz.timezone(timezone)
+            user_now = TimeUtils.get_utc_now_as_local(user_timezone)
+
+            LocalUserMiddleware.update(user_timezone=user_timezone,
+                                       user_now=user_now)
+
         except pytz.exceptions.UnknownTimeZoneError:
             raise BadRequest(message='Unknown timezone.')
 
