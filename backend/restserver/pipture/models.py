@@ -12,7 +12,6 @@ from django.db.models.signals import post_save, post_syncdb
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.contrib.auth.models import User
-from pipture.time_utils import TimeUtils
 
 from restserver.s3.s3FileField import S3EnabledFileField
 

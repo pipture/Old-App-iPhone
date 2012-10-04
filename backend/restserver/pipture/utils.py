@@ -4,7 +4,6 @@ from django.db.models import Q
 
 from pipture.models import Episodes, Albums, UserPurchasedItems, \
                            PiptureSettings, TimeSlotVideos, SendMessage
-from pipture.time_utils import TimeUtils
 
 from annoying.functions import get_object_or_None
 

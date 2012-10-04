@@ -16,10 +16,7 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
 
     @staticmethod
     def cmp_timeslots(t1, t2):
-        if t1['StartTime'] >= t2['StartTime']:
-            return 1
-        else:
-            return -1
+        return 1 if t1['StartTime'] >= t2['StartTime'] else -1
 
     def get_context_data(self):
         today_utc = datetime.utcnow().date()

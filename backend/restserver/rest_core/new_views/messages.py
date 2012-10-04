@@ -1,5 +1,4 @@
 from datetime import timedelta, datetime
-from decimal import Decimal
 
 from django.db.models import F, Q
 
@@ -7,7 +6,7 @@ from pipture.models import PiptureSettings, SendMessage, Trailers,\
                            PurchaseItems, FreeMsgViewers
 from pipture.utils import EpisodeUtils
 from rest_core.api_errors import BadRequest, ParameterExpected, \
-                                 NotFound, WrongParameter, NotEnoughMoney
+                                 WrongParameter, NotEnoughMoney
 from rest_core.api_view import PostView, GetView
 from rest_core.validation_mixins import PurchaserValidationMixin, \
                                         EpisodeAndTrailerValidationMixin
@@ -97,8 +96,9 @@ class SendMessageView(PostView, PurchaserValidationMixin,
             views_to_pay = self.views_count - episode_free_viewers.Rest
             message_cost = price * max(views_to_pay, 0)
 
-            rest = max(-views_to_pay, 0)
-            episode_free_viewers.Rest = message_free_viewers = rest
+            message_free_viewers = min(self.views_count,
+                                       episode_free_viewers.Rest)
+            episode_free_viewers.Rest = max(-views_to_pay, 0)
 
         return message_cost, message_free_viewers
 
@@ -153,8 +153,8 @@ class GetUnusedMessageViews(GetView, PurchaserValidationMixin,
             is_purchased = EpisodeUtils.is_in_purchased_album(message.LinkId,
                                                               self.purchaser)
             if is_purchased:
-                rest = message.ViewsLimit - message.ViewsCount\
-                                          - message.FreeViews
+                rest = message.ViewsLimit - max(message.ViewsCount,
+                                                message.FreeViews)
                 if rest > 0:
                     cnt = rest
 
@@ -198,20 +198,22 @@ class DeactivateMessageViews(PostView, PurchaserValidationMixin,
                                                                   self.purchaser)
                 cnt = 0
                 if is_purchased:
-                    rest = message.ViewsLimit - message.ViewsCount \
-                                              - message.FreeViews
+                    rest = message.ViewsLimit - max(message.ViewsCount,
+                                                    message.FreeViews)
                     if rest > 0:
                         cnt = rest
 
                 group += cnt
                 if cnt > 0:
-                    message.ViewsCount = message.ViewsLimit
-                    message.save()
+                    self.update_message(message)
 
         if group > 0:
-            user_ballance = int(self.purchaser.Balance)
-            self.purchaser.Balance = Decimal(user_ballance + group)
+            self.purchaser.Balance += group
             self.purchaser.save()
+
+    def update_message(self, message):
+        message.ViewsLimit = max(message.ViewsCount, message.FreeViews)
+        message.save()
 
     def get_context_data(self):
         group = self.perform_operations()
