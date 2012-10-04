@@ -14,6 +14,8 @@ static NSString* const FREE_VIEWERS_UPDATED_NOTIFICATION = @"PiptureFreeViewersU
 
 @interface LibraryCardController : UIViewController <UIActionSheetDelegate, UnreadMessagesReceiver, BalanceReceiver>
 
+@property (assign, nonatomic) NSInteger numberOfFreeViewsForEpisode;
+
 @property (retain, nonatomic) IBOutlet UILabel *numberOfFreeViewsLabel;
 @property (retain, nonatomic) IBOutlet UILabel *prompt1Label;
 @property (retain, nonatomic) IBOutlet UILabel *prompt2Label;

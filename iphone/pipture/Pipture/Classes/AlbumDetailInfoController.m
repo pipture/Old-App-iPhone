@@ -559,8 +559,6 @@
         prompt2Label.frame = rect2;
     }
     numberOfViewsLabel.text = text;
-    
-    
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)balance {

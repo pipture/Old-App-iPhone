@@ -19,6 +19,8 @@
 @synthesize numberOfFreeViewsLabel;
 @synthesize libraryCardButton;
 @synthesize returnViewsView;
+@synthesize numberOfFreeViewsForEpisode;
+
 
 static NSString* const activeImage = @"active-librarycard.png";
 static NSString* const inactiveImage = @"inactive-librarycard.png";
@@ -45,6 +47,8 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
 }
 
 -(void)setNumberOfFreeViews:(NSInteger)numberOfFreeViews {
+    self.numberOfFreeViewsForEpisode = numberOfFreeViews;
+    
     NSString* text = [NSString stringWithFormat:@"%d",numberOfFreeViews, nil];
     
     // Need to move prompt 4 and resize number of views
@@ -105,13 +109,12 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
     [returnViewsView addGestureRecognizer:returnViewsAction];
     [returnViewsAction release];
     
+    self.numberOfFreeViewsForEpisode = -1;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
 
 }
-
-
 
 - (void)viewDidUnload
 {

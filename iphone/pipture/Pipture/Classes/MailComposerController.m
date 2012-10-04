@@ -275,7 +275,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     } else {
         int purchViews = numberOfViews;
         Episode * ep = (Episode*)playlistItem_;
-        purchViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)?purchViews - FREE_NUMBER_OF_VIEWS:purchViews;
+        NSInteger numberOfFreeViews = cardSectionViewController.numberOfFreeViewsForEpisode;
+        if (numberOfFreeViews == -1) {
+            numberOfFreeViews = FREE_NUMBER_OF_VIEWS;
+        }
+        
+        purchViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)? purchViews - numberOfFreeViews: purchViews;
         
         if (purchViews < NOT_CONFIRMABLE_NUMBER_OF_VIEWS) {
             [self sendMessageURLRequest:COMPOSETYPE_EMAIL];
@@ -526,7 +531,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self displayScreenshot];
     [self moveView:[self selCardSectionViewController].frame.size.height + 15];
     
-    [self showScrollingHintIfNeeded];    
+    [self showScrollingHintIfNeeded];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
