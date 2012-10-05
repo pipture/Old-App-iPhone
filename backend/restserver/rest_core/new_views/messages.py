@@ -102,7 +102,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         price = PurchaseItems.objects.get(Description='SendEpisode').Price
         message_cost = message_free_viewers = 0
 
-        if episode_free_viewers and episode_free_viewers.Rest > 0:
+        if episode_free_viewers:
             views_to_pay = self.views_count - episode_free_viewers.Rest
             message_cost = price * max(views_to_pay, 0)
 
