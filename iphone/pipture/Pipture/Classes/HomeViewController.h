@@ -26,7 +26,6 @@
     NSTimer *updateTimer;
     NSTimer *blinkTimer;
     
-    ScheduleModel *scheduleModel;
                                                       
     BOOL redrawDiscarding;
     int lastHS_mode;
@@ -40,6 +39,8 @@
 - (IBAction)flipAction:(id)sender;
 - (IBAction)searchAction:(id)sender;
 - (IBAction)storeAction:(id)sender;
+
+@property (readonly, nonatomic) ScheduleModel *scheduleModel;
 
 @property (retain, nonatomic) IBOutlet UIView *tabbarContainer;
 @property (retain, nonatomic) IBOutlet UIButton *flipButton;

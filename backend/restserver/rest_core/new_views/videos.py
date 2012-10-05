@@ -4,6 +4,7 @@ from annoying.functions import get_object_or_None
 
 from pipture.models import TimeSlots, TimeSlotVideos, Episodes, \
                            SendMessage, Trailers, PurchaseItems
+from pipture.time_utils import TimeUtils
 from pipture.utils import EpisodeUtils
 from rest_core.api_errors import WrongParameter, NotFound, Forbidden, \
                                  ParameterExpected, NotEnoughMoney, NoContent
@@ -14,6 +15,12 @@ from rest_core.validation_mixins import TimezoneValidationMixin, \
 
 class GetTimeslots(GetView, TimezoneValidationMixin):
 
+    @staticmethod
+    def cmp_timeslots(t1, t2):
+        if t1['StartTime'] > t2['StartTime']:
+            return 1
+        return -1
+
     def get_context_data(self):
         today_utc = datetime.utcnow().date()
 
@@ -22,16 +29,18 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
                                              StartDate__lte=today_utc)\
                                      .order_by('StartTime')
 
+        timeslots = [self.jsonify(timeslot) for timeslot in timeslots]
+
+        timeslots.sort(cmp=GetTimeslots.cmp_timeslots)
+
         return {
-            'CurrentTime': self.local_utcnow,
-            'Timeslots': [self.jsonify(timeslot, local_utcnow=self.local_utcnow)
-                          for timeslot in timeslots],
+            'CurrentTime': TimeUtils.user_now(),
+            'Timeslots': timeslots,
         }
 
 
 class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
                EpisodeAndTrailerValidationMixin):
-
     disabled_validators = ('clean_key',)
 
     def clean_quality(self):
@@ -88,7 +97,7 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
         return video_file.get_url(), subtitles_url
 
     def perform_timeslot_operations(self):
-        if not self.timeslot or not self.timeslot.is_current(self.local_utcnow):
+        if not self.timeslot or not self.timeslot.is_current():
             raise NoContent(message='Timeslot is not current')
 
     def perform_episode_operations(self):
@@ -123,7 +132,7 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
             'Subs': self.read_subtitles(subtitles_url),
         }
         if hasattr(self, 'purchaser'):
-            response['Balance'] = str(self.purchaser.Balance)
+            response['Balance'] = self.purchaser.Balance
 
         return response
 
@@ -145,11 +154,8 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
                 (message='There is no timeslot with id %s' % timeslot_id)
 
     def clean(self):
-        if self.timeslot.StartTimeUTC > self.local_utcnow:
-            raise NoContent(message='Timeslot is in the future')
-
-        if  self.local_utcnow > self.timeslot.EndTimeUTC:
-            raise NoContent(message='Timeslot is in the past')
+        if not self.timeslot.is_current():
+            raise NoContent(message='Timeslot is no current')
 
         self.timeslot_videos = TimeSlotVideos.objects\
                                              .filter(TimeSlotsId=self.timeslot)\
@@ -159,7 +165,7 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
                 message='There are no videos in timeslot %s' % self.timeslot)
 
     def get_autoepisode(self, StartEpisodeId, start_time):
-        d1 = datetime.now()
+        d1 = datetime.utcnow()
         delta = d1 - datetime(start_time.year, start_time.month, start_time.day)
 
         video = Episodes.objects.select_related(depth=2)\
@@ -169,7 +175,7 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
         if len(episodes) > delta.days:
             return episodes[delta.days]
 
-        return 0
+        return None
 
     def get_trailer(self, timeslot_video):
         return get_object_or_None(Trailers, TrailerId=timeslot_video.LinkId)
@@ -190,7 +196,9 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
             if timeslot_video.LinkType == SendMessage.TYPE_TRAILER:
                 timeslot_videos.append(self.get_trailer(timeslot_video))
             elif timeslot_video.LinkType == SendMessage.TYPE_EPISODE:
-                timeslot_videos.append(self.get_episode(timeslot_video))
+                episode = self.get_episode(timeslot_video)
+                if episode:
+                    timeslot_videos.append(episode)
 
         return timeslot_videos
 

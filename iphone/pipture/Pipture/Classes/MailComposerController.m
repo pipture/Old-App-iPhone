@@ -82,13 +82,18 @@
 @synthesize infiniteViewsRadioButton;
 @synthesize maxViewsLabel;
 @synthesize infiniteRadioButtonsGroupView;
+@synthesize numberOfFreeViewsForEpisode;
 
 static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
+-(BOOL)isPlaylistItemFree: (PlaylistItem*)playlistItem{
+    return playlistItem.class == [Trailer class] || playlistItem.album.sellStatus == AlbumSellStatus_NotSellable;
+}
+
 - (UIView*)selCardSectionViewController {
-    if (self.playlistItem.album.sellStatus == AlbumSellStatus_NotSellable) {
+    if ([self isPlaylistItemFree:playlistItem_]) {
         return nil;
     } else {
         return cardSectionViewController.view;
@@ -185,7 +190,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     lastScreenshotView = nil;
     progressView.hidden = YES;
-
     
     nameTextField.text = [[PiptureAppDelegate instance] getUserName];  
     [numberOfViewsTextField setBorderStyle:UITextBorderStyleRoundedRect];
@@ -194,9 +198,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardA7" bundle:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBuyViews:) name:BUY_VIEWS_NOTIFICATION object:nil]; 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:nil]; 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:VIEWS_PURCHASED_NOTIFICATION object:nil];   
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBuyViews:) name:BUY_VIEWS_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onFreeViewersUpdated:) name:FREE_VIEWERS_UPDATED_NOTIFICATION object:nil];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -275,7 +278,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     } else {
         int purchViews = numberOfViews;
         Episode * ep = (Episode*)playlistItem_;
-        purchViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)?purchViews - FREE_NUMBER_OF_VIEWS:purchViews;
+        NSInteger numberOfFreeViews = numberOfFreeViewsForEpisode;
+        if (numberOfFreeViews == -1) {
+            numberOfFreeViews = FREE_NUMBER_OF_VIEWS;
+        }
+        
+        purchViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)? purchViews - numberOfFreeViews: purchViews;
         
         if (purchViews < NOT_CONFIRMABLE_NUMBER_OF_VIEWS) {
             [self sendMessageURLRequest:COMPOSETYPE_EMAIL];
@@ -340,12 +348,22 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     infiniteRadioButtonsGroupView.hidden = ![self isPlaylistItemFree:playlistItem_];
 }
 
+- (LibraryCardController*)cardSectionViewController {
+    if (!cardSectionViewController) {
+        cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardA7" bundle:nil];
+    }
+    return cardSectionViewController;
+}
+
 -(PlaylistItem*)playlistItem
 {
     return playlistItem_;
 }
 
 - (void)viewUpdate:(PlaylistItem*)playlistItem {
+    NSNumber *episodeId = [NSNumber numberWithInt:[playlistItem_ videoKeyValue]];
+    [self.cardSectionViewController refreshViewsInfoAndFreeViewersForEpisode:episodeId];
+    
     numberOfViews = DEFAULT_NUMBER_OF_VIEWS;
     infiniteViews = [self isPlaylistItemFree: playlistItem];
     if (self.view) {
@@ -469,7 +487,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         if ([textField.text length]) {
             NSNumber* num = [viewsNumberFormatter numberFromString:textField.text];
             if (num) {
-                numberOfViews = [num integerValue];    
+                int prevNumberOfViews = numberOfViews;
+                numberOfViews = [num integerValue];
+                if (numberOfViews < 1 || numberOfViews > 100) {
+                    numberOfViews = prevNumberOfViews;
+                    [self displayNumberOfViewsTextField];
+                }
                 return;
             }        
         }
@@ -503,12 +526,15 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     
-
+    [self updateFreeViewersForEpisodeLabel];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+ 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:VIEWS_PURCHASED_NOTIFICATION object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:self.view.window]; 
@@ -526,13 +552,16 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self displayScreenshot];
     [self moveView:[self selCardSectionViewController].frame.size.height + 15];
     
-    [self showScrollingHintIfNeeded];    
+    [self showScrollingHintIfNeeded];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self deselectRows];
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NEW_BALANCE_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VIEWS_PURCHASED_NOTIFICATION object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil]; 
     
@@ -880,12 +909,15 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [numberOfViewsTextField resignFirstResponder];    
 }
 
--(BOOL)isPlaylistItemFree: (PlaylistItem*)playlistItem{
-    return playlistItem.class == [Trailer class] || playlistItem.album.sellStatus == AlbumSellStatus_NotSellable;
-   
+-(void) onFreeViewersUpdated:(NSNotification *) notification {
+    self.numberOfFreeViewsForEpisode = [[notification.userInfo valueForKey:@"FreeViewers"] intValue];
+    NSLog(@"----> %d", self.numberOfFreeViewsForEpisode);
+    [self updateFreeViewersForEpisodeLabel];
 }
 
-
+-(void)updateFreeViewersForEpisodeLabel {
+    [cardSectionViewController setNumberOfFreeViews:numberOfFreeViewsForEpisode];
+}
 @end
 
 

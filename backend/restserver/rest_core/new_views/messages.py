@@ -1,5 +1,4 @@
 from datetime import timedelta, datetime
-from decimal import Decimal
 
 from django.db.models import F, Q
 
@@ -7,7 +6,7 @@ from pipture.models import PiptureSettings, SendMessage, Trailers,\
                            PurchaseItems, FreeMsgViewers
 from pipture.utils import EpisodeUtils
 from rest_core.api_errors import BadRequest, ParameterExpected, \
-                                 NotFound, WrongParameter, NotEnoughMoney
+                                 WrongParameter, NotEnoughMoney
 from rest_core.api_view import PostView, GetView
 from rest_core.validation_mixins import PurchaserValidationMixin, \
                                         EpisodeAndTrailerValidationMixin
@@ -28,13 +27,22 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         if not self.user_name:
             raise ParameterExpected(parameter='UserName')
 
-    def clean(self):
-        self.screenshot_url = self.params.get('ScreenshotURL', '')
+    def clean_views_count(self):
+        views_count = self.params.get('ViewsCount', None)
+        if not views_count:
+            raise ParameterExpected(parameter='ViewsCount')
 
         try:
-            self.views_count = int(self.params.get('ViewsCount', None))
+            self.views_count = int(views_count)
+            if self.views_count != SendMessage.UNLIMITED_VIEWS and \
+                    (self.views_count > SendMessage.MAX_VIEWS_LIMIT or
+                     self.views_count < SendMessage.MIN_VIEWS_LIMIT):
+                raise WrongParameter(parameter='ViewsCount')
         except ValueError:
             raise WrongParameter(parameter='ViewsCount')
+
+    def clean(self):
+        self.screenshot_url = self.params.get('ScreenshotURL', '')
 
     def create_message_and_return_url(self, video, free_views=0):
         if isinstance(video, Trailers):
@@ -82,8 +90,9 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
         self.video_url = self.create_message_and_return_url(episode,
                                                             message_free_views)
+
         self.free_viewers_for_episode = None if not episode_free_viewers \
-                                        else message_free_views
+                                        else episode_free_viewers.Rest
 
         self.purchaser.save()
         if episode_free_viewers:
@@ -91,16 +100,16 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
     def get_message_attrs(self, episode_free_viewers):
         price = PurchaseItems.objects.get(Description='SendEpisode').Price
-        message_cost = price * self.views_count
-        message_free_viewers = 0
+        message_cost = message_free_viewers = 0
 
         if episode_free_viewers and episode_free_viewers.Rest > 0:
-            message_cost -= int(price) * episode_free_viewers.Rest
+            views_to_pay = self.views_count - episode_free_viewers.Rest
+            message_cost = price * max(views_to_pay, 0)
 
-            rest = max(episode_free_viewers.Rest - self.views_count, 0)
-            episode_free_viewers.Rest = message_free_viewers = rest
+            message_free_viewers = min(self.views_count,
+                                       episode_free_viewers.Rest)
+            episode_free_viewers.Rest = max(-views_to_pay, 0)
 
-        message_cost = max(message_cost, 0)
         return message_cost, message_free_viewers
 
     def get_free_viewers(self, episode):
@@ -125,7 +134,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
         return {
             'MessageURL': '%s/%s' % (video_host, self.video_url),
-            'Balance': str(self.purchaser.Balance),
+            'Balance': self.purchaser.Balance,
             'FreeViewersForEpisode': self.free_viewers_for_episode,
         }
 
@@ -146,7 +155,7 @@ class GetUnusedMessageViews(GetView, PurchaserValidationMixin,
 
     def perform_operations(self):
 
-        week_date = datetime.now() - timedelta(7)
+        week_date = datetime.utcnow() - timedelta(7)
         group1, group2 = 0, 0
 
         for message in self.messages:
@@ -154,8 +163,8 @@ class GetUnusedMessageViews(GetView, PurchaserValidationMixin,
             is_purchased = EpisodeUtils.is_in_purchased_album(message.LinkId,
                                                               self.purchaser)
             if is_purchased:
-                rest = message.ViewsLimit - message.ViewsCount\
-                                          - message.FreeViews
+                rest = message.ViewsLimit - max(message.ViewsCount,
+                                                message.FreeViews)
                 if rest > 0:
                     cnt = rest
 
@@ -187,7 +196,7 @@ class DeactivateMessageViews(PostView, PurchaserValidationMixin,
             self.period = 0
 
     def perform_operations(self):
-        weekdate = datetime.now() - timedelta(7)
+        weekdate = datetime.utcnow() - timedelta(7)
         group = 0
 
         for message in self.messages:
@@ -199,25 +208,27 @@ class DeactivateMessageViews(PostView, PurchaserValidationMixin,
                                                                   self.purchaser)
                 cnt = 0
                 if is_purchased:
-                    rest = message.ViewsLimit - message.ViewsCount \
-                                              - message.FreeViews
+                    rest = message.ViewsLimit - max(message.ViewsCount,
+                                                    message.FreeViews)
                     if rest > 0:
                         cnt = rest
 
                 group += cnt
                 if cnt > 0:
-                    message.ViewsCount = message.ViewsLimit
-                    message.save()
+                    self.update_message(message)
 
         if group > 0:
-            user_ballance = int(self.purchaser.Balance)
-            self.purchaser.Balance = Decimal(user_ballance + group)
+            self.purchaser.Balance += group
             self.purchaser.save()
+
+    def update_message(self, message):
+        message.ViewsLimit = max(message.ViewsCount, message.FreeViews)
+        message.save()
 
     def get_context_data(self):
         group = self.perform_operations()
 
         return {
             'Restored': str(group),
-            'Balance': str(self.purchaser.Balance),
+            'Balance': self.purchaser.Balance,
         }

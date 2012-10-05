@@ -41,6 +41,7 @@
 @synthesize newsView;
 @synthesize channelCategories;
 @synthesize categoriesOrder;
+@synthesize scheduleModel;
 
 
 #pragma mark - View lifecycle
@@ -302,10 +303,6 @@
                                              selector:@selector(onNewBalance:) 
                                                  name:NEW_BALANCE_NOTIFICATION 
                                                object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(onViewsPurchased:)
-                                                 name:VIEWS_PURCHASED_NOTIFICATION
-                                               object:nil]; 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onAlbumPurchased:)
                                                  name:ALBUM_PURCHASED_NOTIFICATION
@@ -394,6 +391,12 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onViewsPurchased:)
+                                                 name:VIEWS_PURCHASED_NOTIFICATION
+                                               object:nil];
+    
     redrawDiscarding = NO;
     self.navigationItem.title = @"Library";
     
@@ -403,6 +406,10 @@
             [albumsView setLibraryCardVisibility:NO withAnimation:NO];
             [albumsView showScrollingHintIfNeeded];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
+            
+            if (![scheduleModel timeslotsCount]) {
+                [scheduleModel updateTimeslots];
+            }
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
@@ -429,6 +436,11 @@
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:VIEWS_PURCHASED_NOTIFICATION
+                                                  object:nil];
+    
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
 }
 

@@ -61,6 +61,8 @@ enum ComposeType {
 
 @property (retain, nonatomic) PlaylistItem * playlistItem;
 @property (assign, nonatomic) NSNumber * timeslotId;
+@property (assign, nonatomic) NSInteger numberOfFreeViewsForEpisode;
+
 
 - (IBAction)onTableTap:(id)sender;
 - (void) setScreenshotImage:(ScreenshotImage*)screenshotImage;

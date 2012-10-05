@@ -272,51 +272,47 @@ class TimeSlots(models.Model):
                                                self.StartTime,
                                                self.EndTime)
 
-    @property
-    def StartDateUTC(self):
-        return TimeUtils.get_timestamp(self.StartDate)
+    def _get_end_time(self):
+        end_datetime = TimeUtils.user_now().replace(hour=self.EndTime.hour,
+                                                    minute=self.EndTime.minute,
+                                                    second=self.EndTime.second)
+        if self.EndTime < self.StartTime:
+            end_datetime += timedelta(days=1)
+
+        return end_datetime
 
     @property
-    def EndDateUTC(self):
-        utc_time = datetime(self.EndDate.year,
-                            self.EndDate.month,
-                            self.EndDate.day,
-                            23, 59, 59)
-        return TimeUtils.get_timestamp(utc_time)
+    def next_start_time(self):
+        user_now = TimeUtils.user_now()
+
+        start_datetime = user_now.replace(hour=self.StartTime.hour,
+                                          minute=self.StartTime.minute,
+                                          second=self.StartTime.second)
+        if self._get_end_time() < user_now:
+            start_datetime += timedelta(days=1)
+
+        return start_datetime
 
     @property
-    def StartTimeUTC(self):
-        return TimeUtils.get_timestamp(self.get_start_time())
+    def next_end_time(self):
+        end_datetime = self._get_end_time()
 
-    @property
-    def EndTimeUTC(self):
-        end_datetime = self.get_end_time()
-        start_datetime = self.get_start_time()
+        if end_datetime < TimeUtils.user_now():
+            end_datetime += timedelta(days=1)
 
-        if end_datetime <= start_datetime:
-            end_datetime += timedelta(days=1)  # tomorrow AM time
+        return end_datetime
 
-        return TimeUtils.get_timestamp(end_datetime)
+    def is_current(self):
+        return self.next_start_time < TimeUtils.user_now() < self.next_end_time
 
-    def is_in_date_period(self, local_time):
-        return self.StartDateUTC < local_time < self.EndDateUTC
+    def get_status(self):
+        if self.is_current():
+            return self.STATUS_CURRENT
+        elif self.EndDate > TimeUtils.user_now().date():
+            return self.STATUS_NEXT
+        else:
+            return self.STATUS_EXPIRED
 
-    def is_in_time_period(self, local_time):
-        return self.StartTimeUTC < local_time < self.EndTimeUTC
-
-    def get_start_time(self):
-        return datetime.now().replace(hour=self.StartTime.hour,
-                                      minute=self.StartTime.minute,
-                                      second=self.StartTime.second)
-
-    def get_end_time(self):
-        return datetime.now().replace(hour=self.EndTime.hour,
-                                      minute=self.EndTime.minute,
-                                      second=self.EndTime.second)
-
-    def is_current(self, local_time):
-        return self.is_in_date_period(local_time) and\
-               self.is_in_time_period(local_time)
 
     def manager_call(self, request):
         data = {'chosen_timeslot': self.TimeSlotsId,
@@ -534,6 +530,10 @@ def uuid2shortid():
 
 
 class SendMessage(models.Model):
+
+    UNLIMITED_VIEWS = -1
+    MIN_VIEWS_LIMIT = 1
+    MAX_VIEWS_LIMIT = 100
 
     TYPE_EPISODE = 'E'
     TYPE_TRAILER = 'T'

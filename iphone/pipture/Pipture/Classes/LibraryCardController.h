@@ -25,4 +25,6 @@ static NSString* const FREE_VIEWERS_UPDATED_NOTIFICATION = @"PiptureFreeViewersU
 
 -(void)refreshViewsInfo; 
 -(void)refreshViewsInfoAndFreeViewersForEpisode:(NSNumber*)episodeId; 
-@end
+-(void)setNumberOfFreeViews:(NSInteger)numberOfFreeViews;
+
+@end 

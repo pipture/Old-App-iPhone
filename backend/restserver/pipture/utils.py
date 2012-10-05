@@ -4,7 +4,6 @@ from django.db.models import Q
 
 from pipture.models import Episodes, Albums, UserPurchasedItems, \
                            PiptureSettings, TimeSlotVideos, SendMessage
-from pipture.time_utils import TimeUtils
 
 from annoying.functions import get_object_or_None
 
@@ -20,6 +19,11 @@ class AlbumUtils(object):
                 PurchaseItemId__Description='Album').values_list('ItemId')
         cls.purchased_albums = [int(id[0]) for id in purchased_albums]
         return cls.purchased_albums
+
+    @classmethod
+    def is_purchased(cls, album, purchaser):
+        purchased_ids = cls.get_purchased(purchaser)
+        return album.AlbumId in purchased_ids
 
     @classmethod
     def get_cover(cls):
@@ -51,8 +55,8 @@ class EpisodeUtils(object):
 
     @classmethod
     def is_on_air(cls, episode):
-        now = datetime.utcnow()
-        today = now.date()
+        utcnow = datetime.utcnow()
+        today = utcnow.date()
         date_released = episode.DateReleased.date()
 
         if date_released > today:
@@ -60,13 +64,12 @@ class EpisodeUtils(object):
         if date_released < today:
             return True
 
-        utc_now_timestamp = TimeUtils.get_timestamp(now)
         timeslot_videos = TimeSlotVideos.objects.select_related(depth=1).filter(
                 LinkType=SendMessage.TYPE_EPISODE,
                 LinkId=episode.EpisodeId)
 
         for video in timeslot_videos:
-            if video.TimeSlotsId.StartTimeUTC < utc_now_timestamp:
+            if video.TimeSlotsId.next_start_time < utcnow:
                 return True
 
         return bool(timeslot_videos)

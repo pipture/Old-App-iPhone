@@ -728,6 +728,7 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
     request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];    
+    [request setEnqueued];
     return [request startExecute];    
 }
 
@@ -922,7 +923,7 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
                         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:freeViewersForEpisode 
                                                                              forKey:@"FreeViewers"];
                         [[NSNotificationCenter defaultCenter] postNotificationName:FREE_VIEWERS_UPDATED_NOTIFICATION
-                                                                            object:[PiptureAppDelegate instance]
+                                                                            object:nil
                                                                           userInfo:userInfo];
                     }
                     break;
@@ -944,10 +945,9 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];
     request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
-    [request blockCancel];
+//    [request blockCancel];
+    [request setEnqueued];
     return [request startExecute];
-    
-    
 }
 
 -(BOOL)sendMessage:(NSString *)message 
@@ -1034,7 +1034,7 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
                         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:freeViewersForEpisode 
                                                                              forKey:@"FreeViewers"];
                         [[NSNotificationCenter defaultCenter] postNotificationName:FREE_VIEWERS_UPDATED_NOTIFICATION
-                                                                            object:[PiptureAppDelegate instance]
+                                                                            object:nil
                                                                           userInfo:userInfo];
                     }
                     break;

@@ -61,7 +61,7 @@ class SeriesMixin(object):
         first_album = series.albums_set.all()[0]
         item_info = self.jsonify(first_album.TrailerId)
         item_info.update({
-            'CloseUpThumbnail': first_album.Thumbnail.get_url(),
+            'CloseUpThumbnail': first_album.Thumbnail,
             'Title': series.Title,
             'Album': self.jsonify(first_album),
         })
@@ -77,7 +77,6 @@ class SeriesMixin(object):
             episode['CloseUpThumbnail'] = thumbnail_url
 
         return episodes
-
 
     def get_item_info(self, series):
         if self.item_view == 'with_episodes':

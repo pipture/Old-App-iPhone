@@ -49,6 +49,7 @@
 @synthesize prompt2Label;
 @synthesize numberOfViewsLabel;
 @synthesize scheduleLabel;
+@synthesize scheduleLabelView;
 @synthesize fromHotNews;
 @synthesize noVideosLabel;
 
@@ -76,6 +77,13 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NEW_BALANCE_NOTIFICATION
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:VIEWS_PURCHASED_NOTIFICATION
+                                                  object:nil];
+    
 //    if (withNavigationBar && self.navigationController.navigationBarHidden) {
 //        int heightOffset = self.navigationFake.frame.size.height + buttonsPanel.frame.size.height;
 //        self.navigationFake.hidden = NO;
@@ -95,6 +103,15 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onNewBalance:)
+                                                 name:NEW_BALANCE_NOTIFICATION
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onNewBalance:)
+                                                 name:VIEWS_PURCHASED_NOTIFICATION
+                                               object:nil];
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     [UIApplication sharedApplication].statusBarHidden = NO;
@@ -134,7 +151,8 @@
         
         self.navigationItemFake.leftBarButtonItem = back;
     }
-
+    
+//    [self updateScheduleLabel];
         
     [back release];
     [backButton release];
@@ -142,19 +160,7 @@
                                         heightOffset, 
                                         buttonsPanel.frame.size.width, 
                                         self.view.frame.size.height-heightOffset);
-    
-    /*
-    For feature #17844
-     
-    NSString *albumScheduleInfo = [self albumSchedule];
-    if (albumScheduleInfo) {
-        scheduleLabel.text = albumScheduleInfo;
-        scheduleLabel.hidden = NO;
-    } else {
-        scheduleLabel.hidden = YES;
-    } 
-     */
-    
+   
     [self updateDetails];
 }
 
@@ -202,21 +208,15 @@
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(onBuyViews:) 
                                                  name:BUY_VIEWS_NOTIFICATION 
-                                               object:nil]; 
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(onNewBalance:) 
-                                                 name:NEW_BALANCE_NOTIFICATION 
-                                               object:nil]; 
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(onNewBalance:)
-                                                 name:VIEWS_PURCHASED_NOTIFICATION 
-                                               object:nil]; 
+                                               object:nil];
     
     detailsReceived = NO;
     progressView.hidden = YES;
     
     asyncImageViews = [[NSMutableDictionary alloc] init];    
     [self tabChanged:detailsButton];
+    
+    [self setupScheduleLabelView];
 }
 
 - (void)viewDidUnload
@@ -243,6 +243,7 @@
     [self setProgressView:nil];
     [self setNoVideosLabel:nil];
     [self setScheduleLabel:nil];
+    [self setScheduleLabelView:nil];
     [super viewDidUnload];
 }
 
@@ -272,6 +273,7 @@
     [progressView release];
     [noVideosLabel release];
     [scheduleLabel release];
+    [scheduleLabelView release];
     [super dealloc];
 }
 
@@ -565,8 +567,6 @@
         prompt2Label.frame = rect2;
     }
     numberOfViewsLabel.text = text;
-    
-    
 }
 
 -(void)balanceReceived:(NSDecimalNumber*)balance {
@@ -705,6 +705,7 @@
                                                 updateDate:[album.updateDate timeIntervalSince1970]];
     [[PiptureAppDelegate instance] powerButtonEnable:([scheduleModel albumIsPlayingNow:album.albumId])];        
 
+    [self updateScheduleLabel];
 }
 
 -(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album {
@@ -740,11 +741,29 @@
 - (NSString*)albumSchedule {
     Timeslot *timeslotForAlbum = [scheduleModel getAlbumTimeslot:album.albumId];
     if (timeslotForAlbum) {
-        return [NSString stringWithFormat:@"Scheduled at %@ to %@",
-                [TimeslotFormatter representTime:timeslotForAlbum.startTime], 
-                [TimeslotFormatter representTime:timeslotForAlbum.endTime]];
+        return [NSString stringWithFormat:@"Watch the Series at %@",
+                [TimeslotFormatter representTime:timeslotForAlbum.startTime]];
     }
     return nil;
 }
+
+- (void)updateScheduleLabel {
+    NSString *albumScheduleInfo = [self albumSchedule];
+    if (albumScheduleInfo) {
+        scheduleLabel.text = albumScheduleInfo;
+    }
+    
+    scheduleLabelView.hidden = !albumScheduleInfo;
+}
+
+- (void)setupScheduleLabelView {
+    double height = scheduleLabelView.frame.size.height;
+    scheduleLabelView.frame = CGRectMake(scheduleLabelView.frame.origin.x,
+                                         detailPage.posterPlaceholder.frame.origin.y + 
+                                         detailPage.posterPlaceholder.frame.size.height - height,
+                                         scheduleLabelView.frame.size.width,
+                                         height);
+}
+
 
 @end
