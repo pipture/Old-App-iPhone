@@ -487,7 +487,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         if ([textField.text length]) {
             NSNumber* num = [viewsNumberFormatter numberFromString:textField.text];
             if (num) {
-                numberOfViews = [num integerValue];    
+                int prevNumberOfViews = numberOfViews;
+                numberOfViews = [num integerValue];
+                if (numberOfViews < 1 || numberOfViews > 100) {
+                    numberOfViews = prevNumberOfViews;
+                    [self displayNumberOfViewsTextField];
+                }
                 return;
             }        
         }
