@@ -87,8 +87,12 @@ static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
+-(BOOL)isPlaylistItemFree: (PlaylistItem*)playlistItem{
+    return playlistItem.class == [Trailer class] || playlistItem.album.sellStatus == AlbumSellStatus_NotSellable;
+}
+
 - (UIView*)selCardSectionViewController {
-    if (self.playlistItem.album.sellStatus == AlbumSellStatus_NotSellable) {
+    if ([self isPlaylistItemFree:playlistItem_]) {
         return nil;
     } else {
         return cardSectionViewController.view;
@@ -194,9 +198,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     cardSectionViewController = [[LibraryCardController alloc] initWithNibName:@"LibraryCardA7" bundle:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBuyViews:) name:BUY_VIEWS_NOTIFICATION object:nil]; 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:nil]; 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:VIEWS_PURCHASED_NOTIFICATION object:nil];   
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBuyViews:) name:BUY_VIEWS_NOTIFICATION object:nil];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -514,6 +516,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+ 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:VIEWS_PURCHASED_NOTIFICATION object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:self.view.window]; 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:self.view.window]; 
@@ -539,6 +544,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 {
     [self deselectRows];
     [[[PiptureAppDelegate instance] model] cancelCurrentRequest];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NEW_BALANCE_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:VIEWS_PURCHASED_NOTIFICATION object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil]; 
     
@@ -885,12 +893,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [nameTextField resignFirstResponder];
     [numberOfViewsTextField resignFirstResponder];    
 }
-
--(BOOL)isPlaylistItemFree: (PlaylistItem*)playlistItem{
-    return playlistItem.class == [Trailer class] || playlistItem.album.sellStatus == AlbumSellStatus_NotSellable;
-   
-}
-
 
 @end
 

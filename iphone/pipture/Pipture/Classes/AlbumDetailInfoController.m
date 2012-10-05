@@ -77,6 +77,13 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NEW_BALANCE_NOTIFICATION
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:VIEWS_PURCHASED_NOTIFICATION
+                                                  object:nil];
+    
 //    if (withNavigationBar && self.navigationController.navigationBarHidden) {
 //        int heightOffset = self.navigationFake.frame.size.height + buttonsPanel.frame.size.height;
 //        self.navigationFake.hidden = NO;
@@ -96,6 +103,15 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onNewBalance:)
+                                                 name:NEW_BALANCE_NOTIFICATION
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onNewBalance:)
+                                                 name:VIEWS_PURCHASED_NOTIFICATION
+                                               object:nil];
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     [UIApplication sharedApplication].statusBarHidden = NO;
@@ -192,15 +208,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(onBuyViews:) 
                                                  name:BUY_VIEWS_NOTIFICATION 
-                                               object:nil]; 
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(onNewBalance:) 
-                                                 name:NEW_BALANCE_NOTIFICATION 
-                                               object:nil]; 
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(onNewBalance:)
-                                                 name:VIEWS_PURCHASED_NOTIFICATION 
-                                               object:nil]; 
+                                               object:nil];
     
     detailsReceived = NO;
     progressView.hidden = YES;
