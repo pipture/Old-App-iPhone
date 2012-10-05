@@ -728,6 +728,7 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
     request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];    
+    [request setEnqueued];
     return [request startExecute];    
 }
 

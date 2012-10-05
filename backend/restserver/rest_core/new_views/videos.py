@@ -175,7 +175,7 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
         if len(episodes) > delta.days:
             return episodes[delta.days]
 
-        return 0
+        return None
 
     def get_trailer(self, timeslot_video):
         return get_object_or_None(Trailers, TrailerId=timeslot_video.LinkId)
@@ -196,7 +196,9 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
             if timeslot_video.LinkType == SendMessage.TYPE_TRAILER:
                 timeslot_videos.append(self.get_trailer(timeslot_video))
             elif timeslot_video.LinkType == SendMessage.TYPE_EPISODE:
-                timeslot_videos.append(self.get_episode(timeslot_video))
+                episode = self.get_episode(timeslot_video)
+                if episode:
+                    timeslot_videos.append(episode)
 
         return timeslot_videos
 

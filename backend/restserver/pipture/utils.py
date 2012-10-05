@@ -21,6 +21,11 @@ class AlbumUtils(object):
         return cls.purchased_albums
 
     @classmethod
+    def is_purchased(cls, album, purchaser):
+        purchased_ids = cls.get_purchased(purchaser)
+        return album.AlbumId in purchased_ids
+
+    @classmethod
     def get_cover(cls):
         try:
             pipture_settings = PiptureSettings.objects.all()[0]

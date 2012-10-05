@@ -42,7 +42,8 @@ class Register(PostView):
 
         cover, album = AlbumUtils.get_cover()
         if album:
-            album = self.jsonify(album)
+            is_purchased = AlbumUtils.is_purchased(album, pip_user)
+            album = self.jsonify(album, is_purchased=is_purchased)
 
         return dict(Cover=cover,
                     Album=album,
