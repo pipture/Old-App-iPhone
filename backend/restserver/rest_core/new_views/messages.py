@@ -90,8 +90,9 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
         self.video_url = self.create_message_and_return_url(episode,
                                                             message_free_views)
+
         self.free_viewers_for_episode = None if not episode_free_viewers \
-                                        else message_free_views
+                                        else episode_free_viewers.Rest
 
         self.purchaser.save()
         if episode_free_viewers:

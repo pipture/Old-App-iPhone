@@ -19,7 +19,6 @@
 @synthesize numberOfFreeViewsLabel;
 @synthesize libraryCardButton;
 @synthesize returnViewsView;
-@synthesize numberOfFreeViewsForEpisode;
 
 
 static NSString* const activeImage = @"active-librarycard.png";
@@ -47,8 +46,6 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
 }
 
 -(void)setNumberOfFreeViews:(NSInteger)numberOfFreeViews {
-    self.numberOfFreeViewsForEpisode = numberOfFreeViews;
-    
     NSString* text = [NSString stringWithFormat:@"%d",numberOfFreeViews, nil];
     
     // Need to move prompt 4 and resize number of views
@@ -97,10 +94,6 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
                                              selector:@selector(onNewBalance:) 
                                                  name:NEW_BALANCE_NOTIFICATION 
                                                object:[PiptureAppDelegate instance]];    
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(onFreeViewersUpdated:) 
-                                                 name:FREE_VIEWERS_UPDATED_NOTIFICATION 
-                                               object:[PiptureAppDelegate instance]];    
     
     [self setNumberOfViews:[[PiptureAppDelegate instance] getBalance]];
     
@@ -108,8 +101,6 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
     returnViewsAction.cancelsTouchesInView = NO;
     [returnViewsView addGestureRecognizer:returnViewsAction];
     [returnViewsAction release];
-    
-    self.numberOfFreeViewsForEpisode = -1;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -202,11 +193,6 @@ static NSString* const inactiveImage = @"inactive-librarycard.png";
 
 -(void)authenticationFailed {
     NSLog(@"auth failed!");
-}
-
--(void) onFreeViewersUpdated:(NSNotification *) notification {
-    NSNumber *freeViewers = [notification.userInfo valueForKey:@"FreeViewers"];
-    [self setNumberOfFreeViews:[freeViewers intValue]];
 }
 
 @end
