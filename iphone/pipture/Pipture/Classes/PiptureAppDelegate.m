@@ -550,12 +550,13 @@ static PiptureAppDelegate *instance;
                                       functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
         
         UIViewController* prevViewController = self.window.rootViewController;
-        [self.window setRootViewController:mailComposerNavigationController];
-        [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+
         [mailComposerNavigationController prepareMailComposer:playlistItem
                                                      timeslot:timeslotId 
                                            prevViewController:prevViewController];        
-        
+
+        [self.window setRootViewController:mailComposerNavigationController];
+        [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
     }
                 
 }
