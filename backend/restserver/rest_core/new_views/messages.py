@@ -27,13 +27,22 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         if not self.user_name:
             raise ParameterExpected(parameter='UserName')
 
-    def clean(self):
-        self.screenshot_url = self.params.get('ScreenshotURL', '')
+    def clean_views_count(self):
+        views_count = self.params.get('ViewsCount', None)
+        if not views_count:
+            raise ParameterExpected(parameter='ViewsCount')
 
         try:
-            self.views_count = int(self.params.get('ViewsCount', None))
+            self.views_count = int(views_count)
+            if self.views_count != SendMessage.UNLIMITED_VIEWS and \
+                    (self.views_count > SendMessage.MAX_VIEWS_LIMIT or
+                     self.views_count < SendMessage.MIN_VIEWS_LIMIT):
+                raise WrongParameter(parameter='ViewsCount')
         except ValueError:
             raise WrongParameter(parameter='ViewsCount')
+
+    def clean(self):
+        self.screenshot_url = self.params.get('ScreenshotURL', '')
 
     def create_message_and_return_url(self, video, free_views=0):
         if isinstance(video, Trailers):
@@ -81,8 +90,9 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
         self.video_url = self.create_message_and_return_url(episode,
                                                             message_free_views)
+
         self.free_viewers_for_episode = None if not episode_free_viewers \
-                                        else message_free_views
+                                        else episode_free_viewers.Rest
 
         self.purchaser.save()
         if episode_free_viewers:

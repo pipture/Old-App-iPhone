@@ -4,6 +4,7 @@ from annoying.functions import get_object_or_None
 
 from pipture.models import TimeSlots, TimeSlotVideos, Episodes, \
                            SendMessage, Trailers, PurchaseItems
+from pipture.time_utils import TimeUtils
 from pipture.utils import EpisodeUtils
 from rest_core.api_errors import WrongParameter, NotFound, Forbidden, \
                                  ParameterExpected, NotEnoughMoney, NoContent
@@ -16,7 +17,9 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
 
     @staticmethod
     def cmp_timeslots(t1, t2):
-        return 1 if t1['StartTime'] >= t2['StartTime'] else -1
+        if t1['StartTime'] > t2['StartTime']:
+            return 1
+        return -1
 
     def get_context_data(self):
         today_utc = datetime.utcnow().date()
@@ -26,13 +29,12 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
                                              StartDate__lte=today_utc)\
                                      .order_by('StartTime')
 
-        timeslots = [self.jsonify(timeslot, local_utcnow=self.local_utcnow)
-                     for timeslot in timeslots]
+        timeslots = [self.jsonify(timeslot) for timeslot in timeslots]
 
         timeslots.sort(cmp=GetTimeslots.cmp_timeslots)
 
         return {
-            'CurrentTime': self.local_utcnow,
+            'CurrentTime': TimeUtils.user_now(),
             'Timeslots': timeslots,
         }
 
@@ -95,7 +97,7 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
         return video_file.get_url(), subtitles_url
 
     def perform_timeslot_operations(self):
-        if not self.timeslot or not self.timeslot.is_current(self.local_utcnow):
+        if not self.timeslot or not self.timeslot.is_current():
             raise NoContent(message='Timeslot is not current')
 
     def perform_episode_operations(self):
@@ -152,11 +154,8 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
                 (message='There is no timeslot with id %s' % timeslot_id)
 
     def clean(self):
-        if self.timeslot.next_start_time > self.local_utcnow:
-            raise NoContent(message='Timeslot is in the future')
-
-        if  self.local_utcnow > self.timeslot.next_end_time:
-            raise NoContent(message='Timeslot is in the past')
+        if not self.timeslot.is_current():
+            raise NoContent(message='Timeslot is no current')
 
         self.timeslot_videos = TimeSlotVideos.objects\
                                              .filter(TimeSlotsId=self.timeslot)\
