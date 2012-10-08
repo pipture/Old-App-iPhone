@@ -189,10 +189,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row %2 == 0) {
         Episode * episode = [episodes objectAtIndex:indexPath.row / 2];
-        [[PiptureAppDelegate instance] getVideoURL:episode 
-                                     forTimeslotId:nil
-                                        getPreview:NO //TODO: check for sellable!
-                                          receiver:self];
+        NSArray * playlist = [NSArray arrayWithObject:episode];
+        [[PiptureAppDelegate instance] showVideo:playlist
+                                          noNavi:YES
+                                      timeslotId:nil
+                                       fromStore:[episode isFromStore]];
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
