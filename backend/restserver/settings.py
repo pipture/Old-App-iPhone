@@ -142,6 +142,17 @@ LOGGING = {
         },
     }
 
+CACHES = {
+    'api': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'google_analytics': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'TIMEOUT': 60 * 5,
+    },
+}
+
+
 
 
 # List of callables that know how to import templates from various sources.

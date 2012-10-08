@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
 from itertools import chain
 
+from django.core.cache import get_cache
 from django.db.models.aggregates import Count
 
-from pipture.ga_v3_service import PiptureGAClient
-from pipture.jsonify_models import JsonifyModels
+from rest_core.ga_v3_service import PiptureGAClient
+from rest_core.jsonify_models import JsonifyModels
 from pipture.utils import AlbumUtils, EpisodeUtils
 from rest_core.api_errors import ServiceUnavailable
 from rest_core.api_view import GetView
@@ -125,7 +126,6 @@ class ComingSoonSeries(Category, SeriesMixin):
     category_id = 3
     title = 'Coming Soon'
 
-    # TODO: add test coming soon series and change date by CURRENT_TIMESTAMP()
     def get_items_queryset(self):
         return Series.objects.raw('''
             SELECT SeriesId FROM
@@ -134,7 +134,7 @@ class ComingSoonSeries(Category, SeriesMixin):
                     SELECT DISTINCT SeriesId_id FROM pipture_albums
                         WHERE AlbumId in (
                             SELECT DISTINCT AlbumId_id FROM pipture_episodes
-                                WHERE DateReleased <= "2012-01-01"
+                                WHERE DateReleased <= CURRENT_TIMESTAMP()
                         )
                 )) AS albums
                 LEFT JOIN pipture_series ON SeriesId_id = SeriesId)
@@ -182,7 +182,15 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
 
     def __init__(self, **kwargs):
         super(GetAllCategories, self).__init__(**kwargs)
-        self.ga = PiptureGAClient(exception_class=ServiceUnavailable)
+
+    @property
+    def ga(self):
+        try:
+            return self._ga
+        except AttributeError:
+            self._ga = PiptureGAClient(cache=get_cache('google_analytics'),
+                                       exception_class=ServiceUnavailable)
+            return self._ga
 
     def get_category_classes(self):
         return Category.__subclasses__()

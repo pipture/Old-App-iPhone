@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 
-from restserver.pipture.jsonify_models import JsonifyModels, ApiJSONEncoder
+from rest_core.jsonify_models import JsonifyModels, ApiJSONEncoder
 from rest_core.api_errors import ApiError, EmptyError, InternalServerError
 from restserver.rest_core.validation_mixins import ApiValidationMixin
 

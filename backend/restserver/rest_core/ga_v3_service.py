@@ -1,7 +1,8 @@
 from datetime import datetime
 from apiclient.errors import HttpError
-from django.conf import settings
 import httplib2
+
+from django.conf import settings
 
 from apiclient.discovery import build
 from oauth2client.client import SignedJwtAssertionCredentials, AccessTokenRefreshError
@@ -16,8 +17,9 @@ class GoogleAnalyticsV3Client(object):
     service_name = 'analytics'
     version = 'v3'
 
-    def __init__(self):
+    def __init__(self, cache=None):
         self.service = self.initialize_service()
+        self.cache = cache
 
     def load_key(self):
         key_file = file(self.PRIVATE_KEY, 'rb')
@@ -34,7 +36,7 @@ class GoogleAnalyticsV3Client(object):
     def initialize_service(self):
         credentials = self.get_credentials()
 
-        http = httplib2.Http()
+        http = httplib2.Http(cache=self.cache)
         http = credentials.authorize(http)
 
         return build(self.service_name, self.version, http=http)
@@ -73,12 +75,16 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
 
     def run_query(self, **kwargs):
         try:
-            return self.service.data().ga().get(**kwargs).execute()
+            query = self.service.data().ga().get(**kwargs)
+            return self.execute_query(query)
         except (HttpError, AccessTokenRefreshError):
             if self.exception_class:
                 raise self.exception_class
             else:
                 raise
+
+    def execute_query(self, query):
+        return query.execute()
 
     def get_most_popular_videos(self, limit, start_date, end_date):
         video_type = self.custom_vars['video_type']
