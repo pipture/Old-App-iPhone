@@ -143,7 +143,7 @@ LOGGING = {
     }
 
 CACHES = {
-    'api': {
+    'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     },
     'google_analytics': {
@@ -169,7 +169,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfResponseMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'restserver.pipture.middleware.threadlocals.LocalUserMiddleware',
+    'restserver.api.middleware.threadlocals.LocalUserMiddleware',
 )
 
 ROOT_URLCONF = 'restserver.urls'
@@ -186,6 +186,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'restserver.s3',
+    'restserver.api',
     'restserver.rest_core',
     'restserver.pipture',
     'django.contrib.admindocs',

@@ -2,9 +2,9 @@ from itertools import chain
 
 from django.db.models.query_utils import Q
 
-from api.api_errors import ParameterExpected
+from api.errors import ParameterExpected
 from api.validation_mixins import PurchaserValidationMixin
-from api.api_view import GetView
+from api.view import GetView
 
 from stemming import porter2
 

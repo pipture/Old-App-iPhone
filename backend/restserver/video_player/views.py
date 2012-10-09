@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from django.db.models import Min
 
 from restserver.pipture.models import Episodes, Trailers, Albums, SendMessage
-from restserver.rest_core.views import get_video_url_from_episode_or_trailer
+from restserver.rest_core.old_views import get_video_url_from_episode_or_trailer
 
 
 # list of mobile User Agents

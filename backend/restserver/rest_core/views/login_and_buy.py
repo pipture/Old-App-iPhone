@@ -7,10 +7,10 @@ from django.conf import settings
 
 from django.db import IntegrityError
 
-from api.api_errors import WrongParameter, UnauthorizedError,\
+from api.errors import WrongParameter, UnauthorizedError,\
                                  ParameterExpected, NotFound, Forbidden, \
                                  ServiceUnavailable, Conflict
-from rest_core.api_view import GetView, PostView
+from api.view import GetView, PostView
 from api.validation_mixins import PurchaserValidationMixin
 
 from restserver.pipture.models import AppleProducts, PurchaseItems,\
@@ -87,8 +87,13 @@ class GetBalance(GetView, PurchaserValidationMixin):
 
     def clean_episode(self):
         episode_id = self.params.get('EpisodeId', None)
-        self.episode = None if not episode_id \
-                       else get_object_or_None(Episodes, EpisodeId=episode_id)
+
+        try:
+            self.episode = episode_id and self.caching.get_episode(episode_id)
+        except ValueError:
+            raise WrongParameter(parameter='EpisodeId')
+        except Episodes.DoesNotExist:
+            self.episode = None
 
     def get_free_viewers_for_episode(self):
         free_viewers = None

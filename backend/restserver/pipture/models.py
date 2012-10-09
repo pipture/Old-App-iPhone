@@ -12,7 +12,7 @@ from django.db.models.signals import post_save, post_syncdb
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.contrib.auth.models import User
-from pipture.time_utils import TimeUtils
+from api.time_utils import TimeUtils
 
 from restserver.s3.s3FileField import S3EnabledFileField
 
@@ -73,6 +73,7 @@ class Trailers(models.Model):
             return self.albums_set.all()[0].AlbumId
         except IndexError:
             return 0
+
 
 class Series(models.Model):
     SeriesId = models.AutoField(primary_key=True)
@@ -393,7 +394,6 @@ class PiptureSettings(models.Model):
     @staticmethod
     def get_video_host():
         return PiptureSettings.objects.all()[0].VideoHost
-
 
 
 class PipUsers(models.Model):

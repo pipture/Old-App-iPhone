@@ -6,8 +6,8 @@ from django.db.models.aggregates import Count
 
 from api.ga_v3_service import PiptureGAClient
 from api.jsonify_models import JsonifyModels
-from api.api_errors import ServiceUnavailable
-from api.api_view import GetView
+from api.errors import ServiceUnavailable
+from api.view import GetView
 from api.validation_mixins import PurchaserValidationMixin
 from restserver.pipture.models import Series
 
@@ -83,7 +83,6 @@ class SeriesMixin(object):
             return self.get_info_with_episodes(series)
         else:
             return self.get_info_as_trailer(series)
-
 
 
 class ScheduledSeries(Category):

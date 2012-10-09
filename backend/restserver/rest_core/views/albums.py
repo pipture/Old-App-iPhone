@@ -1,10 +1,10 @@
 from django.db.models.query_utils import Q
 
 from pipture.models import Albums, TimeSlots, Episodes, AlbumScreenshotGallery
-from api.api_caching import cache_queryset
-from api.api_errors import BadRequest, ParameterExpected,\
+from api.caching import cache_queryset
+from api.errors import BadRequest, ParameterExpected,\
                                  WrongParameter, NotFound, NoContent
-from api.api_view import GetView
+from api.view import GetView
 from api.validation_mixins import PurchaserValidationMixin
 
 

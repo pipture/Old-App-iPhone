@@ -4,10 +4,10 @@ from annoying.functions import get_object_or_None
 
 from pipture.models import TimeSlots, TimeSlotVideos, Episodes, \
                            SendMessage, Trailers, PurchaseItems
-from pipture.time_utils import TimeUtils
-from api.api_errors import WrongParameter, NotFound, Forbidden, \
+from api.time_utils import TimeUtils
+from api.errors import WrongParameter, NotFound, Forbidden, \
                                  ParameterExpected, NotEnoughMoney, NoContent
-from api.api_view import GetView
+from api.view import GetView
 from api.validation_mixins import TimezoneValidationMixin, \
                                         EpisodeAndTrailerValidationMixin, PurchaserValidationMixin
 

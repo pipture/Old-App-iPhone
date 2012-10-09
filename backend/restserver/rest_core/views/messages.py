@@ -4,9 +4,9 @@ from django.db.models import F, Q
 
 from pipture.models import PiptureSettings, SendMessage, Trailers,\
                            PurchaseItems, FreeMsgViewers
-from api.api_errors import BadRequest, ParameterExpected, \
+from api.errors import BadRequest, ParameterExpected, \
                                  WrongParameter, NotEnoughMoney
-from api.api_view import PostView, GetView
+from api.view import PostView, GetView
 from api.validation_mixins import PurchaserValidationMixin, \
                                         EpisodeAndTrailerValidationMixin
 
