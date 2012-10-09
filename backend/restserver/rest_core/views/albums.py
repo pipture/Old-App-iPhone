@@ -1,11 +1,11 @@
 from django.db.models.query_utils import Q
 
 from pipture.models import Albums, TimeSlots, Episodes, AlbumScreenshotGallery
-from pipture.utils import AlbumUtils, EpisodeUtils
-from rest_core.api_errors import BadRequest, ParameterExpected,\
+from api.api_caching import cache_queryset
+from api.api_errors import BadRequest, ParameterExpected,\
                                  WrongParameter, NotFound, NoContent
-from rest_core.api_view import GetView
-from rest_core.validation_mixins import PurchaserValidationMixin
+from api.api_view import GetView
+from api.validation_mixins import PurchaserValidationMixin
 
 
 class GetAlbumDetail(GetView, PurchaserValidationMixin):
@@ -22,8 +22,7 @@ class GetAlbumDetail(GetView, PurchaserValidationMixin):
 
         if album_id:
             try:
-                self.album = Albums.objects.select_related(depth=1)\
-                                           .get(AlbumId=int(album_id))
+                self.album = self.caching.get_album(album_id)
             except ValueError:
                 raise WrongParameter(parameter='AlbumId')
             except Albums.DoesNotExist:
@@ -31,8 +30,7 @@ class GetAlbumDetail(GetView, PurchaserValidationMixin):
 
         if timeslot_id:
             try:
-                timeslot = TimeSlots.objects.select_related(depth=1)\
-                                            .get(TimeSlotsId=int(timeslot_id))
+                timeslot = self.caching.get_timeslot(timeslot_id)
             except ValueError:
                 raise WrongParameter(parameter='TimeslotId')
             except TimeSlots.DoesNotExist:
@@ -44,8 +42,7 @@ class GetAlbumDetail(GetView, PurchaserValidationMixin):
         self.include_episodes = self.params.get('IncludeEpisodes', False)
 
     def get_context_data(self):
-        purchased_ids = AlbumUtils.get_purchased(self.purchaser)
-        is_purchased = self.album.AlbumId in purchased_ids
+        is_purchased = self.album.AlbumId in self.caching.purchased_albums_ids
 
         response = {
             'Album': self.jsonify(self.album,
@@ -57,15 +54,15 @@ class GetAlbumDetail(GetView, PurchaserValidationMixin):
             episodes = self.album.episodes.order_by('EpisodeNo')
             response["Episodes"] = [self.jsonify(episode)
                                     for episode in episodes
-                                    if EpisodeUtils.is_on_air(episode)]
+                                    if self.caching.is_episode_on_air(episode)]
         return response
 
 
 class GetAlbums(GetView, PurchaserValidationMixin):
 
     def get_context_data(self):
-        albums_list = AlbumUtils.get_available_albums(self.purchaser)
-        purchased_ids = AlbumUtils.purchased_albums
+        albums_list = self.caching.get_available_albums()
+        purchased_ids = self.caching.purchased_albums_ids
 
         return {
             'Albums': [self.jsonify(album,
@@ -78,15 +75,17 @@ class GetAlbums(GetView, PurchaserValidationMixin):
 
 class GetSellableAlbums(GetView, PurchaserValidationMixin):
 
-    def get_context_data(self):
-        purchased_ids = AlbumUtils.get_purchased(self.purchaser)
-
-        albums_list = Albums.objects.select_related(depth=1).filter(
+    @cache_queryset
+    def get_albums_for_sale(self):
+        return Albums.objects.select_related(depth=1).filter(
                 Q(HiddenAlbum=False) & (
                     Q(PurchaseStatus=Albums.PURCHASE_TYPE_BUY_ALBUM) |
                     Q(PurchaseStatus=Albums.PURCHASE_TYPE_ALBUM_PASS)
                 )
-            ).exclude(AlbumId__in=purchased_ids)
+            ).exclude(AlbumId__in=self.caching.purchased_albums_ids)
+
+    def get_context_data(self):
+        albums_list = self.get_albums_for_sale()
 
         return {
             'Albums': [self.jsonify(album,
@@ -112,14 +111,17 @@ class GetAlbumScreenshots(GetView):
             raise NotFound(message='There is no episode with id %s.' % EpisodeId)
 
     def clean(self):
-        self.screenshots = AlbumScreenshotGallery.objects\
-                                .filter(AlbumId=self.episode.AlbumId)\
-                                .extra(order_by=['Description'])
+        self.screenshots = self.get_album_screenshots(self.episode.AlbumId)
+
         if not self.screenshots:
             raise NoContent(message='There is no screenshots for this album.')
 
+    @cache_queryset
+    def get_album_screenshots(self, album):
+        return AlbumScreenshotGallery.objects.filter(AlbumId=album)\
+                                             .extra(order_by=['Description'])
+
     def get_context_data(self):
         return {
-            'Screenshots': [self.jsonify(item)
-                            for item in self.screenshots]
+            'Screenshots': [self.jsonify(item) for item in self.screenshots]
         }

@@ -1,9 +1,9 @@
 import pytz
-from pipture.middleware.threadlocals import LocalUserMiddleware
+from api.middleware.threadlocals import LocalUserMiddleware
 
 from pipture.models import PipUsers, Trailers, Episodes
-from pipture.time_utils import TimeUtils
-from rest_core.api_errors import ParameterExpected, WrongParameter, \
+from api.time_utils import TimeUtils
+from api.errors import ParameterExpected, WrongParameter, \
                                  UnauthorizedError, BadRequest, NotFound
 
 
@@ -21,21 +21,16 @@ class ApiValidationMixin(object):
             raise WrongParameter(parameter=param_name)
 
 
-class KeyValidationMixin(object):
+class PurchaserValidationMixin(object):
 
     def clean_key(self):
         self.key = self.params.get('Key', None)
         if self.key is None:
             raise UnauthorizedError()
 
-
-class PurchaserValidationMixin(KeyValidationMixin):
-
-    def clean_key(self):
-        super(PurchaserValidationMixin, self).clean_key()
-
         try:
             self.purchaser = PipUsers.objects.get(Token=self.key)
+            LocalUserMiddleware.update(purchaser=self.purchaser)
         except PipUsers.DoesNotExist:
             raise UnauthorizedError()
 
@@ -67,27 +62,23 @@ class EpisodeAndTrailerValidationMixin(object):
         self.trailer_id = self.params.get('TrailerId', None)
 
         if self.episode_id and self.trailer_id:
-            msg = 'There are EpisodeId and TrailerId. Should be only one param.'
-            raise BadRequest(message=msg)
+            raise BadRequest(message='There are EpisodeId and TrailerId. Should be only one param.')
 
         if not self.episode_id and not self.trailer_id:
-            msg = 'There are no EpisodeId or TrailerId. Should be one param.'
-            raise BadRequest(message=msg)
+            raise BadRequest(message='There are no EpisodeId or TrailerId. Should be one param.')
 
     def _clean_trailer(self):
         try:
-            return Trailers.objects.get(TrailerId=int(self.trailer_id))
+            return Trailers.objects.get(TrailerId=self.trailer_id)
         except ValueError:
             raise WrongParameter(parameter='TrailerId')
         except Trailers.DoesNotExist:
-            raise NotFound(
-                message='There is no trailer with id %s' % self.trailer_id)
+            raise NotFound(message='There is no trailer with id %s' % self.trailer_id)
 
     def _clean_episode(self):
         try:
-            return Episodes.objects.get(EpisodeId=int(self.episode_id))
+            return Episodes.objects.get(EpisodeId=self.episode_id)
         except ValueError:
             raise WrongParameter(parameter='EpisodeId')
         except Episodes.DoesNotExist:
-            raise NotFound(
-                message='There is no episode with id %s' % self.episode_id)
+            raise NotFound( message='There is no episode with id %s' % self.episode_id)

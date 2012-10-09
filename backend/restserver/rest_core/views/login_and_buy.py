@@ -6,17 +6,16 @@ from apiclient.errors import HttpError
 from django.conf import settings
 
 from django.db import IntegrityError
-from pipture.utils import AlbumUtils, EpisodeUtils
 
-from rest_core.api_errors import WrongParameter, UnauthorizedError,\
+from api.api_errors import WrongParameter, UnauthorizedError,\
                                  ParameterExpected, NotFound, Forbidden, \
                                  ServiceUnavailable, Conflict
 from rest_core.api_view import GetView, PostView
-from rest_core.validation_mixins import PurchaserValidationMixin
+from api.validation_mixins import PurchaserValidationMixin
 
 from restserver.pipture.models import AppleProducts, PurchaseItems,\
                                       UserPurchasedItems, Transactions, \
-                                      PipUsers, Episodes, FreeMsgViewers
+                                      PipUsers, Episodes, FreeMsgViewers, PiptureSettings
 
 from annoying.functions import get_object_or_None
 
@@ -37,12 +36,26 @@ class Register(PostView):
         pip_user.save()
         return pip_user
 
+    def get_cover(self):
+        try:
+            pipture_settings = PiptureSettings.objects.all()[0]
+            cover = pipture_settings.Cover
+            if cover is None or not cover.name:
+                cover = ""
+            else:
+                cover = cover.get_url()
+        except IndexError:
+            return "", None
+
+        return cover, pipture_settings.Album
+
     def get_context_data(self):
         pip_user = self.get_pip_user()
+        self.caching.user_locals.update(purchaser=pip_user)
 
-        cover, album = AlbumUtils.get_cover()
+        cover, album = self.get_cover()
         if album:
-            is_purchased = AlbumUtils.is_purchased(album, pip_user)
+            is_purchased = self.caching.is_album_purchased(album)
             album = self.jsonify(album, is_purchased=is_purchased)
 
         return dict(Cover=cover,
@@ -86,7 +99,7 @@ class GetBalance(GetView, PurchaserValidationMixin):
                                               EpisodeId=self.episode)
             if free_viewers:
                 free_viewers = int(free_viewers.Rest)
-            elif EpisodeUtils.is_in_purchased_album(self.episode, self.purchaser):
+            elif self.caching.is_episode_purchased(self.episode):
                 free_viewers = settings.MESSAGE_VIEWS_LOWER_LIMIT
 
         return free_viewers

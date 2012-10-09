@@ -2,10 +2,9 @@ from itertools import chain
 
 from django.db.models.query_utils import Q
 
-from rest_core.api_errors import ParameterExpected
-from rest_core.validation_mixins import PurchaserValidationMixin
-from restserver.pipture.utils import EpisodeUtils
-from restserver.rest_core.api_view import GetView
+from api.api_errors import ParameterExpected
+from api.validation_mixins import PurchaserValidationMixin
+from api.api_view import GetView
 
 from stemming import porter2
 
@@ -26,7 +25,7 @@ class GetSearchResult(GetView, PurchaserValidationMixin):
         keywords_filter = Q(Keywords__icontains=query)
         series_name_filter = Q(AlbumId__SeriesId__Title__icontains=query)
 
-        available_episodes = EpisodeUtils.get_available_episodes(self.purchaser)
+        available_episodes = self.caching.get_available_episodes()
         episodes = available_episodes.filter(title_filter |
                                              keywords_filter |
                                              series_name_filter)
@@ -37,7 +36,7 @@ class GetSearchResult(GetView, PurchaserValidationMixin):
                                      .exclude(title_filter | keywords_filter)\
                                      .order_by('AlbumId')
 
-#        available_albums = AlbumUtils.get_available_albums(self.purchaser)
+#        available_albums = AlbumUtils.get_available_albums()
 #        albums_by_series = available_albums.filter(SeriesId__Title__icontains=query)
 #        trailers_by_series = [album.TrailerId for album in albums_by_series]
 
@@ -51,6 +50,6 @@ class GetSearchResult(GetView, PurchaserValidationMixin):
         return {
             'Episodes': [self.jsonify(item, add_album_info=True)
                          for item in items
-                         if EpisodeUtils.is_on_air(item)]
+                         if self.caching.is_episode_on_air(item)]
         }
 

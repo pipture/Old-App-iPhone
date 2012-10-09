@@ -9,13 +9,13 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 
-from rest_core.jsonify_models import JsonifyModels, ApiJSONEncoder
-from rest_core.api_errors import ApiError, EmptyError, InternalServerError
-from restserver.rest_core.validation_mixins import ApiValidationMixin
+from api.caching import CachingManager
+from api.jsonify_models import JsonifyModels, ApiJSONEncoder
+from api.errors import ApiError, EmptyError, InternalServerError
+from api.validation_mixins import ApiValidationMixin
 
 
 logger = logging.getLogger('restserver.rest_core')
-
 
 
 class ParameterValidationMixin(object):
@@ -42,6 +42,7 @@ class ParameterValidationMixin(object):
 class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
 
     jsonify = JsonifyModels()
+    caching = CachingManager()
 
     def get_context_data(self):
         raise NotImplementedError

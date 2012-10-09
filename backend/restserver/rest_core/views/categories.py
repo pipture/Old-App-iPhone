@@ -4,12 +4,11 @@ from itertools import chain
 from django.core.cache import get_cache
 from django.db.models.aggregates import Count
 
-from rest_core.ga_v3_service import PiptureGAClient
-from rest_core.jsonify_models import JsonifyModels
-from pipture.utils import AlbumUtils, EpisodeUtils
-from rest_core.api_errors import ServiceUnavailable
-from rest_core.api_view import GetView
-from rest_core.validation_mixins import PurchaserValidationMixin
+from api.ga_v3_service import PiptureGAClient
+from api.jsonify_models import JsonifyModels
+from api.api_errors import ServiceUnavailable
+from api.api_view import GetView
+from api.validation_mixins import PurchaserValidationMixin
 from restserver.pipture.models import Series
 
 
@@ -206,8 +205,8 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
         return episodes, series_ids
 
     def get_params(self):
-        purchased_albums = AlbumUtils.get_purchased(self.purchaser)
-        episodes = EpisodeUtils.get_available_episodes(self.purchaser)
+        purchased_albums = self.caching.purchased_albums_ids
+        episodes = self.caching.get_available_episodes()
         watched, series_ids = self.get_watched_episodes_and_series(episodes)
         jsonify = JsonifyModels(as_category_item=True,
                                 purchased_albums=purchased_albums)

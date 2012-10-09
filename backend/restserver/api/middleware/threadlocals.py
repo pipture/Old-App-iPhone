@@ -15,3 +15,7 @@ class LocalUserMiddleware(object):
     def update(cls, **kwargs):
         for key, value in kwargs.iteritems():
             setattr(cls.stock, key, value)
+
+    @classmethod
+    def get(cls, key, default=None):
+        return getattr(cls.stock, key, default)

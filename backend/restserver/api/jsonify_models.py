@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import decimal
 from django.utils import simplejson
 
-from pipture.time_utils import TimeUtils
+from api.time_utils import TimeUtils
 from restserver.s3.s3FileField import CustomFieldFile
 
 

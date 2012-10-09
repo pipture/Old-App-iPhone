@@ -318,7 +318,7 @@ def getVideo (request):
 
         if video_preview != 1:
             if episode_id:
-                accessed = EpisodeUtils.is_available(episode_id,purchaser)
+                accessed = EpisodeUtils.is_episode_available(episode_id,purchaser)
             else:
                 accessed = True
         else:

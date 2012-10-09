@@ -1,7 +1,7 @@
 import calendar
 from datetime import datetime
 
-from pipture.middleware.threadlocals import LocalUserMiddleware
+from api.middleware.threadlocals import LocalUserMiddleware
 
 
 class TimeUtils(object):
@@ -16,4 +16,4 @@ class TimeUtils(object):
 
     @classmethod
     def user_now(cls):
-        return LocalUserMiddleware.stock.user_now
+        return LocalUserMiddleware.get('user_now')

@@ -5,11 +5,10 @@ from annoying.functions import get_object_or_None
 from pipture.models import TimeSlots, TimeSlotVideos, Episodes, \
                            SendMessage, Trailers, PurchaseItems
 from pipture.time_utils import TimeUtils
-from pipture.utils import EpisodeUtils
-from rest_core.api_errors import WrongParameter, NotFound, Forbidden, \
+from api.api_errors import WrongParameter, NotFound, Forbidden, \
                                  ParameterExpected, NotEnoughMoney, NoContent
-from rest_core.api_view import GetView
-from rest_core.validation_mixins import TimezoneValidationMixin, \
+from api.api_view import GetView
+from api.validation_mixins import TimezoneValidationMixin, \
                                         EpisodeAndTrailerValidationMixin, PurchaserValidationMixin
 
 
@@ -41,7 +40,6 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
 
 class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
                EpisodeAndTrailerValidationMixin):
-    disabled_validators = ('clean_key',)
 
     def clean_quality(self):
         try:
@@ -61,24 +59,22 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
     def clean_timeslot(self):
         self.timeslot_id = self.params.get('TimeslotId', None)
 
-        self.timeslot = get_object_or_None(TimeSlots,
-                                           TimeSlotsId=self.timeslot_id)
-
+        try:
+            self.timeslot = self.caching.get_timeslot(self.timeslot_id)
+        except ValueError:
+            raise WrongParameter(parameter='TimeslotId')
+        except TimeSlots.DoesNotExist:
+            self.timeslot = None
 
     def clean(self):
         self.force_buy = self.params.get('ForceBuy', None)
-
-        if self.force_buy:
-            self.clean_key()
-        else:
-            self.key = self.params.get('Key', None)
 
         if self.episode_id:
             self.video = self._clean_episode()
         elif self.trailer_id:
             self.video = self._clean_trailer()
 
-    def read_subtitles(self ,subtitles_url):
+    def read_subtitles(self, subtitles_url):
         if subtitles_url is not None and subtitles_url != "":
             subtitles = urllib2.urlopen(subtitles_url)
             return subtitles.read()
@@ -88,7 +84,7 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
         video = video_item.VideoId
         subtitles = video.VideoSubtitles
 
-        subtitles_url= '' if not subtitles.name else subtitles.get_url()
+        subtitles_url = '' if not subtitles.name else subtitles.get_url()
         video_file = video.VideoUrl if quality == 0 else video.VideoLQUrl
 
         if video_file.name == '':
@@ -102,7 +98,7 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
 
     def perform_episode_operations(self):
         is_purchased = (self.video_preview == 1) or \
-                       EpisodeUtils.is_available(self.episode_id, self.purchaser)
+                       self.caching.is_episode_available(self.video)
 
         if not is_purchased:
             if self.force_buy == '0':

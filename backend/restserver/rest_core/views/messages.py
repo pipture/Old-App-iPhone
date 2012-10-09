@@ -4,11 +4,10 @@ from django.db.models import F, Q
 
 from pipture.models import PiptureSettings, SendMessage, Trailers,\
                            PurchaseItems, FreeMsgViewers
-from pipture.utils import EpisodeUtils
-from rest_core.api_errors import BadRequest, ParameterExpected, \
+from api.api_errors import BadRequest, ParameterExpected, \
                                  WrongParameter, NotEnoughMoney
-from rest_core.api_view import PostView, GetView
-from rest_core.validation_mixins import PurchaserValidationMixin, \
+from api.api_view import PostView, GetView
+from api.validation_mixins import PurchaserValidationMixin, \
                                         EpisodeAndTrailerValidationMixin
 
 
@@ -113,8 +112,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         return message_cost, message_free_viewers
 
     def get_free_viewers(self, episode):
-        is_purchased = EpisodeUtils.is_in_purchased_album(episode,
-                                                          self.purchaser)
+        is_purchased = self.caching.is_episode_purchased(episode)
         if not is_purchased:
             return None
 
@@ -158,11 +156,11 @@ class GetUnusedMessageViews(GetView, PurchaserValidationMixin,
         week_date = datetime.utcnow() - timedelta(7)
         group1, group2 = 0, 0
 
+        purchased_episodes = self.caching.get_purchased_episodes()
+
         for message in self.messages:
             cnt = 0
-            is_purchased = EpisodeUtils.is_in_purchased_album(message.LinkId,
-                                                              self.purchaser)
-            if is_purchased:
+            if purchased_episodes.filter(EpisodeId=message.LinkId):
                 rest = message.ViewsLimit - max(message.ViewsCount,
                                                 message.FreeViews)
                 if rest > 0:
@@ -199,15 +197,15 @@ class DeactivateMessageViews(PostView, PurchaserValidationMixin,
         weekdate = datetime.utcnow() - timedelta(7)
         group = 0
 
+        purchased_episodes = self.caching.get_purchased_episodes()
+
         for message in self.messages:
             if self.period == 0 or \
                     (message.Timestamp >= weekdate and self.period == 1) or \
                     (message.Timestamp < weekdate and self.period == 2):
 
-                is_purchased = EpisodeUtils.is_in_purchased_album(message.LinkId,
-                                                                  self.purchaser)
                 cnt = 0
-                if is_purchased:
+                if purchased_episodes.filter(EpisodeId=message.LinkId):
                     rest = message.ViewsLimit - max(message.ViewsCount,
                                                     message.FreeViews)
                     if rest > 0:

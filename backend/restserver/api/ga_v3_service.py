@@ -18,8 +18,8 @@ class GoogleAnalyticsV3Client(object):
     version = 'v3'
 
     def __init__(self, cache=None):
-        self.service = self.initialize_service()
         self.cache = cache
+        self.service = self.initialize_service()
 
     def load_key(self):
         key_file = file(self.PRIVATE_KEY, 'rb')
@@ -67,8 +67,8 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
     int_regexp = '^[1-9][0-9]*$'
 
     def __init__(self, **kwargs):
-        super(PiptureGAClient, self).__init__()
-        self.exception_class = kwargs.get('exception_class')
+        self.exception_class = kwargs.pop('exception_class')
+        super(PiptureGAClient, self).__init__(**kwargs)
 
     def get_event_filter(self, event_name):
         return 'ga:eventCategory==%s;ga:eventAction==%s' % self.events[event_name]
