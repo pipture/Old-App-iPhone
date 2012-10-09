@@ -144,10 +144,11 @@ LOGGING = {
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'BACKEND': 'restserver.api.cache.ApiCache',
+        'TIMEOUT': 60 * 5,
     },
     'google_analytics': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'BACKEND': 'restserver.api.cache.ApiCache',
         'TIMEOUT': 60 * 5,
     },
 }

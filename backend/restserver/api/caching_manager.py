@@ -30,19 +30,19 @@ class CachingManager(object):
 
         return _purchased_albums
 
-    @cache_result
+    @cache_result(timeout=60 * 30)
     def get_episode(self, id):
-        return Episodes.objects.select_related(depth=1).get(EpisodeId=id)
+        return Episodes.objects.select_related(depth=2).get(EpisodeId=id)
 
-    @cache_result
+    @cache_result(timeout=60 * 30)
     def get_trailer(self, id):
         return Trailers.objects.select_related(depth=1).get(TrailerId=id)
 
-    @cache_result
+    @cache_result(timeout=60 * 30)
     def get_timeslot(self, id):
-        return TimeSlots.objects.select_related(depth=1).get(TimeSlotId=id)
+        return TimeSlots.objects.select_related(depth=1).get(TimeSlotsId=id)
 
-    @cache_result
+    @cache_result(timeout=60 * 30)
     def get_album(self, id):
         return Albums.objects.select_related(depth=1).get(AlbumId=id)
 
@@ -51,7 +51,7 @@ class CachingManager(object):
         return UserPurchasedItems.objects.filter(
                 UserId=self.purchaser,
                 ItemId=album.AlbumId,
-                PurchasedItemId__Description='Album')
+                PurchaseItemId__Description='Album')
 
     @cache_queryset
     def get_available_albums(self):
@@ -91,7 +91,7 @@ class CachingManager(object):
         return UserPurchasedItems.objects.filter(
                 UserId=self.purchaser,
                 ItemId=episode.AlbumId.AlbumId,
-                PurchasedItemId__Description='Album')
+                PurchaseItemId__Description='Album')
 
     def is_episode_available(self, episode):
         return episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE\
@@ -110,4 +110,3 @@ class CachingManager(object):
                 Q(AlbumId__PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
             )
         )
-

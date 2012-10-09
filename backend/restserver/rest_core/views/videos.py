@@ -1,17 +1,20 @@
 from datetime import datetime
 import urllib2
-from annoying.functions import get_object_or_None
 
 from pipture.models import TimeSlots, TimeSlotVideos, Episodes, \
                            SendMessage, Trailers, PurchaseItems
 from api.time_utils import TimeUtils
+from api.decorators import cache_queryset, cache_view
 from api.errors import WrongParameter, NotFound, Forbidden, \
                                  ParameterExpected, NotEnoughMoney, NoContent
 from api.view import GetView
 from api.validation_mixins import TimezoneValidationMixin, \
                                         EpisodeAndTrailerValidationMixin, PurchaserValidationMixin
 
+from annoying.functions import get_object_or_None
 
+
+@cache_view(timeout=60)
 class GetTimeslots(GetView, TimezoneValidationMixin):
 
     @staticmethod
@@ -20,16 +23,17 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
             return 1
         return -1
 
-    def get_context_data(self):
+    @cache_queryset(timeout=60 * 30)
+    def get_available_timeslots(self):
         today_utc = datetime.utcnow().date()
-
-        timeslots = TimeSlots.objects.select_related(depth=2)\
+        return TimeSlots.objects.select_related(depth=2)\
                                      .filter(EndDate__gte=today_utc,
                                              StartDate__lte=today_utc)\
                                      .order_by('StartTime')
 
+    def get_context_data(self):
+        timeslots = self.get_available_timeslots()
         timeslots = [self.jsonify(timeslot) for timeslot in timeslots]
-
         timeslots.sort(cmp=GetTimeslots.cmp_timeslots)
 
         return {
@@ -38,6 +42,7 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
         }
 
 
+@cache_view(timeout=60)
 class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
                EpisodeAndTrailerValidationMixin):
 
@@ -133,6 +138,7 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
         return response
 
 
+@cache_view(timeout=60)
 class GetPlaylist(GetView, TimezoneValidationMixin):
 
     def clean_timeslot(self):
@@ -142,7 +148,7 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
             raise ParameterExpected(parameter='TimeslotId')
 
         try:
-            self.timeslot = TimeSlots.objects.get(TimeSlotsId=timeslot_id)
+            self.timeslot = self.caching.get_timeslot(timeslot_id)
         except ValueError:
             raise WrongParameter(parameter='TimeslotId')
         except TimeSlots.DoesNotExist:
@@ -160,12 +166,11 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
             raise NotFound(
                 message='There are no videos in timeslot %s' % self.timeslot)
 
-    def get_autoepisode(self, StartEpisodeId, start_time):
+    def get_autoepisode(self, start_episode_id, start_time):
         d1 = datetime.utcnow()
         delta = d1 - datetime(start_time.year, start_time.month, start_time.day)
 
-        video = Episodes.objects.select_related(depth=2)\
-                                .get(EpisodeId=StartEpisodeId)
+        video = self.caching.get_episode(start_episode_id)
         episodes = Episodes.objects.filter(AlbumId=video.AlbumId)\
                                    .order_by('EpisodeNo')
         if len(episodes) > delta.days:
@@ -178,10 +183,9 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
 
     def get_episode(self, timeslot_video):
         if timeslot_video.AutoMode == 0:
-            video = Episodes.objects.select_related(depth=2)\
-                                    .get(EpisodeId=timeslot_video.LinkId)
+            video = self.caching.get_episode(timeslot_video.LinkId)
         else:
-            video = self.get_autoepisode(StartEpisodeId=timeslot_video.LinkId,
+            video = self.get_autoepisode(start_episode_id=timeslot_video.LinkId,
                                          start_time=self.timeslot.StartDate)
         return video
 

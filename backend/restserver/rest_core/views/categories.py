@@ -3,6 +3,7 @@ from itertools import chain
 
 from django.core.cache import get_cache
 from django.db.models.aggregates import Count
+from api.decorators import cache_result, cache_view
 
 from api.ga_v3_service import PiptureGAClient
 from api.jsonify_models import JsonifyModels
@@ -13,7 +14,7 @@ from restserver.pipture.models import Series
 
 
 class Category(object):
-    category_id = ''
+    id = ''
     title = ''
 
     def __init__(self, params):
@@ -32,7 +33,7 @@ class Category(object):
         items = tuple(self.get_item_info(item) for item in queryset)
         return dict(categoryItems=items,
                     data={
-                        'id': self.category_id,
+                        'id': self.id,
                         'title': self.title,
                         'display': getattr(self, 'display', 1),
                         'rows': getattr(self, 'rows', 0),
@@ -86,13 +87,13 @@ class SeriesMixin(object):
 
 
 class ScheduledSeries(Category):
-    category_id = 0
+    id = 0
     title = 'Scheduled Series'
     display = 0
 
 
 class MostPopularVideos(Category, VideosMixin):
-    category_id = 1
+    id = 1
     title = 'Most Popular'
     days_period = 4
     ga_pull_limit = 50
@@ -113,17 +114,19 @@ class MostPopularVideos(Category, VideosMixin):
 
 
 class RecentlyAddedVideos(Category, VideosMixin):
-    category_id = 2
+    id = 2
     title = 'Recently Added'
 
+    @cache_result
     def get_items_queryset(self):
         return self.episodes.order_by('-DateReleased')
 
 
 class ComingSoonSeries(Category, SeriesMixin):
-    category_id = 3
+    id = 3
     title = 'Coming Soon'
 
+    @cache_result(timeout=60 * 60)
     def get_items_queryset(self):
         return Series.objects.raw('''
             SELECT SeriesId FROM
@@ -143,10 +146,11 @@ class ComingSoonSeries(Category, SeriesMixin):
 
 
 class Top12VideosForYou(Category, VideosMixin):
-    category_id = 4
+    id = 4
     title = 'Top 12 for You'
     limit_for_one_series = 4
 
+    @cache_result
     def get_items_queryset(self):
         limit = self.limit_for_one_series
         unwatched = self.episodes.exclude(EpisodeId__in=self.watched_episodes)
@@ -166,7 +170,7 @@ class Top12VideosForYou(Category, VideosMixin):
 
 
 class WatchThatVideosAgain(Category, SeriesMixin):
-    category_id = 5
+    id = 5
     title = 'Watch Them Again'
     item_view = 'with_episodes'
 
@@ -176,6 +180,7 @@ class WatchThatVideosAgain(Category, SeriesMixin):
                 if series.filter(SeriesId=id)]
 
 
+@cache_view(timeout=30)
 class GetAllCategories(GetView, PurchaserValidationMixin):
 
     def __init__(self, **kwargs):

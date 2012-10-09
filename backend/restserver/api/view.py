@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 
-from api.caching import CachingManager
+from api.caching_manager import CachingManager
 from api.jsonify_models import JsonifyModels, ApiJSONEncoder
 from api.errors import ApiError, EmptyError, InternalServerError
 from api.validation_mixins import ApiValidationMixin

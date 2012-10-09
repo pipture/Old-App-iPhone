@@ -1,13 +1,15 @@
 from django.db.models.query_utils import Q
 
 from pipture.models import Albums, TimeSlots, Episodes, AlbumScreenshotGallery
-from api.caching import cache_queryset
+from api.decorators import cache_view
+from api.caching_manager import cache_queryset
 from api.errors import BadRequest, ParameterExpected,\
                                  WrongParameter, NotFound, NoContent
 from api.view import GetView
 from api.validation_mixins import PurchaserValidationMixin
 
 
+@cache_view(timeout=10)
 class GetAlbumDetail(GetView, PurchaserValidationMixin):
 
     def clean_album_and_timeslot(self):
@@ -73,6 +75,7 @@ class GetAlbums(GetView, PurchaserValidationMixin):
         }
 
 
+@cache_view(timeout=5)
 class GetSellableAlbums(GetView, PurchaserValidationMixin):
 
     @cache_queryset
@@ -97,18 +100,17 @@ class GetSellableAlbums(GetView, PurchaserValidationMixin):
 class GetAlbumScreenshots(GetView):
 
     def clean_episode(self):
-        EpisodeId = self.params.get('EpisodeId', None)
+        episode_id = self.params.get('EpisodeId', None)
 
-        if not EpisodeId:
+        if not episode_id:
             ParameterExpected(parameter='EpisodeId')
 
         try:
-            self.episode = Episodes.objects.select_related(depth=1)\
-                                           .get(EpisodeId=EpisodeId)
+            self.episode = self.caching.get_episode(episode_id)
         except ValueError:
             raise WrongParameter(parameter='EpisodeId')
         except Episodes.DoesNotExist:
-            raise NotFound(message='There is no episode with id %s.' % EpisodeId)
+            raise NotFound(message='There is no episode with id %s.' % episode_id)
 
     def clean(self):
         self.screenshots = self.get_album_screenshots(self.episode.AlbumId)

@@ -6,6 +6,7 @@ from apiclient.errors import HttpError
 from django.conf import settings
 
 from django.db import IntegrityError
+from api.decorators import cache_view
 
 from api.errors import WrongParameter, UnauthorizedError,\
                                  ParameterExpected, NotFound, Forbidden, \
@@ -83,6 +84,7 @@ class Login(Register):
         return self.pip_user
 
 
+@cache_view(timeout=10)
 class GetBalance(GetView, PurchaserValidationMixin):
 
     def clean_episode(self):
