@@ -45,7 +45,7 @@
 
 //get storage filename
 - (NSString*)storageFile:(NSString *)file {
-    NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [savePaths objectAtIndex:0];
     return [documentsDirectory stringByAppendingPathComponent:file];
 }
