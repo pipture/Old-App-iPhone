@@ -39,6 +39,7 @@
 @synthesize navigationItemFake;
 @synthesize album;
 @synthesize withNavigationBar;
+@synthesize withoutTabBar;
 @synthesize timeslotId;
 @synthesize scheduleModel;
 @synthesize purchasedInfoView;
@@ -596,8 +597,10 @@
         }
     }
     
-    int tabbarOffset = 0;
-    if (album.sellStatus != AlbumSellStatus_Pass && album.sellStatus != AlbumSellStatus_Buy) {
+    int tabbarOffset;
+    if (withoutTabBar){
+        tabbarOffset= 0;
+    }else{
         tabbarOffset = [PiptureAppDelegate instance].tabViewBaseHeight;
     }
     

@@ -72,6 +72,7 @@
 @synthesize toSectionView;
 @synthesize cardSectionViewController;
 @synthesize editMessageLabel;
+@synthesize clippedMessage;
 @synthesize cancelButton;
 @synthesize progressView;
 @synthesize emptyCell;
@@ -436,6 +437,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self setMaxViewsLabel:nil];
     [self setInfiniteRadioButtonsGroupView:nil];
     [self setEditMessageLabel:nil];
+    [self setClippedMessage: nil];
     [self setCancelButton:nil];
     [self setProgressView:nil];
     [super viewDidUnload];
@@ -541,8 +543,10 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     if (message_ && [message_ length] > 0 ) {
         editMessageLabel.text = @"Edit Message";
+        clippedMessage.text = message_;
     } else {
         editMessageLabel.text = @"Add Message";
+        clippedMessage.text = @"Optional";
     }
     
     self.navigationItem.hidesBackButton = YES;
@@ -592,6 +596,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [maxViewsLabel release];
     [infiniteRadioButtonsGroupView release];
     [editMessageLabel release];
+    [clippedMessage release];
     [cancelButton release];
     [progressView release];
     [super dealloc];
@@ -795,11 +800,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     switch ([self calcCellRow:indexPath]) {
         case MESSAGE_CELL_ROW:
-            if (message_ && [message_ length] > 0 ) {
-                editMessageLabel.text = @"Edit Message";
-            } else {
-                editMessageLabel.text = @"Add Message";
-            }
+//            if (message_ && [message_ length] > 0 ) {
+//                editMessageLabel.text = @"Edit Message";
+//            } else {
+//                editMessageLabel.text = @"Add Message";
+//            }
             return messageCell;
         case FROM_CELL_ROW:
             return fromCell;            
