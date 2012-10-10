@@ -56,12 +56,6 @@ USE_L10N = True
 STATIC_ROOT = os.path.join(APP_DIR, 'static')
 STATIC_URL = '/static/'
 
-
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/static/admin/'
-
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '&#a%(19x83i%5gre1$v10)exjq6taz!=e%o8vjv6&x-b3um0d)'
 
