@@ -2,14 +2,13 @@
 
 import os.path
 
-APP_DIR = os.path.dirname( globals()[ '__file__' ] )
+APP_DIR = os.path.dirname(__file__)
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
 )
-
 
 MANAGERS = ADMINS
 
@@ -54,14 +53,14 @@ USE_L10N = True
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_ROOT = os.path.join( APP_DIR, 'site_media' )
-MEDIA_URL = '/site_media/'
+STATIC_ROOT = os.path.join(APP_DIR, 'static')
+STATIC_URL = '/static/'
 
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '&#a%(19x83i%5gre1$v10)exjq6taz!=e%o8vjv6&x-b3um0d)'
@@ -153,9 +152,6 @@ CACHES = {
     },
 }
 
-
-
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -179,19 +175,28 @@ TEMPLATE_DIRS = (
     os.path.join(APP_DIR, 'templates'),
 )
 
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
+
     'django.contrib.admin',
     'restserver.s3',
     'restserver.api',
     'restserver.rest_core',
     'restserver.pipture',
+    'restserver.video_player',
+
     'django.contrib.admindocs',
-#    'restserver.south',
 )
 
 AUTH_PROFILE_MODULE = 'pipture.UserProfile'

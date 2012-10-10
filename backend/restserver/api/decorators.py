@@ -43,7 +43,6 @@ def cache_queryset(method=None, timeout=None):
 @cache_params_possible
 def cache_result(method=None, timeout=None):
     def _wrapper(self, *args, **kwargs):
-        print self, method
         cache_key = make_method_key(self.__class__, method, *args, **kwargs)
         result = cache.get(cache_key)
 

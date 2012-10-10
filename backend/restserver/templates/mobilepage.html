@@ -8,21 +8,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
     <meta name="viewport" content="width=400" />
     <title>PIPTURE VIDEO MESSAGE</title>
-    <link rel="stylesheet" type="text/css" media="screen,print" href="{{MEDIA_URL}}webpage_files/mobilepage.css" />
-    <script src="{{MEDIA_URL}}date.js"></script>
-    <script src="{{MEDIA_URL}}jquery.js"></script>
-    <!--[if lt IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='{{MEDIA_URL}}mobilepage_files/mobilepageIE.css'/><![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen,print" href="{{ STATIC_URL }}webpage_files/mobilepage.css" />
+    <script src="{{ STATIC_URL }}date.js"></script>
+    <script src="{{ STATIC_URL }}jquery.js"></script>
+    <!--[if lt IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='{{ STATIC_URL }}mobilepage_files/mobilepageIE.css'/><![endif]-->
     <!--[if gte IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='Media/IE8.css'/><![endif]-->
-    <!--<script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebSite.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}webpage_files/iWebImage.js"></script>-->
+    <!--<script type="text/javascript" src="{{ STATIC_URL }}webpage_files/iWebSite.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}webpage_files/iWebImage.js"></script>-->
     <style>
       .download_app_link .download_button
       {
-        background-image:url({{MEDIA_URL}}webpage_files/Download-button-mobile.png);
+        background-image:url({{ STATIC_URL }}webpage_files/Download-button-mobile.png);
       }
       .download_app_link:active .download_button
       {
-        background-image:url({{MEDIA_URL}}webpage_files/Download-button-rollover-mobile.png);
+        background-image:url({{ STATIC_URL }}webpage_files/Download-button-rollover-mobile.png);
       }
     </style>
   </head>
@@ -75,7 +75,7 @@
 
           <div style="height: 35px; width: 105px;  height: 35px; left: 20px; position: absolute; top: 14px; width: 105px; z-index: 1; " class="tinyText style_SkipStroke_4 stroke_0">
           	<a href="http://www.pipture.com">
-            	<img src="{{MEDIA_URL}}webpage_files/logowhite-innershadows30.png" alt="" style="border: none; height: 35px; width: 105px; " />
+            	<img src="{{ STATIC_URL }}webpage_files/logowhite-innershadows30.png" alt="" style="border: none; height: 35px; width: 105px; " />
             </a>
           </div>
 
@@ -161,7 +161,7 @@
 
 						          <div style="height: 200px; width: 380px;  left: 9px; top: -215px; z-index: 1; position: relative; " class="tinyText">
 						            <div style="position: relative; width: 380px; ">
-						              <img src="{{MEDIA_URL}}webpage_files/shapeimage_1.png" alt="" style="height: 200px; width: 380px; " />
+						              <img src="{{ STATIC_URL }}webpage_files/shapeimage_1.png" alt="" style="height: 200px; width: 380px; " />
 						            </div>
 						          </div>
 
@@ -209,13 +209,13 @@
 		{% if not message_empty and not message_blocked %}
 			<div style="width: 403px;  height: auto; position: absolute; top: 125px; z-index: 1;" class="tinyText">
 				<table cellpadding="0" cellspacing="0" class="noborder">
-			  		<tr><td width="403" height="10" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_top.png">
-			  		<tr><td width="403" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_middle.png" >
+			  		<tr><td width="403" height="10" background="{{ STATIC_URL }}webpage_files/shapeimage_8m_top.png">
+			  		<tr><td width="403" background="{{ STATIC_URL }}webpage_files/shapeimage_8m_middle.png" >
 			  			{% autoescape off %}
 	                		<p class="Body">{{text_2}}</p>
 	                	{% endautoescape %}
 			  		</td></tr>
-			  		<tr><td width="403" height="57" background="{{MEDIA_URL}}webpage_files/shapeimage_8m_bottom.png">
+			  		<tr><td width="403" height="57" background="{{ STATIC_URL }}webpage_files/shapeimage_8m_bottom.png">
 		  		</table>
 			</div>
        {% endif %}
