@@ -33,6 +33,7 @@ enum DetailAlbumViewType {
 - (IBAction)trailerShow:(id)sender;
 
 @property (assign, nonatomic) BOOL withNavigationBar;
+@property (assign, nonatomic) BOOL withoutTabBar;
 @property (retain, nonatomic) Album * album;
 @property (retain, nonatomic) ScheduleModel* scheduleModel;
 @property (retain, nonatomic) IBOutlet UIView *purchasedInfoView;

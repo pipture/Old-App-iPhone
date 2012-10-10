@@ -406,6 +406,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     HomeViewController *homeViewController = (HomeViewController*)[PiptureAppDelegate instance].homeViewController;
     
     adic.withNavigationBar = YES;
+    adic.withoutTabBar = YES;
     adic.album = [model albumForPage:[self getPageNumber]];
     adic.timeslotId = 0;
     adic.scheduleModel = homeViewController.scheduleModel;
