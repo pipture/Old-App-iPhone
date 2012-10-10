@@ -22,3 +22,4 @@ backend/include/
 backend/build/
 backend/.idea/
 backend/restserver/.idea/
+backend/restserver/static/
