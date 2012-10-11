@@ -139,10 +139,12 @@ CACHES = {
     'default': {
         'BACKEND': 'restserver.api.cache.ApiCache',
         'TIMEOUT': 60 * 5,
+        'LOCATION': '/tmp/pipture/cache/',
     },
     'google_analytics': {
         'BACKEND': 'restserver.api.cache.ApiCache',
         'TIMEOUT': 60 * 5,
+        'LOCATION': '/tmp/pipture/cache/',
     },
 }
 
@@ -156,9 +158,9 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+#    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+#    'django.contrib.messages.middleware.MessageMiddleware',
     'restserver.api.middleware.threadlocals.LocalUserMiddleware',
 )
 

@@ -12,6 +12,7 @@ from django.db.models.signals import post_save, post_syncdb
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.contrib.auth.models import User
+from api.decorators import cache_result
 from api.time_utils import TimeUtils
 
 from restserver.s3.s3FileField import S3EnabledFileField
@@ -387,13 +388,10 @@ class PiptureSettings(models.Model):
         if PiptureSettings.objects.count() == 1 and self.id != PiptureSettings.objects.all()[0].id:
             raise ValidationError({NON_FIELD_ERRORS: ["There can be only one!"]})
 
-    @staticmethod
-    def get_premiere_period():
-        return PiptureSettings.objects.all()[0].PremierePeriod
-
-    @staticmethod
-    def get_video_host():
-        return PiptureSettings.objects.all()[0].VideoHost
+    @classmethod
+    @cache_result(timeout=60 * 30)
+    def get(cls):
+        return cls.objects.select_related(depth=1).all()[0]
 
 
 class PipUsers(models.Model):

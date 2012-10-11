@@ -1,6 +1,7 @@
 from datetime import datetime
 from collections import Callable
 import logging
+from django import db
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -71,15 +72,21 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
             else:
                 context = InternalServerError(error=error).get_dict()
 
+#        self._log_queries()
+
         response = HttpResponse(self.json_dumps(context))
         return response
 
+    def _log_queries(self):
+        logger.info('connections: %s' % db.connection.queries)
+        db.reset_queries()
+
     def dispatch(self, request, *args, **kwargs):
-        entry_time = datetime.utcnow()
+#        entry_time = datetime.utcnow()
         result = super(GeneralView, self).dispatch(request, *args, **kwargs)
-        working_time = datetime.utcnow() - entry_time
-        logger.info('%s: working time = %f seconds' %
-                    (self.__class__.__name__, working_time.microseconds * 1e-6))
+#        working_time = datetime.utcnow() - entry_time
+#        logger.info('%s: working time = %f seconds' %
+#                    (self.__class__.__name__, working_time.microseconds * 1e-6))
         return result
 
 

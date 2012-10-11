@@ -128,7 +128,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
     def get_context_data(self):
         self.perform_operations()
-        video_host = PiptureSettings.get_video_host()
+        video_host = PiptureSettings.get().VideoHost
 
         return {
             'MessageURL': '%s/%s' % (video_host, self.video_url),

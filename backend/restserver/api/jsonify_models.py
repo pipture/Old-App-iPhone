@@ -39,7 +39,7 @@ class Utils(object):
             # I use inline import to avoid importing pipture.models in this file
             from restserver.pipture.models import PiptureSettings
 
-            premiere_days = PiptureSettings.get_premiere_period()
+            premiere_days = PiptureSettings.get().PremierePeriod
             premiere_period = timedelta(days=premiere_days)
             if updated >= utcnow - premiere_period:
                 status = album.STATUS_PREMIERE

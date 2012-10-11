@@ -2,12 +2,11 @@ import json
 import uuid
 import urllib2
 from decimal import Decimal
-from apiclient.errors import HttpError
+
 from django.conf import settings
-
 from django.db import IntegrityError
-from api.decorators import cache_view
 
+from api.decorators import cache_view, cache_result
 from api.errors import WrongParameter, UnauthorizedError,\
                                  ParameterExpected, NotFound, Forbidden, \
                                  ServiceUnavailable, Conflict
@@ -19,6 +18,7 @@ from restserver.pipture.models import AppleProducts, PurchaseItems,\
                                       PipUsers, Episodes, FreeMsgViewers, PiptureSettings
 
 from annoying.functions import get_object_or_None
+from apiclient.errors import HttpError
 
 
 class Index(GetView):
@@ -37,9 +37,10 @@ class Register(PostView):
         pip_user.save()
         return pip_user
 
+    @cache_result(timeout=60 * 10)
     def get_cover(self):
         try:
-            pipture_settings = PiptureSettings.objects.all()[0]
+            pipture_settings = PiptureSettings.get()
             cover = pipture_settings.Cover
             if cover is None or not cover.name:
                 cover = ""
