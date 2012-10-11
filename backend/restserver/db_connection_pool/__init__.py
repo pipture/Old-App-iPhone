@@ -18,7 +18,13 @@ def init_pool():
             backend = load_backend(backendname)
 
             #replace the database object with a proxy.
-            backend.Database = pool.manage(backend.Database)
+            backend.Database = pool.manage(backend.Database,
+                                           poolclass=pool.QueuePool,
+                                           echo=settings.DEBUG,
+                                           recycle=settings.DBPOOL_WAIT_TIMEOUT,
+                                           pool_size=settings.DBPOOL_SIZE,
+                                           max_overflow=settings.DBPOOL_MAX,
+                                           timeout=settings.DBPOOL_INTERNAL_CONN_TIMEOUT)
 
             backend.DatabaseError = backend.Database.DatabaseError
             backend.IntegrityError = backend.Database.IntegrityError
