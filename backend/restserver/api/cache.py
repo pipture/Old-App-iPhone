@@ -1,6 +1,6 @@
 import hashlib
 
-from django.core.cache.backends.locmem import LocMemCache
+#from django.core.cache.backends.locmem import LocMemCache
 from django.core.cache.backends.filebased import FileBasedCache
 
 

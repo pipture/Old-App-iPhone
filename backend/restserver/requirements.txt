@@ -1,3 +1,4 @@
+sqlalchemy
 stemming
 Django==1.3.1
 boto==2.5.2
