@@ -183,17 +183,8 @@ class WatchThatVideosAgain(Category, SeriesMixin):
 @cache_view(timeout=30)
 class GetAllCategories(GetView, PurchaserValidationMixin):
 
-    def __init__(self, **kwargs):
-        super(GetAllCategories, self).__init__(**kwargs)
-
-    @property
-    def ga(self):
-        try:
-            return self._ga
-        except AttributeError:
-            self._ga = PiptureGAClient(cache=get_cache('google_analytics'),
-                                       exception_class=ServiceUnavailable)
-            return self._ga
+    ga = PiptureGAClient(cache=get_cache('google_analytics'),
+                         exception_class=ServiceUnavailable)
 
     def get_category_classes(self):
         return Category.__subclasses__()
