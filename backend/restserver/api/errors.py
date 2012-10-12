@@ -93,7 +93,7 @@ class InternalServerError(ApiError):
 
     def __init__(self, **kwargs):
         super(InternalServerError, self).__init__(**kwargs)
-        self.caught_error = kwargs['error']
+        self.caught_error = kwargs.get('error')
 
 #    def get_description(self):
 #        return self._message % (self.caught_error, type(self.caught_error))

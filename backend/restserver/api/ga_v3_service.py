@@ -77,9 +77,9 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
         try:
             query = self.service.data().ga().get(**kwargs)
             return self.execute_query(query)
-        except (HttpError, AccessTokenRefreshError):
+        except (HttpError, AccessTokenRefreshError), e:
             if self.exception_class:
-                raise self.exception_class
+                raise self.exception_class(error=e)
             else:
                 raise
 
