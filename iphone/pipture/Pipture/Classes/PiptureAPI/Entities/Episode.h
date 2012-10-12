@@ -29,5 +29,6 @@
 
 - (id)initWithJSON:(NSDictionary*)jsonData;
 - (void)setExternalAlbum:(Album*)album;
+- (BOOL)isFromStore;
 
 @end

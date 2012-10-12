@@ -52,6 +52,7 @@ enum ComposeType {
 @property (retain, nonatomic) IBOutlet UIView *infiniteRadioButtonsGroupView;
 @property (retain, nonatomic) LibraryCardController *cardSectionViewController;
 @property (retain, nonatomic) IBOutlet UILabel *editMessageLabel;
+@property (retain, nonatomic) IBOutlet UILabel *clippedMessage;
 @property (retain, nonatomic) IBOutlet UIButton *cancelButton;
 @property (retain, nonatomic) IBOutlet UIView *progressView;
 

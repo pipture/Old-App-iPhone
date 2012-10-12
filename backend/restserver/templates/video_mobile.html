@@ -1,19 +1,19 @@
-<!DOCTYPE html> 
-<html> 
-	<head> 
-	<title>Pipture mobile site.</title> 
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
-	<link rel="stylesheet" href="{{MEDIA_URL}}jquery.mobile.css" />
-	<script type="text/javascript" src="{{MEDIA_URL}}jquery.js"></script>
-	<script type="text/javascript" src="{{MEDIA_URL}}jquery.mobile.js"></script>
-	
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>Pipture mobile site.</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{{ STATIC_URL }}jquery.mobile.css" />
+	<script type="text/javascript" src="{{ STATIC_URL }}jquery.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}jquery.mobile.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function(){
-	
+
 	$('video#movie').bind('ended',function(){
         $.mobile.changePage($('#home'));
     });
-    
+
     $('#home').bind('click',function(){
         $.mobile.changePage($('#full_text'));
     });
@@ -33,7 +33,7 @@ $(document).ready(function(){
 </head>
 <body>
     <div data-role="page" id="home" style="background-image:url({{image_url}}); background-repeat: no-repeat; background-size: 100%;">
-    <h3 style="background:white"> {{from}}: {{text_1}}</h3> 
+    <h3 style="background:white"> {{from}}: {{text_1}}</h3>
     </div>
 
     <div data-role="page" id="video">
