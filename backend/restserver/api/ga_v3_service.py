@@ -19,7 +19,8 @@ class GoogleAnalyticsV3Client(object):
 
     def __init__(self, cache=None):
         self.cache = cache
-        self.service = self.initialize_service()
+        self.key = self.load_key()
+        self.service = None
 
     def load_key(self):
         key_file = file(self.PRIVATE_KEY, 'rb')
@@ -27,19 +28,22 @@ class GoogleAnalyticsV3Client(object):
         key_file.close()
         return key
 
+    def invalid_service(self):
+        return self.service is None or self.credentials.invalid
+
     def get_credentials(self):
         credentials = SignedJwtAssertionCredentials(self.ACCOUNT_NAME,
-                                                    self.load_key(),
+                                                    self.key,
                                                     self.scope)
         return credentials
 
     def initialize_service(self):
-        credentials = self.get_credentials()
+        self.credentials = self.get_credentials()
 
         http = httplib2.Http(cache=self.cache)
-        http = credentials.authorize(http)
+        http = self.credentials.authorize(http)
 
-        return build(self.service_name, self.version, http=http)
+        self.service = build(self.service_name, self.version, http=http)
 
     def get_formatted_date(self, date):
         return date.strftime('%Y-%m-%d')
@@ -59,7 +63,7 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
         'video_id': 'ga:customVarValue2',
         'series_id': 'ga:customVarName3',
         'album_id': 'ga:customVarValue3',
-        }
+    }
 
     default_min_date = datetime(2010, 1, 1, 0, 0)
     default_max_date = datetime(2100, 1, 1, 0, 0)
@@ -73,15 +77,31 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
     def get_event_filter(self, event_name):
         return 'ga:eventCategory==%s;ga:eventAction==%s' % self.events[event_name]
 
+    def raise_api_exception(self, error):
+        if self.exception_class:
+            raise self.exception_class(error=error)
+        else:
+            raise
+
     def run_query(self, **kwargs):
+        repeat = kwargs.pop('repeat', False)
+
         try:
+            if self.invalid_service():
+                self.initialize_service()
             query = self.service.data().ga().get(**kwargs)
             return self.execute_query(query)
-        except (HttpError, AccessTokenRefreshError), e:
-            if self.exception_class:
-                raise self.exception_class(error=e)
-            else:
-                raise
+
+        except AccessTokenRefreshError, e:
+            if repeat:
+                self.raise_api_exception(e)
+
+            self.service = None
+            kwargs['repeat'] = True
+            self.run_query(**kwargs)
+
+        except HttpError, e:
+            self.raise_api_exception(e)
 
     def execute_query(self, query):
         return query.execute()

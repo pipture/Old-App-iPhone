@@ -180,7 +180,7 @@ class WatchThatVideosAgain(Category, SeriesMixin):
                 if series.filter(SeriesId=id)]
 
 
-@cache_view(timeout=30)
+@cache_view(timeout=60)
 class GetAllCategories(GetView, PurchaserValidationMixin):
 
     ga = PiptureGAClient(cache=get_cache('google_analytics'),

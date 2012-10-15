@@ -98,7 +98,12 @@ LOGGING = {
             'handlers': ['console', 'dev_console'],
             'level': 'INFO',
             },
+        'apiclient.discovery': {
+            'handlers': ['console', 'dev_console'],
+            'level': 'INFO',
+            },
         },
+
 
     'handlers': {
         'null': {
@@ -156,11 +161,11 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-#    'django.middleware.common.CommonMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-#    'django.middleware.csrf.CsrfViewMiddleware',
-#    'django.contrib.auth.middleware.AuthenticationMiddleware',
-#    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'restserver.api.middleware.threadlocals.LocalUserMiddleware',
 )
 
