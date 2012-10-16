@@ -23,7 +23,8 @@
 
 - (void) updateAlbums;
 - (BOOL) pageInRange:(NSInteger)page;
--(void) buyAlbumAtPage:(NSInteger)page;
+- (void) buyAlbumAtPage:(NSInteger)page;
+- (void) restorePurchases;
 - (NSInteger) albumsCount;
 
 
