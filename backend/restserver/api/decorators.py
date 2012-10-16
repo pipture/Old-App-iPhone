@@ -33,6 +33,8 @@ def cache_queryset(method=None, timeout=None):
         cached_queryset = cache.get(cache_key)
 
         if cached_queryset is None:
+            # force evaluate queryset
+            list(queryset)
             cache.set(cache_key, queryset, timeout)
         else:
             queryset = cached_queryset
