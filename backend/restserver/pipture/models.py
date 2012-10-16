@@ -393,12 +393,25 @@ class PiptureSettings(models.Model):
     def get(cls):
         return cls.objects.select_related(depth=1).all()[0]
 
+class Purchasers(models.Model):
+    PurchaserId = models.AutoField(primary_key=True, unique=True)
+
+    class Meta:
+        verbose_name = "Purchaser"
+        verbose_name_plural = "Purchasers"
+
+    def __unicode__(self):
+        return "%s" % self.PurchaserId
+
+    def __str__(self):
+        return "%s" % self.PurchaserId
 
 class PipUsers(models.Model):
     UserUID= models.CharField(max_length=36, primary_key=True, default=uuid.uuid1)
     Token = models.CharField(unique=True, max_length=36, default=uuid.uuid1)
     RegDate = models.DateField(default=datetime.now)
     Balance = models.DecimalField(default=Decimal('0'), max_digits=10, decimal_places=0)
+    Purchaser = models.ForeignKey(Purchasers, editable=False, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = "Pipture User"
@@ -428,24 +441,27 @@ class PurchaseItems(models.Model):
     def __str__(self):
         return "%s" % self.Description
 
-
 class UserPurchasedItems(models.Model):
     UserPurchasedItemsId = models.AutoField(primary_key=True)
     Date = models.DateField(default=datetime.now)
-    UserId = models.ForeignKey(PipUsers, editable=False)
+#    UserId = models.ForeignKey(PipUsers, editable=False)
     PurchaseItemId = models.ForeignKey(PurchaseItems, editable=False)
     ItemId = models.CharField(editable=False, max_length=100)
     ItemCost = models.DecimalField(editable=False, max_digits=7, decimal_places=0)
+    Unverified = models.BooleanField()
+    AppleTransactionId = models.CharField(unique=True, max_length=36)
+    ReceiptData = models.TextField()
+    Purchaser = models.ForeignKey(Purchasers, editable=False, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = "User Purchased Item"
         verbose_name_plural = "User Purchased Items"
 
     def __unicode__(self):
-        return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemId)
+        return "%s: %s, %s" % (self.Purchaser.PurchaserId if self.Purchaser else "", self.PurchaseItemId.Description, self.ItemId)
 
     def __str__(self):
-        return "%s: %s, %s" % (self.UserId.UserUID, self.PurchaseItemId.Description, self.ItemId)
+        return "%s: %s, %s" % (self.Purchaser.PurchaseId if self.Purchaser else "", self.PurchaseItemId.Description, self.ItemId)
 
 
 class FreeMsgViewers(models.Model):
@@ -489,12 +505,13 @@ class AppleProducts(models.Model):
 
 class Transactions(models.Model):
     TransactionId = models.AutoField(primary_key=True)
-    UserId = models.ForeignKey(PipUsers, editable=False)
+#    UserId = models.ForeignKey(PipUsers, editable=False)
     ProductId = models.ForeignKey(AppleProducts, editable=False)
     AppleTransactionId = models.CharField(unique=True, max_length=36)
     Timestamp = models.DateField(default=datetime.now)
     Cost = models.DecimalField(editable=False, max_digits=7, decimal_places=4)
     ViewsCount = models.IntegerField()
+    Purchaser = models.ForeignKey(Purchasers, editable=False, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = "Transaction"
@@ -502,10 +519,10 @@ class Transactions(models.Model):
         ordering = ['Timestamp']
 
     def __unicode__(self):
-        return "%s: %s - %s" % (self.Timestamp, self.UserId.UserUID, self.ProductId.Description)
+        return "%s: %s - %s" % (self.Timestamp, self.Purchaser.PurchaserId if self.Purchaser else "", self.ProductId.Description)
 
     def __str__(self):
-        return "%s: %s - %s" % (self.Timestamp, self.UserId.UserUID, self.ProductId.Description)
+        return "%s: %s - %s" % (self.Timestamp, self.Purchaser.PurchaserId if self.Purchaser else "", self.ProductId.Description)
 
 
 def to_uuid(value):

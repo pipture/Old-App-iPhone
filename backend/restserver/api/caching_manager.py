@@ -14,8 +14,8 @@ class CachingManager(object):
     user_locals = LocalUserMiddleware
 
     @property
-    def purchaser(self):
-        return self.user_locals.get('purchaser')
+    def user(self):
+        return self.user_locals.get('user')
 
     @property
     def purchased_albums_ids(self):
@@ -23,7 +23,7 @@ class CachingManager(object):
 
         if _purchased_albums is None:
             _purchased_albums = UserPurchasedItems.objects.filter(
-                    UserId=self.purchaser,
+                    Purchaser=self.user.Purchaser,
                     PurchaseItemId__Description='Album').values_list('ItemId')
             _purchased_albums = [int(id[0]) for id in _purchased_albums]
             self.user_locals.update(purchased_albums=_purchased_albums)
@@ -49,7 +49,7 @@ class CachingManager(object):
     @cache_queryset
     def is_album_purchased(self, album):
         return UserPurchasedItems.objects.filter(
-                UserId=self.purchaser,
+                Purchaser=self.user.Purchaser,
                 ItemId=album.AlbumId,
                 PurchaseItemId__Description='Album')
 
@@ -89,7 +89,7 @@ class CachingManager(object):
     @cache_queryset
     def is_episode_purchased(self, episode):
         return UserPurchasedItems.objects.filter(
-                UserId=self.purchaser,
+                Purchaser=self.user.Purchaser,
                 ItemId=episode.AlbumId.AlbumId,
                 PurchaseItemId__Description='Album')
 
