@@ -178,7 +178,16 @@
     }
 }
 
-
+- (void) restorePurchases
+{
+    InAppPurchaseManager* purchaseMgr = [[PiptureAppDelegate instance] purchases];
+    if ([purchaseMgr canMakePurchases]) {
+        [purchaseMgr restorePurchases];
+    } else {
+        SHOW_ERROR(@"Purchase failed", @"Can't make purchases!");
+    }
+    NSLog(@"Restored");
+}
 
 
 

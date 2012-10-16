@@ -30,5 +30,6 @@
 - (IBAction)onPreviousButton:(id)sender;
 - (IBAction)onBuyButton:(id)sender;
 - (IBAction)onInfoButton:(id)sender;
+- (IBAction)onRestorePurchasesButton:(id)sender;
 
 @end

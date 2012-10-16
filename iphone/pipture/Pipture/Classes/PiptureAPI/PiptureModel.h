@@ -185,7 +185,8 @@
 
 -(BOOL)getAlbumDetailsForTimeslotId:(NSInteger)timeslotId receiver:(NSObject<AlbumDetailsReceiver>*)receiver;
 
--(BOOL)buyCredits:(NSString*)transactionId withData:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver;
+//-(BOOL)buyItems:(NSString*)transactionId withData:(NSString*)receiptData receiver:(NSObject<PurchaseDelegate>*)receiver;
+-(BOOL)buyItems:(NSArray*)transactions receiver:(NSObject<PurchaseDelegate>*)receiver;
 
 -(BOOL)getBalanceAndFreeViewersForEpisode:(NSNumber*)episodeId withReceiver:(NSObject<BalanceReceiver>*)receiver;
 

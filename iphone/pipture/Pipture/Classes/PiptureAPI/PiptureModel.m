@@ -72,8 +72,9 @@ NSString *SEND_DEACTIVATE_MESSAGES;
 static NSString* const REST_PARAM_API = @"API";
 static NSString* const REST_PARAM_SESSION_KEY = @"Key";
 static NSString* const REST_PARAM_UUID = @"UUID";
-static NSString* const REST_PARAM_RECEIPT_DATA = @"AppleReceiptData";
-static NSString* const REST_PARAM_TRANSACTIONID = @"TransactionId";
+static NSString* const REST_PARAM_TRANSACTIONS_DATA = @"TransactionsData";
+//static NSString* const REST_PARAM_RECEIPT_DATA = @"AppleReceiptData";
+//static NSString* const REST_PARAM_TRANSACTIONID = @"TransactionId";
 static NSString* const REST_PARAM_MESSAGE = @"Message";
 static NSString* const REST_PARAM_VIEWS = @"ViewsCount";
 static NSString* const REST_PARAM_TIMESLOT_ID = @"TimeslotId";
@@ -809,8 +810,9 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
 }
 
 
--(BOOL)buyCredits:(NSString *)transactioId
-         withData:(NSString*)receiptData 
+-(BOOL)buyItems:(NSArray *)transactions
+//-(BOOL)buyItems:(NSString *)transactioId
+//         withData:(NSString*)receiptData 
          receiver:(NSObject<PurchaseDelegate>*)receiver
 {    
     NSURL* url = [self buildURLWithRequest:GET_BUY_REQUEST
@@ -818,15 +820,13 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
                                    sendKey:NO
                               sendTimezone:NO];
     
-    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@", 
-                        REST_PARAM_API,
-                        API_VERSION,
-                        REST_PARAM_SESSION_KEY, 
-                        sessionKey,
-                        REST_PARAM_RECEIPT_DATA, 
-                        receiptData, 
-                        REST_PARAM_TRANSACTIONID,
-                        transactioId];
+    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@",
+                        REST_PARAM_API, API_VERSION,
+                        REST_PARAM_SESSION_KEY, sessionKey,
+//                        REST_PARAM_RECEIPT_DATA, receiptData,
+//                        REST_PARAM_TRANSACTIONID, transactioId]
+                        REST_PARAM_TRANSACTIONS_DATA, [transactions JSONRepresentation]
+                        ];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url 
                                                              postParams:params 

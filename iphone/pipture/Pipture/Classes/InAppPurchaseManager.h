@@ -30,7 +30,7 @@
 - (BOOL)canMakePurchases;
 - (void)purchaseCredits;
 - (void)purchaseAlbum:(NSString*)appleProductId;
-
+- (void)restorePurchases;
 - (BOOL)isInProcess;
 
 @end

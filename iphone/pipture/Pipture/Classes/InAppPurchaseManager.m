@@ -10,43 +10,64 @@
 #import "PiptureAppDelegate.h"
 #import "PiptureAppDelegate+GATracking.h"
 
-@interface PurchaseSession : NSObject<PurchaseDelegate, UIAlertViewDelegate> {
+@interface PurchaseSession : NSObject<PurchaseDelegate, UIAlertViewDelegate>
+{
     BOOL inProcess;
-    NSString*transaction_;
-    NSString*receipt_;
-    NSString*appleProductId_;
-}    
+//    NSString*transaction_;
+//    NSString*receipt_;
+//    NSString*appleProductId_;
+//    NSArray *transactions;
+}
+@property(retain, nonatomic) NSArray *transactions;
 
--(id)initWithReceipt:(NSString*)receipt appleProductId:(NSString*)appleProductId  transactionId:(NSString*)transaction;
+//-(id)initWithReceipt:(NSString*)receipt appleProductId:(NSString*)appleProductId  transactionId:(NSString*)transaction;
+-(id)initWithTransactions: (NSArray*)transactions;
 -(void)run;
 
 @end
 
 @implementation PurchaseSession
-    
 
--(id)initWithReceipt:(NSString*)receipt appleProductId:(NSString*)appleProductId transactionId:(NSString*)transaction{
+@synthesize transactions = transactions_;
+
+//-(id)initWithReceipt:(NSString*)receipt appleProductId:(NSString*)appleProductId transactionId:(NSString*)transaction{
+//    self = [super init];
+//    if (self) {
+//        transaction_ = [transaction retain];
+//        receipt_ = [receipt retain];
+//        appleProductId_ = [appleProductId retain];
+//        
+//        [[PiptureAppDelegate instance] storeInAppPurchase:transaction_ receipt:receipt_];
+//    }
+//    return self;
+//}
+-(id)initWithTransactions: (NSArray*)transactions{
     self = [super init];
     if (self) {
-        transaction_ = [transaction retain];
-        receipt_ = [receipt retain];
-        appleProductId_ = [appleProductId retain];
         
-        [[PiptureAppDelegate instance] storeInAppPurchase:transaction_ receipt:receipt_];
+//        transaction_ = [transaction retain];
+//        receipt_ = [receipt retain];
+//        appleProductId_ = [appleProductId retain];
+        self.transactions = transactions;
+        NSDictionary *firstTransaction = [self.transactions objectAtIndex:0];
+        NSString *transactionId = [firstTransaction objectForKey:@"transactionId"];
+        NSString *receipt = [firstTransaction objectForKey:@"receipt"];
+        [[PiptureAppDelegate instance] storeInAppPurchase:transactionId receipt:receipt];
     }
     return self;
 }
 
 - (void)dealloc {
-    [transaction_ release];
-    [receipt_ release];
-    [appleProductId_ release];
+//    [transaction_ release];
+//    [receipt_ release];
+//    [appleProductId_ release];
+    [self.transactions release];
     [super dealloc];
 }
 
 -(void)runRaw {
     inProcess = YES;
-    [[[PiptureAppDelegate instance] model] buyCredits:transaction_ withData:receipt_ receiver:self];    
+    [[[PiptureAppDelegate instance] model] buyItems:self.transactions receiver:self];
 }
 
 -(void)run {
@@ -67,7 +88,8 @@
             break;
         case 2:
             [[PiptureAppDelegate instance] dismissModalBusy];
-            NSRange rng = [appleProductId_ rangeOfString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumProductPrefix"]];
+            NSString *firstTransactionProductId = [[self.transactions objectAtIndex:0] objectForKey:@"productId"];
+            NSRange rng = [firstTransactionProductId rangeOfString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumProductPrefix"]];
             
             NSString * title = nil;
             NSString * message = nil;
@@ -102,12 +124,13 @@
     
     [[PiptureAppDelegate instance] clearInAppPurchases];
     [[PiptureAppDelegate instance] dismissModalBusy];
-    NSRange rng = [appleProductId_ rangeOfString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumProductPrefix"]];
+    NSString *firstTransactionProductId = [[self.transactions objectAtIndex:0] objectForKey:@"productId"];
+    NSRange rng = [firstTransactionProductId rangeOfString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"AlbumProductPrefix"]];
     if (0 == rng.location) {
         [[PiptureAppDelegate instance] setUserPurchasedAlbumSinceAppStart:YES];                
         [[NSNotificationCenter defaultCenter] postNotificationName:ALBUM_PURCHASED_NOTIFICATION object:nil];
         GA_TRACK_EVENT(GA_EVENT_PURCHASE_ALBUM, 
-                       appleProductId_, 
+                       firstTransactionProductId, 
                        GA_NO_VALUE,
                        GA_NO_VARS);
     } else {
@@ -235,11 +258,19 @@
     NSArray * purchase = [[PiptureAppDelegate instance] getInAppPurchases];
     isInProcess = YES;
     if (purchase && purchase.count == 2) {
-        NSString * transactionId = [purchase objectAtIndex:0];
-        NSString * base64 = [purchase objectAtIndex:1];
-        NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
-        
-        PurchaseSession* purchase = [[PurchaseSession alloc] initWithReceipt:base64 appleProductId:productId transactionId:transactionId];
+//        NSString * transactionId = [purchase objectAtIndex:0];
+//        NSString * base64 = [purchase objectAtIndex:1];
+//        NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
+//        
+//        PurchaseSession* purchase = [[PurchaseSession alloc] initWithReceipt:base64 appleProductId:productId transactionId:transactionId];
+        NSString *productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
+        NSDictionary *creditsPurchaseItem = [NSDictionary dictionaryWithObjectsAndKeys:
+                                            [purchase objectAtIndex:0], @"transactionId",
+                                            [purchase objectAtIndex:1], @"receipt",
+                                            productId, @"productId",
+                                            nil];
+        NSArray *transactionDicts = [NSArray arrayWithObject:creditsPurchaseItem];
+        PurchaseSession* purchase = [[PurchaseSession alloc]initWithTransactions: transactionDicts];
         [purchase run];
         [purchase release];
     } else {
@@ -315,9 +346,16 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         [requestIssuesAlert show];
         [requestIssuesAlert release];
         
-        NSString * base64 = [self base64Encoding:transaction.transactionReceipt];
-        
-        PurchaseSession* purchase = [[PurchaseSession alloc] initWithReceipt:base64 appleProductId:[transaction payment].productIdentifier transactionId:transaction.transactionIdentifier];                
+//        NSString * base64 = [self base64Encoding:transaction.transactionReceipt];
+//        
+//        PurchaseSession* purchase = [[PurchaseSession alloc] initWithReceipt:base64 appleProductId:[transaction payment].productIdentifier transactionId:transaction.transactionIdentifier];
+        NSDictionary *purchaseItem = [NSDictionary dictionaryWithObjectsAndKeys:
+                                      transaction.transactionIdentifier, @"transactionId",
+                                      [self base64Encoding:transaction.transactionReceipt], @"receipt",
+                                      [transaction payment].productIdentifier, @"productId",
+                                      nil];
+        NSArray *transactionDicts = [NSArray arrayWithObject:purchaseItem];
+        PurchaseSession* purchase = [[PurchaseSession alloc]initWithTransactions: transactionDicts];
         [purchase run];
         [purchase release];
         NSLog(@"InApp transaction OK!");
@@ -335,7 +373,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }
     
     isInProcess = NO;
-} 
+}
 
 //
 // called when the transaction was successful
@@ -348,10 +386,35 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 //
 // called when a transaction has been restored and and successfully completed
 //
-- (void)restoreTransaction:(SKPaymentTransaction *)transaction
+- (void)restoreTransactions:(NSArray*)transactions
 {
-    [self finishTransaction:transaction wasSuccessful:YES];
-} 
+    [transactions retain];
+    //    SKPaymentTransaction * transaction = [transactions objectAtIndex:0];
+    //    NSString * base64 = [self base64Encoding:[transaction transactionReceipt] ];
+    //    PurchaseSession* purchase = [[PurchaseSession alloc] initWithReceipt:base64 appleProductId:[transaction payment].productIdentifier transactionId:transaction.transactionIdentifier];
+    NSMutableArray *transactionDicts = [NSMutableArray arrayWithCapacity:[transactions count]];
+    for (SKPaymentTransaction * transaction in transactions){
+        // remove the transaction from the payment queue.
+        NSDictionary *purchaseItem = [NSDictionary dictionaryWithObjectsAndKeys:
+                                      transaction.transactionIdentifier, @"transactionId",
+                                      [self base64Encoding:transaction.transactionReceipt], @"receipt",
+                                      [transaction payment].productIdentifier, @"productId",
+                                      nil];
+        [transactionDicts addObject:purchaseItem];
+        [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+    }
+    PurchaseSession* purchase = [[PurchaseSession alloc]initWithTransactions: transactionDicts];
+    [purchase run];
+    [purchase release];
+    NSLog(@"InApp transaction OK! Purchases restored.");
+    isInProcess = NO;
+    
+    UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchases Restored" message:@"Your previously purchased products have been restored." delegate:nil cancelButtonTitle:@"Thanks!" otherButtonTitles:nil];
+    [requestIssuesAlert show];
+    
+    [requestIssuesAlert release];
+    [transactions release];
+}
 
 //
 // called when a transaction has failed
@@ -394,6 +457,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 //
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
 {
+    NSMutableArray *restoredTransactions = nil;
     for (SKPaymentTransaction *transaction in transactions)
     {
         switch (transaction.transactionState)
@@ -405,11 +469,18 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
                 [self failedTransaction:transaction];
                 break;
             case SKPaymentTransactionStateRestored:
-                [self restoreTransaction:transaction];
+                if (!restoredTransactions){
+                    restoredTransactions = [NSMutableArray arrayWithObject:transaction];
+                }else{
+                    [restoredTransactions addObject:transaction];
+                }
                 break;
             default:
                 break;
         }
+    }
+    if (restoredTransactions){
+        [self restoreTransactions:restoredTransactions];
     }
 }
 
@@ -441,6 +512,11 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [request release];
 }
 
-
+- (void)restorePurchases{
+    isInProcess = YES;
+    [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:YES completion:^{
+        [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+    }];
+}
 
 @end
