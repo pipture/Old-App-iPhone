@@ -1,3 +1,4 @@
+south
 sqlalchemy
 stemming
 Django==1.3.1

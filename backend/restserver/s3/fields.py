@@ -8,7 +8,7 @@ from django.db.models.fields.files import FieldFile
 
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
-#from south.modelsinspector import add_introspection_rules
+from south.modelsinspector import add_introspection_rules
 
 
 def get_sha1_from_file(content):
@@ -103,36 +103,33 @@ class CustomFieldFile(FieldFile):
 
 
 class S3EnabledFileField(models.FileField):
+
+    bucket = settings.DEFAULT_BUCKET
     attr_class = CustomFieldFile
+    _storage = None
 
-    def __init__(self, bucket=None, verbose_name=None,
+    def __init__(self, verbose_name=None,
                  name=None, upload_to='', storage=None, **kwargs):
-        if bucket is None:
-            bucket = settings.DEFAULT_BUCKET
+        storage = storage or self.get_storage()
 
-        if settings.USE_AMAZON_S3:
-            self.connection = S3Connection(settings.AWS_ACCESS_KEY_ID,
-                                           settings.AWS_SECRET_ACCESS_KEY)
-            if not self.connection.lookup(bucket):
-                self.connection.create_bucket(bucket)
-            self.bucket = self.connection.get_bucket(bucket)
-            storage = S3Storage(self.bucket)
         super(S3EnabledFileField, self).__init__(
                 verbose_name, name, upload_to, storage, **kwargs
             )
 
-#
-#s3_file_rules = [
-#    (
-#        (S3EnabledFileField, ),
-#        [],
-#        {
-#            "null": ["null", {"default": False}],
-#            "blank": ["blank", {"default": False}],
-#        }
-#    )
-#]
-#
-#add_introspection_rules(
-#        s3_file_rules, ('^restserver\.s3\.s3FileField\.S3EnabledFileField',)
-#    )
+    def get_storage(self):
+        if settings.USE_AMAZON_S3:
+            if self.__class__._storage:
+                return self.__class__._storage
+
+            connection = S3Connection(settings.AWS_ACCESS_KEY_ID,
+                                      settings.AWS_SECRET_ACCESS_KEY)
+            if not connection.lookup(self.bucket):
+                connection.create_bucket(self.bucket)
+            bucket = connection.get_bucket(self.bucket)
+            self.__class__._storage = storage = S3Storage(bucket)
+            return storage
+
+        return None
+
+
+add_introspection_rules([], ['^restserver\.s3\.fields\.S3EnabledFileField'])

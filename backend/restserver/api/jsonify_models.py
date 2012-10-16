@@ -3,7 +3,7 @@ import decimal
 from django.utils import simplejson
 
 from api.time_utils import TimeUtils
-from restserver.s3.s3FileField import CustomFieldFile
+from restserver.s3.fields import CustomFieldFile
 
 
 class ApiJSONEncoder(simplejson.JSONEncoder):

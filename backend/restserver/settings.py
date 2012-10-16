@@ -199,6 +199,8 @@ INSTALLED_APPS = (
     'restserver.video_player',
 
     'django.contrib.admindocs',
+
+    'south',
 )
 
 AUTH_PROFILE_MODULE = 'pipture.UserProfile'

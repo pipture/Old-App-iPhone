@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 from api.decorators import cache_result
 from api.time_utils import TimeUtils
 
-from restserver.s3.s3FileField import S3EnabledFileField
+from restserver.s3.fields import S3EnabledFileField
 
 
 class Videos(models.Model):
