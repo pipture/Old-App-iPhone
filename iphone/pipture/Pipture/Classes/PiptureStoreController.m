@@ -400,6 +400,12 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     [model buyAlbumAtPage:[self getPageNumber]];
 }
 
+
+- (IBAction)onRestorePurchasesButton:(id)sender {
+    progressView.hidden = NO;
+    [model restorePurchases];
+}
+
 - (IBAction)onInfoButton:(id)sender {
     AlbumDetailInfoController* adic = [[AlbumDetailInfoController alloc] initWithNibName:@"AlbumDetailInfo"
                                                                                   bundle:nil];

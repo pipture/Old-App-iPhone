@@ -190,7 +190,7 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
         return Category.__subclasses__()
 
     def get_watched_episodes_and_series(self, available_episodes):
-        ids = self.ga.get_episodes_watched_by_user(self.purchaser.UserUID)
+        ids = self.ga.get_episodes_watched_by_user(self.user.UserUID)
         episodes = available_episodes.filter(EpisodeId__in=ids)
         counted_watched = episodes.values('AlbumId__SeriesId')\
                 .annotate(watched_count=Count('AlbumId__SeriesId'))\

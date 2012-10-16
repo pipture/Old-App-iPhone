@@ -29,8 +29,8 @@ class PurchaserValidationMixin(object):
             raise UnauthorizedError()
 
         try:
-            self.purchaser = PipUsers.objects.get(Token=self.key)
-            LocalUserMiddleware.update(purchaser=self.purchaser)
+            self.user = PipUsers.objects.get(Token=self.key)
+            LocalUserMiddleware.update(user=self.user)
         except PipUsers.DoesNotExist:
             raise UnauthorizedError()
 

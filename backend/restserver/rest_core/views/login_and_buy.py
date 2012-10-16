@@ -5,6 +5,7 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.db import IntegrityError
+from django.utils import simplejson
 
 from api.decorators import cache_view, cache_result
 from api.errors import WrongParameter, UnauthorizedError,\
@@ -15,7 +16,7 @@ from api.validation_mixins import PurchaserValidationMixin
 
 from restserver.pipture.models import AppleProducts, PurchaseItems,\
                                       UserPurchasedItems, Transactions, \
-                                      PipUsers, Episodes, FreeMsgViewers, PiptureSettings
+                                      PipUsers, Purchasers, Episodes, FreeMsgViewers, PiptureSettings
 
 from annoying.functions import get_object_or_None
 from apiclient.errors import HttpError
@@ -33,7 +34,9 @@ class Index(GetView):
 class Register(PostView):
 
     def get_pip_user(self):
-        pip_user = PipUsers()
+        new_purchaser = Purchasers()
+        new_purchaser.save()
+        pip_user = PipUsers(Purchaser=new_purchaser)
         pip_user.save()
         return pip_user
 
@@ -53,7 +56,7 @@ class Register(PostView):
 
     def get_context_data(self):
         pip_user = self.get_pip_user()
-        self.caching.user_locals.update(purchaser=pip_user)
+        self.caching.user_locals.update(user=pip_user)
 
         cover, album = self.get_cover()
         if album:
@@ -76,6 +79,12 @@ class Login(Register):
 
         try:
             self.pip_user = PipUsers.objects.get(UserUID=user_uid)
+            if not self.pip_user.Purchaser:
+                new_purchaser = Purchasers()
+                new_purchaser.save()
+                self.pip_user.Purchaser = new_purchaser
+                self.pip_user.save()
+
         except PipUsers.DoesNotExist:
             raise UnauthorizedError()
 
@@ -103,7 +112,7 @@ class GetBalance(GetView, PurchaserValidationMixin):
 
         if self.episode:
             free_viewers = get_object_or_None(FreeMsgViewers,
-                                              UserId=self.purchaser,
+                                              UserId=self.user,
                                               EpisodeId=self.episode)
             if free_viewers:
                 free_viewers = int(free_viewers.Rest)
@@ -114,7 +123,7 @@ class GetBalance(GetView, PurchaserValidationMixin):
 
     def get_context_data(self):
 
-        return dict(Balance=str(self.purchaser.Balance),
+        return dict(Balance=str(self.user.Balance),
                     FreeViewersForEpisode=self.get_free_viewers_for_episode())
 
 
@@ -127,23 +136,32 @@ class Buy(PostView, PurchaserValidationMixin):
     APPLE_PRODUCT_ALBUM_BUY = 'com.pipture.Pipture.AlbumBuy.'
     APPLE_PRODUCT_ALBUM_PASS = 'com.pipture.Pipture.AlbumPass.'
 
-    def _clean_apple_purchase(self):
-        self.apple_purchase = self.params.get('AppleReceiptData', None)
+#    def _clean_apple_purchase(self):
+#        self.apple_purchase = self.params.get('AppleReceiptData', None)
+#
+#        if self.apple_purchase is None:
+#            raise Forbidden(message='Expected apple purchase')
+#
+#        self.product, self.quantity, self.transaction_id = \
+#                self.response_from_apple_server()
 
-        if self.apple_purchase is None:
-            raise Forbidden(message='Expected apple purchase')
+#    def clean_transaction_id(self):
+#        transaction_id = self.params.get('TransactionId', None)
+#
+#        self.apple_transaction = \
+#            get_object_or_None(Transactions, AppleTransactionId=transaction_id)
 
-        self.product, self.quantity, self.transaction_id = \
-                self.response_from_apple_server()
+    def clean_transactions(self):
+#        self.apple_transaction = \
+#            get_object_or_None(Transactions, AppleTransactionId=transaction_id)
+        json_data = self.params.get('TransactionsData', None)
+        self.transactions = simplejson.loads(json_data)
+            
+        if len(self.transactions) == 0:
+            raise Forbidden(message='Expected apple purchase items')
 
-    def clean_transaction_id(self):
-        transaction_id = self.params.get('TransactionId', None)
-
-        self.apple_transaction = \
-            get_object_or_None(Transactions, AppleTransactionId=transaction_id)
-
-    def response_from_apple_server(self):
-        data_json = json.dumps({"receipt-data": str(self.apple_purchase)})
+    def response_from_apple_server(self, index):
+        data_json = json.dumps({"receipt-data": str(self.transactions[index]['receipt'])})
         request = urllib2.Request(url=self.url, data=data_json)
 
         try:
@@ -158,19 +176,22 @@ class Buy(PostView, PurchaserValidationMixin):
             receipt = result_json['receipt']
             return receipt['product_id'], \
                    int(receipt['quantity']), \
-                   receipt['transaction_id']
+                   receipt['transaction_id'], \
+                   receipt['original_transaction_id']
 
     def perform_operations(self):
-        #allready bought
-        if self.apple_transaction is not None:
-            return
+        i=0
+        while i<len(self.transactions):
+            self.product, self.quantity, \
+            self.transaction_id, self.original_transaction_id = \
+                self.response_from_apple_server(i)
+            
+            if self.product == self.APPLE_PRODUCT_CREDITS:
+                self.perform_credits_oprations()
+            else:
+                self.perform_other_operations()
 
-        self._clean_apple_purchase()
-
-        if self.product == self.APPLE_PRODUCT_CREDITS:
-            self.perform_credits_oprations()
-        else:
-            self.perform_other_operations()
+            i += 1
 
     def perform_credits_oprations(self):
         try:
@@ -181,7 +202,7 @@ class Buy(PostView, PurchaserValidationMixin):
         cost = Decimal(apple_product.ViewsCount * self.quantity)
 
         try:
-            transaction = Transactions(UserId=self.purchaser,
+            transaction = Transactions(Purchaser=self.user.Purchaser,
                                        ProductId=apple_product,
                                        Cost=cost,
                                        ViewsCount=apple_product.ViewsCount,
@@ -190,10 +211,46 @@ class Buy(PostView, PurchaserValidationMixin):
         except IntegrityError:
             raise Conflict(message='Duplicated transaction.')
 
-        self.purchaser.Balance += cost
-        self.purchaser.save()
+        self.user.Balance += cost
+        self.user.save()
+        
+    def restore_purchased_item(self):
+        try:
+            original_transaction = UserPurchasedItems.objects.get(AppleTransactionId=self.original_transaction_id)
+        except UserPurchasedItems.DoesNotExist:
+            return False
+        
+        if original_transaction.Purchaser == self.user.Purchaser:
+            return True
+        
+        try:
+            new_users_items = UserPurchasedItems.objects.filter(Purchaser=self.user.Purchaser)
+        except PipUsers.DoesNotExist:
+            new_users_items = None
+        
+        for item in new_users_items:
+            item.Purchaser = original_transaction.Purchaser
+            item.save()
+            
+        try:
+            new_users = PipUsers.objects.filter(Purchaser=self.user.Purchaser)
+        except PipUsers.DoesNotExist:
+            raise Conflict(message='There must be at least one (current) user in selection.')
+
+        for user in new_users:
+            user.Purchaser = original_transaction.Purchaser
+            user.save()
+            
+        original_purchaser.delete()
+        
+        return True
+        
 
     def perform_other_operations(self):
+        fresh_transaction = self.transaction_id==self.original_transaction_id
+        if (not fresh_transaction and self.restore_purchased_item()):
+            return True
+        
         album_id = None
 
         if self.product[:29] == self.APPLE_PRODUCT_ALBUM_BUY:
@@ -206,13 +263,17 @@ class Buy(PostView, PurchaserValidationMixin):
             raise WrongParameter(parameter='Product')
 
         album_purchase_item = PurchaseItems.objects.get(Description='Album')
-        purchased_item = UserPurchasedItems(UserId=self.purchaser,
+        AppleTransactionId \
+            = self.transaction_id if fresh_transaction else self.original_transaction_id
+        purchased_item = UserPurchasedItems(Purchaser=self.user.Purchaser,
                                             ItemId=int(album_id),
                                             PurchaseItemId=album_purchase_item,
-                                            ItemCost=0)
+                                            ItemCost=0,
+                                            AppleTransactionId=AppleTransactionId )
         purchased_item.save()
-
+            
+            
     def get_context_data(self):
         self.perform_operations()
-        return dict(Balance=str(self.purchaser.Balance))
+        return dict(Balance=str(self.user.Balance))
 
