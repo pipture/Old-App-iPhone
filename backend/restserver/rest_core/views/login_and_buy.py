@@ -181,14 +181,12 @@ class Buy(PostView, PurchaserValidationMixin):
 
     def perform_operations(self):
         i=0
-        print "self.transactions", self.transactions
         while i<len(self.transactions):
             self.product, self.quantity, \
             self.transaction_id, self.original_transaction_id = \
                 self.response_from_apple_server(i)
             
             if self.product == self.APPLE_PRODUCT_CREDITS:
-                print "APPLE_PRODUCT_CREDITS"
                 self.perform_credits_oprations()
             else:
                 self.perform_other_operations()
