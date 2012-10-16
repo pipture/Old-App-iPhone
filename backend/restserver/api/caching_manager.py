@@ -4,6 +4,7 @@ from django.db.models import Q
 from api.decorators import cache_queryset, cache_result
 
 from api.middleware.threadlocals import LocalUserMiddleware
+from api.time_utils import TimeUtils
 from pipture.models import Episodes, Albums, UserPurchasedItems, \
                            TimeSlotVideos, SendMessage, Trailers, TimeSlots
 
@@ -94,7 +95,8 @@ class CachingManager(object):
                 PurchaseItemId__Description='Album')
 
     def is_episode_available(self, episode):
-        return episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE\
+        return (episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE\
+                and episode.DateReleased < TimeUtils.user_now()) \
                 or self.is_episode_purchased(episode)
 
     @cache_queryset
@@ -108,5 +110,5 @@ class CachingManager(object):
             Q(AlbumId__HiddenAlbum=False) & (
                 Q(AlbumId__AlbumId__in=self.purchased_albums_ids) |
                 Q(AlbumId__PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
-            )
+            ) & Q(DateReleased__lt=TimeUtils.user_now())
         )
