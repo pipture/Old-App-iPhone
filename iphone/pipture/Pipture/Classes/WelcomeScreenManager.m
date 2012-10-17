@@ -51,12 +51,12 @@
     
     if (logo) {
         logoImage.hidden = NO;
-        titleLabel.frame = CGRectMake(20, 169, 280, 21);
-        messageLabel.frame = CGRectMake(20, 191, 280, 21);
+        titleLabel.frame = CGRectMake(20, 162, 280, 21);
+        messageLabel.frame = CGRectMake(20, 184, 280, 21);
     } else {
         logoImage.hidden = YES;
-        titleLabel.frame = CGRectMake(20, 75, 280, 21);
-        messageLabel.frame = CGRectMake(20, 104, 280, 21);
+        titleLabel.frame = CGRectMake(20, 84, 280, 21);
+        messageLabel.frame = CGRectMake(20, 113, 280, 21);
     }
     
     titleLabel.text = title;
@@ -66,11 +66,14 @@
     
     if (!logo) {
         CGRect r = okButton.frame;
-        int pos = 100 + messageLabel.frame.size.height;
+        int pos = 109 + messageLabel.frame.size.height;
         int hhh = (parentView.frame.size.height - pos)/2;
         pos += hhh/2;
         pos -= r.size.height/2;
         okButton.frame = CGRectMake(r.origin.x, pos, r.size.width, r.size.height);
+    } else {
+        CGRect r = okButton.frame;
+        okButton.frame = CGRectMake(r.origin.x, 325, r.size.width, r.size.height);
     }
     
     [okButton addTarget:self action:@selector(okPressed:) forControlEvents:UIControlEventTouchUpInside];

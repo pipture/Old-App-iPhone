@@ -571,8 +571,8 @@
             case HomeScreenMode_Cover:
                 [appDelegate 
                  showWelcomeScreenWithTitle:@"Welcome to Pipture."
-                 message:@"Enjoy watching scheduled video programs\nshot specifically for smartphones users\nand send hilarious video messages\nperformed by great talents." 
-                 storeKey:@"AppWelcomeShown" 
+                 message: @"Enjoy watching scheduled video programs\nmade specifically for smartphone users\nand send them as video messages.\nOrganize Your Channel the way you like it,\nand stumble on new hilarious\nvideos every day."
+                 storeKey:@"AppWelcomeShown"
                  image:YES 
                  tag:WELCOMESCREEN_COVER 
                  delegate:self];
@@ -656,9 +656,9 @@
                 break;
             case HomeScreenMode_Albums:
                 [appDelegate 
-                 showWelcomeScreenWithTitle:@"About Pipture Library"                                                 
-                 message:@"Add Views to your Library Card and gain\naccess to the entire collection of videos that\nhave already been broadcast on Pipture.\n\nEach time you watch or send a video, a\n View will be deducted from your card. You\nget unlimited views if you purchase Albums.\n\nTo add 100 Views, which is at $0.99, or only\n $0.0099 per view, click the Store button at the top left in the Library. Enjoy!" 
-                 storeKey:@"LibraryWelcomeShown" 
+                 showWelcomeScreenWithTitle:@"About Pipture Library."
+                 message: @"Browse videos in your Library to discover\nnew installments of scheduled series\nas they appear in their albums.\n\nView exclusive video programs at\ntheir scheduled times - or purchase an\nalbum pass to access them via our store.\n\nAdd Viewers to your Library Card and send\nvideos from exclusive albums to your\nfriends at only $0.0099 per viewer."
+                 storeKey:@"LibraryWelcomeShown"
                  image:NO 
                  tag:WELCOMESCREEN_LIBRARY 
                  delegate:self];
