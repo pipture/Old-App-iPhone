@@ -12,7 +12,7 @@ from django.views.generic.base import View
 from api.caching_manager import CachingManager
 from api.jsonify_models import JsonifyModels, ApiJSONEncoder
 from api.errors import ApiError, EmptyError, InternalServerError
-from api.validation_mixins import ApiValidationMixin, TimezoneValidationMixin
+from api.validation_mixins import ApiValidationMixin
 
 
 logger = logging.getLogger('restserver.rest_core')
@@ -39,8 +39,7 @@ class ParameterValidationMixin(object):
                     handler()
 
 
-class GeneralView(View, ParameterValidationMixin,
-                  ApiValidationMixin, TimezoneValidationMixin):
+class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
 
     jsonify = JsonifyModels()
     caching = CachingManager()
