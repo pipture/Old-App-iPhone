@@ -167,7 +167,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [super viewDidLoad];
         
     UIBarButtonItem* cancelBarButton = [[UIBarButtonItem alloc] initWithCustomView:cancelButton];
-    self.navigationItem.rightBarButtonItem = cancelBarButton;
+    self.navigationItem.leftBarButtonItem = cancelBarButton;
     [cancelBarButton release];    
     
     self.navigationItem.title = @"New Message";
