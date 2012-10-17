@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     ('', include('restserver.rest_core.urls')), #there is API
 )
 
-if settings.DEBUG:
+if settings.DEBUG or getattr(settings, 'SERVE_STATIC', False):
     urlpatterns = patterns('',
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.STATIC_ROOT, }),
     ) + urlpatterns
