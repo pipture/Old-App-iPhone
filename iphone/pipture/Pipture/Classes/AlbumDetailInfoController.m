@@ -597,6 +597,8 @@
         }
     }
     
+    self.noVideosLabel.hidden = YES;
+    
     int tabbarOffset;
     if (withoutTabBar){
         tabbarOffset= 0;
