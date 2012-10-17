@@ -1123,7 +1123,8 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];
     request.retryStrategy = [DataRequestRetryStrategyFactory createEasyStrategy];
-    return [request startExecute];  
+    [request blockCancel];
+    return [request startExecute];
 }
 
 -(BOOL)getUnusedMessageViews:(NSObject<UnreadMessagesReceiver>*)receiver {
