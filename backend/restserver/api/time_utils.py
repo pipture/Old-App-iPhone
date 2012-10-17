@@ -16,4 +16,4 @@ class TimeUtils(object):
 
     @classmethod
     def user_now(cls):
-        return LocalUserMiddleware.get('user_now')
+        return LocalUserMiddleware.get('user_now') or datetime.utcnow()
