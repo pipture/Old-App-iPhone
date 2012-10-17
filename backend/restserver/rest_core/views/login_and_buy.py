@@ -27,17 +27,11 @@ class Index(GetView):
     def clean_api(self):
         pass
 
-    def clean_timezone(self):
-        pass
-
     def get_context_data(self):
         raise NotFound(message='Unknown method')
 
 
 class Register(PostView):
-
-    def clean_timezone(self):
-        pass
 
     def get_pip_user(self):
         new_purchaser = Purchasers()
@@ -100,7 +94,7 @@ class Login(Register):
         return self.pip_user
 
 
-@cache_view(timeout=10)
+#@cache_view(timeout=10)
 class GetBalance(GetView, PurchaserValidationMixin):
 
     def clean_episode(self):
