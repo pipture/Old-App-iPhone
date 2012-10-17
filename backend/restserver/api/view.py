@@ -1,4 +1,3 @@
-from datetime import datetime
 from collections import Callable
 import logging
 from django import db
@@ -13,7 +12,7 @@ from django.views.generic.base import View
 from api.caching_manager import CachingManager
 from api.jsonify_models import JsonifyModels, ApiJSONEncoder
 from api.errors import ApiError, EmptyError, InternalServerError
-from api.validation_mixins import ApiValidationMixin
+from api.validation_mixins import ApiValidationMixin, TimezoneValidationMixin
 
 
 logger = logging.getLogger('restserver.rest_core')
@@ -40,7 +39,8 @@ class ParameterValidationMixin(object):
                     handler()
 
 
-class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
+class GeneralView(View, ParameterValidationMixin,
+                  ApiValidationMixin, TimezoneValidationMixin):
 
     jsonify = JsonifyModels()
     caching = CachingManager()
@@ -82,12 +82,7 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
         db.reset_queries()
 
     def dispatch(self, request, *args, **kwargs):
-#        entry_time = datetime.utcnow()
-        result = super(GeneralView, self).dispatch(request, *args, **kwargs)
-#        working_time = datetime.utcnow() - entry_time
-#        logger.info('%s: working time = %f seconds' %
-#                    (self.__class__.__name__, working_time.microseconds * 1e-6))
-        return result
+        return super(GeneralView, self).dispatch(request, *args, **kwargs)
 
 
 class GetView(GeneralView):

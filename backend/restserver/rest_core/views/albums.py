@@ -91,8 +91,7 @@ class GetSellableAlbums(GetView, PurchaserValidationMixin):
         albums_list = self.get_albums_for_sale()
 
         return {
-            'Albums': [self.jsonify(album,
-                                    add_trailer=True)
+            'Albums': [self.jsonify(album, add_trailer=True)
                        for album in albums_list]
         }
 

@@ -57,10 +57,9 @@ class CachingManager(object):
     @cache_queryset
     def get_available_albums(self):
         return Albums.objects.select_related(depth=1).filter(
-                Q(HiddenAlbum=False) & (
-                    Q(AlbumId__in=self.purchased_albums_ids) |
-                    Q(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
-                )
+                Q(HiddenAlbum=False),
+                Q(AlbumId__in=self.purchased_albums_ids) |
+                Q(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
             )
 
     def is_episode_on_air(self, episode):
@@ -107,8 +106,8 @@ class CachingManager(object):
     @cache_queryset
     def get_available_episodes(self):
         return Episodes.objects.filter(
-            Q(AlbumId__HiddenAlbum=False) & (
-                Q(AlbumId__AlbumId__in=self.purchased_albums_ids) |
-                Q(AlbumId__PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
-            ) & Q(DateReleased__lt=TimeUtils.user_now())
+            Q(AlbumId__HiddenAlbum=False),
+            Q(DateReleased__lt=TimeUtils.user_now()),
+            Q(AlbumId__AlbumId__in=self.purchased_albums_ids) |
+            Q(AlbumId__PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
         )

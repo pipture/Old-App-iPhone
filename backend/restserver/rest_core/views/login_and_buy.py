@@ -27,11 +27,17 @@ class Index(GetView):
     def clean_api(self):
         pass
 
+    def clean_timezone(self):
+        pass
+
     def get_context_data(self):
         raise NotFound(message='Unknown method')
 
 
 class Register(PostView):
+
+    def clean_timezone(self):
+        pass
 
     def get_pip_user(self):
         new_purchaser = Purchasers()
@@ -156,7 +162,7 @@ class Buy(PostView, PurchaserValidationMixin):
 #            get_object_or_None(Transactions, AppleTransactionId=transaction_id)
         json_data = self.params.get('TransactionsData', None)
         self.transactions = simplejson.loads(json_data)
-            
+
         if len(self.transactions) == 0:
             raise Forbidden(message='Expected apple purchase items')
 
@@ -185,7 +191,7 @@ class Buy(PostView, PurchaserValidationMixin):
             self.product, self.quantity, \
             self.transaction_id, self.original_transaction_id = \
                 self.response_from_apple_server(i)
-            
+
             if self.product == self.APPLE_PRODUCT_CREDITS:
                 self.perform_credits_oprations()
             else:
@@ -213,25 +219,27 @@ class Buy(PostView, PurchaserValidationMixin):
 
         self.user.Balance += cost
         self.user.save()
-        
+
     def restore_purchased_item(self):
+        old_purchaser = self.user.Purchaser
         try:
-            original_transaction = UserPurchasedItems.objects.get(AppleTransactionId=self.original_transaction_id)
+            original_transaction = UserPurchasedItems.objects.get(
+                    AppleTransactionId=self.original_transaction_id)
         except UserPurchasedItems.DoesNotExist:
             return False
-        
+
         if original_transaction.Purchaser == self.user.Purchaser:
             return True
-        
+
         try:
             new_users_items = UserPurchasedItems.objects.filter(Purchaser=self.user.Purchaser)
         except PipUsers.DoesNotExist:
             new_users_items = None
-        
+
         for item in new_users_items:
             item.Purchaser = original_transaction.Purchaser
             item.save()
-            
+
         try:
             new_users = PipUsers.objects.filter(Purchaser=self.user.Purchaser)
         except PipUsers.DoesNotExist:
@@ -240,17 +248,17 @@ class Buy(PostView, PurchaserValidationMixin):
         for user in new_users:
             user.Purchaser = original_transaction.Purchaser
             user.save()
-            
-        original_purchaser.delete()
-        
+
+        old_purchaser.delete()
+
         return True
-        
+
 
     def perform_other_operations(self):
         fresh_transaction = self.transaction_id==self.original_transaction_id
         if (not fresh_transaction and self.restore_purchased_item()):
             return True
-        
+
         album_id = None
 
         if self.product[:29] == self.APPLE_PRODUCT_ALBUM_BUY:
@@ -271,8 +279,8 @@ class Buy(PostView, PurchaserValidationMixin):
                                             ItemCost=0,
                                             AppleTransactionId=AppleTransactionId )
         purchased_item.save()
-            
-            
+
+
     def get_context_data(self):
         self.perform_operations()
         return dict(Balance=str(self.user.Balance))
