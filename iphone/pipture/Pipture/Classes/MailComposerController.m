@@ -734,7 +734,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         scrollingHintController = [[ScrollingHintPopupController alloc] initWithNibName:@"ScrollHintPopup" bundle:nil screenName:@"A7" scrollView:layoutTableView origin:CGPointMake(0, cardSectionViewController.view.frame.size.height + 18)];
         scrollingHintController.showOnViewsPurchase = YES;        
     }
-    [scrollingHintController showHintIfNeeded];
+    if ([self selCardSectionViewController] != nil) {
+        [scrollingHintController showHintIfNeeded];
+    }
 }
 
 #pragma mark Table delegates
