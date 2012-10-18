@@ -36,7 +36,6 @@
 
 @implementation ScreenshotsReceiverWraper
 
-
 -(void)screenshotsNotSupported {
     [wrappedObject_ screenshotsNotSupported];
 }
@@ -142,6 +141,10 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
 }
 
+- (int)scrollOffset:(int)corr_offset{
+    return ([self selCardSectionViewController]?corr_offset:corr_offset - cardSectionViewController.view.frame.size.height + 10);
+}
+
 - (void)deselectRows {
     NSIndexPath* selection = [self.layoutTableView indexPathForSelectedRow];
     if (selection)
@@ -156,7 +159,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.2]; // if you want to slide up the view
     
-    layoutTableView.contentOffset = CGPointMake(0, offset);
+    layoutTableView.contentOffset = CGPointMake(0, [self scrollOffset:offset]);
     
     [UIView commitAnimations];
 }
@@ -381,6 +384,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         [self displayInfiniteViewsRadioButtons];
         [self setInfiniteRadiobutonsVisiblity];
         [self displayScreenshot];
+        
+        [self.layoutTableView reloadData];
     }
 }
 
@@ -556,7 +561,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self displayInfiniteViewsRadioButtons];
     [self setInfiniteRadiobutonsVisiblity];
     [self displayScreenshot];
-    [self moveView:[self selCardSectionViewController].frame.size.height + 15];
+    [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
     
     [self showScrollingHintIfNeeded];
     [layoutTableView reloadData];

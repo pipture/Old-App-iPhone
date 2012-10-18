@@ -418,6 +418,10 @@ static PiptureAppDelegate *instance;
     //Every time app become active we need to check if authentification is passed. If not - login or register.
     //It is needed for case when connection were missed on first try.    
     [self processAuthentication];
+    
+    if ([self homeViewVisible]) {
+        [[self getHomeView] viewWillAppear:NO];
+    }
 }
 
 //Called by Reachability whenever status changes.

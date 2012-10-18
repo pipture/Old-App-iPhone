@@ -75,7 +75,6 @@ class GetAlbums(GetView, PurchaserValidationMixin):
         }
 
 
-#@cache_view(timeout=5)
 class GetSellableAlbums(GetView, PurchaserValidationMixin):
 
     @cache_queryset

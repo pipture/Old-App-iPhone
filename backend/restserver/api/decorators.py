@@ -1,3 +1,6 @@
+import logging
+
+from django.conf import settings
 from django.core.cache import get_cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -6,6 +9,9 @@ from django.views.decorators.cache import cache_page
 __all__ = ['cache_result', 'cache_queryset', 'cache_view']
 
 cache = get_cache('default')
+USE_CACHE = getattr(settings, 'USE_CACHE', True)
+
+logger = logging.getLogger('restserver.api')
 
 
 def make_queryset_key(queryset):
@@ -36,8 +42,10 @@ def cache_queryset(method=None, timeout=None):
             # force evaluate queryset
             list(queryset)
             cache.set(cache_key, queryset, timeout)
+            logger.info('[ CACHE ] queryset saved [%s][%s]' % (cache_key, queryset))
         else:
             queryset = cached_queryset
+            logger.info('[ CACHE ] queryset used [%s][%s]' % (cache_key, queryset))
 
         return queryset
     return _wrapper
@@ -51,6 +59,9 @@ def cache_result(method=None, timeout=None):
         if result is None:
             result = method(self, *args, **kwargs)
             cache.set(cache_key, result, timeout)
+            logger.info('[ CACHE ] result saved [%s][%s]' % (cache_key, result))
+        else:
+            logger.info('[ CACHE ] result used [%s][%s]' % (cache_key, result))
 
         return result
     return _wrapper
@@ -58,11 +69,12 @@ def cache_result(method=None, timeout=None):
 
 def cache_view(cls=None, **cache_kwargs):
     if cls is not None:
-        timeout = cache_kwargs.pop('timeout', None)
-        original = cls.dispatch
-        args = (timeout,) if timeout else tuple()
+        if USE_CACHE:
+            timeout = cache_kwargs.pop('timeout', None)
+            original = cls.dispatch
+            args = (timeout,) if timeout else tuple()
 
-        cls.dispatch = method_decorator(cache_page(*args, **cache_kwargs))(original)
+            cls.dispatch = method_decorator(cache_page(*args, **cache_kwargs))(original)
         return cls
     else:
         def _decorator(inner_cls):
