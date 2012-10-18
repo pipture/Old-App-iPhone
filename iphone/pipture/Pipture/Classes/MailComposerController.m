@@ -65,6 +65,7 @@
 @synthesize screenshotCell;
 @synthesize messageCell;
 @synthesize fromCell;
+@synthesize infoCell;
 @synthesize layoutTableView;
 @synthesize screenshotName;
 @synthesize nameTextField;
@@ -372,12 +373,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     infiniteViews = [self isPlaylistItemFree: playlistItem];
     if (self.view) {
         maxViewsLabel.text = @"100 max.";
-        if (playlistItem.class == [Episode class]) {
-            Episode * ep = (Episode*)playlistItem;
-            if (ep.album.sellStatus == AlbumSellStatus_Purchased) {
-                maxViewsLabel.text = @"100 max. Send up to 10 for free.";
-            }
-        }
+//        if (playlistItem.class == [Episode class]) {
+//            Episode * ep = (Episode*)playlistItem;
+//            if (ep.album.sellStatus == AlbumSellStatus_Purchased) {
+//                maxViewsLabel.text = @"100 max. Send up to 10 for free.";
+//            }
+//        }
         
         [self displayNumberOfViewsTextField];
         [self displayInfiniteViewsRadioButtons];
@@ -432,6 +433,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self setLayoutTableView:nil];
     [self setScreenshotName:nil];
     [self setFromCell:nil];
+    [self setInfoCell:nil];
     [self setNameTextField:nil];
     [self setToSectionView:nil];
     [self setCardSectionViewController:nil];
@@ -562,6 +564,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
     
     [self showScrollingHintIfNeeded];
+    [layoutTableView reloadData];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -591,6 +595,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [screenshotImages_ release];
     [defaultScreenshotImage_ release];
     [fromCell release];
+    [infoCell release];
     [nameTextField release];
     [mailComposer release];
     [cardSectionViewController release];
@@ -746,9 +751,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 #pragma mark Table delegates
 
+#define CARD_SECTION_VIEW 0
 #define MESSAGE_CELL_ROW 1
 #define SCREENSHOT_CELL_ROW 2
 #define FROM_CELL_ROW 3
+#define INFO_CELL_ROW 4
+#define TO_SECTION_VIEW 5
 
 - (NSInteger)calcCellRow:(NSIndexPath*)indexPath
 {
@@ -762,6 +770,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     }        
     else if (section == 3 && row == 0) {
         return FROM_CELL_ROW;
+    }
+    else if (section == 4 && row == 0) {
+        return INFO_CELL_ROW;
     }
     else
     {
@@ -783,6 +794,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     }
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{}
+
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 1;
@@ -790,7 +803,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 5;
+    return 6;
 }
 
 //- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -813,10 +826,10 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 //                editMessageLabel.text = @"Add Message";
 //            }
             return messageCell;
-        case FROM_CELL_ROW:
-            return fromCell;            
         case SCREENSHOT_CELL_ROW:
             return screenshotCell;                    
+        case FROM_CELL_ROW:
+            return fromCell;
         default:
             return emptyCell;
     }    
@@ -827,16 +840,16 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 -(NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     switch (section) {
-        case 0:
+        case CARD_SECTION_VIEW:
             return nil;
-        case 1:
+        case MESSAGE_CELL_ROW:
             return @"Message";
-        case 2:
+        case SCREENSHOT_CELL_ROW:
             return @"Video Thumbnail";
-        case 3:
+        case FROM_CELL_ROW:
             return @"From";                                                
-        case 4:
-            return @"To (# of views)";                                
+        case INFO_CELL_ROW:
+            return @"To (# of viewers)";                                
         default:
             return nil;
     }        
@@ -845,7 +858,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     NSNumber *episodeId;
     switch (section) {
-        case 0: {
+        case CARD_SECTION_VIEW: {
             UIView * sectView = [self selCardSectionViewController];
             if (sectView) {
                 episodeId = [NSNumber numberWithInt:[playlistItem_ videoKeyValue]];
@@ -854,7 +867,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
             }
             return sectView;
         }
-        case 4:
+        case INFO_CELL_ROW:
+            return ([self isPlaylistItemFree:playlistItem_] ? emptyCell : infoCell);
+        case TO_SECTION_VIEW:
             return toSectionView;            
         default:
             return nil;
@@ -863,9 +878,15 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     switch (section) {
-        case 0:
+        case CARD_SECTION_VIEW:
             return [self selCardSectionViewController].frame.size.height;
-        case 4:
+        case INFO_CELL_ROW:
+            if ([self isPlaylistItemFree:playlistItem_]){
+                return 0;
+            }else{
+                return infoCell.frame.size.height;
+            }
+        case TO_SECTION_VIEW:
             return toSectionView.frame.size.height;            
         default:
             return 0;
@@ -923,6 +944,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 -(void) onFreeViewersUpdated:(NSNotification *) notification {
     self.numberOfFreeViewsForEpisode = [[notification.userInfo valueForKey:@"FreeViewers"] intValue];
+    if (self.numberOfFreeViewsForEpisode == 10){
+        maxViewsLabel.text = @"100 max. Send up to 10 for free.";
+    }
     NSLog(@"----> %d", self.numberOfFreeViewsForEpisode);
     [self updateFreeViewersForEpisodeLabel];
 }
