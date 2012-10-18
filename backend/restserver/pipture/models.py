@@ -466,14 +466,15 @@ class UserPurchasedItems(models.Model):
 
 class FreeMsgViewers(models.Model):
     FreeMsgViewersId = models.AutoField(primary_key=True)
-    UserId = models.ForeignKey(PipUsers, editable=False)
+#    UserId = models.ForeignKey(PipUsers, editable=False)
+    Purchaser = models.ForeignKey(Purchasers, editable=False, on_delete=models.CASCADE)
     EpisodeId = models.ForeignKey(Episodes, editable=False)
     Rest = models.IntegerField(default=settings.MESSAGE_VIEWS_LOWER_LIMIT)
 
     class Meta:
         verbose_name = "Free Message Viewers"
         verbose_name_plural = "Free Message Viewers"
-        unique_together = ('UserId', 'EpisodeId')
+        unique_together = ('Purchaser', 'EpisodeId')
 
     def __unicode__(self):
         return "%s: %s, %s free views" % (self.UserId.UserUID, self.EpisodeId.Title, self.Rest)

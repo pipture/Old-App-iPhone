@@ -119,10 +119,10 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         # Don't use get_or_create here because we save model
         # only when there are no errors
         try:
-            views = FreeMsgViewers.objects.get(UserId=self.user,
+            views = FreeMsgViewers.objects.get(Purchaser=self.user.Purchaser,
                                                EpisodeId=episode)
         except FreeMsgViewers.DoesNotExist:
-            views = FreeMsgViewers(UserId=self.user, EpisodeId=episode)
+            views = FreeMsgViewers(Purchaser=self.user.Purchaser, EpisodeId=episode)
 
         return views
 

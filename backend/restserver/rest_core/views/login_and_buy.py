@@ -112,7 +112,7 @@ class GetBalance(GetView, PurchaserValidationMixin):
 
         if self.episode:
             free_viewers = get_object_or_None(FreeMsgViewers,
-                                              UserId=self.user,
+                                              Purchaser=self.user.Purchaser,
                                               EpisodeId=self.episode)
             if free_viewers:
                 free_viewers = int(free_viewers.Rest)
