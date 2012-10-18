@@ -89,7 +89,7 @@ class CachingManager(object):
                 PurchaseItemId__Description='Album')
 
     def is_episode_available(self, episode):
-        return (episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE\
+        return (episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE
                 and episode.DateReleased < TimeUtils.user_now()) \
                 or self.is_episode_purchased(episode)
 

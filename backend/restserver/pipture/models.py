@@ -393,6 +393,7 @@ class PiptureSettings(models.Model):
     def get(cls):
         return cls.objects.select_related(depth=1).all()[0]
 
+
 class Purchasers(models.Model):
     PurchaserId = models.AutoField(primary_key=True, unique=True)
 
@@ -405,6 +406,7 @@ class Purchasers(models.Model):
 
     def __str__(self):
         return "%s" % self.PurchaserId
+
 
 class PipUsers(models.Model):
     UserUID= models.CharField(max_length=36, primary_key=True, default=uuid.uuid1)
@@ -441,6 +443,7 @@ class PurchaseItems(models.Model):
     def __str__(self):
         return "%s" % self.Description
 
+
 class UserPurchasedItems(models.Model):
     UserPurchasedItemsId = models.AutoField(primary_key=True)
     Date = models.DateField(default=datetime.now)
@@ -461,7 +464,9 @@ class UserPurchasedItems(models.Model):
         return "%s: %s, %s" % (self.Purchaser.PurchaserId if self.Purchaser else "", self.PurchaseItemId.Description, self.ItemId)
 
     def __str__(self):
-        return "%s: %s, %s" % (self.Purchaser.PurchaseId if self.Purchaser else "", self.PurchaseItemId.Description, self.ItemId)
+        return "%s: %s, %s" % (self.Purchaser.PurchaserId if self.Purchaser else "",
+                               self.PurchaseItemId.Description,
+                               self.ItemId)
 
 
 class FreeMsgViewers(models.Model):
