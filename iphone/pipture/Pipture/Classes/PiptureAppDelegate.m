@@ -133,7 +133,7 @@ static PiptureAppDelegate *instance;
 }
 
 - (NSString*)documentsDirectory {
-    NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, 
+    NSArray *savePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, 
                                                              NSUserDomainMask, 
                                                              YES);
     return [savePaths objectAtIndex:0];

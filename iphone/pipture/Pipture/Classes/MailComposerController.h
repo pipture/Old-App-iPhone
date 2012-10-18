@@ -39,6 +39,7 @@ enum ComposeType {
 @property (retain, nonatomic) IBOutlet UITableViewCell *screenshotCell;
 @property (retain, nonatomic) IBOutlet UITableViewCell *messageCell;
 @property (retain, nonatomic) IBOutlet UITableViewCell *fromCell;
+@property (retain, nonatomic) IBOutlet UIView *infoCell;
 @property (retain, nonatomic) IBOutlet UITableView *layoutTableView;
 @property (retain, nonatomic) IBOutlet UILabel *screenshotName;
 @property (retain, nonatomic) IBOutlet UITextField *nameTextField;

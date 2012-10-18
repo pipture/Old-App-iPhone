@@ -378,7 +378,6 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{274, 0}, {39, 45}}</string>
 								<reference key="NSSuperview" ref="754422363"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:225</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -519,7 +518,6 @@
 				<int key="NSvFlags">292</int>
 				<string key="NSFrameSize">{47, 30}</string>
 				<reference key="NSSuperview"/>
-				<reference key="NSNextKeyView"/>
 				<string key="NSReuseIdentifierKey">_NS:225</string>
 				<bool key="IBUIOpaque">NO</bool>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -543,7 +541,6 @@
 				<int key="NSvFlags">292</int>
 				<string key="NSFrameSize">{60, 30}</string>
 				<reference key="NSSuperview"/>
-				<reference key="NSNextKeyView"/>
 				<string key="NSReuseIdentifierKey">_NS:225</string>
 				<bool key="IBUIOpaque">NO</bool>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
