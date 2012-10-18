@@ -380,6 +380,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         [self displayInfiniteViewsRadioButtons];
         [self setInfiniteRadiobutonsVisiblity];
         [self displayScreenshot];
+        
+        [self.layoutTableView reloadData];
     }
 }
 
