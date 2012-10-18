@@ -395,6 +395,7 @@ class PiptureSettings(models.Model):
 
 class Purchasers(models.Model):
     PurchaserId = models.AutoField(primary_key=True, unique=True)
+    Balance = models.DecimalField(default=Decimal('0'), max_digits=10, decimal_places=0)
 
     class Meta:
         verbose_name = "Purchaser"
@@ -410,7 +411,7 @@ class PipUsers(models.Model):
     UserUID= models.CharField(max_length=36, primary_key=True, default=uuid.uuid1)
     Token = models.CharField(unique=True, max_length=36, default=uuid.uuid1)
     RegDate = models.DateField(default=datetime.now)
-    Balance = models.DecimalField(default=Decimal('0'), max_digits=10, decimal_places=0)
+#    Balance = models.DecimalField(default=Decimal('0'), max_digits=10, decimal_places=0)
     Purchaser = models.ForeignKey(Purchasers, editable=False, null=True, on_delete=models.SET_NULL)
 
     class Meta:

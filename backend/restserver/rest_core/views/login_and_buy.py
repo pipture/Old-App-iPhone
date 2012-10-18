@@ -123,7 +123,7 @@ class GetBalance(GetView, PurchaserValidationMixin):
 
     def get_context_data(self):
 
-        return dict(Balance=str(self.user.Balance),
+        return dict(Balance=str(self.user.Purchaser.Balance),
                     FreeViewersForEpisode=self.get_free_viewers_for_episode())
 
 
@@ -211,8 +211,8 @@ class Buy(PostView, PurchaserValidationMixin):
         except IntegrityError:
             raise Conflict(message='Duplicated transaction.')
 
-        self.user.Balance += cost
-        self.user.save()
+        self.user.Purchaser.Balance += cost
+        self.user.Purchaser.save()
 
     def restore_purchased_item(self):
         old_purchaser = self.user.Purchaser
@@ -277,5 +277,5 @@ class Buy(PostView, PurchaserValidationMixin):
 
     def get_context_data(self):
         self.perform_operations()
-        return dict(Balance=str(self.user.Balance))
+        return dict(Balance=str(self.user.Purchaser.Balance))
 
