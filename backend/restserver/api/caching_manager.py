@@ -12,28 +12,19 @@ class CachingManager(object):
 
     user_locals = LocalUserMiddleware
 
-    def flush(self):
-        self.user_locals.delete('purchased_albums')
-
     @property
     def user(self):
         return self.user_locals.get('user')
 
+    @cache_queryset(timeout=3)
+    def _get_purchased_albums(self):
+        return UserPurchasedItems.objects.filter(
+                Purchaser=self.user.Purchaser,
+                PurchaseItemId__Description='Album').values_list('ItemId')
+
     @property
     def purchased_albums_ids(self):
-        _purchased_albums = self.user_locals.get('purchased_albums')
-
-        if _purchased_albums is None:
-            _purchased_albums = UserPurchasedItems.objects.filter(
-                    Purchaser=self.user.Purchaser,
-                    PurchaseItemId__Description='Album').values_list('ItemId')
-            _purchased_albums = [int(id[0]) for id in _purchased_albums]
-            self.user_locals.update(purchased_albums=_purchased_albums)
-            print '---set---> ', _purchased_albums
-        else:
-            print '---get---> ', _purchased_albums
-
-        return _purchased_albums
+        return [int(id[0]) for id in self._get_purchased_albums()]
 
     @cache_result(timeout=60 * 30)
     def get_episode(self, id):

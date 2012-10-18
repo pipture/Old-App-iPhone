@@ -19,7 +19,3 @@ class LocalUserMiddleware(object):
     @classmethod
     def get(cls, key, default=None):
         return getattr(_thread_locals, key, default)
-
-    @classmethod
-    def delete(cls, key):
-        delattr(_thread_locals, key)
