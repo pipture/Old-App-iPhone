@@ -596,7 +596,7 @@
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
                 */
 
-//                [scheduleModel updateTimeslots];
+                [scheduleModel updateTimeslots];
                 
                 [appDelegate putHomescreenState:mode];
                 
