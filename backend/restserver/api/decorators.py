@@ -68,12 +68,13 @@ def cache_result(method=None, timeout=None):
 
 
 def cache_view(cls=None, **cache_kwargs):
-    if cls is not None and USE_CACHE:
-        timeout = cache_kwargs.pop('timeout', None)
-        original = cls.dispatch
-        args = (timeout,) if timeout else tuple()
+    if cls is not None:
+        if USE_CACHE:
+            timeout = cache_kwargs.pop('timeout', None)
+            original = cls.dispatch
+            args = (timeout,) if timeout else tuple()
 
-        cls.dispatch = method_decorator(cache_page(*args, **cache_kwargs))(original)
+            cls.dispatch = method_decorator(cache_page(*args, **cache_kwargs))(original)
         return cls
     else:
         def _decorator(inner_cls):
