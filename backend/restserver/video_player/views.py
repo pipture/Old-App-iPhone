@@ -152,7 +152,7 @@ def index(request, u_url):
         try:
             video = Trailers.objects.get(TrailerId=id)
             album = Albums.objects.get(TrailerId=urs_instance.LinkId)
-        except Episodes.DoesNotExist:
+        except Exception:
             show_shortinfo = False
 
 
