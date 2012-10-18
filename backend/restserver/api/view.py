@@ -74,7 +74,12 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
 #        self._log_queries()
 
         response = HttpResponse(self.json_dumps(context))
+
+        self.before_response()
         return response
+
+    def before_response(self):
+        self.caching.flush()
 
     def _log_queries(self):
         logger.info('connections: %s' % db.connection.queries)

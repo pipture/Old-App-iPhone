@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from django.db.models import Q
 from api.decorators import cache_queryset, cache_result
 
@@ -9,10 +8,12 @@ from pipture.models import Episodes, Albums, UserPurchasedItems, \
                            TimeSlotVideos, SendMessage, Trailers, TimeSlots
 
 
-
 class CachingManager(object):
 
     user_locals = LocalUserMiddleware
+
+    def flush(self):
+        self.user_locals.delete('purchased_albums')
 
     @property
     def user(self):
@@ -28,6 +29,9 @@ class CachingManager(object):
                     PurchaseItemId__Description='Album').values_list('ItemId')
             _purchased_albums = [int(id[0]) for id in _purchased_albums]
             self.user_locals.update(purchased_albums=_purchased_albums)
+            print '---set---> ', _purchased_albums
+        else:
+            print '---get---> ', _purchased_albums
 
         return _purchased_albums
 
@@ -111,3 +115,4 @@ class CachingManager(object):
             Q(AlbumId__AlbumId__in=self.purchased_albums_ids) |
             Q(AlbumId__PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
         )
+
