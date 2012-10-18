@@ -67,7 +67,7 @@ LOGGING = {
     'root': {
         'level': 'WARNING',
         'handlers': ['console'],
-        },
+    },
     # Loggers
     # A logger is the entry point into the logging system. Each logger is a named bucket to which messages
     # can be written for processing.
@@ -81,51 +81,55 @@ LOGGING = {
             'handlers':['null'],
             'level':'INFO',
             'propagate': True,
-            },
+        },
         'django.request': {
             'handlers': ['console'],
             'level': 'ERROR',
             'propagate': False,
-            },
+        },
 
         'django.db.backends': {
             'handlers': ['console'],
             'level': 'ERROR',
             'propagate': False,
-            },
+        },
 
         'restserver.rest_core': {
             'handlers': ['console', 'dev_console'],
             'level': 'INFO',
-            },
-        'apiclient.discovery': {
+        },
+        'restserver.api': {
             'handlers': ['console', 'dev_console'],
             'level': 'INFO',
-            },
         },
 
+        'apiclient.discovery': {
+            'handlers': ['dev_console'],
+            'level': 'INFO',
+        },
+    },
 
     'handlers': {
         'null': {
             'level': 'INFO',
             'class': 'django.utils.log.NullHandler',
-            },
+        },
         'console': {
             'level': 'WARNING',
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
-            },
+        },
         'mail_admins': {
             'level': 'DEBUG',
             'class': 'django.utils.log.AdminEmailHandler',
             'include_html': True,
-            },
+        },
         'dev_console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
-            },
         },
+    },
     # Formatters
     # Ultimately, a log record needs to be rendered as text. Formatters describe the exact format of that text.
     # A formatter usually consists of a Python formatting string; however, you can also write custom formatters
@@ -133,12 +137,12 @@ LOGGING = {
     'formatters': {
         'verbose': {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-            },
+        },
         'simple': {
             'format': '%(levelname)s %(message)s'
-            },
         },
-    }
+    },
+}
 
 CACHES = {
     'default': {
