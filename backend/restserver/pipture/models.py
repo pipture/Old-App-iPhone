@@ -393,8 +393,10 @@ class PiptureSettings(models.Model):
     def get(cls):
         return cls.objects.select_related(depth=1).all()[0]
 
+
 class Purchasers(models.Model):
     PurchaserId = models.AutoField(primary_key=True, unique=True)
+    Balance = models.DecimalField(default=Decimal('0'), max_digits=10, decimal_places=0)
 
     class Meta:
         verbose_name = "Purchaser"
@@ -406,11 +408,12 @@ class Purchasers(models.Model):
     def __str__(self):
         return "%s" % self.PurchaserId
 
+
 class PipUsers(models.Model):
     UserUID= models.CharField(max_length=36, primary_key=True, default=uuid.uuid1)
     Token = models.CharField(unique=True, max_length=36, default=uuid.uuid1)
     RegDate = models.DateField(default=datetime.now)
-    Balance = models.DecimalField(default=Decimal('0'), max_digits=10, decimal_places=0)
+#    Balance = models.DecimalField(default=Decimal('0'), max_digits=10, decimal_places=0)
     Purchaser = models.ForeignKey(Purchasers, editable=False, null=True, on_delete=models.SET_NULL)
 
     class Meta:
@@ -441,6 +444,7 @@ class PurchaseItems(models.Model):
     def __str__(self):
         return "%s" % self.Description
 
+
 class UserPurchasedItems(models.Model):
     UserPurchasedItemsId = models.AutoField(primary_key=True)
     Date = models.DateField(default=datetime.now)
@@ -461,19 +465,22 @@ class UserPurchasedItems(models.Model):
         return "%s: %s, %s" % (self.Purchaser.PurchaserId if self.Purchaser else "", self.PurchaseItemId.Description, self.ItemId)
 
     def __str__(self):
-        return "%s: %s, %s" % (self.Purchaser.PurchaseId if self.Purchaser else "", self.PurchaseItemId.Description, self.ItemId)
+        return "%s: %s, %s" % (self.Purchaser.PurchaserId if self.Purchaser else "",
+                               self.PurchaseItemId.Description,
+                               self.ItemId)
 
 
 class FreeMsgViewers(models.Model):
     FreeMsgViewersId = models.AutoField(primary_key=True)
-    UserId = models.ForeignKey(PipUsers, editable=False)
+#    UserId = models.ForeignKey(PipUsers, editable=False)
+    Purchaser = models.ForeignKey(Purchasers, editable=False, on_delete=models.CASCADE)
     EpisodeId = models.ForeignKey(Episodes, editable=False)
     Rest = models.IntegerField(default=settings.MESSAGE_VIEWS_LOWER_LIMIT)
 
     class Meta:
         verbose_name = "Free Message Viewers"
         verbose_name_plural = "Free Message Viewers"
-        unique_together = ('UserId', 'EpisodeId')
+        unique_together = ('Purchaser', 'EpisodeId')
 
     def __unicode__(self):
         return "%s: %s, %s free views" % (self.UserId.UserUID, self.EpisodeId.Title, self.Rest)
@@ -564,7 +571,8 @@ class SendMessage(models.Model):
         urlenc = uuid.uuid4
 
     Url = models.CharField(max_length=36, primary_key=True, default=urlenc)
-    UserId = models.ForeignKey(PipUsers)
+#    UserId = models.ForeignKey(PipUsers)
+    Purchaser = models.ForeignKey(Purchasers, editable=False, on_delete=models.CASCADE)
     Text = models.CharField(max_length=200)
     Timestamp = models.DateTimeField(default=datetime.now)
     LinkId = models.IntegerField(db_index=True)

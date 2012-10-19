@@ -112,11 +112,11 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
                 price = PurchaseItems.objects\
                                      .get(Description='WatchEpisode').Price
 
-                if self.user.Balance - price < 0:
+                if self.user.Purchaser.Balance - price < 0:
                     raise NotEnoughMoney()
 
-                self.user.Balance -= price
-                self.user.save()
+                self.user.Purchaser.Balance -= price
+                self.user.Purchaser.save()
 
     def perform_operations(self):
         if self.timeslot_id:
@@ -133,7 +133,7 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
             'Subs': self.read_subtitles(subtitles_url),
         }
         if hasattr(self, 'user'):
-            response['Balance'] = self.user.Balance
+            response['Balance'] = self.user.Purchaser.Balance
 
         return response
 

@@ -145,11 +145,12 @@ def set_timeslot (request):
     else:
         return HttpResponse("There is POST method only.")
 
+#/TODO: replace value of post parameter usr_id with PurchaserId on client 
 @csrf_exempt
 def update_views (request):
     '''if request.method == 'POST':
         message_id = request.POST.get("msg_id")
-        user_id = request.POST.get("usr_id")
+        purchaser_id = request.POST.get("usr_id")
 
         response = {}
 
@@ -161,7 +162,7 @@ def update_views (request):
             response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Url not found"}
             return HttpResponse (json.dumps(response))
 
-        if urs_instance.UserId.UserUID != user_id:
+        if urs_instance.Prchaser.PurchaserId != purchaser_id:
             response["Error"] = {"ErrorCode": "1", "ErrorDescription": "Url not found"}
             return HttpResponse (json.dumps(response))
 

@@ -99,7 +99,7 @@ LOGGING = {
             'level': 'INFO',
         },
         'restserver.api': {
-            'handlers': ['console', 'dev_console'],
+            'handlers': [],
             'level': 'INFO',
         },
 
@@ -217,3 +217,5 @@ except ImportError:
     pass
 
 MESSAGE_VIEWS_LOWER_LIMIT = 10
+
+USE_API_CACHE = False

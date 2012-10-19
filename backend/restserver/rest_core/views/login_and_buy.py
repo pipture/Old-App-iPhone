@@ -7,16 +7,17 @@ from django.conf import settings
 from django.db import IntegrityError
 from django.utils import simplejson
 
-from api.decorators import cache_view, cache_result
+from api.decorators import cache_result
 from api.errors import WrongParameter, UnauthorizedError,\
-                                 ParameterExpected, NotFound, Forbidden, \
-                                 ServiceUnavailable, Conflict
+                       ParameterExpected, NotFound, Forbidden, \
+                       ServiceUnavailable, Conflict
 from api.view import GetView, PostView
 from api.validation_mixins import PurchaserValidationMixin
 
 from restserver.pipture.models import AppleProducts, PurchaseItems,\
                                       UserPurchasedItems, Transactions, \
-                                      PipUsers, Purchasers, Episodes, FreeMsgViewers, PiptureSettings
+                                      PipUsers, Purchasers, Episodes, \
+                                      FreeMsgViewers, PiptureSettings
 
 from annoying.functions import get_object_or_None
 from apiclient.errors import HttpError
@@ -112,7 +113,7 @@ class GetBalance(GetView, PurchaserValidationMixin):
 
         if self.episode:
             free_viewers = get_object_or_None(FreeMsgViewers,
-                                              UserId=self.user,
+                                              Purchaser=self.user.Purchaser,
                                               EpisodeId=self.episode)
             if free_viewers:
                 free_viewers = int(free_viewers.Rest)
@@ -123,7 +124,7 @@ class GetBalance(GetView, PurchaserValidationMixin):
 
     def get_context_data(self):
 
-        return dict(Balance=str(self.user.Balance),
+        return dict(Balance=str(self.user.Purchaser.Balance),
                     FreeViewersForEpisode=self.get_free_viewers_for_episode())
 
 
@@ -160,8 +161,8 @@ class Buy(PostView, PurchaserValidationMixin):
         if len(self.transactions) == 0:
             raise Forbidden(message='Expected apple purchase items')
 
-    def response_from_apple_server(self, index):
-        data_json = json.dumps({"receipt-data": str(self.transactions[index]['receipt'])})
+    def response_from_apple_server(self, transaction):
+        data_json = json.dumps({"receipt-data": str(transaction['receipt'])})
         request = urllib2.Request(url=self.url, data=data_json)
 
         try:
@@ -180,18 +181,14 @@ class Buy(PostView, PurchaserValidationMixin):
                    receipt['original_transaction_id']
 
     def perform_operations(self):
-        i=0
-        while i<len(self.transactions):
-            self.product, self.quantity, \
-            self.transaction_id, self.original_transaction_id = \
-                self.response_from_apple_server(i)
+        for transaction in self.transactions:
+            self.product, self.quantity, self.transaction_id, \
+                self.original_transaction_id = self.response_from_apple_server(transaction)
 
             if self.product == self.APPLE_PRODUCT_CREDITS:
                 self.perform_credits_oprations()
             else:
                 self.perform_other_operations()
-
-            i += 1
 
     def perform_credits_oprations(self):
         try:
@@ -211,11 +208,12 @@ class Buy(PostView, PurchaserValidationMixin):
         except IntegrityError:
             raise Conflict(message='Duplicated transaction.')
 
-        self.user.Balance += cost
-        self.user.save()
+        self.user.Purchaser.Balance += cost
+        self.user.Purchaser.save()
 
     def restore_purchased_item(self):
         old_purchaser = self.user.Purchaser
+
         try:
             original_transaction = UserPurchasedItems.objects.get(
                     AppleTransactionId=self.original_transaction_id)
@@ -225,32 +223,28 @@ class Buy(PostView, PurchaserValidationMixin):
         if original_transaction.Purchaser == self.user.Purchaser:
             return True
 
-        try:
-            new_users_items = UserPurchasedItems.objects.filter(Purchaser=self.user.Purchaser)
-        except PipUsers.DoesNotExist:
-            new_users_items = None
+        new_users_items = UserPurchasedItems.objects.filter(
+                Purchaser=self.user.Purchaser)
+        new_users = PipUsers.objects.filter(Purchaser=self.user.Purchaser)
+
+        if not new_users:
+            raise Conflict(message='There must be at least one (current) user in selection.')
 
         for item in new_users_items:
             item.Purchaser = original_transaction.Purchaser
             item.save()
 
-        try:
-            new_users = PipUsers.objects.filter(Purchaser=self.user.Purchaser)
-        except PipUsers.DoesNotExist:
-            raise Conflict(message='There must be at least one (current) user in selection.')
-
         for user in new_users:
             user.Purchaser = original_transaction.Purchaser
             user.save()
 
-        old_purchaser.delete()
+#        old_purchaser.delete()
 
         return True
 
-
     def perform_other_operations(self):
         fresh_transaction = self.transaction_id==self.original_transaction_id
-        if (not fresh_transaction and self.restore_purchased_item()):
+        if not fresh_transaction and self.restore_purchased_item():
             return True
 
         album_id = None
@@ -274,8 +268,7 @@ class Buy(PostView, PurchaserValidationMixin):
                                             AppleTransactionId=AppleTransactionId )
         purchased_item.save()
 
-
     def get_context_data(self):
         self.perform_operations()
-        return dict(Balance=str(self.user.Balance))
+        return dict(Balance=str(self.user.Purchaser.Balance))
 

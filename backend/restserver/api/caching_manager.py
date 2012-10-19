@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from django.db.models import Q
 from api.decorators import cache_queryset, cache_result
 
@@ -7,7 +6,6 @@ from api.middleware.threadlocals import LocalUserMiddleware
 from api.time_utils import TimeUtils
 from pipture.models import Episodes, Albums, UserPurchasedItems, \
                            TimeSlotVideos, SendMessage, Trailers, TimeSlots
-
 
 
 class CachingManager(object):
@@ -18,18 +16,15 @@ class CachingManager(object):
     def user(self):
         return self.user_locals.get('user')
 
+    @cache_queryset(timeout=3)
+    def _get_purchased_albums(self):
+        return UserPurchasedItems.objects.filter(
+                Purchaser=self.user.Purchaser,
+                PurchaseItemId__Description='Album').values_list('ItemId')
+
     @property
     def purchased_albums_ids(self):
-        _purchased_albums = self.user_locals.get('purchased_albums')
-
-        if _purchased_albums is None:
-            _purchased_albums = UserPurchasedItems.objects.filter(
-                    Purchaser=self.user.Purchaser,
-                    PurchaseItemId__Description='Album').values_list('ItemId')
-            _purchased_albums = [int(id[0]) for id in _purchased_albums]
-            self.user_locals.update(purchased_albums=_purchased_albums)
-
-        return _purchased_albums
+        return [int(id[0]) for id in self._get_purchased_albums()]
 
     @cache_result(timeout=60 * 30)
     def get_episode(self, id):
@@ -94,7 +89,7 @@ class CachingManager(object):
                 PurchaseItemId__Description='Album')
 
     def is_episode_available(self, episode):
-        return (episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE\
+        return (episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE
                 and episode.DateReleased < TimeUtils.user_now()) \
                 or self.is_episode_purchased(episode)
 
@@ -111,3 +106,4 @@ class CachingManager(object):
             Q(AlbumId__AlbumId__in=self.purchased_albums_ids) |
             Q(AlbumId__PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE)
         )
+

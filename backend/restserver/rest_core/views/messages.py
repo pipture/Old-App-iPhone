@@ -49,7 +49,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         else:  # isinstance(video, Episodes):
             video_id, video_type = video.EpisodeId, SendMessage.TYPE_EPISODE
 
-        sent_message = SendMessage(UserId=self.user,
+        sent_message = SendMessage(Purchaser=self.user.Purchaser,
                                    Text=self.message,
                                    LinkId=video_id,
                                    LinkType=video_type,
@@ -83,8 +83,8 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         message_cost, message_free_views = \
                 self.get_message_attrs(episode_free_viewers)
 
-        self.user.Balance -= message_cost
-        if self.user.Balance < 0:
+        self.user.Purchaser.Balance -= message_cost
+        if self.user.Purchaser.Balance < 0:
             raise NotEnoughMoney()
 
         self.video_url = self.create_message_and_return_url(episode,
@@ -93,7 +93,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         self.free_viewers_for_episode = None if not episode_free_viewers \
                                         else episode_free_viewers.Rest
 
-        self.user.save()
+        self.user.Purchaser.save()
         if episode_free_viewers:
             episode_free_viewers.save()
 
@@ -119,10 +119,10 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         # Don't use get_or_create here because we save model
         # only when there are no errors
         try:
-            views = FreeMsgViewers.objects.get(UserId=self.user,
+            views = FreeMsgViewers.objects.get(Purchaser=self.user.Purchaser,
                                                EpisodeId=episode)
         except FreeMsgViewers.DoesNotExist:
-            views = FreeMsgViewers(UserId=self.user, EpisodeId=episode)
+            views = FreeMsgViewers(Purchaser=self.user.Purchaser, EpisodeId=episode)
 
         return views
 
@@ -132,7 +132,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
         return {
             'MessageURL': '%s/%s' % (video_host, self.video_url),
-            'Balance': self.user.Balance,
+            'Balance': self.user.Purchaser.Balance,
             'FreeViewersForEpisode': self.free_viewers_for_episode,
         }
 
@@ -142,7 +142,7 @@ class MessageValidationMixin(object):
 
     def clean(self):
         self.messages = SendMessage.objects\
-                                   .filter(UserId=self.user,
+                                   .filter(Purchaser=self.user.Purchaser,
                                            LinkType=SendMessage.TYPE_EPISODE)\
                                    .exclude(Q(FreeViews__isnull=True) |
                                             Q(ViewsLimit=F('FreeViews')))
@@ -216,8 +216,8 @@ class DeactivateMessageViews(PostView, PurchaserValidationMixin,
                     self.update_message(message)
 
         if group > 0:
-            self.user.Balance += group
-            self.user.save()
+            self.user.Purchaser.Balance += group
+            self.user.Purchaser.save()
 
     def update_message(self, message):
         message.ViewsLimit = max(message.ViewsCount, message.FreeViews)
@@ -228,5 +228,5 @@ class DeactivateMessageViews(PostView, PurchaserValidationMixin,
 
         return {
             'Restored': str(group),
-            'Balance': self.user.Balance,
+            'Balance': self.user.Purchaser.Balance,
         }

@@ -400,6 +400,8 @@
     redrawDiscarding = NO;
     self.navigationItem.title = @"Library";
     
+    [self requestChannelCategories];
+    
     switch (homeScreenMode) {
         case HomeScreenMode_Albums:
             [self updateAlbums];
@@ -596,7 +598,7 @@
                 scheduleButton.titleLabel.textAlignment = UITextAlignmentCenter;
                 */
 
-//                [scheduleModel updateTimeslots];
+                [scheduleModel updateTimeslots];
                 
                 [appDelegate putHomescreenState:mode];
                 
@@ -888,6 +890,7 @@
         [appDelegate putChannelCategoriesOrder:categoriesOrder];
     }
     CoverViewController *cover = [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil];
+    [self.newsView removeViewControllers];
     [self.newsView placeViewController: cover];
     [cover setCoverImage];
     
