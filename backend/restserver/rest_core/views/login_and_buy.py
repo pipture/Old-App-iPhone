@@ -1,3 +1,4 @@
+from itertools import chain
 import json
 import uuid
 import urllib2
@@ -235,13 +236,11 @@ class Buy(PostView, PurchaserValidationMixin):
         old_purchaser.Balance = 0
         old_purchaser.save()
 
-        for item in new_users_items:
-            item.Purchaser = original_transaction.Purchaser
-            item.save()
+        for obj in chain(new_users_items, new_users):
+            obj.Purchaser = original_transaction.Purchaser
+            obj.save()
 
-        for user in new_users:
-            user.Purchaser = original_transaction.Purchaser
-            user.save()
+        self.user.Purchaser = original_transaction.Purchaser
 
 #        old_purchaser.delete()
 
