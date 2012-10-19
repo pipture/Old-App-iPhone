@@ -49,7 +49,7 @@ class SendMessageView(PostView, PurchaserValidationMixin,
         else:  # isinstance(video, Episodes):
             video_id, video_type = video.EpisodeId, SendMessage.TYPE_EPISODE
 
-        sent_message = SendMessage(UserId=self.user,
+        sent_message = SendMessage(Purchaser=self.user.Purchaser,
                                    Text=self.message,
                                    LinkId=video_id,
                                    LinkType=video_type,
@@ -142,7 +142,7 @@ class MessageValidationMixin(object):
 
     def clean(self):
         self.messages = SendMessage.objects\
-                                   .filter(UserId=self.user,
+                                   .filter(Purchaser=self.user.Purchaser,
                                            LinkType=SendMessage.TYPE_EPISODE)\
                                    .exclude(Q(FreeViews__isnull=True) |
                                             Q(ViewsLimit=F('FreeViews')))

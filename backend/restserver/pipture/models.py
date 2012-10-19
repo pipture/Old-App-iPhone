@@ -566,7 +566,8 @@ class SendMessage(models.Model):
         urlenc = uuid.uuid4
 
     Url = models.CharField(max_length=36, primary_key=True, default=urlenc)
-    UserId = models.ForeignKey(PipUsers)
+#    UserId = models.ForeignKey(PipUsers)
+    Purchaser = models.ForeignKey(Purchasers, editable=False, on_delete=models.CASCADE)
     Text = models.CharField(max_length=200)
     Timestamp = models.DateTimeField(default=datetime.now)
     LinkId = models.IntegerField(db_index=True)
