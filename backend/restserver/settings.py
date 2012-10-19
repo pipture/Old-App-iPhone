@@ -217,3 +217,5 @@ except ImportError:
     pass
 
 MESSAGE_VIEWS_LOWER_LIMIT = 10
+
+USE_API_CACHE = 0

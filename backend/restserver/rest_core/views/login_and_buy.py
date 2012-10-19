@@ -238,7 +238,7 @@ class Buy(PostView, PurchaserValidationMixin):
             user.Purchaser = original_transaction.Purchaser
             user.save()
 
-        old_purchaser.delete()
+#        old_purchaser.delete()
 
         return True
 
