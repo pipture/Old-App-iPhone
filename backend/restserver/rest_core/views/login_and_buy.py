@@ -181,7 +181,8 @@ class Buy(PostView, PurchaserValidationMixin):
                    receipt['original_transaction_id']
 
     def perform_operations(self):
-        for i in range(len(self.transactions)):
+        i=0;
+        while i<len(self.transactions):
             self.product, self.quantity, self.transaction_id, \
                 self.original_transaction_id = self.response_from_apple_server(i)
 
