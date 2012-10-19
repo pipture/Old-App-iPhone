@@ -223,12 +223,17 @@ class Buy(PostView, PurchaserValidationMixin):
         if original_transaction.Purchaser == self.user.Purchaser:
             return True
 
-        new_users_items = UserPurchasedItems.objects.filter(
-                Purchaser=self.user.Purchaser)
-        new_users = PipUsers.objects.filter(Purchaser=self.user.Purchaser)
+        new_users_items = self.user.Purchaser.purchased_items.all()
+        new_users = self.user.Purchaser.users.all()
 
         if not new_users:
             raise Conflict(message='There must be at least one (current) user in selection.')
+
+        original_transaction.Purchaser.Balance += old_purchaser.Balance;
+        original_transaction.Purchaser.save()
+
+        old_purchaser.Balance = 0
+        old_purchaser.save()
 
         for item in new_users_items:
             item.Purchaser = original_transaction.Purchaser

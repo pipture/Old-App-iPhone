@@ -414,7 +414,9 @@ class PipUsers(models.Model):
     Token = models.CharField(unique=True, max_length=36, default=uuid.uuid1)
     RegDate = models.DateField(default=datetime.now)
 #    Balance = models.DecimalField(default=Decimal('0'), max_digits=10, decimal_places=0)
-    Purchaser = models.ForeignKey(Purchasers, editable=False, null=True, on_delete=models.SET_NULL)
+    Purchaser = models.ForeignKey(Purchasers,
+                                  editable=False,
+                                  related_name='users')
 
     class Meta:
         verbose_name = "Pipture User"
@@ -455,7 +457,9 @@ class UserPurchasedItems(models.Model):
     Unverified = models.BooleanField()
     AppleTransactionId = models.CharField(unique=True, max_length=36)
     ReceiptData = models.TextField()
-    Purchaser = models.ForeignKey(Purchasers, editable=False, null=True, on_delete=models.SET_NULL)
+    Purchaser = models.ForeignKey(Purchasers,
+                                  editable=False,
+                                  related_name='purchased_items')
 
     class Meta:
         verbose_name = "User Purchased Item"
