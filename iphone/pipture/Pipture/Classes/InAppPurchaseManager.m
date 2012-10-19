@@ -414,6 +414,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     
     [requestIssuesAlert release];
     [transactions release];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"PipturePurchasesRestoredNotification" object:[PiptureAppDelegate instance]];
 }
 
 //

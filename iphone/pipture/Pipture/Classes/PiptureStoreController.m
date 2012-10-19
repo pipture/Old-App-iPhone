@@ -19,6 +19,7 @@
 @synthesize priceLabel;
 @synthesize navigationPanel;
 @synthesize progressView;
+@synthesize progressLabel;
 @synthesize noAlbumsLabel = _noAlbumsLabel;
 
 
@@ -257,6 +258,10 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     [self displayLibraryCard];
 }
 
+- (void) onPurchasesRestored:(NSNotification *) notification {
+    progressLabel.text = @"Updating albums...";
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -288,7 +293,11 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     singleFingerTap.cancelsTouchesInView = NO;
     [self.scrollView addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];    
-} 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onPurchasesRestored:)
+                                                 name:@"PipturePurchasesRestoredNotification"
+                                               object:[PiptureAppDelegate instance]];
+}
 
 
 -(void)loadView {
@@ -370,6 +379,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (IBAction)onLibraryCardTap:(id)sender {
+    progressLabel.text = @"Purchase in progress";
     progressView.hidden = NO;
     [[PiptureAppDelegate instance] buyViews];
 }
@@ -396,12 +406,14 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (IBAction)onBuyButton:(id)sender {
+    progressLabel.text = @"Purchase in progress";
     progressView.hidden = NO;
     [model buyAlbumAtPage:[self getPageNumber]];
 }
 
 
 - (IBAction)onRestorePurchasesButton:(id)sender {
+    progressLabel.text = @"Restore in progress";
     progressView.hidden = NO;
     [model restorePurchases];
 }
