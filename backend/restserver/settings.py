@@ -218,4 +218,4 @@ except ImportError:
 
 MESSAGE_VIEWS_LOWER_LIMIT = 10
 
-USE_API_CACHE = 0
+USE_API_CACHE = False

@@ -120,15 +120,15 @@ class Migration(SchemaMigration):
         # Adding model 'Purchasers'
         db.create_table('pipture_purchasers', (
             ('PurchaserId', self.gf('django.db.models.fields.AutoField')(unique=True, primary_key=True)),
+            ('Balance', self.gf('django.db.models.fields.DecimalField')(default='0', max_digits=10, decimal_places=0)),
         ))
         db.send_create_signal('pipture', ['Purchasers'])
 
         # Adding model 'PipUsers'
         db.create_table('pipture_pipusers', (
-            ('UserUID', self.gf('django.db.models.fields.CharField')(default=UUID('925f5199-1786-11e2-b86c-3c07545a5b2f'), max_length=36, primary_key=True)),
-            ('Token', self.gf('django.db.models.fields.CharField')(default=UUID('926ef6fd-1786-11e2-af9b-3c07545a5b2f'), unique=True, max_length=36)),
+            ('UserUID', self.gf('django.db.models.fields.CharField')(default=UUID('41e1e46c-19cf-11e2-bc2b-0017318449fa'), max_length=36, primary_key=True)),
+            ('Token', self.gf('django.db.models.fields.CharField')(default=UUID('41e26b58-19cf-11e2-bc2b-0017318449fa'), unique=True, max_length=36)),
             ('RegDate', self.gf('django.db.models.fields.DateField')(default=datetime.datetime.now)),
-            ('Balance', self.gf('django.db.models.fields.DecimalField')(default='0', max_digits=10, decimal_places=0)),
             ('Purchaser', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pipture.Purchasers'], null=True, on_delete=models.SET_NULL)),
         ))
         db.send_create_signal('pipture', ['PipUsers'])
@@ -158,14 +158,14 @@ class Migration(SchemaMigration):
         # Adding model 'FreeMsgViewers'
         db.create_table('pipture_freemsgviewers', (
             ('FreeMsgViewersId', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('UserId', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pipture.PipUsers'])),
+            ('Purchaser', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pipture.Purchasers'])),
             ('EpisodeId', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pipture.Episodes'])),
             ('Rest', self.gf('django.db.models.fields.IntegerField')(default=10)),
         ))
         db.send_create_signal('pipture', ['FreeMsgViewers'])
 
-        # Adding unique constraint on 'FreeMsgViewers', fields ['UserId', 'EpisodeId']
-        db.create_unique('pipture_freemsgviewers', ['UserId_id', 'EpisodeId_id'])
+        # Adding unique constraint on 'FreeMsgViewers', fields ['Purchaser', 'EpisodeId']
+        db.create_unique('pipture_freemsgviewers', ['Purchaser_id', 'EpisodeId_id'])
 
         # Adding model 'AppleProducts'
         db.create_table('pipture_appleproducts', (
@@ -191,8 +191,8 @@ class Migration(SchemaMigration):
 
         # Adding model 'SendMessage'
         db.create_table('pipture_sendmessage', (
-            ('Url', self.gf('django.db.models.fields.CharField')(default='FZamFWuQTta28RbwRQiL0Q', max_length=36, primary_key=True)),
-            ('UserId', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pipture.PipUsers'])),
+            ('Url', self.gf('django.db.models.fields.CharField')(default='kOIP7HZoTsGdvhpjSwojNQ', max_length=36, primary_key=True)),
+            ('Purchaser', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pipture.Purchasers'])),
             ('Text', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('Timestamp', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
             ('LinkId', self.gf('django.db.models.fields.IntegerField')(db_index=True)),
@@ -216,8 +216,8 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'FreeMsgViewers', fields ['UserId', 'EpisodeId']
-        db.delete_unique('pipture_freemsgviewers', ['UserId_id', 'EpisodeId_id'])
+        # Removing unique constraint on 'FreeMsgViewers', fields ['Purchaser', 'EpisodeId']
+        db.delete_unique('pipture_freemsgviewers', ['Purchaser_id', 'EpisodeId_id'])
 
         # Deleting model 'Videos'
         db.delete_table('pipture_videos')
@@ -364,9 +364,9 @@ class Migration(SchemaMigration):
         'pipture.freemsgviewers': {
             'EpisodeId': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['pipture.Episodes']"}),
             'FreeMsgViewersId': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'Meta': {'unique_together': "(('UserId', 'EpisodeId'),)", 'object_name': 'FreeMsgViewers'},
-            'Rest': ('django.db.models.fields.IntegerField', [], {'default': '10'}),
-            'UserId': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['pipture.PipUsers']"})
+            'Meta': {'unique_together': "(('Purchaser', 'EpisodeId'),)", 'object_name': 'FreeMsgViewers'},
+            'Purchaser': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['pipture.Purchasers']"}),
+            'Rest': ('django.db.models.fields.IntegerField', [], {'default': '10'})
         },
         'pipture.pipturesettings': {
             'Album': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['pipture.Albums']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
@@ -377,12 +377,11 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
         'pipture.pipusers': {
-            'Balance': ('django.db.models.fields.DecimalField', [], {'default': "'0'", 'max_digits': '10', 'decimal_places': '0'}),
             'Meta': {'ordering': "['RegDate']", 'object_name': 'PipUsers'},
             'Purchaser': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['pipture.Purchasers']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
             'RegDate': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime.now'}),
-            'Token': ('django.db.models.fields.CharField', [], {'default': "UUID('92765fab-1786-11e2-b255-3c07545a5b2f')", 'unique': 'True', 'max_length': '36'}),
-            'UserUID': ('django.db.models.fields.CharField', [], {'default': "UUID('92765af0-1786-11e2-8957-3c07545a5b2f')", 'max_length': '36', 'primary_key': 'True'})
+            'Token': ('django.db.models.fields.CharField', [], {'default': "UUID('41ec5d52-19cf-11e2-bc2b-0017318449fa')", 'unique': 'True', 'max_length': '36'}),
+            'UserUID': ('django.db.models.fields.CharField', [], {'default': "UUID('41ebdb7a-19cf-11e2-bc2b-0017318449fa')", 'max_length': '36', 'primary_key': 'True'})
         },
         'pipture.purchaseitems': {
             'Description': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -391,6 +390,7 @@ class Migration(SchemaMigration):
             'PurchaseItemId': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
         'pipture.purchasers': {
+            'Balance': ('django.db.models.fields.DecimalField', [], {'default': "'0'", 'max_digits': '10', 'decimal_places': '0'}),
             'Meta': {'object_name': 'Purchasers'},
             'PurchaserId': ('django.db.models.fields.AutoField', [], {'unique': 'True', 'primary_key': 'True'})
         },
@@ -401,11 +401,11 @@ class Migration(SchemaMigration):
             'LinkId': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
             'LinkType': ('django.db.models.fields.CharField', [], {'max_length': '1', 'db_index': 'True'}),
             'Meta': {'ordering': "['-Timestamp']", 'object_name': 'SendMessage'},
+            'Purchaser': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['pipture.Purchasers']"}),
             'ScreenshotURL': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'Text': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'Timestamp': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'Url': ('django.db.models.fields.CharField', [], {'default': "'TJiKzZ7AR8adxLorNAUObw'", 'max_length': '36', 'primary_key': 'True'}),
-            'UserId': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['pipture.PipUsers']"}),
+            'Url': ('django.db.models.fields.CharField', [], {'default': "'liffWYF3TqWiaBKET-VVmA'", 'max_length': '36', 'primary_key': 'True'}),
             'UserName': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'ViewsCount': ('django.db.models.fields.IntegerField', [], {}),
             'ViewsLimit': ('django.db.models.fields.IntegerField', [], {})

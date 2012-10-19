@@ -161,8 +161,8 @@ class Buy(PostView, PurchaserValidationMixin):
         if len(self.transactions) == 0:
             raise Forbidden(message='Expected apple purchase items')
 
-    def response_from_apple_server(self, index):
-        data_json = json.dumps({"receipt-data": str(self.transactions[index]['receipt'])})
+    def response_from_apple_server(self, transaction):
+        data_json = json.dumps({"receipt-data": str(transaction['receipt'])})
         request = urllib2.Request(url=self.url, data=data_json)
 
         try:
@@ -181,10 +181,9 @@ class Buy(PostView, PurchaserValidationMixin):
                    receipt['original_transaction_id']
 
     def perform_operations(self):
-        i=0;
-        while i<len(self.transactions):
+        for transaction in self.transactions:
             self.product, self.quantity, self.transaction_id, \
-                self.original_transaction_id = self.response_from_apple_server(i)
+                self.original_transaction_id = self.response_from_apple_server(transaction)
 
             if self.product == self.APPLE_PRODUCT_CREDITS:
                 self.perform_credits_oprations()
