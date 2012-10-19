@@ -109,9 +109,6 @@
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     scrollView.pagingEnabled = NO;
-    
-    // TODO: move to proper place (or keep it here if this place is proper)
-    [self.delegate requestChannelCategories];
 }
 
 - (void)dealloc {
@@ -159,6 +156,13 @@
     }
 }
 
+- (void)removeViewControllers {
+    while (self.scrollView.subviews.count > 0) {
+        [[self.scrollView.subviews lastObject] removeFromSuperview];
+    }
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width,
+                                        scrollView.frame.size.height);
+}
 
 - (void)placeViewController:(UIViewController<NewsItem>*)controller
 {
