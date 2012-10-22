@@ -293,7 +293,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         if (purchViews < NOT_CONFIRMABLE_NUMBER_OF_VIEWS) {
             [self sendMessageURLRequest:COMPOSETYPE_EMAIL];
         } else {
-            NSString*alertmessage = [NSString stringWithFormat:@"Debit %d views?",purchViews,nil ];
+            NSString*alertmessage = [NSString stringWithFormat:@"Debit %d viewers?",purchViews,nil ];
             
             UIAlertView *alertView =[[UIAlertView alloc] initWithTitle:@"Confirm Message" message:alertmessage delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];
             [alertView show];
