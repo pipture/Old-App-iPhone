@@ -46,7 +46,7 @@
     UIButton * backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 29)];
     [backButton setBackgroundImage:[UIImage imageNamed:@"special-close-button.png"]
                           forState:UIControlStateNormal];
-    [backButton setTitle:@" Cancel" forState:UIControlStateNormal];
+    [backButton setTitle:@"Cancel" forState:UIControlStateNormal];
     [backButton addTarget:self
                    action:@selector(backAction)
          forControlEvents:UIControlEventTouchUpInside];
