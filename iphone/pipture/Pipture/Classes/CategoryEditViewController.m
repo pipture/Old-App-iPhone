@@ -10,6 +10,11 @@
 #import "Category.h"
 #import "PiptureAppDelegate.h"
 
+#define SCHEDULED_SERIES @"Scheduled Series"
+#define UIColorFromRGB(rgbValue) [UIColor \
+colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
+green:((float)((rgbValue & 0xFF00) >> 8))/255.0 \
+blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 @interface CategoryEditViewController ()
 @end
@@ -126,6 +131,12 @@
         
         Category *category = [self.delegate.channelCategories objectAtIndex:row];
         cell.textLabel.text = category.title;
+        
+        //Scheduled series marked grey
+        if ([SCHEDULED_SERIES isEqual: cell.textLabel.text]){
+            cell.textLabel.textColor = UIColorFromRGB(0xd0d0d0);
+            cell.textLabel.shadowColor = UIColorFromRGB(0xaaaaaa);
+        }
     }
     
     return cell;
