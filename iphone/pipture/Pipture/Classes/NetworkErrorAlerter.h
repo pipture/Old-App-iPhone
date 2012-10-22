@@ -11,6 +11,7 @@
 
 #define NEW_BALANCE_NOTIFICATION @"PiptureNewBalanceNotification"
 #define BUY_VIEWS_NOTIFICATION @"PiptureBuyViewsNotification"
+#define PURCHASE_CONFIRMED_NOTIFICATION @"PipturePurchaseConfirmedNotification"
 @interface NetworkErrorAlerter : NSObject <UIAlertViewDelegate>{
     BOOL isAlertShowing;
     id<UIAlertViewDelegate> wrappedDelegate;    

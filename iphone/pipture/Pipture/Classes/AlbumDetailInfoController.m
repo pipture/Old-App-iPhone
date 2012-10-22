@@ -210,6 +210,10 @@
                                              selector:@selector(onBuyViews:) 
                                                  name:BUY_VIEWS_NOTIFICATION 
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onPurchaseConfirmed:)
+                                                 name:PURCHASE_CONFIRMED_NOTIFICATION
+                                               object:[PiptureAppDelegate instance]];
     
     detailsReceived = NO;
     progressView.hidden = YES;
@@ -218,6 +222,10 @@
     [self tabChanged:detailsButton];
     
     [self setupScheduleLabelView];
+}
+
+-(void)onPurchaseConfirmed:(NSNotification *) notification {
+    progressView.hidden = YES;
 }
 
 - (void)viewDidUnload

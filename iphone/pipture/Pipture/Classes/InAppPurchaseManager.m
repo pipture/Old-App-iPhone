@@ -359,6 +359,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         [purchase run];
         [purchase release];
         NSLog(@"InApp transaction OK!");
+        [[NSNotificationCenter defaultCenter] postNotificationName:PURCHASE_CONFIRMED_NOTIFICATION object:[PiptureAppDelegate instance]];
     }
     else
     {
