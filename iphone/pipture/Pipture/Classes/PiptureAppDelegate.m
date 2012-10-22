@@ -705,7 +705,7 @@ NSInteger networkActivityIndecatorCount;
 - (void)showInsufficientFunds;
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Library Card"
-                                                    message:@"Add Views to your card to complete this action."
+                                                    message:@"Add Viewers to your card to complete this action."
                                                    delegate:self
                                           cancelButtonTitle:@"Cancel" 
                                           otherButtonTitles:@"Continue", nil];
