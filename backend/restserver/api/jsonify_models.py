@@ -3,6 +3,7 @@ import decimal
 from django.utils import simplejson
 
 from api.time_utils import TimeUtils
+from pipture.models import PiptureSettings
 from restserver.s3.fields import CustomFieldFile
 
 
@@ -28,20 +29,20 @@ class Utils(object):
 
     @classmethod
     def get_album_status(cls, album, released, updated):
-        utcnow = datetime.utcnow()
+        user_now = TimeUtils.user_now()
 
         if not album.episodes.all():
             status = album.STATUS_NORMAL
-        elif released > utcnow:
+        elif released > user_now:
             status = album.STATUS_COMING_SOON
         else:
             # TODO: move PiptureSettings from huge models file and remove inline import
             # I use inline import to avoid importing pipture.models in this file
-            from restserver.pipture.models import PiptureSettings
+            #from restserver.pipture.models import PiptureSettings
 
             premiere_days = PiptureSettings.get().PremierePeriod
             premiere_period = timedelta(days=premiere_days)
-            if updated >= utcnow - premiere_period:
+            if updated >= user_now - premiere_period:
                 status = album.STATUS_PREMIERE
             else:
                 status = album.STATUS_NORMAL

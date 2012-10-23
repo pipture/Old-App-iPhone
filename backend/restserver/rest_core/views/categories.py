@@ -10,7 +10,7 @@ from api.jsonify_models import JsonifyModels
 from api.errors import ServiceUnavailable
 from api.view import GetView
 from api.validation_mixins import PurchaserValidationMixin
-from restserver.pipture.models import Series
+from restserver.pipture.models import Series, PiptureSettings
 
 
 class Category(object):
@@ -131,13 +131,17 @@ class ComingSoonSeries(Category, SeriesMixin):
         return Series.objects.raw('''
             SELECT SeriesId FROM
                 ((SELECT SeriesId_id, AlbumId FROM pipture_albums
-                WHERE SeriesId_id NOT IN (
-                    SELECT DISTINCT SeriesId_id FROM pipture_albums
-                        WHERE AlbumId IN (
-                            SELECT DISTINCT AlbumId_id FROM pipture_episodes
-                                WHERE DateReleased <= CURRENT_TIMESTAMP()
-                        ) AND NOT HiddenAlbum
-                )) AS albums
+                    WHERE SeriesId_id NOT IN (
+                        SELECT DISTINCT SeriesId_id FROM pipture_albums
+                            WHERE AlbumId IN (
+                                SELECT DISTINCT AlbumId_id FROM pipture_episodes
+                                    WHERE DateReleased <= CURRENT_TIMESTAMP()
+                            )
+                    ) AND SeriesId_id IN (
+                        SELECT DISTINCT SeriesId_id FROM pipture_albums
+                            WHERE NOT HiddenAlbum
+                    )
+                ) AS albums
                 LEFT JOIN pipture_series ON SeriesId_id = SeriesId)
                 LEFT JOIN pipture_episodes ON AlbumId = AlbumId_id
                 GROUP BY SeriesId
@@ -180,7 +184,7 @@ class WatchThatVideosAgain(Category, SeriesMixin):
                 if series.filter(SeriesId=id)]
 
 
-@cache_view(timeout=60)
+@cache_view(timeout=60 * 5)
 class GetAllCategories(GetView, PurchaserValidationMixin):
 
     ga = PiptureGAClient(cache=get_cache('google_analytics'),
@@ -212,9 +216,30 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
                     jsonify=jsonify,
                     ga=self.ga)
 
+    @cache_result(timeout=60 * 5)
+    def get_cover(self):
+        try:
+            pipture_settings = PiptureSettings.get()
+            cover = pipture_settings.Cover
+            if cover is None or not cover.name:
+                cover = ""
+            else:
+                cover = cover.get_url()
+        except IndexError:
+            return "", None
+
+        return cover, pipture_settings.Album
+
     def get_context_data(self):
         params = self.get_params()
         result = tuple(category_class(params).get_context_data()
                        for category_class in self.get_category_classes())
 
-        return dict(ChannelCategories=result)
+        cover, album = self.get_cover()
+        if album:
+            is_purchased = self.caching.is_album_purchased(album)
+            album = self.jsonify(album, is_purchased=is_purchased)
+
+        return dict(Cover=cover,
+                    Album=album,
+                    ChannelCategories=result)

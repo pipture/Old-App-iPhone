@@ -104,7 +104,7 @@ LOGGING = {
         },
 
         'apiclient.discovery': {
-            'handlers': ['dev_console'],
+            'handlers': [],
             'level': 'INFO',
         },
     },
@@ -211,11 +211,12 @@ AUTH_PROFILE_MODULE = 'pipture.UserProfile'
 
 ACTIVE_DAYS_TIMESLOTS = 1
 
+MESSAGE_VIEWS_LOWER_LIMIT = 10
+
+USE_API_CACHE = True
+
+
 try:
     from settings_staging import *
 except ImportError:
     pass
-
-MESSAGE_VIEWS_LOWER_LIMIT = 10
-
-USE_API_CACHE = False

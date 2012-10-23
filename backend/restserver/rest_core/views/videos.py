@@ -25,7 +25,7 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
 
     @cache_queryset(timeout=60 * 30)
     def get_available_timeslots(self):
-        today_utc = datetime.utcnow().date()
+        today_utc = TimeUtils.user_now()
         return TimeSlots.objects.select_related(depth=2)\
                                      .filter(EndDate__gte=today_utc,
                                              StartDate__lte=today_utc)\
@@ -167,7 +167,7 @@ class GetPlaylist(GetView, TimezoneValidationMixin):
                 message='There are no videos in timeslot %s' % self.timeslot)
 
     def get_autoepisode(self, start_episode_id, start_time):
-        d1 = datetime.utcnow()
+        d1 = TimeUtils.user_now()
         delta = d1 - datetime(start_time.year, start_time.month, start_time.day)
 
         video = self.caching.get_episode(start_episode_id)

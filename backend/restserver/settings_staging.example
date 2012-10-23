@@ -1,27 +1,47 @@
 #DB Section
-#settings of your prepeared db
-
+#settings of your prepared db
+#
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'pipture_db',
-        'USER': 'pipture_usr',
-        'PASSWORD': 'pipturepasswordwashere',
+        'ENGINE': '',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': '',
         'PORT': '',
+        'OPTIONS': {
+            'sa_pool_key': 'pipture',
+        }
     }
 }
+
+DBPOOL_WAIT_TIMEOUT = 120
+DBPOOL_SIZE = 20
+DBPOOL_MAX = 100
+DBPOOL_INTERNAL_CONN_TIMEOUT = 10
 
 #Amazon S3 section
 
 USE_AMAZON_S3 = True
-DEFAULT_BUCKET = 'for_example_com_pipture_bucket'
-BUCKET_NAME = 'for_example_com_pipture_bucket'
-AWS_ACCESS_KEY_ID = 'SECRETKEYFROMAMAZON'
-AWS_SECRET_ACCESS_KEY = 'enter/the/secret/access/key/here'
+DEFAULT_BUCKET = 'amazon-bucket-name'
+BUCKET_NAME = 'amazon-bucket-name'
+AWS_ACCESS_KEY_ID = 'T******************W'
+AWS_SECRET_ACCESS_KEY = 'G**************************************f'
 
 DEBUG = False
+SERVE_STATIC = True
+
+USE_API_CACHE = True
 
 ADMINS = (
-     ('MBoyarskiy', 'mboyarskiy@thumbtack.net'),
 )
+
+GOOGLE_ANALYTICS_PROFILE_ID = 'ga:4******6'
+
+GOOGLE_API_CLIENT_ID = '2**********5.apps.googleusercontent.com'
+GOOGLE_API_ACCOUNT_NAME = '2**********5@developer.gserviceaccount.com'
+GOOGLE_API_PRIVATE_KEY = '/path/to/pipture-ga.p12'
+
+# TODO: after Apple will approve this, uncomment next line and comment sandbox line
+#VERIFY_RECEIPT_URL = 'https://buy.itunes.apple.com/verifyReceipt'
+VERIFY_RECEIPT_URL = 'https://sandbox.itunes.apple.com/verifyReceipt'

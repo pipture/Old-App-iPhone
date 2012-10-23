@@ -389,7 +389,7 @@ class PiptureSettings(models.Model):
             raise ValidationError({NON_FIELD_ERRORS: ["There can be only one!"]})
 
     @classmethod
-    @cache_result(timeout=60 * 30)
+    @cache_result(timeout=60 * 5)
     def get(cls):
         return cls.objects.select_related(depth=1).all()[0]
 
@@ -578,7 +578,7 @@ class SendMessage(models.Model):
 #    UserId = models.ForeignKey(PipUsers)
     Purchaser = models.ForeignKey(Purchasers, editable=False, on_delete=models.CASCADE)
     Text = models.CharField(max_length=200)
-    Timestamp = models.DateTimeField(default=datetime.now)
+    Timestamp = models.DateTimeField(default=datetime.utcnow)
     LinkId = models.IntegerField(db_index=True)
     LinkType = models.CharField(db_index=True, max_length=1, choices=LINKTYPE_CHOICES)
     UserName = models.CharField(max_length=200)

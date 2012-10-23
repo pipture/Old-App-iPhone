@@ -352,25 +352,19 @@ static PiptureAppDelegate *instance;
     return coverImage;
 }
 
-- (void)setCover:(NSString*)cover {
-    NSString * cov = cover;
+- (void)setCover:(NSDictionary *)params {
+    NSString *cover = [params objectForKey:@"Cover"];
     [coverImage release];
-    coverImage = [cov retain];
-}
-
-- (void)setAlbumForCoverFromJSON:(id)album {
+    coverImage = [cover retain];
+    
+    id album = [params objectForKey:@"Album"];
+    
     if (album != [NSNull null]) {
         albumForCover = [[Album alloc] initWithJSON:album];
     }
 }
 
--(void)loggedIn:(NSDictionary*)params
-{
-    if (!self.albumForCover) {
-        [self setCover:[params objectForKey:@"Cover"]];
-        [self setAlbumForCoverFromJSON:[params objectForKey:@"Album"]];
-    }
-    
+-(void)loggedIn {
     if (loggedIn) {
         [self unsuspendPlayer];
     } else {
@@ -401,9 +395,6 @@ static PiptureAppDelegate *instance;
 
 -(void)registred:(NSDictionary*)params
 {
-    [self setCover:[params objectForKey:@"Cover"]];
-    [self setAlbumForCoverFromJSON:[params objectForKey:@"Album"]];
-    
     [self saveUUID:[params objectForKey:@"UUID"]];
 }
 

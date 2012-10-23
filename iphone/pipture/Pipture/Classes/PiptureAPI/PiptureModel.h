@@ -105,7 +105,7 @@
 #pragma mark -
 @protocol AuthenticationDelegate <PiptureModelDelegate>
 @required
--(void)loggedIn:(NSDictionary*)params;
+-(void)loggedIn;
 -(void)loginFailed;
 -(void)registred:(NSDictionary*)params;
 @end

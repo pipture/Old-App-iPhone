@@ -58,8 +58,8 @@ class CachingManager(object):
             )
 
     def is_episode_on_air(self, episode):
-        utcnow = datetime.utcnow()
-        today = utcnow.date()
+        user_now = TimeUtils.user_now()
+        today = user_now.date()
         date_released = episode.DateReleased.date()
 
         if date_released > today:
@@ -70,7 +70,7 @@ class CachingManager(object):
         timeslot_videos = self._get_timeslot_videos(episode)
 
         for video in timeslot_videos:
-            if video.TimeSlotsId.next_start_time < utcnow:
+            if video.TimeSlotsId.next_start_time < user_now:
                 return True
 
         return bool(timeslot_videos)
