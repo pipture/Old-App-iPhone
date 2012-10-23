@@ -486,7 +486,23 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }
 }
 
-#pragma mark SKProductsRequestDelegate methods 
+- (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
+{
+    if ([[queue transactions] count] == 0){
+        UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:@"" message:@"Currently you have no purchases. Check your Apple ID please." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [requestIssuesAlert show];
+        
+        [requestIssuesAlert release];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PiptureRestoreFailedNotification" object:[PiptureAppDelegate instance]];
+    }
+}
+
+- (void)paymentQueue:(SKPaymentQueue *)queue
+restoreCompletedTransactionsFailedWithError:(NSError *)error
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"PiptureRestoreFailedNotification" object:[PiptureAppDelegate instance]];
+}
+#pragma mark SKProductsRequestDelegate methods
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
 {
