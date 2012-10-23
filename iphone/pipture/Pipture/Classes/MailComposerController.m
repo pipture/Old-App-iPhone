@@ -84,6 +84,7 @@
 @synthesize maxViewsLabel;
 @synthesize infiniteRadioButtonsGroupView;
 @synthesize numberOfFreeViewsForEpisode;
+@synthesize tableCellsHeightMap;
 
 static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
@@ -205,6 +206,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBuyViews:) name:BUY_VIEWS_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onFreeViewersUpdated:) name:FREE_VIEWERS_UPDATED_NOTIFICATION object:nil];
+    
+    self.tableCellsHeightMap = [NSDictionary dictionaryWithObjectsAndKeys:
+                                         [NSNumber numberWithFloat:messageCell.frame.size.height], @"message",
+                                         [NSNumber numberWithFloat:fromCell.frame.size.height], @"from",
+                                         [NSNumber numberWithFloat:screenshotCell.frame.size.height], @"screenshots",
+                                         nil];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -447,6 +454,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [self setClippedMessage: nil];
     [self setCancelButton:nil];
     [self setProgressView:nil];
+    [self setTableCellsHeightMap:nil];
     [super viewDidUnload];
 }
 
@@ -609,6 +617,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [clippedMessage release];
     [cancelButton release];
     [progressView release];
+    [tableCellsHeightMap release];
     [super dealloc];
 }
 
@@ -784,11 +793,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     switch ([self calcCellRow:indexPath]) {
         case MESSAGE_CELL_ROW:
-            return messageCell.frame.size.height;
+            return [[self.tableCellsHeightMap objectForKey:@"message"] floatValue];
         case FROM_CELL_ROW:
-            return fromCell.frame.size.height;                                
+            return [[self.tableCellsHeightMap objectForKey:@"from"] floatValue];
         case SCREENSHOT_CELL_ROW:
-            return screenshotCell.frame.size.height;                    
+            return [[self.tableCellsHeightMap objectForKey:@"screenshots"] floatValue];
         default:
             return 0;
     }

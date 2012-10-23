@@ -20,8 +20,9 @@ enum ComposeType {
     COMPOSETYPE_TWEET = 1,
     };
 
-@interface MailComposerController : UIViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate, UIActionSheetDelegate>{
+@interface MailComposerController : UIViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
 
+{
     @private
     NSString * message_;
     ScreenshotImage* screenshotImage_;
@@ -34,7 +35,9 @@ enum ComposeType {
     NSArray* screenshotImages_;    
     NSNumberFormatter * viewsNumberFormatter;
     ScrollingHintPopupController *scrollingHintController;
+    NSDictionary *tableCellsHeightMap;
 }
+
 @property (retain, nonatomic) IBOutlet UIView *picturePlaceholder;
 @property (retain, nonatomic) IBOutlet UITableViewCell *screenshotCell;
 @property (retain, nonatomic) IBOutlet UITableViewCell *messageCell;
@@ -56,6 +59,7 @@ enum ComposeType {
 @property (retain, nonatomic) IBOutlet UILabel *clippedMessage;
 @property (retain, nonatomic) IBOutlet UIButton *cancelButton;
 @property (retain, nonatomic) IBOutlet UIView *progressView;
+@property (retain, nonatomic) NSDictionary *tableCellsHeightMap;
 
 - (IBAction)onCancel:(id)sender;
 - (IBAction)onRadioButtonTap:(id)sender;
