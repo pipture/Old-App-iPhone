@@ -237,8 +237,7 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
 
         cover, album = self.get_cover()
         if album:
-            is_purchased = self.caching.is_album_purchased(album)
-            album = self.jsonify(album, is_purchased=is_purchased)
+            album = self.jsonify(album)
 
         return dict(Cover=cover,
                     Album=album,

@@ -1,8 +1,10 @@
-from datetime import datetime, timedelta
 import decimal
+from datetime import datetime, timedelta
+
 from django.utils import simplejson
 
 from api.time_utils import TimeUtils
+from api.middleware.threadlocals import LocalUserMiddleware
 from pipture.models import PiptureSettings
 from restserver.s3.fields import CustomFieldFile
 
@@ -22,8 +24,14 @@ class ApiJSONEncoder(simplejson.JSONEncoder):
 
 class Utils(object):
 
-    @staticmethod
-    def get_sell_status(album, is_purchased=False):
+    @classmethod
+    def is_purchased(cls, album):
+        return album.AlbumId in LocalUserMiddleware.get('purchased_albums',
+                                                        default=[])
+
+    @classmethod
+    def get_sell_status(cls, album):
+        is_purchased = cls.is_purchased(album)
         purchase_status = 'purchased' if is_purchased else album.PurchaseStatus
         return album.SELL_STATUS_FROM_PURCHASE.get(purchase_status, 0)
 
@@ -79,14 +87,12 @@ class JsonifyModels(object):
 
     def albums(self, album, **kwargs):
         released, updated = Utils.get_release_and_update_dates(album)
-        is_purchased = kwargs.get('is_purchased', False) or \
-                       album.AlbumId in self.purchased_albums
 
         album_json = {
             'AlbumId': album.AlbumId,
             'Season': album.Season,
             'Title': album.Title,
-            'SellStatus': Utils.get_sell_status(album, is_purchased),
+            'SellStatus': Utils.get_sell_status(album),
             'SquareThumbnail': album.SquareThumbnail
         }
         album_json.update(self.__call__(album.SeriesId))

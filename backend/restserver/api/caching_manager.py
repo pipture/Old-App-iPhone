@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.db.models import Q
 from api.decorators import cache_queryset, cache_result
 
@@ -16,6 +15,7 @@ class CachingManager(object):
     def user(self):
         return self.user_locals.get('user')
 
+    @cache_queryset(timeout=2)
     def _get_purchased_albums(self):
         return UserPurchasedItems.objects.filter(
                 Purchaser=self.user.Purchaser,
@@ -24,8 +24,6 @@ class CachingManager(object):
     @property
     def purchased_albums_ids(self):
         _purchased_albums = self.user_locals.get('purchased_albums')
-
-        print '--->', hash(_purchased_albums), '--->', _purchased_albums
 
         if _purchased_albums is None:
             _purchased_albums = self._get_purchased_albums()
