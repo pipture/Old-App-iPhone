@@ -56,12 +56,10 @@
         [view removeFromSuperview];
     }
     
-
-    
     if (asButton) {
         UIButton* imageBtn = [[[UIButton alloc] initWithFrame:self.bounds] autorelease];
         imageBtn.tag = 12321;
-        
+
         imageBtn.contentMode = UIViewContentModeScaleAspectFit;
         imageBtn.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
         [imageBtn addTarget:actionTarget action:actionSelector forControlEvents:UIControlEventTouchUpInside];
@@ -72,10 +70,10 @@
     } else {
         UIImageView* imageView = [[[UIImageView alloc] initWithImage:image] autorelease];
         imageView.tag = 12321;
-    
+        
         imageView.contentMode = UIViewContentModeScaleAspectFit;
         imageView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
-    
+        
         [self addSubview:imageView];
         imageView.frame = self.bounds;
         [imageView setNeedsLayout];

@@ -12,6 +12,7 @@
 #import "TimeslotFormatter.h"
 #import "CategoryViewController.h"
 
+
 @implementation NewsView
 @synthesize coverPanel;
 @synthesize coverButton;
@@ -97,7 +98,6 @@
 
 - (void)prepareWith:(id<HomeScreenDelegate>)parent {
     allowBubble = NO;
-    self.delegate = parent;
     
     //prepare scrollView
     self.delegate = parent;
@@ -109,6 +109,8 @@
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     scrollView.pagingEnabled = NO;
+    
+    scrollView.canCancelContentTouches = YES;
 }
 
 - (void)dealloc {
