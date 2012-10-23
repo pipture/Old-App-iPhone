@@ -12,6 +12,7 @@ from django.views.generic.base import View
 from api.caching_manager import CachingManager
 from api.jsonify_models import JsonifyModels, ApiJSONEncoder
 from api.errors import ApiError, EmptyError, InternalServerError
+from api.middleware.threadlocals import LocalUserMiddleware
 from api.validation_mixins import ApiValidationMixin
 
 
@@ -58,6 +59,7 @@ class GeneralView(View, ParameterValidationMixin, ApiValidationMixin):
 
     def process(self, request, *args, **kwargs):
         self.params = request.GET or request.POST or {}
+        LocalUserMiddleware.process_request(request)
 
         try:
             self.validate_parameters()

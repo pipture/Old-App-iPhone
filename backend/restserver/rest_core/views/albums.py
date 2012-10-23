@@ -47,9 +47,7 @@ class GetAlbumDetail(GetView, PurchaserValidationMixin):
         is_purchased = self.album.AlbumId in self.caching.purchased_albums_ids
 
         response = {
-            'Album': self.jsonify(self.album,
-                                  is_purchased=is_purchased,
-                                  add_trailer=True)
+            'Album': self.jsonify(self.album, add_trailer=True)
         }
 
         if self.include_episodes == "1":
@@ -64,11 +62,9 @@ class GetAlbums(GetView, PurchaserValidationMixin):
 
     def get_context_data(self):
         albums_list = self.caching.get_available_albums()
-        purchased_ids = self.caching.purchased_albums_ids
 
         return {
             'Albums': [self.jsonify(album,
-                                    is_purchased=album.AlbumId in purchased_ids,
                                     add_trailer=True,
                                     add_album_status=True)
                        for album in albums_list]
