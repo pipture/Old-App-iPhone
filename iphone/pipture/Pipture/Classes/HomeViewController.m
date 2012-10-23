@@ -378,6 +378,7 @@
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
             [self setFullScreenMode];
+            [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
         case HomeScreenMode_Schedule:
             [self setFullScreenMode];
@@ -412,7 +413,7 @@
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
             [self.navigationController setNavigationBarHidden:YES animated:NO];
-            [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
+            [[PiptureAppDelegate instance] tabbarVisible:NO slide:NO];
             break;
         case HomeScreenMode_Schedule:
             [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
