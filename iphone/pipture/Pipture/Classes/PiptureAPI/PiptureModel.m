@@ -1179,7 +1179,7 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
                                                                        [PiptureModel processError:error receiver:receiver];
                                                                    }
                                                                    else
-                                                                   {
+                                                                   {	
                                                                        NSArray *array = [NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER], 
                                                                                                                   [jsonResult objectForKey:JSON_PARAM_ALBUM], nil];
                                                                        NSDictionary *coverParams = [NSDictionary dictionaryWithObjects:array 
@@ -1205,7 +1205,8 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
                                                                }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
     request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];    
-    [request blockCancel];
+//    [request blockCancel];
+    [request setEnqueued];
     return [request startExecute];
     
 }

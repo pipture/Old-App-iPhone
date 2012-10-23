@@ -400,27 +400,21 @@
     redrawDiscarding = NO;
     self.navigationItem.title = @"Library";
     
+    [self requestChannelCategories];
+    [scheduleModel updateTimeslots];
     switch (homeScreenMode) {
         case HomeScreenMode_Albums:
             [self updateAlbums];
             [albumsView setLibraryCardVisibility:NO withAnimation:NO];
             [albumsView showScrollingHintIfNeeded];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
-            
-            if (![scheduleModel timeslotsCount]) {
-                [self requestChannelCategories];
-                [scheduleModel updateTimeslots];
-            }
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
-            [self requestChannelCategories];
             [self.navigationController setNavigationBarHidden:YES animated:NO];
-            [scheduleModel updateTimeslots];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
         case HomeScreenMode_Schedule:
-            [scheduleModel updateTimeslots];
             [[PiptureAppDelegate instance] tabbarVisible:NO slide:YES];
             break;            
         default:break;
@@ -599,6 +593,7 @@
                 */
 
                 [scheduleModel updateTimeslots];
+                [self requestChannelCategories];
                 
                 [appDelegate putHomescreenState:mode];
                 
@@ -928,7 +923,7 @@
 
 - (void)requestChannelCategories {
     PiptureModel *piptureModel = [[PiptureAppDelegate instance] model];
-    [piptureModel cancelCurrentRequest];
+//    [piptureModel cancelCurrentRequest];
     [piptureModel getChannelCategoriesForReciever:self];
 }
 
