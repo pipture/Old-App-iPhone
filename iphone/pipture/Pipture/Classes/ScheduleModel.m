@@ -91,7 +91,6 @@
 -(void)timeslotsReceived:(NSDictionary *)params {
     @synchronized(self)
     {
-//        [[PiptureAppDelegate instance] setCover:[params objectForKey:@"Cover"]];
         NSArray * timeslots = [params objectForKey:@"Timeslots"];
         
         BOOL timeslotsChanged = (timeslots_.count != timeslots.count);

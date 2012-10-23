@@ -400,8 +400,6 @@
     redrawDiscarding = NO;
     self.navigationItem.title = @"Library";
     
-    [self requestChannelCategories];
-    
     switch (homeScreenMode) {
         case HomeScreenMode_Albums:
             [self updateAlbums];
@@ -410,11 +408,13 @@
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             
             if (![scheduleModel timeslotsCount]) {
+                [self requestChannelCategories];
                 [scheduleModel updateTimeslots];
             }
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
+            [self requestChannelCategories];
             [self.navigationController setNavigationBarHidden:YES animated:NO];
             [scheduleModel updateTimeslots];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
@@ -891,7 +891,7 @@
     }
     CoverViewController *cover = [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil];
     [self.newsView removeViewControllers];
-    [self.newsView placeViewController: cover];
+    [self.newsView placeViewController:cover];
     [cover setCoverImage];
     
     [self.newsView placeCategories:self.channelCategories];

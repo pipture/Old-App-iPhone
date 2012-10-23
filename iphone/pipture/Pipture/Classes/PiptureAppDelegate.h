@@ -128,7 +128,6 @@
 - (NSArray*)getInAppPurchases;
 - (void)clearInAppPurchases;
 
-- (void)setCover:(NSString*)cover;
-- (void)setAlbumForCoverFromJSON:(id)album;
+- (void)setCover:(NSDictionary*)params;
 
 @end

@@ -104,7 +104,7 @@ LOGGING = {
         },
 
         'apiclient.discovery': {
-            'handlers': ['dev_console'],
+            'handlers': [],
             'level': 'INFO',
         },
     },

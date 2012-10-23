@@ -42,32 +42,10 @@ class Register(PostView):
         pip_user.save()
         return pip_user
 
-    @cache_result(timeout=60 * 10)
-    def get_cover(self):
-        try:
-            pipture_settings = PiptureSettings.get()
-            cover = pipture_settings.Cover
-            if cover is None or not cover.name:
-                cover = ""
-            else:
-                cover = cover.get_url()
-        except IndexError:
-            return "", None
-
-        return cover, pipture_settings.Album
-
     def get_context_data(self):
         pip_user = self.get_pip_user()
-        self.caching.user_locals.update(user=pip_user)
 
-        cover, album = self.get_cover()
-        if album:
-            is_purchased = self.caching.is_album_purchased(album)
-            album = self.jsonify(album, is_purchased=is_purchased)
-
-        return dict(Cover=cover,
-                    Album=album,
-                    UUID=str(pip_user.UserUID),
+        return dict(UUID=str(pip_user.UserUID),
                     SessionKey=str(pip_user.Token))
 
 
@@ -96,7 +74,6 @@ class Login(Register):
         return self.pip_user
 
 
-#@cache_view(timeout=10)
 class GetBalance(GetView, PurchaserValidationMixin):
 
     def clean_episode(self):
@@ -124,7 +101,6 @@ class GetBalance(GetView, PurchaserValidationMixin):
         return free_viewers
 
     def get_context_data(self):
-
         return dict(Balance=str(self.user.Purchaser.Balance),
                     FreeViewersForEpisode=self.get_free_viewers_for_episode())
 

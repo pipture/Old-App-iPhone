@@ -389,7 +389,7 @@ class PiptureSettings(models.Model):
             raise ValidationError({NON_FIELD_ERRORS: ["There can be only one!"]})
 
     @classmethod
-    @cache_result(timeout=60 * 30)
+    @cache_result(timeout=60 * 5)
     def get(cls):
         return cls.objects.select_related(depth=1).all()[0]
 

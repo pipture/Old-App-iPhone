@@ -238,12 +238,8 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
             switch (errCode) {            
                 case 0:
                     sessionKey = [(NSString*)[jsonResult objectForKey:JSON_PARAM_SESSION_KEY] retain];
-                    NSArray *array = [NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER], 
-                                                               [jsonResult objectForKey:JSON_PARAM_ALBUM], nil];
-                    NSDictionary * dic = [NSDictionary dictionaryWithObjects:array 
-                                                                     forKeys:[NSArray arrayWithObjects:@"Cover", @"Album", nil]];
-                    [receiver performSelectorOnMainThread:@selector(loggedIn:) 
-                                               withObject:dic 
+                    [receiver performSelectorOnMainThread:@selector(loggedIn) 
+                                               withObject:nil
                                             waitUntilDone:YES];                    
                     break;
                 case 401:
@@ -262,6 +258,7 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
     }];
     [PiptureModel setModelRequestingState:YES receiver:receiver];    
     request.retryStrategy = [DataRequestRetryStrategyFactory createStandardStrategy];
+    [request setEnqueued];
     [request blockCancel];
     [request startExecute];
 
@@ -296,12 +293,8 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
                     if (uuid)
                     {
                         NSDictionary * dic = [NSDictionary 
-                                              dictionaryWithObjects:[NSArray arrayWithObjects:
-                                                                     [jsonResult objectForKey:JSON_PARAM_COVER], 
-                                                                     [jsonResult objectForKey:JSON_PARAM_ALBUM],
-                                                                     uuid, 
-                                                                     nil]
-                                              forKeys:[NSArray arrayWithObjects:@"Cover", @"Album", @"UUID", nil]];
+                                              dictionaryWithObjects:[NSArray arrayWithObjects: uuid, nil]
+                                              forKeys:[NSArray arrayWithObjects:@"UUID", nil]];
                         [receiver performSelectorOnMainThread:@selector(registred:)
                                                    withObject:dic 
                                                 waitUntilDone:YES];                    
@@ -310,11 +303,9 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
                     {
                         NSLog(@"Server didn't sent uuid with new registration");
                     }
-                    NSDictionary * dic = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER], nil] 
-                                                                     forKeys:[NSArray arrayWithObjects:@"Cover", nil]];
                     sessionKey = [(NSString*)[jsonResult objectForKey:JSON_PARAM_SESSION_KEY] retain];
-                    [receiver performSelectorOnMainThread:@selector(loggedIn:) 
-                                               withObject:dic 
+                    [receiver performSelectorOnMainThread:@selector(loggedIn) 
+                                               withObject:nil
                                             waitUntilDone:YES];
                     break;
                 }
@@ -1189,6 +1180,14 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
                                                                    }
                                                                    else
                                                                    {
+                                                                       NSArray *array = [NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER], 
+                                                                                                                  [jsonResult objectForKey:JSON_PARAM_ALBUM], nil];
+                                                                       NSDictionary *coverParams = [NSDictionary dictionaryWithObjects:array 
+                                                                                                                               forKeys:[NSArray arrayWithObjects:@"Cover", @"Album", nil]];
+                                                                       [[PiptureAppDelegate instance] performSelectorOnMainThread:@selector(setCover:) 
+                                                                                                                       withObject:coverParams
+                                                                                                                    waitUntilDone:YES];
+                                                                       
                                                                        NSArray* channelCategories = [[PiptureModel parseItems:jsonResult
                                                                                                 jsonArrayParamName:JSON_PARAM_CHANNEL_CATEGORIES
                                                                                                        itemCreator:^(NSDictionary*jsonIT)
