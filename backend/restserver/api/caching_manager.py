@@ -16,7 +16,6 @@ class CachingManager(object):
     def user(self):
         return self.user_locals.get('user')
 
-    @cache_queryset(timeout=3)
     def _get_purchased_albums(self):
         return UserPurchasedItems.objects.filter(
                 Purchaser=self.user.Purchaser,
@@ -24,7 +23,16 @@ class CachingManager(object):
 
     @property
     def purchased_albums_ids(self):
-        return [int(id[0]) for id in self._get_purchased_albums()]
+        _purchased_albums = self.user_locals.get('purchased_albums')
+
+        print '--->', hash(_purchased_albums), '--->', _purchased_albums
+
+        if _purchased_albums is None:
+            _purchased_albums = self._get_purchased_albums()
+            _purchased_albums = [int(id[0]) for id in _purchased_albums]
+            self.user_locals.update(_purchased_albums=_purchased_albums)
+
+        return _purchased_albums
 
     @cache_result(timeout=60 * 30)
     def get_episode(self, id):

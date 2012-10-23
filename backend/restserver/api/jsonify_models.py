@@ -142,6 +142,7 @@ class JsonifyModels(object):
                     "AlbumTitle": album.Title,
                     "AlbumSeason": album.Season,
                     "AlbumSquareThumbnail": album.SquareThumbnail,
+                    "SellStatus": Utils.get_sell_status(album),
                 })
                 episode_json.update(self.__call__(album.SeriesId))
 

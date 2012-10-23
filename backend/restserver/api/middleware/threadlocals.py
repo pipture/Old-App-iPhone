@@ -9,7 +9,7 @@ _thread_locals = local()
 class LocalUserMiddleware(object):
 
     def process_request(self, request):
-        _thread_locals.current_user = getattr(request, 'user', None)
+        _thread_locals.__dict__.clear()
 
     @classmethod
     def update(cls, **kwargs):

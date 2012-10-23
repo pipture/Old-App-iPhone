@@ -139,7 +139,7 @@ class GetVideo(GetView, TimezoneValidationMixin, PurchaserValidationMixin,
 
 
 @cache_view(timeout=60)
-class GetPlaylist(GetView, TimezoneValidationMixin):
+class GetPlaylist(GetView, TimezoneValidationMixin, PurchaserValidationMixin):
 
     def clean_timeslot(self):
         timeslot_id = self.params.get('TimeslotId', 0)
