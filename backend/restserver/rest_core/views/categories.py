@@ -131,13 +131,17 @@ class ComingSoonSeries(Category, SeriesMixin):
         return Series.objects.raw('''
             SELECT SeriesId FROM
                 ((SELECT SeriesId_id, AlbumId FROM pipture_albums
-                WHERE SeriesId_id NOT IN (
-                    SELECT DISTINCT SeriesId_id FROM pipture_albums
-                        WHERE AlbumId IN (
-                            SELECT DISTINCT AlbumId_id FROM pipture_episodes
-                                WHERE DateReleased <= CURRENT_TIMESTAMP()
-                        ) AND NOT HiddenAlbum
-                )) AS albums
+                    WHERE SeriesId_id NOT IN (
+                        SELECT DISTINCT SeriesId_id FROM pipture_albums
+                            WHERE AlbumId IN (
+                                SELECT DISTINCT AlbumId_id FROM pipture_episodes
+                                    WHERE DateReleased <= CURRENT_TIMESTAMP()
+                            )
+                    ) AND SeriesId_id IN (
+                        SELECT DISTINCT SeriesId_id FROM pipture_albums
+                            WHERE NOT HiddenAlbum
+                    )
+                ) AS albums
                 LEFT JOIN pipture_series ON SeriesId_id = SeriesId)
                 LEFT JOIN pipture_episodes ON AlbumId = AlbumId_id
                 GROUP BY SeriesId
