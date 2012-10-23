@@ -262,6 +262,10 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     progressLabel.text = @"Updating albums...";
 }
 
+- (void) onRestoreFailed:(NSNotification *) notification {
+    progressView.hidden = YES;
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -296,6 +300,10 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onPurchasesRestored:)
                                                  name:@"PipturePurchasesRestoredNotification"
+                                               object:[PiptureAppDelegate instance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onRestoreFailed:)
+                                                 name:@"PiptureRestoreFailedNotification"
                                                object:[PiptureAppDelegate instance]];
 }
 
