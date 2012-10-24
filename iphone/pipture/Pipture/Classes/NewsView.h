@@ -10,6 +10,7 @@
 #import "HomeScreenDelegate.h"
 #import "PiptureAppDelegate.h"
 
+
 @interface NewsView : UIView<UIScrollViewDelegate>
 {
     BOOL allowBubble;

@@ -885,6 +885,9 @@
         
         [appDelegate putChannelCategoriesOrder:categoriesOrder];
     }
+
+    CGRect visibleArea = self.newsView.scrollView.bounds;
+
     CoverViewController *cover = [[CoverViewController alloc] initWithNibName:@"CoverViewController" bundle:nil];
     [self.newsView removeViewControllers];
     [self.newsView placeViewController:cover];
@@ -892,6 +895,8 @@
     
     [self.newsView placeCategories:self.channelCategories];
     [self.newsView placeViewController: [[EditNewsViewController alloc] initWithNibName:@"EditNewsViewController" bundle:nil]];
+
+    self.newsView.scrollView.bounds = visibleArea;
 }
 
 
