@@ -28,7 +28,7 @@ class CachingManager(object):
         if _purchased_albums is None:
             _purchased_albums = self._get_purchased_albums()
             _purchased_albums = [int(id[0]) for id in _purchased_albums]
-            self.user_locals.update(_purchased_albums=_purchased_albums)
+            self.user_locals.update(purchased_albums=_purchased_albums)
 
         return _purchased_albums
 
