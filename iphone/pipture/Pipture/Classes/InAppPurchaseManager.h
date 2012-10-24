@@ -21,6 +21,7 @@
     BOOL isInProcess;
     SKProduct *creditsProduct;
     SKProductsRequest *productsRequest;
+    BOOL showRestoreAllProposal;
 }
 
 // public methods
