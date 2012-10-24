@@ -266,6 +266,10 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     progressView.hidden = YES;
 }
 
+- (void) onRestoreRestorePurchasesDialog:(NSNotification *) notification {
+    [self runRestorePurchases];
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -304,6 +308,10 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onRestoreFailed:)
                                                  name:@"PiptureRestoreFailedNotification"
+                                               object:[PiptureAppDelegate instance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onRestoreRestorePurchasesDialog:)
+                                                 name:@"PiptureRestorePurchasesDialogNotification"
                                                object:[PiptureAppDelegate instance]];
 }
 
@@ -421,9 +429,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 
 - (IBAction)onRestorePurchasesButton:(id)sender {
-    progressLabel.text = @"Restore in progress";
-    progressView.hidden = NO;
-    [model restorePurchases];
+    [self runRestorePurchases];
 }
 
 - (IBAction)onInfoButton:(id)sender {
@@ -471,5 +477,11 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     
     [self redraw];
     
+}
+
+-(void)runRestorePurchases{
+    progressLabel.text = @"Restore in progress";
+    progressView.hidden = NO;
+    [model restorePurchases];
 }
 @end

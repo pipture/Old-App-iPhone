@@ -372,8 +372,23 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         
         [[NSNotificationCenter defaultCenter] postNotificationName:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];
     }
+    if (showRestoreAllProposal){
+        UIAlertView * requestRestoreAllAlert = [[UIAlertView alloc] initWithTitle:@"" message:@"You have already purchased this album, do you want to restore your other purchases on this device?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];
+        [requestRestoreAllAlert show];
+        [requestRestoreAllAlert release];
+    }
     
     isInProcess = NO;
+}
+- (void)alertView:(UIAlertView *)requestRestoreAllAlert clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex){
+        case 1: [[NSNotificationCenter defaultCenter]
+                 postNotificationName:@"PiptureRestorePurchasesDialogNotification"
+                 object:[PiptureAppDelegate instance]];
+            break;
+        default:
+            break;
+    }
 }
 
 //
@@ -459,12 +474,16 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 //
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
 {
+    showRestoreAllProposal = NO;
     NSMutableArray *restoredTransactions = nil;
     for (SKPaymentTransaction *transaction in transactions)
     {
         switch (transaction.transactionState)
         {
             case SKPaymentTransactionStatePurchased:
+                if (transaction.originalTransaction != nil){
+                    showRestoreAllProposal = YES;
+                }
                 [self completeTransaction:transaction];
                 break;
             case SKPaymentTransactionStateFailed:
