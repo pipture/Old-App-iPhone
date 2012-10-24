@@ -526,43 +526,48 @@
     //TODO: Part of 9151 refactor
     PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
     
-    if (mode == HomeScreenMode_Last)
+    if (mode == HomeScreenMode_Last) {
         mode = lastHS_mode;
+    }
     
     if (mode != homeScreenMode) {
-        if (homeScreenMode != HomeScreenMode_Unknown) {
-            lastHS_mode = homeScreenMode;
-        }
-        
-        // Fixes bug #14263
-        if (homeScreenMode == HomeScreenMode_Schedule && mode == HomeScreenMode_Albums) {
-            lastHS_mode = HomeScreenMode_PlayingNow;
-        }
-        
-        //flip to cover or back to PN
-        
-        if (mode == HomeScreenMode_PlayingNow && homeScreenMode == HomeScreenMode_Cover) {
-            [scheduleView hideAllPanels];
-        }
-        
         BOOL flipAction = NO;
-        if ((mode == HomeScreenMode_Cover && homeScreenMode == HomeScreenMode_PlayingNow)||
-            ((mode == HomeScreenMode_PlayingNow || mode == HomeScreenMode_Schedule) && homeScreenMode == HomeScreenMode_Cover)||
-            (mode == HomeScreenMode_Cover && homeScreenMode == HomeScreenMode_Schedule)) {
-            [self createFlipAnimation];
-            [scheduleView scrollToCurPage];
-            flipAction = YES;
-        }
         
-        if (!(mode == HomeScreenMode_Schedule && homeScreenMode == HomeScreenMode_PlayingNow)&&
-            !(mode == HomeScreenMode_PlayingNow && homeScreenMode == HomeScreenMode_Schedule)) {
-            if ([[tabbarContainer subviews] count] > 0) {
-                [[[tabbarContainer subviews] objectAtIndex:0] removeFromSuperview];
+        if (mode == HomeScreenMode_Update) {
+            mode = homeScreenMode;
+        } else {
+            if (homeScreenMode != HomeScreenMode_Unknown) {
+                lastHS_mode = homeScreenMode;
             }
+            
+            // Fixes bug #14263
+            if (homeScreenMode == HomeScreenMode_Schedule && mode == HomeScreenMode_Albums) {
+                lastHS_mode = HomeScreenMode_PlayingNow;
+            }
+            
+            //flip to cover or back to PN
+            
+            if (mode == HomeScreenMode_PlayingNow && homeScreenMode == HomeScreenMode_Cover) {
+                [scheduleView hideAllPanels];
+            }
+
+            if ((mode == HomeScreenMode_Cover && homeScreenMode == HomeScreenMode_PlayingNow)||
+                ((mode == HomeScreenMode_PlayingNow || mode == HomeScreenMode_Schedule) && homeScreenMode == HomeScreenMode_Cover)||
+                (mode == HomeScreenMode_Cover && homeScreenMode == HomeScreenMode_Schedule)) {
+                [self createFlipAnimation];
+                [scheduleView scrollToCurPage];
+                flipAction = YES;
+            }
+            
+            if (!(mode == HomeScreenMode_Schedule && homeScreenMode == HomeScreenMode_PlayingNow)&&
+                !(mode == HomeScreenMode_PlayingNow && homeScreenMode == HomeScreenMode_Schedule)) {
+                if ([[tabbarContainer subviews] count] > 0) {
+                    [[[tabbarContainer subviews] objectAtIndex:0] removeFromSuperview];
+                }
+            }
+            
+            [[appDelegate model] cancelCurrentRequest];
         }
-        
-        [[appDelegate model] cancelCurrentRequest];
-        
         
         switch (mode) {
             case HomeScreenMode_Cover:
