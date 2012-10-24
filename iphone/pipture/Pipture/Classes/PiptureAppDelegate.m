@@ -319,6 +319,10 @@ static PiptureAppDelegate *instance;
     }
     if (loggedIn) {
         [self unsuspendPlayer];
+
+        if ([self homeViewVisible]) {
+            [[self getHomeView] setHomeScreenMode:HomeScreenMode_Update];
+        }
     } 
     else if (registrationRequired)
     {

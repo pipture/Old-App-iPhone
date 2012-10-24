@@ -14,10 +14,8 @@ class LocalUserMiddleware(object):
 
     @classmethod
     def update(cls, **kwargs):
-        print '-- 0 -->', _thread_locals.__dict__
         for key, value in kwargs.iteritems():
             setattr(_thread_locals, key, value)
-        print '-- 1 -->', _thread_locals.__dict__
 
     @classmethod
     def get(cls, key, default=None):
