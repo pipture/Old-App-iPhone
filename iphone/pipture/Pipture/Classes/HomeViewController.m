@@ -291,7 +291,7 @@
     self.navigationItem.leftBarButtonItem = store;
     [store release];
 
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     
     [self setHomeScreenMode:[[PiptureAppDelegate instance] getHomescreenState]];
     
@@ -310,15 +310,15 @@
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
-    progressView.hidden = NO;
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView];
 }
 
 - (void) onNewBalance:(NSNotification *) notification {
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
 }
 
 - (void) onViewsPurchased:(NSNotification *) notification {
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     if (homeScreenMode == HomeScreenMode_Albums) {
         [albumsView showScrollingHintIfNeeded];
     }

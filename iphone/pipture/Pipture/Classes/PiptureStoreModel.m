@@ -128,7 +128,8 @@
         [newAlbums_ removeAllObjects];
         [newAlbums_ addObjectsFromArray:albums];
         if ([purchaseMgr canMakePurchases]) {
-            [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:NO 
+            [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:NO
+                                                             asBlocker:NO
                                                             completion:^{
                 [purchaseMgr requestProductsWithIds:[self appleProductIds:newAlbums_]
                                            delegate:self];

@@ -247,14 +247,14 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (void) onAlbumsUpdate:(NSNotification *) notification {
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     self.noAlbumsLabel.hidden = [model albumsCount] != 0;
     [self updateAlbums];
 }
 
 
 - (void) onNewBalance:(NSNotification *) notification {
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     [self displayLibraryCard];
 }
 
@@ -263,7 +263,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (void) onRestoreFailed:(NSNotification *) notification {
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
 }
 
 - (void) onRestoreRestorePurchasesDialog:(NSNotification *) notification {
@@ -295,7 +295,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     singleFingerTap.cancelsTouchesInView = NO;
@@ -396,8 +396,11 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 - (IBAction)onLibraryCardTap:(id)sender {
     progressLabel.text = @"Purchase in progress";
-    progressView.hidden = NO;
-    [[PiptureAppDelegate instance] buyViews];
+    PiptureAppDelegate *app = [PiptureAppDelegate instance];
+    
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView];
+    
+    [app buyViews];
 }
 
 
@@ -423,7 +426,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 - (IBAction)onBuyButton:(id)sender {
     progressLabel.text = @"Purchase in progress";
-    progressView.hidden = NO;
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView];
     [model buyAlbumAtPage:[self getPageNumber]];
 }
 
@@ -481,7 +484,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 -(void)runRestorePurchases{
     progressLabel.text = @"Restore in progress";
-    progressView.hidden = NO;
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView];
     [model restorePurchases];
 }
 @end

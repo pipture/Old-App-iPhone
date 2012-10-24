@@ -274,7 +274,7 @@
         [purchase run];
         [purchase release];
     } else {
-        [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:YES completion:^{
+        [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:YES asBlocker:YES completion:^{
             NSString * productId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CreditesProductId"];
             SKPayment *payment = [SKPayment paymentWithProductIdentifier:productId];
             [[SKPaymentQueue defaultQueue] addPayment:payment];
@@ -290,7 +290,7 @@
                    GA_NO_VARS);
     
     isInProcess = YES;
-    [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:YES completion:^{
+    [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:YES asBlocker:YES completion:^{
         SKPayment *payment = [SKPayment paymentWithProductIdentifier:appleProductId];
         [[SKPaymentQueue defaultQueue] addPayment:payment];
     }];
@@ -553,7 +553,7 @@ restoreCompletedTransactionsFailedWithError:(NSError *)error
 
 - (void)restorePurchases{
     isInProcess = YES;
-    [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:YES completion:^{
+    [[PiptureAppDelegate instance] showModalBusyWithBigSpinner:YES asBlocker:YES completion:^{
         [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
     }];
 }

@@ -195,7 +195,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     screenshotCell.accessoryType = UITableViewCellAccessoryNone;
     
     lastScreenshotView = nil;
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     
     nameTextField.text = [[PiptureAppDelegate instance] getUserName];  
     [numberOfViewsTextField setBorderStyle:UITextBorderStyleRoundedRect];
@@ -736,11 +736,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
-    progressView.hidden = NO;
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView];
 }
 
 - (void) onNewBalance:(NSNotification *) notification {
-    progressView.hidden = YES;
+   [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
    if (layoutTableView.contentOffset.x > MESSAGE_EDITING_SCROLL_OFFSET) {
         [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
     }

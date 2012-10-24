@@ -216,7 +216,7 @@
                                                object:[PiptureAppDelegate instance]];
     
     detailsReceived = NO;
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     
     asyncImageViews = [[NSMutableDictionary alloc] init];    
     [self tabChanged:detailsButton];
@@ -225,7 +225,7 @@
 }
 
 -(void)onPurchaseConfirmed:(NSNotification *) notification {
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
 }
 
 - (void)viewDidUnload
@@ -551,11 +551,11 @@
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
-    progressView.hidden = NO;
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView];
 }
 
 - (void) onNewBalance:(NSNotification *) notification {
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     if (viewType == DetailAlbumViewType_Videos) {
         [self setNumberOfViews:[[PiptureAppDelegate instance] getBalance]];
         [self showScrollingHintIfNeeded];

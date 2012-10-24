@@ -40,6 +40,7 @@
 @synthesize userPurchasedAlbumSinceAppStart;
 @synthesize albumForCover;
 @synthesize uuid;
+@synthesize activeSpinner;
 
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
@@ -837,25 +838,49 @@ NSInteger networkActivityIndecatorCount;
     return tabbarView.frame.size.height - 8;  
 }
 
-- (void)showModalBusyWithBigSpinner:(BOOL)spinner completion:(void (^)(void))completion {
-    //[[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+- (void)showCustomSpinner:(UIView*)spinner{
+    if (self.activeSpinner){
+        [self dismissModalBusy];
+    }
     
-    //[[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
     [[self window] addSubview:busyView.view];
     [busyView loadView];
-    if (!spinner) {
-        busyView.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
-        busyView.spinner.hidden = NO;
-    } else {
-        busyView.spinner.hidden = YES;
-    }
-        
+    busyView.spinner.hidden = YES;
     [[self window] bringSubviewToFront:busyView.view];
+    
+    spinner.hidden = NO;
+    self.activeSpinner = YES;
+}
+
+- (void)hideCustomSpinner:(UIView*)spinner{
+    [busyView.view removeFromSuperview];
+    spinner.hidden = YES;
+    self.activeSpinner = NO;
+}
+
+- (void)showModalBusyWithBigSpinner:(BOOL)spinner asBlocker:(BOOL)blocker completion:(void (^)(void))completion {
+    if (!self.activeSpinner){
+        self.activeSpinner = YES;
+        //[[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+        
+        //[[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
+        [[self window] addSubview:busyView.view];
+        [busyView loadView];
+        if (!spinner) {
+            busyView.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
+            busyView.spinner.hidden = NO;
+        } else {
+            busyView.spinner.hidden = YES;
+        }
+        
+        [[self window] bringSubviewToFront:busyView.view];
+    }
     completion();
 }
 
 - (void)dismissModalBusy {
     [busyView.view removeFromSuperview];
+    self.activeSpinner = NO;
     //[[[self window] rootViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
