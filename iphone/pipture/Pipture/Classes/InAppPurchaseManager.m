@@ -342,9 +342,11 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
     if (wasSuccessful)
     {
-        UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase confirmed." message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [requestIssuesAlert show];
-        [requestIssuesAlert release];
+        if (!showRestoreAllProposal){
+            UIAlertView * requestIssuesAlert = [[UIAlertView alloc] initWithTitle:@"Purchase confirmed." message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [requestIssuesAlert show];
+            [requestIssuesAlert release];
+        }
         
 //        NSString * base64 = [self base64Encoding:transaction.transactionReceipt];
 //        
