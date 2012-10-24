@@ -956,7 +956,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     if (self.numberOfFreeViewsForEpisode == 10){
         maxViewsLabel.text = @"100 max. Send up to 10 for free.";
     }
-    NSLog(@"----> %d", self.numberOfFreeViewsForEpisode);
+    NSLog(@"Number of free viewers: %d", self.numberOfFreeViewsForEpisode);
     [self updateFreeViewersForEpisodeLabel];
 }
 
