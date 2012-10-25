@@ -115,7 +115,7 @@
 
 - (void)showModalBusyWithBigSpinner:(BOOL)spinner asBlocker:(BOOL)blocker completion:(void (^)(void))completion;
 - (void)dismissModalBusy;
-- (void)showCustomSpinner:(UIView*)spinner;
+- (void)showCustomSpinner:(UIView*)spinner asBlocker:(BOOL)blocker;
 - (void)hideCustomSpinner:(UIView*)spinner;
 
 - (void)showError:(NSString*)title message:(NSString*)message;

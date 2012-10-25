@@ -398,7 +398,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     progressLabel.text = @"Purchase in progress";
     PiptureAppDelegate *app = [PiptureAppDelegate instance];
     
-    [[PiptureAppDelegate instance] showCustomSpinner:progressView];
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
     
     [app buyViews];
 }
@@ -426,7 +426,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 - (IBAction)onBuyButton:(id)sender {
     progressLabel.text = @"Purchase in progress";
-    [[PiptureAppDelegate instance] showCustomSpinner:progressView];
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
     [model buyAlbumAtPage:[self getPageNumber]];
 }
 
@@ -484,7 +484,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 -(void)runRestorePurchases{
     progressLabel.text = @"Restore in progress";
-    [[PiptureAppDelegate instance] showCustomSpinner:progressView];
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
     [model restorePurchases];
 }
 @end

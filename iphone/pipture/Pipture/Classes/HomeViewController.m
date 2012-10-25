@@ -310,7 +310,7 @@
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
-    [[PiptureAppDelegate instance] showCustomSpinner:progressView];
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
 }
 
 - (void) onNewBalance:(NSNotification *) notification {

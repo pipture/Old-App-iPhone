@@ -838,15 +838,17 @@ NSInteger networkActivityIndecatorCount;
     return tabbarView.frame.size.height - 8;  
 }
 
-- (void)showCustomSpinner:(UIView*)spinner{
+- (void)showCustomSpinner:(UIView*)spinner asBlocker:(BOOL)blocker{
     if (self.activeSpinner){
         [self dismissModalBusy];
     }
     
-    [[self window] addSubview:busyView.view];
-    [busyView loadView];
-    busyView.spinner.hidden = YES;
-    [[self window] bringSubviewToFront:busyView.view];
+    if (blocker){
+        [[self window] addSubview:busyView.view];
+        [busyView loadView];
+        busyView.spinner.hidden = YES;
+        [[self window] bringSubviewToFront:busyView.view];
+    }
     
     spinner.hidden = NO;
     self.activeSpinner = YES;

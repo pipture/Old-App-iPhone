@@ -64,6 +64,7 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) IBOutlet UILabel *numberOfViewsLabel;
 @property (retain, nonatomic) IBOutlet UILabel *scheduleLabel;
 @property (retain, nonatomic) IBOutlet UIView *scheduleLabelView;
+@property (retain, nonatomic) IBOutlet UILabel *progressLabel;
 
 @property (retain, nonatomic) LibraryCardController *cardSectionViewController;
 

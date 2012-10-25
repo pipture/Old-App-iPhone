@@ -736,7 +736,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
-    [[PiptureAppDelegate instance] showCustomSpinner:progressView];
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
 }
 
 - (void) onNewBalance:(NSNotification *) notification {

@@ -53,6 +53,7 @@
 @synthesize scheduleLabelView;
 @synthesize fromHotNews;
 @synthesize noVideosLabel;
+@synthesize progressLabel;
 
 @synthesize store;
 
@@ -60,6 +61,9 @@
 #pragma mark - View lifecycle
 
 - (void)updateDetails {
+    self.noVideosLabel.hidden = YES;
+    progressLabel.text = @"Album is loading";
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:NO];
     if (self.album) {
         NSLog(@"Details update by Album, %@", self.album);
         if (album.detailsLoaded) {
@@ -418,15 +422,11 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
-        case 0: return (album.sellStatus != AlbumSellStatus_NotSellable)?1:0;
+        case 0:
+            return (album.sellStatus != AlbumSellStatus_NotSellable)?1:0;
+            
         default:
-            if (album.episodes.count > 0) {
-                self.noVideosLabel.hidden = YES;
-                return album.episodes.count*2;
-            } else {
-                self.noVideosLabel.hidden = NO;
-                return 0;
-            }
+            return album.episodes.count > 0 ? album.episodes.count*2 : 0;
             
     }
 }
@@ -551,7 +551,8 @@
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
-    [[PiptureAppDelegate instance] showCustomSpinner:progressView];
+    progressLabel.text = @"Purchase in progress";
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
 }
 
 - (void) onNewBalance:(NSNotification *) notification {
@@ -604,8 +605,6 @@
             [[[subViewContainer subviews] objectAtIndex:0] removeFromSuperview];
         }
     }
-    
-    self.noVideosLabel.hidden = YES;
     
     int tabbarOffset;
     if (withoutTabBar){
@@ -701,9 +700,14 @@
 
 #pragma mark AlbumsDetailsDelegate
 -(void)albumDetailsReceived:(Album*)album_ {
-    NSLog(@"Details received");
     detailsReceived = YES;
-       
+    NSLog(@"Details received");
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
+    
+    if (self.album.episodes.count == 0){
+        self.noVideosLabel.hidden = NO;
+    }
+    
     self.album = album_;
     [titleView composeTitle:album];
     switch (viewType) {
