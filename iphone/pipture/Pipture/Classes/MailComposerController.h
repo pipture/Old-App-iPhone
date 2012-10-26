@@ -36,6 +36,7 @@ enum ComposeType {
     NSNumberFormatter * viewsNumberFormatter;
     ScrollingHintPopupController *scrollingHintController;
     NSDictionary *tableCellsHeightMap;
+    UITextField *activeField;
 }
 
 @property (retain, nonatomic) IBOutlet UIView *picturePlaceholder;

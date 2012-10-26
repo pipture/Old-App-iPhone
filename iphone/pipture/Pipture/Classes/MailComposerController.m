@@ -21,7 +21,7 @@
 
 #define MESSAGE_EDITING_SCROLL_OFFSET 45
 #define FROM_EDITING_SCROLL_OFFSET 370
-#define VIEWS_EDITING_SCROLL_OFFSET 470
+#define VIEWS_EDITING_SCROLL_OFFSET 480
 
 #define MAX__NUMBER_OF_VIEWS 100
 #define FREE_NUMBER_OF_VIEWS 10
@@ -206,7 +206,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBuyViews:) name:BUY_VIEWS_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onFreeViewersUpdated:) name:FREE_VIEWERS_UPDATED_NOTIFICATION object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardDidShowNotification object:nil];
     self.tableCellsHeightMap = [NSDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithFloat:messageCell.frame.size.height], @"message",
                                          [NSNumber numberWithFloat:fromCell.frame.size.height], @"from",
@@ -474,11 +474,16 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-    if ([textField isEqual:nameTextField])
-    {
+    activeField = textField;
+}
+
+-(void)keyboardWasShown:(NSNotification*) notification
+{
+    if ([activeField isEqual:nameTextField]){
         [self moveView:FROM_EDITING_SCROLL_OFFSET];
-    } else if ([textField isEqual:numberOfViewsTextField]) {
-        [self moveView:VIEWS_EDITING_SCROLL_OFFSET];        
+    }
+    if ([activeField isEqual:numberOfViewsTextField]) {
+        [self moveView:VIEWS_EDITING_SCROLL_OFFSET];
     }
 }
 
@@ -515,6 +520,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         }
         [self displayNumberOfViewsTextField]; //Not valid value, restore previous
     }
+    activeField = nil;
 }
 
 
