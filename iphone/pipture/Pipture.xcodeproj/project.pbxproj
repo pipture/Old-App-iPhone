@@ -318,6 +318,8 @@
 		888943CD14FF41E500331008 /* active-librarycard@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 888943C914FF41E500331008 /* active-librarycard@2x.png */; };
 		888943CF14FF43F600331008 /* LibraryCardB8.xib in Resources */ = {isa = PBXBuildFile; fileRef = 888943CE14FF43F600331008 /* LibraryCardB8.xib */; };
 		888943D214FF531E00331008 /* LibraryCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 888943D114FF531E00331008 /* LibraryCardController.m */; };
+		8889C0E0163F987E002617FD /* button-black-down.png in Resources */ = {isa = PBXBuildFile; fileRef = 8889C0DE163F987E002617FD /* button-black-down.png */; };
+		8889C0E1163F987E002617FD /* button-black-down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8889C0DF163F987E002617FD /* button-black-down@2x.png */; };
 		88982B8814923FBD0012BEC2 /* DataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8514923FBD0012BEC2 /* DataRequest.m */; };
 		88982B8914923FBD0012BEC2 /* DataRequestError.m in Sources */ = {isa = PBXBuildFile; fileRef = 88982B8714923FBD0012BEC2 /* DataRequestError.m */; };
 		889B379614A441CE000B03D2 /* UILabel+ResizeForVerticalAlign.m in Sources */ = {isa = PBXBuildFile; fileRef = 889B379514A441CE000B03D2 /* UILabel+ResizeForVerticalAlign.m */; };
@@ -739,6 +741,8 @@
 		888943CE14FF43F600331008 /* LibraryCardB8.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryCardB8.xib; sourceTree = "<group>"; };
 		888943D014FF531E00331008 /* LibraryCardController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryCardController.h; sourceTree = "<group>"; };
 		888943D114FF531E00331008 /* LibraryCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCardController.m; sourceTree = "<group>"; };
+		8889C0DE163F987E002617FD /* button-black-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "button-black-down.png"; path = "Resources/button-black-down.png"; sourceTree = SOURCE_ROOT; };
+		8889C0DF163F987E002617FD /* button-black-down@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "button-black-down@2x.png"; path = "Resources/button-black-down@2x.png"; sourceTree = SOURCE_ROOT; };
 		88982B8414923FBD0012BEC2 /* DataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequest.h; sourceTree = "<group>"; };
 		88982B8514923FBD0012BEC2 /* DataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataRequest.m; sourceTree = "<group>"; };
 		88982B8614923FBD0012BEC2 /* DataRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataRequestError.h; sourceTree = "<group>"; };
@@ -847,6 +851,8 @@
 				3829907914AB33D60003A202 /* MailComposerNavigationController.m */,
 				888943D014FF531E00331008 /* LibraryCardController.h */,
 				888943D114FF531E00331008 /* LibraryCardController.m */,
+				8889C0DE163F987E002617FD /* button-black-down.png */,
+				8889C0DF163F987E002617FD /* button-black-down@2x.png */,
 				884D41D415062C4100C91986 /* PiptureStoreController.h */,
 				884D41D515062C4100C91986 /* PiptureStoreController.m */,
 				884CA125150F37D700E820E7 /* ScrollingHintPopupController.h */,
@@ -1744,6 +1750,8 @@
 				88F5F15616268DA7000C9D4D /* restore-all@2x.png in Resources */,
 				881064FA1636A257003589AC /* Default.png in Resources */,
 				881064FB1636A257003589AC /* Default@2x.png in Resources */,
+				8889C0E0163F987E002617FD /* button-black-down.png in Resources */,
+				8889C0E1163F987E002617FD /* button-black-down@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
