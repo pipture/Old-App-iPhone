@@ -598,6 +598,7 @@
 }
 
 - (IBAction)tabChanged:(id)sender {
+    self.noVideosLabel.hidden = YES;
     if (!sender) return;
 
     if (detailsReceived || viewType != [sender tag]) {
@@ -620,7 +621,6 @@
             if (detailsReceived || viewType != [sender tag]) {
                 [detailPage prepareLayout:album];
                 [subViewContainer addSubview:detailPage];
-                detailsReceived = NO;
             }
             
             [detailsButton setTitleColor:[UIColor whiteColor] 
@@ -645,6 +645,9 @@
                                     forState:UIControlStateHighlighted];
             break;
         case DetailAlbumViewType_Videos:
+            if (detailsReceived && self.album.episodes.count == 0){
+                self.noVideosLabel.hidden = NO;
+            }
             videosTable.frame = rect;
             [subViewContainer addSubview:videosTable];
             [videosTable reloadData];
