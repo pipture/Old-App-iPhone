@@ -1179,26 +1179,44 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
                                                                        [PiptureModel processError:error receiver:receiver];
                                                                    }
                                                                    else
-                                                                   {	
-                                                                       NSArray *array = [NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER], 
-                                                                                                                  [jsonResult objectForKey:JSON_PARAM_ALBUM], nil];
-                                                                       NSDictionary *coverParams = [NSDictionary dictionaryWithObjects:array 
-                                                                                                                               forKeys:[NSArray arrayWithObjects:@"Cover", @"Album", nil]];
-                                                                       [[PiptureAppDelegate instance] performSelectorOnMainThread:@selector(setCover:) 
-                                                                                                                       withObject:coverParams
-                                                                                                                    waitUntilDone:YES];
-                                                                       
-                                                                       NSArray* channelCategories = [[PiptureModel parseItems:jsonResult
-                                                                                                jsonArrayParamName:JSON_PARAM_CHANNEL_CATEGORIES
-                                                                                                       itemCreator:^(NSDictionary*jsonIT)
-                                                                                           {
-                                                                                               return [[[Category alloc] initWithJSON:jsonIT] autorelease];
-                                                                                           } itemName:@"Category"] retain];
-                                                                       
-                                                                       [receiver performSelectorOnMainThread:@selector(channelCategoriesReceived:) 
-                                                                                                  withObject:channelCategories 
-                                                                                               waitUntilDone:YES];
-                                                                       [channelCategories release];
+                                                                   {
+                                                                       NSMutableString*errDesc = [NSMutableString string];
+                                                                       NSInteger errCode = [PiptureModel parseErrorCode:jsonResult
+                                                                                                            description:errDesc];
+                                                                       switch (errCode) {
+                                                                           case 0:
+                                                                           {
+                                                                               NSArray *array = [NSArray arrayWithObjects:[jsonResult objectForKey:JSON_PARAM_COVER],
+                                                                                                 [jsonResult objectForKey:JSON_PARAM_ALBUM], nil];
+                                                                               NSDictionary *coverParams = [NSDictionary dictionaryWithObjects:array
+                                                                                                                                       forKeys:[NSArray arrayWithObjects:@"Cover", @"Album", nil]];
+                                                                               [[PiptureAppDelegate instance] performSelectorOnMainThread:@selector(setCover:)
+                                                                                                                               withObject:coverParams
+                                                                                                                            waitUntilDone:YES];
+                                                                               
+                                                                               NSArray* channelCategories = [[PiptureModel parseItems:jsonResult
+                                                                                                                   jsonArrayParamName:JSON_PARAM_CHANNEL_CATEGORIES
+                                                                                                                          itemCreator:^(NSDictionary*jsonIT)
+                                                                                                              {
+                                                                                                                  return [[[Category alloc] initWithJSON:jsonIT] autorelease];
+                                                                                                              } itemName:@"Category"] retain];
+                                                                               
+                                                                               [receiver performSelectorOnMainThread:@selector(channelCategoriesReceived:)
+                                                                                                          withObject:channelCategories
+                                                                                                       waitUntilDone:YES];
+                                                                               [channelCategories release];
+                                                                           }                                               
+                                                                           case 401:
+                                                                               [receiver performSelectorOnMainThread:@selector(authenticationFailed) 
+                                                                                                          withObject:nil
+                                                                                                       waitUntilDone:YES];
+                                                                               break;                                                                        
+                                                                           default:
+                                                                               [PiptureModel processAPIError:errCode
+                                                                                                 description:errDesc 
+                                                                                                    receiver:receiver];
+                                                                               break;
+                                                                       }
                                                                    }
                                                                    
                                                                    [PiptureModel setModelRequestingState:NO receiver:receiver];        

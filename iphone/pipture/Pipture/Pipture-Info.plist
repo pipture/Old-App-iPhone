@@ -97,7 +97,7 @@
 	<key>Rest Send message</key>
 	<string>sendMessage</string>
 	<key>Rest end point</key>
-	<string>http://ec2-67-202-46-61.compute-1.amazonaws.com/</string>
+	<string>http://54.243.135.128/</string>
 	<key>Rest end point Martin</key>
 	<string>http://54.243.135.128/</string>
 	<key>Rest end point local</key>
