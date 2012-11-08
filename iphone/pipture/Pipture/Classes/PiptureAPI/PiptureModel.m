@@ -1205,12 +1205,8 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
                                                                                                           withObject:channelCategories
                                                                                                        waitUntilDone:YES];
                                                                                [channelCategories release];
-                                                                           }                                               
-                                                                           case 401:
-                                                                               [receiver performSelectorOnMainThread:@selector(authenticationFailed) 
-                                                                                                          withObject:nil
-                                                                                                       waitUntilDone:YES];
-                                                                               break;                                                                        
+                                                                               break;
+                                                                           }                                                                                                                       
                                                                            default:
                                                                                [PiptureModel processAPIError:errCode
                                                                                                  description:errDesc 
