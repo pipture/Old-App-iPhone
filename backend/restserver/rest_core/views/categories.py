@@ -231,9 +231,12 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
         return cover, pipture_settings.Album
 
     def get_context_data(self):
-        params = self.get_params()
-        result = tuple(category_class(params).get_context_data()
-                       for category_class in self.get_category_classes())
+        try:
+            params = self.get_params()
+            result = tuple(category_class(params).get_context_data()
+                           for category_class in self.get_category_classes())
+        except ServiceUnavailable:
+            result = []
 
         cover, album = self.get_cover()
         if album:
