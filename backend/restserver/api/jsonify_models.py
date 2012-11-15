@@ -69,8 +69,8 @@ class Utils(object):
         else:
             released, updated  = min(episodes_dates), max(episodes_dates)
 
-            if album.TopAlbum:
-                updated = high_datetime
+#            if album.TopAlbum:
+#                updated = high_datetime
 
         return released, updated
 
@@ -116,6 +116,11 @@ class JsonifyModels(object):
         if kwargs.get('add_trailer', False):
             album_json['Trailer'] = self.__call__(album.TrailerId)
 
+        if album.TopAlbum:
+            album_json.update({
+                'UpdateDate': datetime(3790, 1, 1)
+            })
+            
         return album_json
 
     def episodes(self, episode, **kwargs):
