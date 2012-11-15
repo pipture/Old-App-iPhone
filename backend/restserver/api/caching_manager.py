@@ -3,6 +3,7 @@ from api.decorators import cache_queryset, cache_result
 
 from api.middleware.threadlocals import LocalUserMiddleware
 from api.time_utils import TimeUtils
+from api.errors import NoContent
 from pipture.models import Episodes, Albums, UserPurchasedItems, \
                            TimeSlotVideos, SendMessage, Trailers, TimeSlots
 
@@ -101,6 +102,8 @@ class CachingManager(object):
 
     @cache_queryset
     def get_purchased_episodes(self):
+        if len(self.purchased_albums_ids)==0:
+            raise NoContent
         return Episodes.objects\
                        .filter(AlbumId__AlbumId__in=self.purchased_albums_ids)
 
