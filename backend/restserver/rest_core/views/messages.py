@@ -4,7 +4,7 @@ from django.db.models import F, Q
 
 from pipture.models import PiptureSettings, SendMessage, Trailers,\
                            PurchaseItems, FreeMsgViewers
-from api.errors import BadRequest, ParameterExpected, \
+from api.errors import BadRequest, ParameterExpected, NoContent, \
                                  WrongParameter, NotEnoughMoney
 from api.view import PostView, GetView
 from api.validation_mixins import PurchaserValidationMixin, \
@@ -156,21 +156,26 @@ class GetUnusedMessageViews(GetView, PurchaserValidationMixin,
         week_date = datetime.utcnow() - timedelta(7)
         group1, group2 = 0, 0
 
-        purchased_episodes = self.caching.get_purchased_episodes()
 
-        for message in self.messages:
-            cnt = 0
-            if purchased_episodes.filter(EpisodeId=message.LinkId):
-                rest = message.ViewsLimit - max(message.ViewsCount,
-                                                message.FreeViews)
-                if rest > 0:
-                    cnt = rest
-
-            if message.Timestamp is not None:
-                if message.Timestamp >= week_date:
-                    group1 += cnt
-                else:
-                    group2 += cnt
+        try:
+            purchased_episodes = self.caching.get_purchased_episodes()
+        except NoContent:
+            purchased_episodes = None
+            
+        if purchased_episodes is not None:
+            for message in self.messages:
+                cnt = 0
+                if purchased_episodes.filter(EpisodeId=message.LinkId):
+                    rest = message.ViewsLimit - max(message.ViewsCount,
+                                                    message.FreeViews)
+                    if rest > 0:
+                        cnt = rest
+    
+                if message.Timestamp is not None:
+                    if message.Timestamp >= week_date:
+                        group1 += cnt
+                    else:
+                        group2 += cnt
         return group1, group2
 
     def get_context_data(self):
@@ -197,27 +202,33 @@ class DeactivateMessageViews(PostView, PurchaserValidationMixin,
         weekdate = datetime.utcnow() - timedelta(7)
         group = 0
 
-        purchased_episodes = self.caching.get_purchased_episodes()
-
-        for message in self.messages:
-            if self.period == 0 or \
-                    (message.Timestamp >= weekdate and self.period == 1) or \
-                    (message.Timestamp < weekdate and self.period == 2):
-
-                cnt = 0
-                if purchased_episodes.filter(EpisodeId=message.LinkId):
-                    rest = message.ViewsLimit - max(message.ViewsCount,
-                                                    message.FreeViews)
-                    if rest > 0:
-                        cnt = rest
-
-                group += cnt
-                if cnt > 0:
-                    self.update_message(message)
+        try:
+            purchased_episodes = self.caching.get_purchased_episodes()
+        except NoContent:
+            purchased_episodes = None
+            
+        if purchased_episodes is not None:
+            for message in self.messages:
+                if self.period == 0 or \
+                        (message.Timestamp >= weekdate and self.period == 1) or \
+                        (message.Timestamp < weekdate and self.period == 2):
+    
+                    cnt = 0
+                    if purchased_episodes.filter(EpisodeId=message.LinkId):
+                        rest = message.ViewsLimit - max(message.ViewsCount,
+                                                        message.FreeViews)
+                        if rest > 0:
+                            cnt = rest
+    
+                    group += cnt
+                    if cnt > 0:
+                        self.update_message(message)
 
         if group > 0:
             self.user.Purchaser.Balance += group
             self.user.Purchaser.save()
+            
+        return group
 
     def update_message(self, message):
         message.ViewsLimit = max(message.ViewsCount, message.FreeViews)
