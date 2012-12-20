@@ -580,6 +580,7 @@
                  delegate:self];
                 
                 [tabbarContainer addSubview:newsView];
+                newsView.frame = tabbarContainer.bounds;
                 if (flipAction) [UIView commitAnimations];
 
                 [self setFullScreenMode];
@@ -606,6 +607,7 @@
                 break;
             case HomeScreenMode_PlayingNow:
                 [tabbarContainer addSubview:scheduleView];
+                scheduleView.frame = tabbarContainer.bounds;
                 if (flipAction) [UIView commitAnimations];
                 [[appDelegate model] cancelCurrentRequest];
                 [scheduleModel updateTimeslots];
@@ -633,6 +635,7 @@
                 break;
             case HomeScreenMode_Schedule:
                 [tabbarContainer addSubview:scheduleView];
+                scheduleView.frame = tabbarContainer.bounds;
                 if (flipAction) [UIView commitAnimations];
                 [scheduleModel updateTimeslots];
                 
@@ -667,6 +670,7 @@
                  delegate:self];
                 
                 [tabbarContainer addSubview:albumsView];
+                albumsView.frame = tabbarContainer.bounds;
                 [albumsView setLibraryCardVisibility:NO withAnimation:NO];
                 [albumsView showScrollingHintIfNeeded];
                 [self updateAlbums];
