@@ -412,6 +412,7 @@
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
+            [self adjustHeightForSubview:newsView withTabbarOffset:NO];
             [self.navigationController setNavigationBarHidden:YES animated:NO];
             [[PiptureAppDelegate instance] tabbarVisible:NO slide:NO];
             break;
@@ -613,6 +614,7 @@
                 [scheduleModel updateTimeslots];
 
                 [self setFullScreenMode];
+                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
                 homeScreenMode = mode;
                 [appDelegate tabbarVisible:YES slide:YES];
                 
@@ -635,7 +637,6 @@
                 break;
             case HomeScreenMode_Schedule:
                 [tabbarContainer addSubview:scheduleView];
-                scheduleView.frame = tabbarContainer.bounds;
                 if (flipAction) [UIView commitAnimations];
                 [scheduleModel updateTimeslots];
                 
@@ -657,6 +658,7 @@
                         break;
                     default:break;    
                 }
+                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
 
                 
                 break;
@@ -670,12 +672,12 @@
                  delegate:self];
                 
                 [tabbarContainer addSubview:albumsView];
-                albumsView.frame = tabbarContainer.bounds;
                 [albumsView setLibraryCardVisibility:NO withAnimation:NO];
                 [albumsView showScrollingHintIfNeeded];
                 [self updateAlbums];
                 [self setFullScreenMode];
                 [self setNavBarMode];
+                [self adjustHeightForSubview:albumsView withTabbarOffset:YES];
                 
                 [appDelegate tabbarSelect:TABBARITEM_LIBRARY];
                 [appDelegate tabbarVisible:YES slide:YES];
@@ -689,6 +691,15 @@
     }
     [self defineScheduleButtonVisibility];
     [self defineFlipButtonVisibility];
+}
+
+- (void)adjustHeightForSubview:(UIView*)subview withTabbarOffset:(BOOL)tabbar{
+    subview.frame = CGRectMake(tabbarContainer.bounds.origin.x,
+                               tabbarContainer.bounds.origin.y,
+                               tabbarContainer.bounds.size.width,
+                               tabbarContainer.bounds.size.height
+                               - (tabbar ? [PiptureAppDelegate instance].tabViewBaseHeight : 0)
+                            );
 }
 
 - (void)doUpdateWithCallback:(DataRequestCallback)callback{
