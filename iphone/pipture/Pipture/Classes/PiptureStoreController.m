@@ -288,7 +288,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     self.navigationItem.title = @"Pipture Store";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];  
     //TODO: By some reason height is set to 500 without next line. Reason to be found ()
-    scrollView.frame = CGRectMake(0, 0, 320, 480); 
+    scrollView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.showsVerticalScrollIndicator = NO;
@@ -327,8 +327,13 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (void)fixLayout {
+    NSLog(@"bounds---->%@", NSStringFromCGSize([[UIScreen mainScreen] bounds].size));
     if (self.view.frame.origin.y == 0 && self.navigationController.navigationBar.hidden != YES)
-        self.view.frame = CGRectMake(0, -64, 320, 480);
+        self.view.frame = CGRectMake(0, -64,
+                                     [[UIScreen mainScreen] bounds].size.width,
+                                     [[UIScreen mainScreen] bounds].size.height
+                                     );
+//        self.view.frame = CGRectMake(0, -64, 320, 480);
     
     [UIApplication sharedApplication].statusBarHidden = self.navigationController.navigationBar.hidden;
 }

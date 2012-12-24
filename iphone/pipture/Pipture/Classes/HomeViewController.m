@@ -584,7 +584,7 @@
                 if (flipAction) [UIView commitAnimations];
 
                 [self setFullScreenMode];
-                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
+                [self adjustHeightForSubview:newsView withTabbarOffset:NO];
                 
                 [appDelegate tabbarVisible:YES slide:YES];
                 [appDelegate tabbarSelect:TABBARITEM_CHANNEL];
