@@ -581,10 +581,10 @@
                  delegate:self];
                 
                 [tabbarContainer addSubview:newsView];
-                newsView.frame = tabbarContainer.bounds;
                 if (flipAction) [UIView commitAnimations];
 
                 [self setFullScreenMode];
+                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
                 
                 [appDelegate tabbarVisible:YES slide:YES];
                 [appDelegate tabbarSelect:TABBARITEM_CHANNEL];
