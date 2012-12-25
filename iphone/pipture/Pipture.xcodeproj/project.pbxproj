@@ -335,6 +335,7 @@
 		88AC13871507462300F02F97 /* right-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 88AC13831507462300F02F97 /* right-white.png */; };
 		88AC13881507462300F02F97 /* right-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88AC13841507462300F02F97 /* right-white@2x.png */; };
 		88AC138B1507777500F02F97 /* PiptureStoreModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AC138A1507777500F02F97 /* PiptureStoreModel.m */; };
+		88AEB2411689713F005996C3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88AEB2401689713F005996C3 /* Default-568h@2x.png */; };
 		88BE44B41483A59A002D30ED /* PiptureModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 88BE44B21483A341002D30ED /* PiptureModelTest.m */; };
 		88CB23DD160C2EEE0042B4B8 /* line-behindtitle-New.png in Resources */ = {isa = PBXBuildFile; fileRef = 88CB23DC160C2EEE0042B4B8 /* line-behindtitle-New.png */; };
 		88CB23E0160C2F060042B4B8 /* line-behindtitle-New@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88CB23DF160C2F060042B4B8 /* line-behindtitle-New@2x.png */; };
@@ -765,6 +766,7 @@
 		88AC13841507462300F02F97 /* right-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "right-white@2x.png"; sourceTree = "<group>"; };
 		88AC13891507777500F02F97 /* PiptureStoreModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PiptureStoreModel.h; path = Classes/PiptureStoreModel.h; sourceTree = "<group>"; };
 		88AC138A1507777500F02F97 /* PiptureStoreModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PiptureStoreModel.m; path = Classes/PiptureStoreModel.m; sourceTree = "<group>"; };
+		88AEB2401689713F005996C3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../../Desktop/Default-568h@2x.png"; sourceTree = "<group>"; };
 		88BE44B11483A341002D30ED /* PiptureModelTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiptureModelTest.h; sourceTree = "<group>"; };
 		88BE44B21483A341002D30ED /* PiptureModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiptureModelTest.m; sourceTree = "<group>"; };
 		88CB23DC160C2EEE0042B4B8 /* line-behindtitle-New.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "line-behindtitle-New.png"; sourceTree = "<group>"; };
@@ -956,6 +958,7 @@
 		38989CD3147A631E004DE1E0 = {
 			isa = PBXGroup;
 			children = (
+				88AEB2401689713F005996C3 /* Default-568h@2x.png */,
 				3881FBE114A9AF5E008DC616 /* icon.png */,
 				3881FBE214A9AF5E008DC616 /* icon@2x.png */,
 				38A0F097149851B5003C5678 /* default.png */,
@@ -1752,6 +1755,7 @@
 				881064FB1636A257003589AC /* Default@2x.png in Resources */,
 				8889C0E0163F987E002617FD /* button-black-down.png in Resources */,
 				8889C0E1163F987E002617FD /* button-black-down@2x.png in Resources */,
+				88AEB2411689713F005996C3 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
