@@ -845,8 +845,9 @@ NSInteger networkActivityIndecatorCount;
     
     if (blocker){
         [[self window] addSubview:busyView.view];
+        busyView.view.frame = self.window.bounds;
         [busyView loadView];
-        busyView.spinner.hidden = YES;
+        busyView.spinnerWrapper.hidden = YES;
         [[self window] bringSubviewToFront:busyView.view];
     }
     
@@ -867,12 +868,13 @@ NSInteger networkActivityIndecatorCount;
         
         //[[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
         [[self window] addSubview:busyView.view];
+        busyView.view.frame = self.window.bounds;
         [busyView loadView];
         if (!spinner) {
             busyView.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
-            busyView.spinner.hidden = NO;
+            busyView.spinnerWrapper.hidden = NO;
         } else {
-            busyView.spinner.hidden = YES;
+            busyView.spinnerWrapper.hidden = YES;
         }
         
         [[self window] bringSubviewToFront:busyView.view];
