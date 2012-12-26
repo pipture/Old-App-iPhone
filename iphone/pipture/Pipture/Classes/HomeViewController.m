@@ -377,6 +377,21 @@
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
+            [UIView beginAnimations:nil context:NULL];
+            [UIView setAnimationDuration:0.2];
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+            if (homeScreenMode == HomeScreenMode_Cover) {
+                [self adjustHeightForSubview:newsView withTabbarOffset:NO];
+                newsView.alpha = 1;
+            }
+            if (homeScreenMode == HomeScreenMode_PlayingNow) {
+                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
+                scheduleView.alpha = 1;
+            }
+            
+            [UIView commitAnimations];
+            
             [self setFullScreenMode];
             [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
             break;
@@ -412,7 +427,14 @@
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
-            [self adjustHeightForSubview:newsView withTabbarOffset:NO];
+            if (homeScreenMode == HomeScreenMode_Cover) {
+                newsView.alpha = 0;
+//                [self adjustHeightForSubview:newsView withTabbarOffset:NO];
+            }
+            if (homeScreenMode == HomeScreenMode_PlayingNow) {
+                scheduleView.alpha = 0;
+//                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
+            }
             [self.navigationController setNavigationBarHidden:YES animated:NO];
             [[PiptureAppDelegate instance] tabbarVisible:NO slide:NO];
             break;
