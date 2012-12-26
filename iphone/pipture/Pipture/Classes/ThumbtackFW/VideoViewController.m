@@ -33,6 +33,9 @@
 @synthesize navigationItem;
 @synthesize timeslotId;
 @synthesize fromStore;
+@synthesize tooltip;
+
+static NSString* const tooltipFlag = @"hideTooltip";
 
 - (void)resetControlHider {
     if (controlsHideTimer != nil) {
@@ -585,6 +588,8 @@
     controlsShouldBeHiddenOnPlay = YES;
     self.busyContainer.hidden = YES;
     
+    hideTooltip = [[NSUserDefaults standardUserDefaults] boolForKey:tooltipFlag];
+    tooltip.hidden = hideTooltip;
     
     [self updateControlsAnimated:YES];
 }
@@ -606,6 +611,7 @@
     controlsPanel.hidden = controlsHidden;
     navigationBar.hidden = controlsHidden;
     volumeView.hidden = controlsHidden;
+    tooltip.hidden = hideTooltip || controlsHidden;
 }
 
 - (void)updateControlsAnimated:(BOOL)animated {
@@ -613,6 +619,7 @@
         controlsPanel.hidden = NO;
         navigationBar.hidden = NO;
         volumeView.hidden = NO;
+        tooltip.hidden = hideTooltip;
     } else {
         [self resetControlHider];
     }
@@ -625,15 +632,22 @@
         [UIApplication sharedApplication].statusBarHidden = controlsHidden;
         controlsPanel.alpha = (controlsHidden) ? 0 : 0.8;
         navigationBar.alpha = (controlsHidden) ? 0 : 1;
+        if (!hideTooltip) {
+            tooltip.alpha = (controlsHidden) ? 0 : 1;
+        }
         
         [UIView commitAnimations];        
     } else {
         [UIApplication sharedApplication].statusBarHidden = controlsHidden;
         controlsPanel.alpha = 0.8;
         navigationBar.alpha = 1;
+        if (!hideTooltip) {
+            tooltip.alpha = 1;
+        }
         controlsPanel.hidden = controlsHidden;
         navigationBar.hidden = controlsHidden;
         volumeView.hidden = controlsHidden;
+        tooltip.hidden = hideTooltip || controlsHidden;
     }
 }
 
@@ -821,6 +835,12 @@
 -(void)playlistCantBeReceivedForUnavailableTimeslot:(NSNumber*)timeslotId {
     NSLog(@"Timeslot is currently unavailable");
     [self goBack];
+}
+
+- (IBAction)hideTooltip:(id)sender{
+    tooltip.hidden = hideTooltip = YES;
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:tooltipFlag];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 
