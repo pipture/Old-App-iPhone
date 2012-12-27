@@ -553,6 +553,14 @@ static PiptureAppDelegate *instance;
 
         [self.window setRootViewController:mailComposerNavigationController];
         [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+    } else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email account is not set up"
+                                                        message:@"Please tap Home button and provide correct settings before sending a message."
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
     }
                 
 }
