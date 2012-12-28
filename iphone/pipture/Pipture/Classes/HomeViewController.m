@@ -393,7 +393,7 @@
             [UIView commitAnimations];
             
             [self setFullScreenMode];
-            [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
+            [[PiptureAppDelegate instance] tabbarVisible:YES slide:NO];
             break;
         case HomeScreenMode_Schedule:
             [self setFullScreenMode];
