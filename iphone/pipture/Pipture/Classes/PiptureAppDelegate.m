@@ -406,6 +406,12 @@ static PiptureAppDelegate *instance;
 - (void)applicationWillResignActive:(UIApplication *)application {
     [self dismissModalBusy]; 
     [videoViewController setSuspended:YES];
+    if ([[PiptureAppDelegate instance] getHomescreenState] == HomeScreenMode_Albums){
+        HomeViewController * vc = [[PiptureAppDelegate instance] getHomeView];
+        if (vc)
+           [vc.albumsView removeFromSuperview];
+        
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

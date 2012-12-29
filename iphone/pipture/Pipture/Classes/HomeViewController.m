@@ -694,7 +694,11 @@
 //                 tag:WELCOMESCREEN_LIBRARY 
 //                 delegate:self];
                 
-                [tabbarContainer addSubview:albumsView];
+//                [tabbarContainer addSubview:albumsView];
+                [UIView transitionWithView:tabbarContainer duration:1.0
+                                   options:UIViewAnimationOptionTransitionCrossDissolve //change to whatever animation you like
+                                animations:^ { [tabbarContainer addSubview:albumsView]; }
+                                completion:nil];
                 [albumsView setLibraryCardVisibility:NO withAnimation:NO];
                 [albumsView showScrollingHintIfNeeded];
                 [self updateAlbums];
@@ -715,6 +719,8 @@
     [self defineScheduleButtonVisibility];
     [self defineFlipButtonVisibility];
 }
+
+
 
 - (void)adjustHeightForSubview:(UIView*)subview withTabbarOffset:(BOOL)tabbar{
     subview.frame = CGRectMake(tabbarContainer.bounds.origin.x,
