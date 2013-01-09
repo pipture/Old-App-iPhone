@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+print "Admin------->"
 
 from django.http import HttpResponseRedirect
 from django.contrib import admin
