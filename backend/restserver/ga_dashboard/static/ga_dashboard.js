@@ -1,3 +1,4 @@
+  var __special_charts =  ['Metric', 'Tables']
   // Load the Visualization API and the piechart package.
   google.load('visualization', '1.0', {'packages':['corechart', 'table']});
 
@@ -9,20 +10,23 @@
     var dashboard = $.parseJSON( $('#dashboard_data').val() );
 	$.each(dashboard.charts, function(index, chart){
         try {
-        	var data = initData(chart);
+        	var prepared_data = initData(chart);
         }
         catch(e) {
   			console.log('Chart parsing error: \'' + e + '\'');
         	return true;
         }
 		
-		drawChart(chart.type, data, chart.options);
+		drawChart(chart, prepared_data);
 	})
   }
   
   function initData(chart) {
   	var data;
   	switch(chart.type){
+  		case 'Metric':
+  			data = parseInt(chart.data);
+  			break;
   		case 'PieChart':
   		case 'BarChart':
   			data = google.visualization.arrayToDataTable(chart.data);
@@ -37,6 +41,7 @@
   			break;
   			
   		case 'Tables':
+  			data = undefined;
   			$.each(chart.data, function(index, subchart_data){
   				try{
   					subchart = initData(subchart_data);
@@ -44,7 +49,7 @@
   					console.log('\'Tables\' parsing error: ' + e);
   					return true;
   				}
-  				data.push(subchart);
+  				chart.data[index].prepared_data = subchart;
   			});
   			break;
   		default:
@@ -54,22 +59,87 @@
   	return data;
   }
   
-  function drawChart(type, data, options){
-  	var id = (type + '_' + new Date().getTime()).replace(/ /g, '');
-  	$('<div/>', {
-  		'id':id,
-  		'style':'float:left; width:33%;'
-  	}).appendTo('#charts_container');
-  	try{
-  		var chart = new google.visualization[ type ] ( $('#'+id)[0] );
-  	} catch(e){
-  		if (/visualization is not defined/g.test(e))
-  			throw 'Unsupported by GoogleChartTools type \'' + type + '\'';
-  		else
-  			throw 'Exception on drawChart method:\'' + e + '\'';
+  function drawGCT(container, chart, prepared_data){
+	try{
+		var GCTchart = new google.visualization[ chart.type ] ( container[0] );
+	} catch(e){
+		if (/visualization is not defined/g.test(e))
+			throw 'Unsupported by GoogleChartTools type \'' + chart.type + '\'';
+		else
+			throw 'Exception on drawChart method:\'' + e + '\'';
+	}
+		
+	GCTchart.draw(prepared_data, chart.options);
+	
+
+	$('.google-visualization-table-table').css('width', '100%')
+	.parent('div').css('width', '100%');
+  }
+  
+  function drawSpecial(container, chart, prepared_data){
+  	switch(chart.type){
+  		case 'Metric':
+	  		$('<text/>', {
+	  			'text':chart.options.title,
+	  			'css': { 'font-family':'Arial', 'font-size'  : '10px', 'font-weight': 'bold' }
+	  		})
+	  		.appendTo(container);
+	  		$('<div/>', {
+	  			'text' : prepared_data,
+	  			'class': 'metric'
+	  		})
+	  		.appendTo(container);
+	  		return true;
+  		break;
+  		case 'Tables':
+  			var menu = $(container).append('<ul/>')
+  			console.log('data--->');
+  			console.log(chart.data);
+  			$.each(chart.data, function(index, subchart){
+  				console.log(subchart);
+  				var tab_id = 'tab' + index;
+  				$('<li/>').append(
+  					$('<a/>', {
+  						'href': '#' + tab_id,
+  						'text': subchart.options.title
+  					})
+  				)
+  				.appendTo($(container).children('ul'));
+  				
+  				var subchart_container
+	  				= $('<div/>', {'id':tab_id})
+	  					.appendTo(container);
+	  			
+	  			drawGCT(subchart_container, subchart, subchart.prepared_data);
+  			});
+			$(container).tabs();
+  		break;
+  		default:
+  			throw 'Unexpected chart type ' + chart.type;
   	}
-  	if (type == 'Tables') {
-  		$('#'+id).append($('h1').html(options.title));
+  }
+  
+  function drawChart(chart, prepared_data){
+  	var id = (chart.type + '_' + new Date().getTime()).replace(/ /g, '');
+  	var container =
+	  	$('<div/>', {
+	  		'id' : id,
+	  		'css': { 'width':chart.options.width },
+	  		'class': 'chart_container'
+	  	})
+	  	.appendTo('#charts_container');
+  	
+  	if ($.inArray(chart.type, __special_charts) > -1) {
+  		drawSpecial(container, chart, prepared_data);
+  	} else{
+  		drawGCT(container, chart, prepared_data);
   	}
-    chart.draw(data, options);
+  		
+  	if (chart.type == 'Table' || chart.type == 'Tables') {
+  		$('<text/>', {
+  			'text':chart.options.title,
+  			'css': { 'font-family':'Arial', 'font-size'  : '10px', 'font-weight': 'bold' }
+  		})
+  		.prependTo(container);
+  	}
   }
