@@ -29,6 +29,7 @@
   			break;
   		case 'PieChart':
   		case 'BarChart':
+  		case 'ColumnChart':
   			data = google.visualization.arrayToDataTable(chart.data);
   			break;
   			
@@ -93,10 +94,7 @@
   		break;
   		case 'Tables':
   			var menu = $(container).append('<ul/>')
-  			console.log('data--->');
-  			console.log(chart.data);
   			$.each(chart.data, function(index, subchart){
-  				console.log(subchart);
   				var tab_id = 'tab' + index;
   				$('<li/>').append(
   					$('<a/>', {

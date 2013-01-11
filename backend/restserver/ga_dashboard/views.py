@@ -27,7 +27,7 @@ class Dashboard:
         return {'charts': charts}
 
 class Chart:
-    _chartTypes = ('Table','Tables','BarChart','PieChart','Metric')
+    _chartTypes = ('Table','Tables','BarChart', 'ColumnChart','PieChart','Metric')
     type = ''
     data = []
     options = {}
@@ -39,7 +39,11 @@ class Chart:
         self.options = {}
         self.options['title'] = title
         if (type == 'Tables'):
-            self.options['width'] = '99%'
+            self.options['width'] = '100%'
+        elif (type=='ColumnChart'):
+            self.options['isStacked'] = True
+            self.options['vAxis'] = {title: 'Year',  'titleTextStyle': {'color': 'red'}}
+            self.options['width'] = '100%'
         else:
             self.options['width'] = '24%'
         
@@ -190,9 +194,45 @@ def videos_among_albums():
 
     return chart
 
+def add_months(sourcedate, months):
+    month = sourcedate.month - 1 + months
+    year = sourcedate.year + month / 12
+    month = month % 12 + 1
+    day = min(sourcedate.day,calendar.monthrange(year,month)[1])
+    return datetime.datetime(year,month,day)
+
+def schedule_adoption():
+    chart = Chart('ColumnChart', 'Adoption of Scheduled')
+    chart.data = [ ['Time', 'Library Users', 'Pwer Button Users'] ]
+    
+    event = ga.get_event_filter('timeslot_play')
+    date  = ga.default_min_date
+    end_date = now = datetime.datetime.now()
+    while end_date <= now:
+        start_date = date;
+        date = end_date = add_months(date, 1)
+        
+        row = ga.get_unique_visitors(limit=None, start_date=start_date, end_date=end_date)
+        ga_all_users = int(row[0]) if row else 0
+        if not ga_all_users:
+            continue
+        
+        row = ga.get_unique_visitors(limit=None, start_date=start_date, end_date=end_date, filter=(event,))
+        ga_pwrbtn_users = int(row[0]) if row else 0
+        ga_pwrbtn_users = (ga_pwrbtn_users / float(ga_all_users)) * 100;
+        
+        chart.data.append([start_date. strftime( '%b %Y' ), (100 - ga_pwrbtn_users), ga_pwrbtn_users ])
+    
+    return chart
+
 def index(request):
     dashboard = Dashboard()
-    for chart_factory in [videos_among_albums, top_5_albums, top_5_series, sales, store_vs_free, top_50_video, top_50_video_in_app, worst_albums, worst_series]:
+    for chart_factory in [schedule_adoption, videos_among_albums, 
+                          top_5_albums, top_5_series,
+                          sales, store_vs_free,
+                          top_50_video, top_50_video_in_app,
+                          worst_albums, worst_series
+                          ]:
         dashboard.charts.append( chart_factory() )
         
     dashboard=dashboard.toDict()

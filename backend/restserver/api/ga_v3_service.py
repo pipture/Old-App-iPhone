@@ -54,6 +54,7 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
     events = {
         'video_play': ('Video', 'Play'),
         'video_send': ('Video', 'Send'),
+        'timeslot_play': ('Timeslot', 'Play'),
     }
 
     custom_vars = {
@@ -178,3 +179,20 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
         )
 
         return [int(row[0]) for row in feed.get('rows', [])]
+    
+    def get_unique_visitors(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=()):
+        if limit is not None:
+            limit = '%d' % limit
+        feed = self.run_query(
+            ids=self.GA_PROFILE_ID,
+            start_date=self.get_formatted_date(start_date),
+            end_date=self.get_formatted_date(end_date),
+            dimensions=None,
+            metrics='ga:visitors',
+            filters=';'.join(filter) if filter else None,
+            sort='-ga:visitors',
+            max_results=limit
+        )
+
+        return [int(row[0]) for row in feed.get('rows', [])]
+        
