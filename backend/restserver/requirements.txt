@@ -1,3 +1,4 @@
+jsonpickle
 south
 sqlalchemy
 stemming

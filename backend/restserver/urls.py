@@ -5,6 +5,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    (r'^admin/ga_dashboard/$', 'restserver.ga_dashboard.views.index'),
     (r'^admin/', include(admin.site.urls)),
     (r'^manage/', include('restserver.pipture.urls')),
     (r'^videos/(?P<u_url>[_a-zA-Z0-9-]+)$', 'restserver.video_player.views.index'),
