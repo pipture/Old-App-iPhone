@@ -19,6 +19,11 @@
     <script type="text/javascript" src="{{ STATIC_URL }}webpage_files/iWebSite.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}webpage_files/iWebImage.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}webpage_files/webpage.js"></script>
+    <script type="text/javascript">
+    	var production = {{ is_production }};
+    	var video_id = {{ video_id }};
+    </script>
+	<script type="text/javascript" src="{{ STATIC_URL }}ga.js"></script>
     <link href="{{ STATIC_URL }}webpage_files/webpageMoz.css" type="text/css" rel="stylesheet">
     <style>
       .download_app_link .download_button

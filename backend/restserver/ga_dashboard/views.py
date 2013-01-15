@@ -12,7 +12,7 @@ from django.db.models import Min
 from api.ga_v3_service import PiptureGAClient
 from api.errors import ServiceUnavailable
 
-from restserver.pipture.models import Videos, Albums, Series, UserPurchasedItems
+from restserver.pipture.models import Videos, Albums, Series, UserPurchasedItems, TimeSlots
 
 ga = PiptureGAClient(exception_class=ServiceUnavailable)
 
@@ -38,12 +38,15 @@ class Chart:
         self.type = type
         self.options = {}
         self.options['title'] = title
-        if (type == 'Tables'):
+        
+        if type == 'Tables':
             self.options['width'] = '100%'
-        elif (type=='ColumnChart'):
+        elif type=='ColumnChart':
             self.options['isStacked'] = True
             self.options['vAxis'] = {title: 'Year',  'titleTextStyle': {'color': 'red'}}
             self.options['width'] = '100%'
+        elif (type == 'Metric'):
+            self.options['width'] = '12%'
         else:
             self.options['width'] = '24%'
         
@@ -156,16 +159,18 @@ def video_table(title, ga_videos):
 def top_50_video_in_app():
     event = ga.get_event_filter('video_play')
     video_type = ga.custom_vars['video_type']
+    type = '%s==EpisodeId' % (video_type)
     source = '%s==%s' % ('ga:source','(direct)')
     
-    ga_videos = ga.get_most_popular_videos(limit=50, filter=(event, '%s==EpisodeId' % (video_type), source))
+    ga_videos = ga.get_most_popular_videos(limit=50, filter=(event, type, source), dimensions=[video_type,])
     return video_table('Top 50 Videos In The App', ga_videos)
        
 def top_50_video():
     event = ga.get_event_filter('video_play')
-    video_type = '%s==EpisodeId' % (ga.custom_vars['video_type'])
+    video_type = ga.custom_vars['video_type']
+    type = '%s==EpisodeId' % (video_type)
     
-    ga_videos = ga.get_most_popular_videos(limit=50, filter=(event, video_type))
+    ga_videos = ga.get_most_popular_videos(limit=50, filter=(event, type), dimensions=[video_type,])
     return video_table('Top 50 Videos', ga_videos)
 
 def videos_among_albums():
@@ -184,10 +189,11 @@ def videos_among_albums():
         table_name = '(%s views) [%s] %s' % (views, id, album_title)     
         
         event = ga.get_event_filter('video_play')
-        video_type = '%s==EpisodeId' % (ga.custom_vars['video_type'])
+        video_type = ga.custom_vars['video_type']
+        type  = '%s==EpisodeId' % (video_type)
         album = '%s==%s' % (ga.custom_vars['album_id'], id)
         
-        ga_videos = ga.get_most_popular_videos(limit=5, filter=(event, video_type, album))
+        ga_videos = ga.get_most_popular_videos(limit=5, filter=(event, type, album), dimensions=[video_type,])
         
         subchart = video_table(table_name, ga_videos)
         chart.data.append(subchart)
@@ -221,20 +227,68 @@ def schedule_adoption():
         ga_pwrbtn_users = int(row[0]) if row else 0
         ga_pwrbtn_users = (ga_pwrbtn_users / float(ga_all_users)) * 100;
         
-        chart.data.append([start_date. strftime( '%b %Y' ), (100 - ga_pwrbtn_users), ga_pwrbtn_users ])
+        chart.data.append([start_date.strftime( '%b %Y' ), (100 - ga_pwrbtn_users), ga_pwrbtn_users ])
     
+    return chart
+
+def prime_time():
+    chart = Chart('Metric', 'Prime Time')
+    
+    event = ga.get_event_filter('timeslot_play')
+    ga_timeslot_ids = ga.get_top_timeslots(limit=1, filter=(event,))
+    try:
+        timeslot = TimeSlots.objects.get(TimeSlotsId=ga_timeslot_ids[0])
+    except TimeSlots.DoesNotExist:
+        timeslot = None
+    
+    if timeslot:
+        chart.data = ( timeslot.StartTime.strftime( '%H:%M' )
+                       + ' - ' + timeslot.EndTime.strftime( '%H:%M' ) )
+    else:
+        chart.data = 'Undefined'
+    
+    return chart
+
+def views_among_bases():
+    chart = Chart('ColumnChart', 'Views')
+    chart.data = [ ['Time', 'Web page', 'Mobile page', 'Power button', 'Library'] ]
+    
+    video_id   = 'ga:eventLabel'
+    app        = 'ga:browser==%s'  % ga.app_browser_name
+    browser    = 'ga:browser!=%s'  % ga.app_browser_name
+    mobile     = 'ga:isMobile==%s' % 'Yes'
+    not_mobile = 'ga:isMobile==%s' % 'No'
+#    twitter_views = ga.get_views()
+
+    event = ga.get_event_filter('video_play')
+    library_views = ga.get_views(filter=(event, app, mobile))
+    web_mobile_views = ga.get_views(filter=(event, browser, mobile))
+    web_desktop_views = ga.get_views(filter=(event, browser, not_mobile))
+    
+    event = ga.get_event_filter('timeslot_play')
+    pwrbtn_views = ga.get_views(filter=(event,))
+    
+    chart = Chart('PieChart', 'Views')
+    chart.data = [
+        ['Base', 'Views'],
+        ['Library', library_views],
+        ['Desktop Webpage' , web_desktop_views],
+        ['Mobile Webpage' , web_mobile_views],
+        ['Power Button', pwrbtn_views]
+    ]
     return chart
 
 def index(request):
     dashboard = Dashboard()
     for chart_factory in [schedule_adoption, videos_among_albums, 
                           top_5_albums, top_5_series,
-                          sales, store_vs_free,
+                          sales, prime_time, store_vs_free, 
                           top_50_video, top_50_video_in_app,
+                          views_among_bases, #views_among_bases,
                           worst_albums, worst_series
                           ]:
         dashboard.charts.append( chart_factory() )
-        
+            
     dashboard=dashboard.toDict()
-    return render_to_response('admin/pipture/ga_dashboard.html', {'dashboard': dashboard},
+    return render_to_response('admin/pipture/dashboard.html', {'dashboard': dashboard},
                               context_instance=RequestContext(request))
