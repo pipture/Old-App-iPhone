@@ -949,18 +949,6 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
         viewsCount:(NSNumber*)viewsCount 
           receiver:(NSObject<SendMessageDelegate> *)receiver
 {
-    NSArray *event = GA_EVENT_VIDEO_SEND;
-    NSMutableArray *ga_vars = [NSMutableArray arrayWithArray:[playlistItem getCustomGAVariables:event]];
-    
-    NSString *_viewsCount = [NSString stringWithFormat:@"%d", [viewsCount intValue]];
-    NSString *_messageLength = [NSString stringWithFormat:@"%d", [message length]];
-    [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_MESSAGE_LENGTH_AND_VIEWS,
-                                        _messageLength,
-                                        _viewsCount)];
-    GA_TRACK_EVENT(event,
-                   [playlistItem videoName],
-                   [message length],
-                   ga_vars);
     NSURL* url = [self buildURLWithRequest:SEND_MESSAGE_REQUEST sendAPIVersion:NO sendKey:NO sendTimezone:NO];
     
     NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%d&%@=%@&%@=%@&%@=%@&%@=%@", 

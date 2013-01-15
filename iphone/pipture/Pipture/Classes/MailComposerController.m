@@ -15,6 +15,8 @@
 #import "Episode.h"
 #import "Album.h"
 #import "MessageComposerController.h"
+#import "PiptureAppDelegate+GATracking.h"
+
 
 #define RADIO_BUTTON_ON_IMAGE @"radio-button-pushed.png"
 #define RADIO_BUTTON_OFF_IMAGE @"radio-button.png"
@@ -646,6 +648,25 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         newUrl = url;
     }
     
+    NSArray *event = GA_EVENT_VIDEO_SEND;
+    NSMutableArray *ga_vars = [NSMutableArray arrayWithArray:[self.playlistItem getCustomGAVariables:event]];
+    NSString *message;
+    if (composeType == COMPOSETYPE_TWEET){
+        message = [NSString stringWithFormat:@"Video message via Pipture app for iPhone %@", newUrl];
+    } else {
+        message = message_ ? message_ : @"";
+    }
+    NSNumber *viewsCount = [NSNumber numberWithInt:(infiniteViews? -1 : numberOfViews)];
+    NSString *_viewsCount = [NSString stringWithFormat:@"%d", [viewsCount intValue]];
+    NSString *_messageLength = [NSString stringWithFormat:@"%d", [message length]];
+    [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_MESSAGE_LENGTH_AND_VIEWS,
+                                        _messageLength,
+                                        _viewsCount)];
+    
+    GA_TRACK_EVENT(event,
+                   [NSString stringWithCString:composeTypeStr[composeType] encoding:NSUTF8StringEncoding] ,
+                   [message length],
+                   ga_vars);
     switch (composeType) {
         case COMPOSETYPE_EMAIL: {
             NSString *snippet = [[NSBundle mainBundle] pathForResource:@"snippet" ofType:@"html"];
