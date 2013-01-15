@@ -7,18 +7,38 @@
 
   
   function drawDashboard() {
+  	
     var dashboard = $.parseJSON( $('#dashboard_data').val() );
-	$.each(dashboard.charts, function(index, chart){
-        try {
-        	var prepared_data = initData(chart);
-        }
-        catch(e) {
-  			console.log('Chart parsing error: \'' + e + '\'');
-        	return true;
-        }
-		
-		drawChart(chart, prepared_data);
-	})
+    if (dashboard.charts.length > 0){
+    	$('#blocker').show();
+  		var ajax_counter = 0;
+		$.each(dashboard.charts, function(index, chart){
+			$.ajax({
+				url: $(location).attr('href') + '?chart=' + chart,
+				dataType: 'json',
+				beforeSend: function(){
+					ajax_counter++;
+				},
+				success: function(data){
+					chart = data;
+			        try {
+			        	var prepared_data = initData(chart);
+			        }
+			        catch(e) {
+			  			console.log('Chart parsing error: \'' + e + '\'');
+			        	return true;
+			        }
+					
+					drawChart(chart, prepared_data);					
+				},
+				complete: function(){
+					ajax_counter--;
+					if (ajax_counter == 0) $('#blocker').hide()
+				}
+			});
+	
+		})
+    }
   }
   
   function initData(chart) {
