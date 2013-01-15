@@ -48,7 +48,7 @@ class Chart:
         elif (type == 'Metric'):
             self.options['width'] = '12%'
         else:
-            self.options['width'] = '24%'
+            self.options['width'] = '23%'
         
     def toDict(self):
         data = None
@@ -209,7 +209,7 @@ def add_months(sourcedate, months):
 
 def schedule_adoption():
     chart = Chart('ColumnChart', 'Adoption of Scheduled')
-    chart.data = [ ['Time', 'Library Users', 'Pwer Button Users'] ]
+    chart.data = [ ['Time', '% Library Users', '% Power Button Users'] ]
     
     event = ga.get_event_filter('timeslot_play')
     date  = ga.default_min_date
@@ -225,9 +225,11 @@ def schedule_adoption():
         
         row = ga.get_unique_visitors(limit=None, start_date=start_date, end_date=end_date, filter=(event,))
         ga_pwrbtn_users = int(row[0]) if row else 0
-        ga_pwrbtn_users = (ga_pwrbtn_users / float(ga_all_users)) * 100;
+        pwrbtn_users = (ga_pwrbtn_users / float(ga_all_users)) * 100;
+        pwrbtn_users = round(ga_pwrbtn_users, 2)
+        library_users = 100 - pwrbtn_users
         
-        chart.data.append([start_date.strftime( '%b %Y' ), (100 - ga_pwrbtn_users), ga_pwrbtn_users ])
+        chart.data.append([start_date.strftime( '%b %Y' ), library_users, pwrbtn_users ])
     
     return chart
 
@@ -250,9 +252,6 @@ def prime_time():
     return chart
 
 def views_among_bases():
-    chart = Chart('ColumnChart', 'Views')
-    chart.data = [ ['Time', 'Web page', 'Mobile page', 'Power button', 'Library'] ]
-    
     video_id   = 'ga:eventLabel'
     app        = 'ga:browser==%s'  % ga.app_browser_name
     browser    = 'ga:browser!=%s'  % ga.app_browser_name
@@ -278,13 +277,33 @@ def views_among_bases():
     ]
     return chart
 
+def video_distribution():
+    video_id   = 'ga:eventLabel'
+    event = ga.get_event_filter('video_send')
+    twitter = 'ga:eventLabel==%s' % ga.twitter_msg
+    email   = 'ga:eventLabel==%s' % ga.email_msg
+    
+    tweet_count = ga.get_views(filter=(event, twitter))
+    email_count = ga.get_views(filter=(event, email))
+    
+    chart = Chart('PieChart', 'Distribution')
+    chart.data = [
+        ['Type', 'Count'],
+        ['Email', email_count],
+        ['Twitter' , tweet_count]
+    ]
+    print chart.data
+    return chart
+
 def index(request):
     dashboard = Dashboard()
-    for chart_factory in [schedule_adoption, videos_among_albums, 
-                          top_5_albums, top_5_series,
-                          sales, prime_time, store_vs_free, 
+    for chart_factory in [
+                          store_vs_free, 
+                          views_among_bases, video_distribution,
+                          sales, prime_time,
+                          schedule_adoption, videos_among_albums, 
                           top_50_video, top_50_video_in_app,
-                          views_among_bases, #views_among_bases,
+                          top_5_albums, top_5_series,
                           worst_albums, worst_series
                           ]:
         dashboard.charts.append( chart_factory() )

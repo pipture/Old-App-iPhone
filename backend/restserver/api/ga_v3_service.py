@@ -66,6 +66,9 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
         'album_id': 'ga:customVarValue3',
         'timeslot_id': 'ga:customVarValue5',
     }
+    
+    twitter_msg = 'Tweet'
+    email_msg = 'Email'
 
     app_browser_name ='GoogleAnalytics'
     default_min_date = datetime(2010, 1, 1, 0, 0)
