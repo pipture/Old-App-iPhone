@@ -278,10 +278,16 @@ static NSString* const tooltipFlag = @"hideTooltip";
                        GA_NO_VALUE, 
                        [item getCustomGAVariables:nil]);
     } else {
+        NSMutableArray* ga_vars = [item getCustomGAVariables:nil];
+        
+        NSString *_timeslotId = [NSString stringWithFormat: @"%@", self.timeslotId];
+        [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_TIMESLOT_ITEM,
+                                            @"timeslotId",
+                                            _timeslotId)];
         GA_TRACK_EVENT(GA_EVENT_TIMESLOT_PLAY, 
                        item.videoName, 
                        GA_NO_VALUE, 
-                       GA_NO_VARS);
+                       ga_vars);
     }
 }
 
@@ -304,8 +310,8 @@ static NSString* const tooltipFlag = @"hideTooltip";
         
         [self createHandlers];
         
+        [self sendToGA:item];
         if (nextPlayerItem.playbackLikelyToKeepUp) {
-            [self sendToGA:item];
             [self setPlay];
         }
         pos++;
@@ -742,10 +748,10 @@ static NSString* const tooltipFlag = @"hideTooltip";
     
     nextPlayerItem = [[self createItem:playlistItem] retain];
     if (waitForNext) {
-        [self sendToGA:playlistItem];
         
         [self stopTimer];
         if (player == nil) {
+            [self sendToGA:playlistItem];
             [self createHandlers];
             player = [[AVPlayer alloc] initWithPlayerItem:nextPlayerItem];
             [nextPlayerItem release];
