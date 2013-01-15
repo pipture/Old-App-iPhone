@@ -12,6 +12,11 @@
     <link rel="stylesheet" type="text/css" media="screen,print" href="{{ STATIC_URL }}webpage_files/mobilepage.css" />
     <script src="{{ STATIC_URL }}date.js"></script>
     <script src="{{ STATIC_URL }}jquery.js"></script>
+    <script type="text/javascript">
+    	var production = {{ is_production }};
+    	var video_id = {{ video_id }};
+    </script>
+	<script type="text/javascript" src="{{ STATIC_URL }}ga.js"></script>
     <!--[if lt IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='{{ STATIC_URL }}mobilepage_files/mobilepageIE.css'/><![endif]-->
     <!--[if gte IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='Media/IE8.css'/><![endif]-->
     <!--<script type="text/javascript" src="{{ STATIC_URL }}webpage_files/iWebSite.js"></script>

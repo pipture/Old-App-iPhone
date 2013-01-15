@@ -25,8 +25,9 @@
   	var data;
   	switch(chart.type){
   		case 'Metric':
-  			data = parseInt(chart.data);
+  			data   = chart.data;
   			break;
+  			
   		case 'PieChart':
   		case 'BarChart':
   		case 'ColumnChart':

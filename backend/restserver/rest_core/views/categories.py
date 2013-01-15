@@ -108,15 +108,15 @@ class MostPopularVideos(Category, VideosMixin):
         end_date = datetime.today()
         start_date = end_date - timedelta(days=self.days_period)
         video_type = self.ga.custom_vars['video_type']
+        type  = '%s==EpisodeId' % (video_type)
         event = self.ga.get_event_filter('video_play')
         
-
         videos = self.ga.get_most_popular_videos(limit=self.ga_pull_limit,
-                                               start_date=start_date,
-                                               end_date=end_date,
-                                               filter=(event, '%s==EpisodeId' % (video_type) )
-                                               )
-        return [row[1] for row in videos]
+                                                 start_date=start_date,
+                                                 end_date=end_date,
+                                                 filter=(event, type )
+                                                 )
+        return [row[0] for row in videos]
 
 
 class RecentlyAddedVideos(Category, VideosMixin):

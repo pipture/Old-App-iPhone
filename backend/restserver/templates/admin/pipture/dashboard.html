@@ -5,7 +5,7 @@
 {% block extrastyle %}
 	{{ block.super }}
 	<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ga_dashboard.css" />
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}dashboard.css" />
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery_plugins/jquery-ui-1.9.2/css/start/jquery-ui-1.9.2.custom.css" />
 {% endblock %}
 
@@ -18,7 +18,7 @@
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}jquery.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}jquery_plugins/jquery-ui-1.9.2/js/jquery-ui-1.9.2.custom.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}ga_dashboard.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}dashboard.js"></script>
 {% endblock %}
 
 {% block breadcrumbs %}
