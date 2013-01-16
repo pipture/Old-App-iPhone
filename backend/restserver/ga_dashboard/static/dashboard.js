@@ -1,4 +1,5 @@
   var __special_charts =  ['Metric', 'Tables']
+  var load_attempts = 3;
   // Load the Visualization API and the piechart package.
   google.load('visualization', '1.0', {'packages':['corechart', 'table']});
 
@@ -12,33 +13,47 @@
     if (dashboard.charts.length > 0){
     	$('#blocker').show();
   		var ajax_counter = 0;
-		$.each(dashboard.charts, function(index, chart){
-			$.ajax({
-				url: $(location).attr('href') + '?chart=' + chart,
-				dataType: 'json',
-				beforeSend: function(){
-					ajax_counter++;
-				},
-				success: function(data){
-					chart = data;
-			        try {
-			        	var prepared_data = initData(chart);
-			        }
-			        catch(e) {
-			  			console.log('Chart parsing error: \'' + e + '\'');
-			        	return true;
-			        }
-					
-					drawChart(chart, prepared_data);					
-				},
-				complete: function(){
-					ajax_counter--;
-					if (ajax_counter == 0) $('#blocker').hide()
-				}
-			});
-	
-		})
+  		draw_chart_by_index(0, dashboard.charts);
     }
+  }
+  
+  function draw_chart_by_index(index, charts, err_count){
+  	if (typeof err_count == 'undefined'){
+  		err_count = 0;
+  	}
+	if (index<charts.length) {
+		chart = charts[index];
+		$.ajax({
+			url: $(location).attr('href') + '?chart=' + chart,
+			dataType: 'json',
+			success: function(data){
+				chart = data;
+		        try {
+		        	var prepared_data = initData(chart);
+		        }
+		        catch(e) {
+		  			console.log('Chart parsing error: \'' + e + '\'');
+		        	return true;
+		        }
+				drawChart(chart, prepared_data);
+				
+				draw_chart_by_index(++index, charts); //draw next chart					
+			},
+			error:function(){
+				if (err_count>load_attempts-1){
+					console.log('Error: ' + chart + ' chart failed');
+					draw_chart_by_index(++index, charts); //draw next chart					
+				} else {
+					err_count++;
+					console.log('Loading ' + chart + '... [' + err_count + '] attempt');
+					draw_chart_by_index(index, charts, err_count); //try again					
+				}
+			},
+			complete: function(){
+				if (index == charts.length - 1) $('#blocker').hide()
+			}
+		});
+	}
   }
   
   function initData(chart) {

@@ -18,13 +18,6 @@ from restserver.pipture.models import Videos, Albums, Series, UserPurchasedItems
 
 ga = PiptureGAClient(exception_class=ServiceUnavailable)
 
-def add_months(sourcedate, months):
-    month = sourcedate.month - 1 + months
-    year = sourcedate.year + month / 12
-    month = month % 12 + 1
-    day = min(sourcedate.day,calendar.monthrange(year,month)[1])
-    return datetime.datetime(year,month,day)
-
 class Dashboard:
     _chartList = ('store_vs_free', 'views_among_bases', 'video_distribution',
                           'sales', 'prime_time', 'schedule_adoption', 'videos_among_albums', 
@@ -176,30 +169,42 @@ class Dashboard:
             chart.data.append(subchart)
     
         return chart
-    
+
     def schedule_adoption(self):
         chart = Chart('ColumnChart', 'Adoption of Scheduled')
         chart.data = [ ['Time', '% Library Users', '% Power Button Users'] ]
         
         event = ga.get_event_filter('timeslot_play')
-        date  = ga.default_min_date
-        end_date = now = datetime.datetime.now()
-        while end_date <= now:
-            start_date = date;
-            date = end_date = add_months(date, 1)
+        count = 'ga:visitors>0'
+        
+        year  = ga.dimensions['year']
+        month = ga.dimensions['month']
+        
+        now = datetime.datetime.now()
+        ga_all_users = ga.get_unique_visitors(limit=None, end_date=now, filter=(count,), dimensions=(year,month))
+        ga_pwrbtn_users = ga.get_unique_visitors(limit=None, end_date=now, filter=(count,event), dimensions=(year,month))
+        
+        statistic_all = {}
+        for row in ga_all_users:
+            year, month, viewers = row
+            date = '%s %s' % (year, calendar.month_name[ int(month) ])
+            statistic_all[date] = int(viewers)
+        
+        statistic_pwr = {}
+        for row in ga_pwrbtn_users:
+            year, month, viewers = row
+            date = '%s %s' % (year, calendar.month_name[ int(month) ])
+            statistic_pwr[date] = int(viewers)
             
-            row = ga.get_unique_visitors(limit=None, start_date=start_date, end_date=end_date)
-            ga_all_users = int(row[0]) if row else 0
-            if not ga_all_users:
-                continue
+        merged_dates = set(statistic_all.keys() + statistic_pwr.keys())
+        dates  = list(merged_dates)
+        dates.sort(key=lambda x: datetime.datetime.strptime(x, '%Y %B'))
             
-            row = ga.get_unique_visitors(limit=None, start_date=start_date, end_date=end_date, filter=(event,))
-            ga_pwrbtn_users = int(row[0]) if row else 0
-            pwrbtn_users = (ga_pwrbtn_users / float(ga_all_users)) * 100;
-            pwrbtn_users = round(ga_pwrbtn_users, 2)
-            library_users = 100 - pwrbtn_users
-            
-            chart.data.append([start_date.strftime( '%b %Y' ), library_users, pwrbtn_users ])
+        for date in dates:
+            pwr_users = (statistic_pwr.get(date, 0) / float(statistic_all.get(date,0))) * 100;
+            pwr_users = round(pwr_users, 2)
+            lib_users = 100 - pwr_users
+            chart.data.append([date, lib_users, pwr_users ])
         
         return chart
     
