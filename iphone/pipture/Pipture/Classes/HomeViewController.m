@@ -291,7 +291,7 @@
     self.navigationItem.leftBarButtonItem = store;
     [store release];
 
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     
     [self setHomeScreenMode:[[PiptureAppDelegate instance] getHomescreenState]];
     
@@ -310,15 +310,15 @@
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
-    progressView.hidden = NO;
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
 }
 
 - (void) onNewBalance:(NSNotification *) notification {
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
 }
 
 - (void) onViewsPurchased:(NSNotification *) notification {
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     if (homeScreenMode == HomeScreenMode_Albums) {
         [albumsView showScrollingHintIfNeeded];
     }
@@ -377,8 +377,23 @@
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
+            [UIView beginAnimations:nil context:NULL];
+            [UIView setAnimationDuration:0.2];
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+            if (homeScreenMode == HomeScreenMode_Cover) {
+                [self adjustHeightForSubview:newsView withTabbarOffset:NO];
+                newsView.alpha = 1;
+            }
+            if (homeScreenMode == HomeScreenMode_PlayingNow) {
+                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
+                scheduleView.alpha = 1;
+            }
+            
+            [UIView commitAnimations];
+            
             [self setFullScreenMode];
-            [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
+            [[PiptureAppDelegate instance] tabbarVisible:YES slide:NO];
             break;
         case HomeScreenMode_Schedule:
             [self setFullScreenMode];
@@ -412,6 +427,14 @@
             break;
         case HomeScreenMode_PlayingNow:
         case HomeScreenMode_Cover:
+            if (homeScreenMode == HomeScreenMode_Cover) {
+                newsView.alpha = 0;
+//                [self adjustHeightForSubview:newsView withTabbarOffset:NO];
+            }
+            if (homeScreenMode == HomeScreenMode_PlayingNow) {
+                scheduleView.alpha = 0;
+//                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
+            }
             [self.navigationController setNavigationBarHidden:YES animated:NO];
             [[PiptureAppDelegate instance] tabbarVisible:NO slide:NO];
             break;
@@ -583,6 +606,7 @@
                 if (flipAction) [UIView commitAnimations];
 
                 [self setFullScreenMode];
+                [self adjustHeightForSubview:newsView withTabbarOffset:NO];
                 
                 [appDelegate tabbarVisible:YES slide:YES];
                 [appDelegate tabbarSelect:TABBARITEM_CHANNEL];
@@ -606,11 +630,13 @@
                 break;
             case HomeScreenMode_PlayingNow:
                 [tabbarContainer addSubview:scheduleView];
+                scheduleView.frame = tabbarContainer.bounds;
                 if (flipAction) [UIView commitAnimations];
                 [[appDelegate model] cancelCurrentRequest];
                 [scheduleModel updateTimeslots];
 
                 [self setFullScreenMode];
+                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
                 homeScreenMode = mode;
                 [appDelegate tabbarVisible:YES slide:YES];
                 
@@ -654,24 +680,31 @@
                         break;
                     default:break;    
                 }
+                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
 
                 
                 break;
             case HomeScreenMode_Albums:
+                // Commented out since #21362
                 [appDelegate 
                  showWelcomeScreenWithTitle:@"About Pipture Library."
                  message: @"Browse videos in your Library to discover\nnew installments of scheduled series\nas they appear in their albums.\n\nView exclusive video programs at\ntheir scheduled times - or purchase an\nalbum pass to access them via our store.\n\nAdd Viewers to your Library Card and send\nvideos from exclusive albums to your\nfriends at only $0.0099 per viewer."
                  storeKey:@"LibraryWelcomeShown"
-                 image:NO 
-                 tag:WELCOMESCREEN_LIBRARY 
+                 image:NO
+                 tag:WELCOMESCREEN_LIBRARY
                  delegate:self];
                 
                 [tabbarContainer addSubview:albumsView];
+//                [UIView transitionWithView:tabbarContainer duration:1.0
+//                                   options:UIViewAnimationOptionTransitionCrossDissolve //change to whatever animation you like
+//                                animations:^ { [tabbarContainer addSubview:albumsView]; }
+//                                completion:nil];
                 [albumsView setLibraryCardVisibility:NO withAnimation:NO];
                 [albumsView showScrollingHintIfNeeded];
                 [self updateAlbums];
                 [self setFullScreenMode];
                 [self setNavBarMode];
+                [self adjustHeightForSubview:albumsView withTabbarOffset:YES];
                 
                 [appDelegate tabbarSelect:TABBARITEM_LIBRARY];
                 [appDelegate tabbarVisible:YES slide:YES];
@@ -685,6 +718,17 @@
     }
     [self defineScheduleButtonVisibility];
     [self defineFlipButtonVisibility];
+}
+
+
+
+- (void)adjustHeightForSubview:(UIView*)subview withTabbarOffset:(BOOL)tabbar{
+    subview.frame = CGRectMake(tabbarContainer.bounds.origin.x,
+                               tabbarContainer.bounds.origin.y,
+                               tabbarContainer.bounds.size.width,
+                               tabbarContainer.bounds.size.height
+                               - (tabbar ? [PiptureAppDelegate instance].tabViewBaseHeight : 0)
+                            );
 }
 
 - (void)doUpdateWithCallback:(DataRequestCallback)callback{

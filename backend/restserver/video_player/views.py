@@ -8,6 +8,7 @@ from django.template.context import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse
 from django.db.models import Min
+from django.conf import settings
 
 from restserver.pipture.models import Episodes, Trailers, Albums, SendMessage
 
@@ -108,6 +109,8 @@ def index(request, u_url):
     """Render the index page"""
 
     response = {}
+
+    PRODUCTION = getattr(settings, 'PRODUCTION', False)
 
     try:
         last_visiting = restoreDateTime(request.session["Pipture" + u_url])
@@ -238,10 +241,12 @@ def index(request, u_url):
             'disclaimer': disclaimer,
             'seriesname': seriesname,
             'title': title,
+            'video_id': video.VideoId.VideoId,
             'info_line': info_line,
             'released_date': released_date,
             'cover_pic': cover_pic,
             'sent_date': sent_date,
-            'from': "%s" % urs_instance.UserName}
+            'from': "%s" % urs_instance.UserName,
+            'is_production':int(PRODUCTION)}
     return render_to_response(template_h, data,
                               context_instance=RequestContext(request))

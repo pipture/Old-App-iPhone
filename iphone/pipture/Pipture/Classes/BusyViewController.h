@@ -10,5 +10,6 @@
 
 @interface BusyViewController : UIViewController
 @property (retain, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (retain, nonatomic) IBOutlet UIView *spinnerWrapper;
 
 @end

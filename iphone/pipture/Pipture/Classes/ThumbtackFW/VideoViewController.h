@@ -32,6 +32,7 @@
     BOOL pausedStatus;
     BOOL controlsShouldBeHiddenOnPlay;
     BOOL fingerOnControls;
+    BOOL hideTooltip;
     
     SubRip * subtitles;
 }
@@ -49,6 +50,7 @@
 - (IBAction)nextAction:(id)sender;
 - (IBAction)doneAction:(id)sender;
 - (IBAction)subsAction:(id)sender;
+- (IBAction)hideTooltip:(id)sender;
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer;
 - (void)movieFinishedCallback:(NSNotification*) aNotification;
 
@@ -74,6 +76,7 @@
 
 @property (assign, nonatomic) BOOL simpleMode;
 @property (assign, nonatomic) BOOL fromStore;
+@property (retain, nonatomic) IBOutlet UIView *tooltip;
 
 
 @end

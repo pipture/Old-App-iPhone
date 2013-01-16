@@ -15,13 +15,15 @@
 #import "Episode.h"
 #import "Album.h"
 #import "MessageComposerController.h"
+#import "PiptureAppDelegate+GATracking.h"
+
 
 #define RADIO_BUTTON_ON_IMAGE @"radio-button-pushed.png"
 #define RADIO_BUTTON_OFF_IMAGE @"radio-button.png"
 
 #define MESSAGE_EDITING_SCROLL_OFFSET 45
 #define FROM_EDITING_SCROLL_OFFSET 370
-#define VIEWS_EDITING_SCROLL_OFFSET 470
+#define VIEWS_EDITING_SCROLL_OFFSET 480
 
 #define MAX__NUMBER_OF_VIEWS 100
 #define FREE_NUMBER_OF_VIEWS 10
@@ -195,7 +197,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     screenshotCell.accessoryType = UITableViewCellAccessoryNone;
     
     lastScreenshotView = nil;
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     
     nameTextField.text = [[PiptureAppDelegate instance] getUserName];  
     [numberOfViewsTextField setBorderStyle:UITextBorderStyleRoundedRect];
@@ -206,7 +208,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBuyViews:) name:BUY_VIEWS_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onFreeViewersUpdated:) name:FREE_VIEWERS_UPDATED_NOTIFICATION object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardDidShowNotification object:nil];
     self.tableCellsHeightMap = [NSDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithFloat:messageCell.frame.size.height], @"message",
                                          [NSNumber numberWithFloat:fromCell.frame.size.height], @"from",
@@ -474,11 +476,16 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-    if ([textField isEqual:nameTextField])
-    {
+    activeField = textField;
+}
+
+-(void)keyboardWasShown:(NSNotification*) notification
+{
+    if ([activeField isEqual:nameTextField]){
         [self moveView:FROM_EDITING_SCROLL_OFFSET];
-    } else if ([textField isEqual:numberOfViewsTextField]) {
-        [self moveView:VIEWS_EDITING_SCROLL_OFFSET];        
+    }
+    if ([activeField isEqual:numberOfViewsTextField]) {
+        [self moveView:VIEWS_EDITING_SCROLL_OFFSET];
     }
 }
 
@@ -515,6 +522,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         }
         [self displayNumberOfViewsTextField]; //Not valid value, restore previous
     }
+    activeField = nil;
 }
 
 
@@ -640,6 +648,25 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         newUrl = url;
     }
     
+    NSArray *event = GA_EVENT_VIDEO_SEND;
+    NSMutableArray *ga_vars = [NSMutableArray arrayWithArray:[self.playlistItem getCustomGAVariables:event]];
+    NSString *message;
+    if (composeType == COMPOSETYPE_TWEET){
+        message = [NSString stringWithFormat:@"Video message via Pipture app for iPhone %@", newUrl];
+    } else {
+        message = message_ ? message_ : @"";
+    }
+    NSNumber *viewsCount = [NSNumber numberWithInt:(infiniteViews? -1 : numberOfViews)];
+    NSString *_viewsCount = [NSString stringWithFormat:@"%d", [viewsCount intValue]];
+    NSString *_messageLength = [NSString stringWithFormat:@"%d", [message length]];
+    [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_MESSAGE_LENGTH_AND_VIEWS,
+                                        _messageLength,
+                                        _viewsCount)];
+    
+    GA_TRACK_EVENT(event,
+                   [NSString stringWithCString:composeTypeStr[composeType] encoding:NSUTF8StringEncoding] ,
+                   [message length],
+                   ga_vars);
     switch (composeType) {
         case COMPOSETYPE_EMAIL: {
             NSString *snippet = [[NSBundle mainBundle] pathForResource:@"snippet" ofType:@"html"];
@@ -736,11 +763,11 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
-    progressView.hidden = NO;
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
 }
 
 - (void) onNewBalance:(NSNotification *) notification {
-    progressView.hidden = YES;
+   [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
    if (layoutTableView.contentOffset.x > MESSAGE_EDITING_SCROLL_OFFSET) {
         [self moveView:MESSAGE_EDITING_SCROLL_OFFSET];
     }

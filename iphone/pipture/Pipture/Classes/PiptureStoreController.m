@@ -247,14 +247,14 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (void) onAlbumsUpdate:(NSNotification *) notification {
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     self.noAlbumsLabel.hidden = [model albumsCount] != 0;
     [self updateAlbums];
 }
 
 
 - (void) onNewBalance:(NSNotification *) notification {
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     [self displayLibraryCard];
 }
 
@@ -263,7 +263,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (void) onRestoreFailed:(NSNotification *) notification {
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
 }
 
 - (void) onRestoreRestorePurchasesDialog:(NSNotification *) notification {
@@ -288,14 +288,14 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
     self.navigationItem.title = @"Pipture Store";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onNewBalance:) name:NEW_BALANCE_NOTIFICATION object:[PiptureAppDelegate instance]];  
     //TODO: By some reason height is set to 500 without next line. Reason to be found ()
-    scrollView.frame = CGRectMake(0, 0, 320, 480); 
+    scrollView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height);
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.scrollsToTop = NO;
     scrollView.delegate = self;
     
-    progressView.hidden = YES;
+    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
     
     UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapResponder:)];
     singleFingerTap.cancelsTouchesInView = NO;
@@ -327,8 +327,13 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (void)fixLayout {
+    NSLog(@"bounds---->%@", NSStringFromCGSize([[UIScreen mainScreen] bounds].size));
     if (self.view.frame.origin.y == 0 && self.navigationController.navigationBar.hidden != YES)
-        self.view.frame = CGRectMake(0, -64, 320, 480);
+        self.view.frame = CGRectMake(0, -64,
+                                     [[UIScreen mainScreen] bounds].size.width,
+                                     [[UIScreen mainScreen] bounds].size.height
+                                     );
+//        self.view.frame = CGRectMake(0, -64, 320, 480);
     
     [UIApplication sharedApplication].statusBarHidden = self.navigationController.navigationBar.hidden;
 }
@@ -396,8 +401,11 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 - (IBAction)onLibraryCardTap:(id)sender {
     progressLabel.text = @"Purchase in progress";
-    progressView.hidden = NO;
-    [[PiptureAppDelegate instance] buyViews];
+    PiptureAppDelegate *app = [PiptureAppDelegate instance];
+    
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
+    
+    [app buyViews];
 }
 
 
@@ -423,7 +431,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 - (IBAction)onBuyButton:(id)sender {
     progressLabel.text = @"Purchase in progress";
-    progressView.hidden = NO;
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
     [model buyAlbumAtPage:[self getPageNumber]];
 }
 
@@ -481,7 +489,7 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 
 -(void)runRestorePurchases{
     progressLabel.text = @"Restore in progress";
-    progressView.hidden = NO;
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
     [model restorePurchases];
 }
 @end

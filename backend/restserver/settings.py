@@ -201,6 +201,7 @@ INSTALLED_APPS = (
     'restserver.rest_core',
     'restserver.pipture',
     'restserver.video_player',
+    'restserver.ga_dashboard',
 
     'django.contrib.admindocs',
 

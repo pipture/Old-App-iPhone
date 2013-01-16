@@ -20,6 +20,8 @@ enum ComposeType {
     COMPOSETYPE_TWEET = 1,
     };
 
+static const char *composeTypeStr[] = { "Email", "Tweet"};
+
 @interface MailComposerController : UIViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
 
 {
@@ -36,6 +38,7 @@ enum ComposeType {
     NSNumberFormatter * viewsNumberFormatter;
     ScrollingHintPopupController *scrollingHintController;
     NSDictionary *tableCellsHeightMap;
+    UITextField *activeField;
 }
 
 @property (retain, nonatomic) IBOutlet UIView *picturePlaceholder;

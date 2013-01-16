@@ -41,10 +41,12 @@
     NetworkConnection curConnection;
     NetworkConnectionInformer *wifiConnection;
     GANTracker *gaTracker;
+//    BOOL activeSpinner;
 }
 
 @property (assign, nonatomic) BOOL userPurchasedViewsSinceAppStart;
 @property (assign, nonatomic) BOOL userPurchasedAlbumSinceAppStart;
+@property (assign, nonatomic) BOOL activeSpinner;
 
 @property (retain, nonatomic) IBOutlet UIView *tabView;
 @property (retain, nonatomic) IBOutlet UIImageView *backgroundImage;
@@ -111,8 +113,10 @@
 -(void)openPiptureStore;
 -(void)closePiptureStore;
 
-- (void)showModalBusyWithBigSpinner:(BOOL)spinner completion:(void (^)(void))completion;
+- (void)showModalBusyWithBigSpinner:(BOOL)spinner asBlocker:(BOOL)blocker completion:(void (^)(void))completion;
 - (void)dismissModalBusy;
+- (void)showCustomSpinner:(UIView*)spinner asBlocker:(BOOL)blocker;
+- (void)hideCustomSpinner:(UIView*)spinner;
 
 - (void)showError:(NSString*)title message:(NSString*)message;
 - (void)showInsufficientFunds;

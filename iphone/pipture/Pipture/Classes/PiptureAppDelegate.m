@@ -40,6 +40,7 @@
 @synthesize userPurchasedAlbumSinceAppStart;
 @synthesize albumForCover;
 @synthesize uuid;
+@synthesize activeSpinner;
 
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
@@ -405,6 +406,12 @@ static PiptureAppDelegate *instance;
 - (void)applicationWillResignActive:(UIApplication *)application {
     [self dismissModalBusy]; 
     [videoViewController setSuspended:YES];
+    if ([[PiptureAppDelegate instance] getHomescreenState] == HomeScreenMode_Albums){
+        HomeViewController * vc = [[PiptureAppDelegate instance] getHomeView];
+        if (vc)
+           [vc.albumsView removeFromSuperview];
+        
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -552,6 +559,14 @@ static PiptureAppDelegate *instance;
 
         [self.window setRootViewController:mailComposerNavigationController];
         [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
+    } else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email account is not set up"
+                                                        message:@"Please tap Home button and provide correct settings before sending a message."
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
     }
                 
 }
@@ -837,25 +852,53 @@ NSInteger networkActivityIndecatorCount;
     return tabbarView.frame.size.height - 8;  
 }
 
-- (void)showModalBusyWithBigSpinner:(BOOL)spinner completion:(void (^)(void))completion {
-    //[[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    
-    //[[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
-    [[self window] addSubview:busyView.view];
-    [busyView loadView];
-    if (!spinner) {
-        busyView.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
-        busyView.spinner.hidden = NO;
-    } else {
-        busyView.spinner.hidden = YES;
+- (void)showCustomSpinner:(UIView*)spinner asBlocker:(BOOL)blocker{
+    if (self.activeSpinner){
+        [self dismissModalBusy];
     }
+    
+    if (blocker){
+        [[self window] addSubview:busyView.view];
+        busyView.view.frame = self.window.bounds;
+        [busyView loadView];
+        busyView.spinnerWrapper.hidden = YES;
+        [[self window] bringSubviewToFront:busyView.view];
+    }
+    
+    spinner.hidden = NO;
+    self.activeSpinner = YES;
+}
+
+- (void)hideCustomSpinner:(UIView*)spinner{
+    [busyView.view removeFromSuperview];
+    spinner.hidden = YES;
+    self.activeSpinner = NO;
+}
+
+- (void)showModalBusyWithBigSpinner:(BOOL)spinner asBlocker:(BOOL)blocker completion:(void (^)(void))completion {
+    if (!self.activeSpinner){
+        self.activeSpinner = YES;
+        //[[self window] rootViewController].modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         
-    [[self window] bringSubviewToFront:busyView.view];
+        //[[[self window] rootViewController] presentViewController:busyView animated:YES completion:completion];
+        [[self window] addSubview:busyView.view];
+        busyView.view.frame = self.window.bounds;
+        [busyView loadView];
+        if (!spinner) {
+            busyView.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
+            busyView.spinnerWrapper.hidden = NO;
+        } else {
+            busyView.spinnerWrapper.hidden = YES;
+        }
+        
+        [[self window] bringSubviewToFront:busyView.view];
+    }
     completion();
 }
 
 - (void)dismissModalBusy {
     [busyView.view removeFromSuperview];
+    self.activeSpinner = NO;
     //[[[self window] rootViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 

@@ -1,0 +1,36 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% load jsonify %}
+
+{% block extrastyle %}
+	{{ block.super }}
+	<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}dashboard.css" />
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery_plugins/jquery-ui-1.9.2/css/start/jquery-ui-1.9.2.custom.css" />
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboardContainer{% endblock %}
+
+{% block extrahead %}
+	{{ block.super }}
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}jquery.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}jquery_plugins/jquery-ui-1.9.2/js/jquery-ui-1.9.2.custom.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}dashboard.js"></script>
+{% endblock %}
+
+{% block breadcrumbs %}
+	<div class="breadcrumbs">
+		<a href="#" onclick="history.back();">{% trans 'Back' %}</a>
+	</div>
+{% endblock %}
+
+{% block content%}
+    <input id="dashboard_data" type="hidden" value="{{dashboard|jsonify}}" >
+    <div id="charts_container"></div>
+    <div id="blocker">
+    	<img src={{STATIC_URL}}spinner.gif />
+    </div>
+{% endblock %}

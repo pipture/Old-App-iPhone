@@ -51,9 +51,15 @@ class GoogleAnalyticsV3Client(object):
 
 class PiptureGAClient(GoogleAnalyticsV3Client):
 
+    dimensions = {
+        'month': 'ga:month',
+        'year' : 'ga:year'
+    }
+    
     events = {
         'video_play': ('Video', 'Play'),
         'video_send': ('Video', 'Send'),
+        'timeslot_play': ('Timeslot', 'Play'),
     }
 
     custom_vars = {
@@ -63,8 +69,13 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
         'video_id': 'ga:customVarValue2',
         'series_id': 'ga:customVarName3',
         'album_id': 'ga:customVarValue3',
+        'timeslot_id': 'ga:customVarValue5',
     }
+    
+    twitter_msg = 'Tweet'
+    email_msg = 'Email'
 
+    app_browser_name ='GoogleAnalytics'
     default_min_date = datetime(2010, 1, 1, 0, 0)
     default_max_date = datetime(2100, 1, 1, 0, 0)
 
@@ -106,23 +117,61 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
     def execute_query(self, query):
         return query.execute()
 
-    def get_most_popular_videos(self, limit, start_date, end_date):
-        video_type = self.custom_vars['video_type']
-        video_id = self.custom_vars['video_id']
+
+    def get_most_popular_series(self, limit = 10, start_date=default_min_date, end_date=default_max_date, reversed=False):
+        if limit is not None:
+            limit = '%d' % limit
+        series_id = self.custom_vars['series_id']
         event = self.get_event_filter('video_play')
+        feed = self.run_query(
+            ids=self.GA_PROFILE_ID,
+            start_date=self.get_formatted_date(start_date),
+            end_date=self.get_formatted_date(end_date),
+            dimensions='%s' % (series_id),
+            metrics='ga:totalEvents',
+            filters='%s' % (event),
+            sort= ('' if reversed else '-') + 'ga:totalEvents',
+            max_results=limit
+        )
+    
+        return feed.get('rows', [])
+
+    def get_most_popular_albums(self, limit = 10, start_date=default_min_date, end_date=default_max_date, reversed=False):
+        if limit is not None:
+            limit = '%d' % limit
+        album_id = self.custom_vars['album_id']
+        event = self.get_event_filter('video_play')
+        feed = self.run_query(
+            ids=self.GA_PROFILE_ID,
+            start_date=self.get_formatted_date(start_date),
+            end_date=self.get_formatted_date(end_date),
+            dimensions='%s' % (album_id),
+            metrics='ga:totalEvents',
+            filters='%s' % (event),
+            sort = ('' if reversed else '-') + 'ga:totalEvents',
+            max_results=limit
+        )
+    
+        return feed.get('rows', [])
+     
+    def get_most_popular_videos(self, limit = 10, start_date=default_min_date, end_date=default_max_date, filter=(), dimensions=[]):
+        video_id = self.custom_vars['video_id']
+        video_type = self.custom_vars['video_type']
+        
+        dimensions.append(video_id)
 
         feed = self.run_query(
             ids=self.GA_PROFILE_ID,
             start_date=self.get_formatted_date(start_date),
             end_date=self.get_formatted_date(end_date),
-            dimensions='%s,%s' % (video_type, video_id),
+            dimensions= ','.join(dimensions) if dimensions else None,
             metrics='ga:totalEvents',
-            filters='%s;%s==EpisodeId' % (event, video_type),
+            filters=';'.join(filter),
             sort='-ga:totalEvents',
             max_results='%d' % limit
         )
 
-        return [row[1] for row in feed.get('rows', [])]
+        return feed.get('rows', [])
 
     def get_episodes_watched_by_user(self, user_uid):
         event = self.get_event_filter('video_play')
@@ -142,3 +191,55 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
         )
 
         return [int(row[0]) for row in feed.get('rows', [])]
+    
+    def get_unique_visitors(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=(), dimensions=None):
+        if limit is not None:
+            limit = '%d' % limit
+        if dimensions:
+            dimensions = ','.join(dimensions)
+        feed = self.run_query(
+            ids=self.GA_PROFILE_ID,
+            start_date=self.get_formatted_date(start_date),
+            end_date=self.get_formatted_date(end_date),
+            dimensions=dimensions,
+            metrics='ga:visitors',
+            filters=';'.join(filter) if filter else None,
+            sort='-ga:visitors',
+            max_results=limit
+        )
+
+        return feed.get('rows', [])
+
+    def get_top_timeslots(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=()):
+        timeslot_id = self.custom_vars['timeslot_id']
+        
+        if limit is not None:
+            limit = '%d' % limit
+            
+        feed = self.run_query(
+            ids=self.GA_PROFILE_ID,
+            start_date=self.get_formatted_date(start_date),
+            end_date=self.get_formatted_date(end_date),
+            dimensions=timeslot_id,
+            metrics='ga:visitors',
+            filters=';'.join(filter) if filter else None,
+            sort='-ga:visitors',
+            max_results=limit
+        )
+
+        return [int(row[0]) for row in feed.get('rows', [])]
+
+    def get_views(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=()):
+        feed = self.run_query(
+            ids=self.GA_PROFILE_ID,
+            start_date=self.get_formatted_date(start_date),
+            end_date=self.get_formatted_date(end_date),
+            dimensions=None,
+            metrics='ga:totalEvents',
+            filters=';'.join(filter) if filter else None,
+            sort='-ga:totalEvents',
+            max_results=limit
+        )
+        rows = feed.get('rows', None)
+        
+        return 0 if not rows else int( rows[0][0] )
