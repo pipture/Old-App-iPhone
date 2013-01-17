@@ -130,9 +130,10 @@ class Dashboard:
         event = ga.get_event_filter('video_play')
         video_type = ga.custom_vars['video_type']
         type = '%s==EpisodeId' % (video_type)
-        source = '%s==%s' % ('ga:source','(direct)')
+        app        = 'ga:browser==%s'  % ga.app_browser_name
+        mobile     = 'ga:isMobile==%s' % 'Yes'
         
-        ga_videos = ga.get_most_popular_videos(limit=50, filter=(event, type, source), dimensions=[video_type,])
+        ga_videos = ga.get_most_popular_videos(limit=50, filter=(event, type, app, mobile), dimensions=[video_type,])
         return self.video_table('Top 50 Videos In The App', ga_videos)
            
     def top_50_video(self):
