@@ -61,8 +61,8 @@ class Dashboard:
         for ga_album in ga_albums:
             id, views = ga_album
             try:   
-                album_title = Albums.objects.get(Title=id).SeriesId.Title
-            except Albums.DoesNotExist:
+                album_title = Albums.objects.filter(Title=id)[0].SeriesId.Title
+            except IndexError:
                 album_title = "Album is undefined"
                 
             rows.append( [views, '[%s] %s' % (id, album_title)] )
@@ -130,9 +130,10 @@ class Dashboard:
         event = ga.get_event_filter('video_play')
         video_type = ga.custom_vars['video_type']
         type = '%s==EpisodeId' % (video_type)
-        source = '%s==%s' % ('ga:source','(direct)')
+        app        = 'ga:browser==%s'  % ga.app_browser_name
+        mobile     = 'ga:isMobile==%s' % 'Yes'
         
-        ga_videos = ga.get_most_popular_videos(limit=50, filter=(event, type, source), dimensions=[video_type,])
+        ga_videos = ga.get_most_popular_videos(limit=50, filter=(event, type, app, mobile), dimensions=[video_type,])
         return self.video_table('Top 50 Videos In The App', ga_videos)
            
     def top_50_video(self):
@@ -152,8 +153,8 @@ class Dashboard:
         for ga_album in ga_albums:
             id, views = ga_album
             try:   
-                album_title = Albums.objects.get(Title=id).SeriesId.Title
-            except Albums.DoesNotExist:
+                album_title = Albums.objects.filter(Title=id)[0].SeriesId.Title
+            except IndexError:
                 album_title = "Album is undefined"
             
             table_name = '(%s views) [%s] %s' % (views, id, album_title)     
@@ -210,19 +211,19 @@ class Dashboard:
     
     def prime_time(self):
         chart = Chart('Metric', 'Prime Time')
+        chart.data = 'Undefined'
         
         event = ga.get_event_filter('timeslot_play')
         ga_timeslot_ids = ga.get_top_timeslots(limit=1, filter=(event,))
-        try:
-            timeslot = TimeSlots.objects.get(TimeSlotsId=ga_timeslot_ids[0])
-        except TimeSlots.DoesNotExist:
-            timeslot = None
-        
-        if timeslot:
-            chart.data = ( timeslot.StartTime.strftime( '%H:%M' )
-                           + ' - ' + timeslot.EndTime.strftime( '%H:%M' ) )
-        else:
-            chart.data = 'Undefined'
+        if len(ga_timeslot_ids)>0:
+            try:
+                timeslot = TimeSlots.objects.get(TimeSlotsId=ga_timeslot_ids[0])
+            except TimeSlots.DoesNotExist:
+                timeslot = None
+            
+            if timeslot:
+                chart.data = ( timeslot.StartTime.strftime( '%H:%M' )
+                               + ' - ' + timeslot.EndTime.strftime( '%H:%M' ) )
         
         return chart
     
