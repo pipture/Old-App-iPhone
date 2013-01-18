@@ -99,7 +99,7 @@ LOGGING = {
             'level': 'INFO',
         },
         'restserver.api': {
-            'handlers': [],
+            'handlers': ['console'],
             'level': 'INFO',
         },
 

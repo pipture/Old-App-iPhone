@@ -1,12 +1,16 @@
 from datetime import datetime
 from apiclient.errors import HttpError
 import httplib2
+import logging
+import hashlib
 
+from django.core.cache import cache
 from django.conf import settings
 
 from apiclient.discovery import build
 from oauth2client.client import SignedJwtAssertionCredentials, AccessTokenRefreshError
 
+logger = logging.getLogger('restserver.api')
 
 class GoogleAnalyticsV3Client(object):
     ACCOUNT_NAME = settings.GOOGLE_API_ACCOUNT_NAME
@@ -98,10 +102,15 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
         repeat = kwargs.pop('repeat', False)
 
         try:
-            if self.invalid_service():
-                self.initialize_service()
-            query = self.service.data().ga().get(**kwargs)
-            return self.execute_query(query)
+            if self.invalid_service(): self.initialize_service()
+                
+            query  = self.service.data().ga().get(**kwargs)
+            key = hashlib.sha1( getattr(query, 'uri') ).hexdigest()
+            
+            result = self.execute_query(query)
+            cache.set( key, result )
+            
+            return result
 
         except AccessTokenRefreshError, e:
             if repeat:
@@ -112,7 +121,12 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
             self.run_query(**kwargs)
 
         except HttpError, e:
-            self.raise_api_exception(e)
+            logger.error(str(e))
+            result = cache.get(key)
+            if result:
+                return result
+            else:
+                self.raise_api_exception(e)
 
     def execute_query(self, query):
         return query.execute()
