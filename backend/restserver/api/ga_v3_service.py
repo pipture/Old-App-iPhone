@@ -105,10 +105,17 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
             if self.invalid_service(): self.initialize_service()
                 
             query  = self.service.data().ga().get(**kwargs)
-            key = hashlib.sha1( getattr(query, 'uri') ).hexdigest()
+            host, tail = getattr(query, 'uri').split('?')
+            keyvalue   = tail.split('&')
+            params     = dict( item.split('=') for item in keyvalue )
+            
+            del params['start-date']
+            del params[ 'end-date' ]
+            
+            key = hashlib.sha1( str(params) ).hexdigest()
             
             result = self.execute_query(query)
-            cache.set( key, result )
+            cache.set( key, result, 3 * 24 * 60 * 60 )
             
             return result
 
