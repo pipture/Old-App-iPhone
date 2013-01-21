@@ -185,11 +185,14 @@
           </div>
 
 
-		{% if views_limit > 1 %}
 			<div id="id11" style="height: 27px; left: 442px; position: absolute; top: 388px; width: 486px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
 				<div class="text-content graphic_textbox_layout_style_default_External_486_27" style="padding: 0px; ">
 					<div class="graphic_textbox_layout_style_default">
+					{% if views_limit > 1 %}
 						<p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_6">At {{views_limit}} views, this video will have reached its maximum views.</p>
+					{% else %}
+						<p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_6">This video can be viewed unlimited number of times.</p>
+					{% endif %}
 					</div>
 				</div>
 			</div>
@@ -200,7 +203,6 @@
 					</div>
 				</div>
 			</div>
-		{% endif%}
 
         {% if views_limit == -1 %}
             <div id="id13" style="position: absolute; top: 412px; left: 440px; z-index: 100; width: 250px;">
