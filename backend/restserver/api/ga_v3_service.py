@@ -117,9 +117,9 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
             
             result = self.execute_query(query)
             cache.set( key, result, 3 * 24 * 60 * 60 )
-            logger.info('[ GA CACHE ] set [%s][%s]' % (key, result))
-            logger.info('[ GA CACHE ] checking [%s][%s]' % (key, cache.get( key) ) )
-            
+            if not cache.get(key):
+                logger.error('[GA] cache error: cache has been not set for key [%s]' % key)
+                
             return result
 
         except AccessTokenRefreshError, e:
@@ -131,8 +131,9 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
             self.run_query(**kwargs)
 
         except HttpError, e:
-            logger.error(str(e))
+            logger.error( '[GA] http error: %s' % str(e) )
             result = cache.get(key)
+            logger.error( '[GA] cached result: %s' % result )
             if result:
                 return result
             else:
