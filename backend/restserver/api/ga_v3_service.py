@@ -4,7 +4,7 @@ import httplib2
 import logging
 import hashlib
 
-from django.core.cache import cache
+from django.core.cache import get_cache
 from django.conf import settings
 
 from apiclient.discovery import build
@@ -100,6 +100,7 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
 
     def run_query(self, **kwargs):
         repeat = kwargs.pop('repeat', False)
+        cache = get_cache('default')
 
         try:
             if self.invalid_service(): self.initialize_service()
@@ -116,6 +117,8 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
             
             result = self.execute_query(query)
             cache.set( key, result, 3 * 24 * 60 * 60 )
+            logger.info('[ GA CACHE ] set [%s][%s]' % (key, result))
+            logger.info('[ GA CACHE ] checking [%s][%s]' % (key, cache.get( key) ) )
             
             return result
 
