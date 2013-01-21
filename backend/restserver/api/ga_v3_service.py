@@ -179,17 +179,18 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
     
         return feed.get('rows', [])
      
-    def get_most_popular_videos(self, limit = 10, start_date=default_min_date, end_date=default_max_date, filter=(), dimensions=[]):
+    def get_most_popular_videos(self, limit = 10, start_date=default_min_date, end_date=default_max_date, filter=tuple(), dimensions=None):
         video_id = self.custom_vars['video_id']
         video_type = self.custom_vars['video_type']
         
+        if not dimensions:  dimensions = []
         dimensions.append(video_id)
 
         feed = self.run_query(
             ids=self.GA_PROFILE_ID,
             start_date=self.get_formatted_date(start_date),
             end_date=self.get_formatted_date(end_date),
-            dimensions= ','.join(dimensions) if dimensions else None,
+            dimensions= ','.join(dimensions),
             metrics='ga:totalEvents',
             filters=';'.join(filter),
             sort='-ga:totalEvents',
@@ -217,7 +218,7 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
 
         return [int(row[0]) for row in feed.get('rows', [])]
     
-    def get_unique_visitors(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=(), dimensions=None):
+    def get_unique_visitors(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=tuple(), dimensions=None):
         if limit is not None:
             limit = '%d' % limit
         if dimensions:
@@ -235,7 +236,7 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
 
         return feed.get('rows', [])
 
-    def get_top_timeslots(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=()):
+    def get_top_timeslots(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=tuple()):
         timeslot_id = self.custom_vars['timeslot_id']
         
         if limit is not None:
@@ -254,7 +255,7 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
 
         return [int(row[0]) for row in feed.get('rows', [])]
 
-    def get_views(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=()):
+    def get_views(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=tuple()):
         feed = self.run_query(
             ids=self.GA_PROFILE_ID,
             start_date=self.get_formatted_date(start_date),
