@@ -345,6 +345,7 @@
 		88E5098414FF9507003AFA14 /* LibraryCardA7.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88E5098214FF9507003AFA14 /* LibraryCardA7.xib */; };
 		88E5098514FF9507003AFA14 /* LibraryCardB3.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88E5098314FF9507003AFA14 /* LibraryCardB3.xib */; };
 		88E8367516AD2C0600046EEF /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E8367416AD2C0600046EEF /* Default-568h@2x.png */; };
+		88E8367916AD6D0800046EEF /* iVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 88E8367816AD6D0800046EEF /* iVersion.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		88F2D69315E48E6D002510F1 /* CategoryItemMView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88F2D69215E48E6D002510F1 /* CategoryItemMView.xib */; };
 		88F2D69515E48ED0002510F1 /* CategoryItemSView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 88F2D69415E48ED0002510F1 /* CategoryItemSView.xib */; };
 		88F2D69E15E49E45002510F1 /* CategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F2D69D15E49E45002510F1 /* CategoryViewController.m */; };
@@ -783,6 +784,8 @@
 		88E5098214FF9507003AFA14 /* LibraryCardA7.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryCardA7.xib; sourceTree = "<group>"; };
 		88E5098314FF9507003AFA14 /* LibraryCardB3.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LibraryCardB3.xib; sourceTree = "<group>"; };
 		88E8367416AD2C0600046EEF /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		88E8367716AD6D0800046EEF /* iVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iVersion.h; sourceTree = "<group>"; };
+		88E8367816AD6D0800046EEF /* iVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iVersion.m; sourceTree = "<group>"; };
 		88F2D69215E48E6D002510F1 /* CategoryItemMView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoryItemMView.xib; sourceTree = "<group>"; };
 		88F2D69415E48ED0002510F1 /* CategoryItemSView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoryItemSView.xib; sourceTree = "<group>"; };
 		88F2D69C15E49E45002510F1 /* CategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryViewController.h; sourceTree = "<group>"; };
@@ -988,6 +991,7 @@
 		38989CE1147A631E004DE1E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				88E8367616AD6D0800046EEF /* iVersion */,
 				38DA46F8151DD50600107A50 /* SubRip */,
 				888943C214FF1D4D00331008 /* Appirater */,
 				38D50FF914963EEC009BF5E9 /* GA */,
@@ -1436,6 +1440,15 @@
 			path = Pipture/Classes/Appirater;
 			sourceTree = "<group>";
 		};
+		88E8367616AD6D0800046EEF /* iVersion */ = {
+			isa = PBXGroup;
+			children = (
+				88E8367716AD6D0800046EEF /* iVersion.h */,
+				88E8367816AD6D0800046EEF /* iVersion.m */,
+			);
+			path = iVersion;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1873,6 +1886,7 @@
 				886904CC15E5E1810054E01F /* CategoryItemViewController.m in Sources */,
 				7D41003E15EE47BB0038B82B /* PiptureAppDelegate+GATracking.m in Sources */,
 				8869CB66160081DD00854BAE /* CategoryItem.m in Sources */,
+				88E8367916AD6D0800046EEF /* iVersion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

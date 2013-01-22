@@ -15,6 +15,7 @@
 #import "MailComposerController.h"
 #import "Appirater.h"
 #import "AlbumDetailInfoController.h"
+#import "iVersion.h"
 
 @implementation PiptureAppDelegate
 @synthesize busyView;
@@ -106,8 +107,29 @@ static PiptureAppDelegate *instance;
         [purchases loadStore];
         
         gaTracker = [GANTracker sharedTracker];
+        [self setupIVersion];
     }
     return self;
+}
+
+-(void)setupIVersion{
+    [iVersion sharedInstance].appStoreID = APPIRATER_APP_ID;
+    [iVersion sharedInstance].appStoreCountry = @"US";
+    [iVersion sharedInstance].checkPeriod = 1;
+    
+    [iVersion sharedInstance].remoteVersionsPlistURL = nil;
+    [iVersion sharedInstance].localVersionsPlistPath = nil;
+    [iVersion sharedInstance].useAllAvailableLanguages = NO;
+    [iVersion sharedInstance].showOnFirstLaunch = NO;
+    
+    [iVersion sharedInstance].updateAvailableTitle = @"Update Available";
+    [iVersion sharedInstance].downloadButtonLabel = @"Upgrade";
+    [iVersion sharedInstance].remindButtonLabel = @"Later";
+    [iVersion sharedInstance].ignoreButtonLabel = nil;
+    
+//    [iVersion sharedInstance].checkAtLaunch = YES;
+//    [iVersion sharedInstance].verboseLogging = YES;
+//    [iVersion sharedInstance].applicationVersion = @"0.1";
 }
 
 - (BOOL)homeViewVisible {
