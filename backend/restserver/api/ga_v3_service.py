@@ -9,6 +9,7 @@ from django.conf import settings
 
 from apiclient.discovery import build
 from oauth2client.client import SignedJwtAssertionCredentials, AccessTokenRefreshError
+from pipture.models import PiptureSettings
 
 logger = logging.getLogger('restserver.api')
 
@@ -78,9 +79,13 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
     
     twitter_msg = 'Tweet'
     email_msg = 'Email'
-
     app_browser_name ='GoogleAnalytics'
-    default_min_date = datetime(2010, 1, 1, 0, 0)
+    
+    try:
+        default_min_date = PiptureSettings.objects.all()[0].StatisticStartDate
+    except IndexError:
+        default_min_date = datetime(2010, 1, 1, 0, 0)
+    
     default_max_date = datetime(2100, 1, 1, 0, 0)
 
     int_regexp = '^[1-9][0-9]*$'
