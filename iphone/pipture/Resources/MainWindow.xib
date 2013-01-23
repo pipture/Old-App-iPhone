@@ -45,7 +45,7 @@
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUIImageView" id="1020986070">
 						<reference key="NSNextResponder" ref="380026005"/>
-						<int key="NSvFlags">-2147482350</int>
+						<int key="NSvFlags">1298</int>
 						<string key="NSFrameSize">{320, 480}</string>
 						<reference key="NSSuperview" ref="380026005"/>
 						<reference key="NSWindow"/>
@@ -53,10 +53,6 @@
 						<string key="NSReuseIdentifierKey">_NS:567</string>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<object class="NSCustomResource" key="IBUIImage">
-							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">default.png</string>
-						</object>
 					</object>
 					<object class="IBUIView" id="29760908">
 						<reference key="NSNextResponder" ref="380026005"/>
@@ -137,6 +133,7 @@
 										<string key="NSFrame">{{218, 11}, {98, 44}}</string>
 										<reference key="NSSuperview" ref="795262716"/>
 										<reference key="NSWindow"/>
+										<reference key="NSNextKeyView"/>
 										<string key="NSReuseIdentifierKey">_NS:225</string>
 										<bool key="IBUIOpaque">NO</bool>
 										<int key="IBUITag">2</int>
@@ -276,7 +273,6 @@
 				<array class="NSMutableArray" key="IBUIViewControllers">
 					<object class="IBUIViewController" id="794762067">
 						<object class="IBUINavigationItem" key="IBUINavigationItem" id="118096285">
-							<reference key="IBUINavigationBar"/>
 							<string key="IBUITitle"/>
 							<object class="IBUIBarButtonItem" key="IBUILeftBarButtonItem" id="255625457">
 								<string key="IBUITitle">Store</string>
@@ -967,7 +963,6 @@
 						<string key="onConfirmMessageTap:">id</string>
 						<string key="onRadioButtonTap:">id</string>
 						<string key="onTableTap:">id</string>
-						<string key="onTableThumbUp:">UIPanGestureRecognizer</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="onCancel:">
@@ -985,10 +980,6 @@
 						<object class="IBActionInfo" key="onTableTap:">
 							<string key="name">onTableTap:</string>
 							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="onTableThumbUp:">
-							<string key="name">onTableThumbUp:</string>
-							<string key="candidateClassName">UIPanGestureRecognizer</string>
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
@@ -1589,7 +1580,6 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="default.png">{320, 480}</string>
 			<string key="nav-bar.png">{320, 57}</string>
 			<string key="nav-button-active-background.png">{98, 44}</string>
 			<string key="nav-button-channel-active.png">{31, 33}</string>

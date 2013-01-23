@@ -436,6 +436,16 @@ static PiptureAppDelegate *instance;
     }
 }
 
+-(void)adjustBackgroundLogo{
+    UIImage * image = nil;
+    if (IS_IPHONE_5){
+        image = [UIImage imageNamed:@"Default-568h@2x.png"];
+    } else {
+        image = [UIImage imageNamed:@"Default.png"];
+    }
+    [[self backgroundImage] setImage:image];
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
 
@@ -472,6 +482,8 @@ static PiptureAppDelegate *instance;
                    GA_NO_VARS);
     
     [self trackPageviewToGoogleAnalytics:@"/app_entry_point"];
+
+    [self adjustBackgroundLogo];
     
     // Observe the kNetworkReachabilityChangedNotification. When that notification is posted, the
     // method "reachabilityChanged" will be called. 
