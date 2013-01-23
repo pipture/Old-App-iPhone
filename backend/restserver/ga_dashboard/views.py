@@ -293,7 +293,7 @@ class Chart:
         elif (type == 'Metric'):
             self.options['width'] = '12%'
         else:
-            self.options['width'] = '23%'
+            self.options['width'] = '24%'
         
     def toDict(self):
         data = None

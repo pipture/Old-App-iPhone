@@ -105,12 +105,10 @@
 		else
 			throw 'Exception on drawChart method:\'' + e + '\'';
 	}
-		
-	GCTchart.draw(prepared_data, chart.options);
 	
-
-	$('.google-visualization-table-table').css('width', '100%')
-	.parent('div').css('width', '100%');
+	var options = (chart.type == 'Table') ? null : chart.options;
+	
+	GCTchart.draw(prepared_data, options);
   }
   
   function drawSpecial(container, chart, prepared_data){
@@ -153,7 +151,7 @@
   	}
   }
   
-  function drawChart(chart, prepared_data){
+  function placeContainer(chart){
   	var id = (chart.type + '_' + new Date().getTime()).replace(/ /g, '');
   	var container =
 	  	$('<div/>', {
@@ -162,6 +160,21 @@
 	  		'class': 'chart_container'
 	  	})
 	  	.appendTo('#charts_container');
+	
+  	//Create subcontainer for Tables
+  	if (chart.type == 'Table'){
+  		absolute_width = $(container).width() + 'px';
+  		
+  		return $('<div/>', {
+  					'css':{'width' : absolute_width}
+  				}).appendTo(container);
+  	}
+  	
+  	return container;
+  }
+  
+  function drawChart(chart, prepared_data){
+  	var container = placeContainer(chart);
   	
   	if ($.inArray(chart.type, __special_charts) > -1) {
   		drawSpecial(container, chart, prepared_data);
@@ -170,10 +183,11 @@
   	}
   		
   	if (chart.type == 'Table' || chart.type == 'Tables') {
+  		title_container = (chart.type == 'Table') ? $(container).parent() : container
   		$('<text/>', {
   			'text':chart.options.title,
   			'css': { 'font-family':'Arial', 'font-size'  : '10px', 'font-weight': 'bold' }
   		})
-  		.prependTo(container);
+  		.prependTo(title_container);
   	}
   }
