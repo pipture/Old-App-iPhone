@@ -121,6 +121,7 @@ static PiptureAppDelegate *instance;
     [iVersion sharedInstance].localVersionsPlistPath = nil;
     [iVersion sharedInstance].useAllAvailableLanguages = NO;
     [iVersion sharedInstance].showOnFirstLaunch = NO;
+    [iVersion sharedInstance].displayAppUsingStorekitIfAvailable = NO;
     
     [iVersion sharedInstance].updateAvailableTitle = @"Update Available";
     [iVersion sharedInstance].downloadButtonLabel = @"Upgrade";
