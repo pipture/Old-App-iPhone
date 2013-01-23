@@ -100,10 +100,10 @@
     NSMutableArray* ga_vars = [[[NSMutableArray alloc] init] autorelease];
     
     NSString *itemId = [NSString stringWithFormat:@"%d", [self videoKeyValue]];
-    NSString *seriesTitle = self.album.series.title;
-    NSString *albumTitle = self.album.title;
-    if (!seriesTitle) seriesTitle = @"";
-    if (!albumTitle) albumTitle = @"";
+    NSString *seriesId = [NSString stringWithFormat:@"%d", self.album.series.seriesId];
+    NSString *albumId = [NSString stringWithFormat:@"%d", self.album.albumId];
+    if (!seriesId) seriesId = @"";
+    if (!albumId) albumId = @"";
     
     // Variable with name=itemType, value=itemId
     [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_VIDEO_ITEM, 
@@ -112,8 +112,8 @@
     
     // Variable with name=seriesId, value=albumId
     [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_SERIES_AND_ALBUM, 
-                                        seriesTitle, 
-                                        albumTitle)];
+                                        seriesId, 
+                                        albumId)];
     NSString *sellStatusName = [NSString stringWithFormat:@"%d",GA_INDEX_ALBUM_SELL_STATUS];
     [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_ALBUM_SELL_STATUS, 
                                         sellStatusName, 
