@@ -32,6 +32,11 @@
 #define SET_BALANCE(balance) [[PiptureAppDelegate instance] setBalance:balance];
 #define SHOW_ERROR(title, msg) [[PiptureAppDelegate instance] showError:title message:msg];
 
+#define IS_WIDESCREEN ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
+#define IS_IPHONE ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPhone" ] )
+#define IS_IPOD   ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPod touch" ] )
+#define IS_IPHONE_5 ( IS_IPHONE && IS_WIDESCREEN )
+
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UINavigationControllerDelegate, UIAlertViewDelegate>
 {
