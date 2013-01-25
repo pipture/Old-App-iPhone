@@ -31,3 +31,8 @@
     margin-left: -175px;
     margin-top: -175px;
 }
+
+table td:first-child
+{
+	text-align: center;
+}

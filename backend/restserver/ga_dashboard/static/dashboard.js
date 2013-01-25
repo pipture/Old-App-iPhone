@@ -24,7 +24,7 @@
 	if (index<charts.length) {
 		chart = charts[index];
 		$.ajax({
-			url: $(location).attr('href') + '?chart=' + chart,
+			url: $(location).attr('pathname') + '?chart=' + chart,
 			dataType: 'json',
 			success: function(data){
 				chart = data;

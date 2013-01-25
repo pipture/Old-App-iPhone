@@ -14,7 +14,7 @@ from api.ga_v3_service import PiptureGAClient
 from api.errors import ServiceUnavailable, NotFound
 from django.utils import simplejson
 
-from restserver.pipture.models import Videos, Albums, Series, UserPurchasedItems, TimeSlots
+from restserver.pipture.models import Episodes, Albums, Series, UserPurchasedItems, TimeSlots
 
 ga = PiptureGAClient(exception_class=ServiceUnavailable)
 
@@ -41,7 +41,7 @@ class Dashboard:
         return chart
     
     def store_vs_free(self):
-        all   = Albums.objects.all().count()
+        all  = Albums.objects.all().count()
         free = Albums.objects.filter(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE).count()
         
         chart = Chart('PieChart', 'Store vs Free')
@@ -61,21 +61,31 @@ class Dashboard:
         for ga_album in ga_albums:
             id, views = ga_album
             try:   
-                album_title = Albums.objects.filter(Title=id)[0].SeriesId.Title
-            except IndexError:
-                album_title = "Album is undefined"
+                album = Albums.objects.get(AlbumId=id)
+            except (ValueError, Albums.DoesNotExist):
+                album = "Undefined"
                 
-            rows.append( [views, '[%s] %s' % (id, album_title)] )
+            rows.append( [views, str(album)] )
         
         chart.data = {'rows':rows, 'columns':columns}
         return chart
         
     def worst_albums(self):
-        ga_albums = ga.get_most_popular_albums(limit=None, reversed=True)
+        video_type = ga.custom_vars['video_type']
+        type  = '%s==EpisodeId' % (video_type)
+        event = ga.get_event_filter('video_play')
+        
+        ga_albums = ga.get_most_popular_albums(limit=None, reversed=True, filter=(event, type))
+        
         return self.albums_table('Worst Albums', ga_albums)
     
     def top_5_albums(self):
-        ga_albums = ga.get_most_popular_albums(limit=5)
+        video_type = ga.custom_vars['video_type']
+        type  = '%s==EpisodeId' % (video_type)
+        event = ga.get_event_filter('video_play')
+        
+        ga_albums = ga.get_most_popular_albums(limit=5, filter=(event, type))
+        
         return self.albums_table('Top 5 Albums', ga_albums)
     
     
@@ -86,14 +96,13 @@ class Dashboard:
         columns = [ {'type':'string', 'name':'Views'}, {'type':'string', 'name':'Series title'} ]
         
         for ga_seria in ga_series:
-            title, views = ga_seria
-            title = urllib2.unquote(title)
+            id, views = ga_seria
             try:   
-                series_id = Series.objects.get(Title=title).SeriesId
-            except Series.DoesNotExist:
-                series_id = 'undefined'
+                seria = Series.objects.get(SeriesId=id)
+            except (ValueError, Series.DoesNotExist):
+                seria = 'Undefined'
                 
-            rows.append( [views, '[%s] %s' % (series_id, title)] )
+            rows.append( [views, str(seria)] )
             
         chart.data = {'rows':rows, 'columns':columns}
         return chart
@@ -116,12 +125,12 @@ class Dashboard:
         
         for ga_video in ga_videos:
             type, id, views = ga_video
-            try:   
-                video_title = Videos.objects.get(VideoId=id).VideoDescription
-            except Videos.DoesNotExist:
-                video_title = 'Video is undefined'
-                
-            rows.append( [views, '[%s] %s' % (id,video_title)] )
+            try:
+                video = Episodes.objects.get(EpisodeId=id)
+            except (ValueError, Episodes.DoesNotExist):
+                video = 'Undefined'
+            
+            rows.append( [views, str(video)] )
         
         chart.data = {'rows':rows, 'columns':columns}
         return chart
@@ -145,28 +154,29 @@ class Dashboard:
         return self.video_table('Top 50 Videos', ga_videos)
     
     def videos_among_albums(self):
-        ga_albums = ga.get_most_popular_albums(limit=5)
         
         chart = Chart('Tables', 'Top 5 videos 5 most watched albums')
         chart.data = []
         
+        album_id   = ga.custom_vars['album_id']
+        video_type = ga.custom_vars['video_type']
+        type  = '%s==EpisodeId' % (video_type)
+        event = ga.get_event_filter('video_play')
+
+        ga_albums = ga.get_most_popular_albums(limit=5, filter=(event, type))
+        
         for ga_album in ga_albums:
             id, views = ga_album
             try:   
-                album_title = Albums.objects.filter(Title=id)[0].SeriesId.Title
-            except IndexError:
-                album_title = "Album is undefined"
+                album = Albums.objects.get(AlbumId=id)
+            except (ValueError, Albums.DoesNotExist):
+                continue
             
-            table_name = '(%s views) [%s] %s' % (views, id, album_title)     
+            album_filter = '%s==%s' % (album_id, album.AlbumId)
+            ga_videos = ga.get_most_popular_videos(limit=5, filter=(event, type, album_filter), dimensions=[video_type,])
             
-            event = ga.get_event_filter('video_play')
-            video_type = ga.custom_vars['video_type']
-            type  = '%s==EpisodeId' % (video_type)
-            album = '%s==%s' % (ga.custom_vars['album_id'], id)
-            
-            ga_videos = ga.get_most_popular_videos(limit=5, filter=(event, type, album), dimensions=[video_type,])
-            
-            subchart = self.video_table(table_name, ga_videos)
+            title = '[%s views] %s' % (views, str(album))
+            subchart = self.video_table(title, ga_videos)
             chart.data.append(subchart)
     
         return chart
