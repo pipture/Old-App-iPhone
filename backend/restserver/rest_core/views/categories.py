@@ -99,7 +99,8 @@ class MostPopularVideos(Category, VideosMixin):
     ga_pull_limit = 50
 
     def get_items_queryset(self):
-        ids = self.get_data_from_ga()
+        ga_ids = self.get_data_from_ga()
+        ids = [id for id in ga_ids if id.isdigit()]
         episodes = self.episodes.filter(EpisodeId__in=ids)
         return [episodes.get(EpisodeId=id) for id in ids
                 if episodes.filter(EpisodeId=id)]
