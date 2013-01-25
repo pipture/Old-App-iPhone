@@ -81,11 +81,6 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
     email_msg = 'Email'
     app_browser_name ='GoogleAnalytics'
     
-    try:
-        default_min_date = PiptureSettings.objects.all()[0].StatisticStartDate
-    except IndexError:
-        default_min_date = datetime(2010, 1, 1, 0, 0)
-    
     default_max_date = datetime(2100, 1, 1, 0, 0)
 
     int_regexp = '^[1-9][0-9]*$'
@@ -93,6 +88,13 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
     def __init__(self, **kwargs):
         self.exception_class = kwargs.pop('exception_class')
         super(PiptureGAClient, self).__init__(**kwargs)
+
+    def default_min_date(self):
+        try:
+            default_min_date = PiptureSettings.objects.all()[0].StatisticStartDate
+        except IndexError:
+            default_min_date = datetime(2010, 1, 1, 0, 0)
+        return default_min_date
 
     def get_event_filter(self, event_name):
         return 'ga:eventCategory==%s;ga:eventAction==%s' % self.events[event_name]
@@ -148,9 +150,13 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
         return query.execute()
 
 
-    def get_most_popular_series(self, limit = 10, start_date=default_min_date, end_date=default_max_date, reversed=False):
+    def get_most_popular_series(self, limit = 10, start_date=None, end_date=default_max_date, reversed=False):
         if limit is not None:
             limit = '%d' % limit
+            
+        if not start_date:
+            start_date = self.default_min_date()
+        
         series_id = self.custom_vars['series_id']
         event = self.get_event_filter('video_play')
         feed = self.run_query(
@@ -166,29 +172,38 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
     
         return feed.get('rows', [])
 
-    def get_most_popular_albums(self, limit = 10, start_date=default_min_date, end_date=default_max_date, reversed=False):
+    def get_most_popular_albums(self, limit = 10, start_date=None, end_date=default_max_date, filter=tuple(), reversed=False):
+        album_id   = self.custom_vars['album_id']
+        
         if limit is not None:
             limit = '%d' % limit
-        album_id = self.custom_vars['album_id']
-        event = self.get_event_filter('video_play')
+            
+        if not start_date:
+            start_date = self.default_min_date()
+            
         feed = self.run_query(
             ids=self.GA_PROFILE_ID,
             start_date=self.get_formatted_date(start_date),
             end_date=self.get_formatted_date(end_date),
             dimensions='%s' % (album_id),
             metrics='ga:totalEvents',
-            filters='%s' % (event),
+            filters=';'.join(filter) if filter else None,
             sort = ('' if reversed else '-') + 'ga:totalEvents',
             max_results=limit
         )
     
         return feed.get('rows', [])
      
-    def get_most_popular_videos(self, limit = 10, start_date=default_min_date, end_date=default_max_date, filter=tuple(), dimensions=None):
+    def get_most_popular_videos(self, limit = 10, start_date=None, end_date=default_max_date, filter=tuple(), dimensions=None):
         video_id = self.custom_vars['video_id']
         video_type = self.custom_vars['video_type']
         
-        if not dimensions:  dimensions = []
+        if not dimensions:
+            dimensions = []
+            
+        if not start_date:
+            start_date = self.default_min_date()
+            
         dimensions.append(video_id)
 
         feed = self.run_query(
@@ -197,7 +212,7 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
             end_date=self.get_formatted_date(end_date),
             dimensions= ','.join(dimensions),
             metrics='ga:totalEvents',
-            filters=';'.join(filter),
+            filters=';'.join(filter) if filter else None,
             sort='-ga:totalEvents',
             max_results='%d' % limit
         )
@@ -212,7 +227,7 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
 
         feed = self.run_query(
             ids=self.GA_PROFILE_ID,
-            start_date=self.get_formatted_date(self.default_min_date),
+            start_date=self.get_formatted_date(self.default_min_date()),
             end_date=self.get_formatted_date(self.default_max_date),
             dimensions='%s' % video_id,
             metrics='ga:totalEvents',
@@ -223,9 +238,11 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
 
         return [int(row[0]) for row in feed.get('rows', [])]
     
-    def get_unique_visitors(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=tuple(), dimensions=None):
+    def get_unique_visitors(self, limit=10, start_date=None, end_date=default_max_date, filter=tuple(), dimensions=None):
         if limit is not None:
             limit = '%d' % limit
+        if not start_date:
+            start_date = self.default_min_date()
         if dimensions:
             dimensions = ','.join(dimensions)
         feed = self.run_query(
@@ -241,11 +258,14 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
 
         return feed.get('rows', [])
 
-    def get_top_timeslots(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=tuple()):
+    def get_top_timeslots(self, limit=10, start_date=None, end_date=default_max_date, filter=tuple()):
         timeslot_id = self.custom_vars['timeslot_id']
         
         if limit is not None:
             limit = '%d' % limit
+            
+        if not start_date:
+            start_date = self.default_min_date()
             
         feed = self.run_query(
             ids=self.GA_PROFILE_ID,
@@ -260,7 +280,10 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
 
         return [int(row[0]) for row in feed.get('rows', [])]
 
-    def get_views(self, limit=10, start_date=default_min_date, end_date=default_max_date, filter=tuple()):
+    def get_views(self, limit=10, start_date=None, end_date=default_max_date, filter=tuple()):
+        if not start_date:
+            start_date = self.default_min_date()
+            
         feed = self.run_query(
             ids=self.GA_PROFILE_ID,
             start_date=self.get_formatted_date(start_date),

@@ -3,6 +3,14 @@ var account = 'UA-27681421-' + ( typeof production != 'undefined' && production 
 
 _gaq.push(['_setAccount', account]);
 _gaq.push(['_trackPageview']);
+
+_gaq.push(['_setCustomVar', 2, 'EpisodeId', video_id.toString()]);
+_gaq.push(['_setCustomVar', 3, series_id.toString(), album_id.toString()]);
+
+if (album_purchase_status){
+	_gaq.push(['_setCustomVar', 4, 'PurchaseStatus', album_purchase_status]);
+}
+
 _gaq.push(['_trackEvent','Video', 'Play', video_id.toString()]);    		
 
 (function() {

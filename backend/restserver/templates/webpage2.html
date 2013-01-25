@@ -21,7 +21,18 @@
     <script type="text/javascript" src="{{ STATIC_URL }}webpage_files/webpage.js"></script>
     <script type="text/javascript">
     	var production = {{ is_production }};
-    	var video_id = {{ video_id }};
+    	var video_name = '{{ video.Title }}';
+    	var album_id   = '{{ video.AlbumId.AlbumId }}';
+    	var series_id  = '{{ video.AlbumId.SeriesId.SeriesId }}';
+    	
+    	{% ifequal 'Episodes' video_type %}
+    		var video_id = '{{ video.EpisodeId }}';
+    	{% else %}
+    		var video_id = '{{ video.TrailerId }}';
+    	{% endifequal %}
+    	
+    	__status_list = { 'N':'NotForSale', 'B':'BuyAlbum', 'P':'AlbumPass' }
+    	album_purchase_status = __status_list['{{ video.AlbumId.PurchaseStatus }}']
     </script>
 	<script type="text/javascript" src="{{ STATIC_URL }}ga.js"></script>
     <link href="{{ STATIC_URL }}webpage_files/webpageMoz.css" type="text/css" rel="stylesheet">

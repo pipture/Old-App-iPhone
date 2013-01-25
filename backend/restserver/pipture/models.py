@@ -223,11 +223,11 @@ class Episodes(models.Model):
 
     @property
     def complexName(self):
-        return "%s, S%s, A%s, E%s ,%s" % (self.AlbumId.SeriesId.Title,
-                                          self.AlbumId.Season,
-                                          self.AlbumId.Title,
+        return "%s, S%s, A%s, E%s ,%s" % (self.AlbumId.SeriesId.Title.encode('utf-8'),
+                                          self.AlbumId.Season.encode('utf-8'),
+                                          self.AlbumId.Title.encode('utf-8'),
                                           self.episodeNoInt,
-                                          self.Title)
+                                          self.Title.encode('utf-8'))
 
     @property
     def episodeNoInt(self):
@@ -378,7 +378,7 @@ class PiptureSettings(models.Model):
     Album = models.ForeignKey(Albums, blank=True, null=True, on_delete=SET_NULL)
     VideoHost = models.CharField(verbose_name="Enter URL for video messages",
                                  max_length=100)
-    StatisticStartDate = models.DateTimeField(verbose_name='GA start date',
+    StatisticStartDate = models.DateField(verbose_name='GA start date',
                                         help_text="Please, set the start date for GA statistic")
 
     class Meta:
