@@ -19,7 +19,7 @@ from restserver.pipture.models import Episodes, Albums, Series, UserPurchasedIte
 ga = PiptureGAClient(exception_class=ServiceUnavailable)
 
 class Dashboard:
-    _chartList = ('store_vs_free', 'views_among_bases', 'video_distribution',
+    _chartList = ('store_vs_free', 'views_among_bases', 'distribution',
                           'sales', 'prime_time', 'schedule_adoption', 'videos_among_albums', 
                           'top_50_video', 'top_50_video_in_app', 'top_5_albums', 'top_5_series',
                           'worst_albums', 'worst_series')
@@ -42,8 +42,8 @@ class Dashboard:
     
     def store_vs_free(self):
         all  = Albums.objects.all().count()
-        free = Albums.objects.filter(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE,HiddenAlbum=False).count()
         
+        free = Albums.objects.filter(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE,HiddenAlbum=False).count()
         chart = Chart('PieChart', 'Store vs Free')
         chart.data = [
             ['Album type', 'Count'],
@@ -238,20 +238,19 @@ class Dashboard:
         return chart
     
     def views_among_bases(self):
-        video_id   = 'ga:eventLabel'
         app        = 'ga:browser==%s'  % ga.app_browser_name
         browser    = 'ga:browser!=%s'  % ga.app_browser_name
         mobile     = 'ga:isMobile==%s' % 'Yes'
         not_mobile = 'ga:isMobile==%s' % 'No'
-    #    twitter_views = ga.get_views()
+    #    twitter_views = ga.get_count()
     
         event = ga.get_event_filter('video_play')
-        library_views = ga.get_views(filter=(event, app, mobile))
-        web_mobile_views = ga.get_views(filter=(event, browser, mobile))
-        web_desktop_views = ga.get_views(filter=(event, browser, not_mobile))
+        library_views = ga.get_count(filter=(event, app, mobile))
+        web_mobile_views = ga.get_count(filter=(event, browser, mobile))
+        web_desktop_views = ga.get_count(filter=(event, browser, not_mobile))
         
         event = ga.get_event_filter('timeslot_play')
-        pwrbtn_views = ga.get_views(filter=(event,))
+        pwrbtn_views = ga.get_count(filter=(event,))
         
         chart = Chart('PieChart', 'Views')
         chart.data = [
@@ -263,20 +262,31 @@ class Dashboard:
         ]
         return chart
     
-    def video_distribution(self):
-        video_id   = 'ga:eventLabel'
+    def distribution(self):
         event = ga.get_event_filter('video_send')
+        purchase_status = ga.custom_vars['purcahse_status']
+        message_limit = ga.custom_vars['message_limit']
+        
         twitter = 'ga:eventLabel==%s' % ga.twitter_msg
         email   = 'ga:eventLabel==%s' % ga.email_msg
         
-        tweet_count = ga.get_views(filter=(event, twitter))
-        email_count = ga.get_views(filter=(event, email))
+        common    = '%s!=%s' % (purchase_status, 'Purchased')
+        exclusive = '%s==%s' % (purchase_status, 'Purchased')
+        infinite  = '%s==%s' % (message_limit, '-1')
+        limited   = '%s!=%s' % (message_limit, '-1')
+        
+        tweet = ga.get_count(filter=(event, twitter))
+        email_exclusive = ga.get_count(filter=(event, email, exclusive))
+        email_limited   = ga.get_count(filter=(event, email, common, limited))
+        email_infinite  = ga.get_count(filter=(event, email, common, infinite))
         
         chart = Chart('PieChart', 'Distribution')
         chart.data = [
             ['Type', 'Count'],
-            ['Email', email_count],
-            ['Twitter' , tweet_count]
+            ['Twitter' , tweet],
+            ['Email Exclusive', email_exclusive],
+            ['Email Limited', email_limited],
+            ['Email Infinite', email_infinite],
         ]
         return chart
 
