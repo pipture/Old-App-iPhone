@@ -378,7 +378,7 @@ class PiptureSettings(models.Model):
     Album = models.ForeignKey(Albums, blank=True, null=True, on_delete=SET_NULL)
     VideoHost = models.CharField(verbose_name="Enter URL for video messages",
                                  max_length=100)
-    StatisticStartDate = models.DateField(verbose_name='GA start date',
+    StatisticStartDate = models.DateField(default=datetime.now, verbose_name='GA start date',
                                         help_text="Please, set the start date for GA statistic")
 
     class Meta:
