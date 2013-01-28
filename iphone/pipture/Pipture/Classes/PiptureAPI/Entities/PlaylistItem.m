@@ -118,6 +118,9 @@
     [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_ALBUM_SELL_STATUS, 
                                         sellStatusName, 
                                         [self.album formatSellStatus])];
+    [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_CLIENT_TIME_AND_TIMESLOT_ITEM,
+                                        [[PiptureAppDelegate instance] currentHour],
+                                        @"")];
     return ga_vars;
 }
 

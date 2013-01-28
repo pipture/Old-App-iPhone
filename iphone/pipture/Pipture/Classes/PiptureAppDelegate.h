@@ -138,5 +138,6 @@
 - (void)clearInAppPurchases;
 
 - (void)setCover:(NSDictionary*)params;
+- (NSString*)currentHour;
 
 @end
