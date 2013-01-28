@@ -993,4 +993,10 @@ NSInteger networkActivityIndecatorCount;
     NSLog(@"auth failed!");
 }
 
+-(NSString*)currentHour{
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *date = [calendar components: NSHourCalendarUnit fromDate: [NSDate date]];
+    return [NSString stringWithFormat: @"%d", [date hour] ];
+}
+
 @end

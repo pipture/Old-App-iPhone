@@ -30,6 +30,8 @@
 #define DEFAULT_NUMBER_OF_VIEWS 1
 #define NOT_CONFIRMABLE_NUMBER_OF_VIEWS 50
 
+static const char *composeTypeStr[] = { "Email", "Tweet"};
+
 @interface ScreenshotsReceiverWraper : NSObject<ScreenshotCollectionReceiver> {
     NSObject<ScreenshotCollectionReceiver>* wrappedObject_;
 }
