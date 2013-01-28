@@ -12,7 +12,6 @@
     var dashboard = $.parseJSON( $('#dashboard_data').val() );
     if (dashboard.charts.length > 0){
     	$('#blocker').show();
-  		var ajax_counter = 0;
   		draw_chart_by_index(0, dashboard.charts);
     }
   }

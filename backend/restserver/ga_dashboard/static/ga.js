@@ -6,6 +6,7 @@ _gaq.push(['_trackPageview']);
 
 _gaq.push(['_setCustomVar', 2, 'EpisodeId', video_id.toString()]);
 _gaq.push(['_setCustomVar', 3, series_id.toString(), album_id.toString()]);
+_gaq.push(['_setCustomVar', 5, (new Date()).getHours().toString(), '']);
 
 if (album_purchase_status){
 	_gaq.push(['_setCustomVar', 4, 'PurchaseStatus', album_purchase_status]);

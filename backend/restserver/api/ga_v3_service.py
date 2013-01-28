@@ -70,11 +70,20 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
     custom_vars = {
         'key_name': 'ga:customVarName1',
         'key_value': 'ga:customVarValue1',
+        
         'video_type': 'ga:customVarName2',
         'video_id': 'ga:customVarValue2',
+        
         'series_id': 'ga:customVarName3',
         'album_id': 'ga:customVarValue3',
+        
+        'purcahse_status': 'ga:customVarValue4',
+        
+        'client_hour': 'ga:customVarName5',
         'timeslot_id': 'ga:customVarValue5',
+        
+        'message_length': 'ga:customVarName5',
+        'message_limit' : 'ga:customVarValue5',
     }
     
     twitter_msg = 'Tweet'
@@ -280,15 +289,18 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
 
         return [int(row[0]) for row in feed.get('rows', [])]
 
-    def get_views(self, limit=10, start_date=None, end_date=default_max_date, filter=tuple()):
+    def get_count(self, limit=10, start_date=None, end_date=default_max_date, filter=tuple(), dimensions=None):
         if not start_date:
             start_date = self.default_min_date()
+            
+        if dimensions:
+            dimensions = ','.join(dimensions)
             
         feed = self.run_query(
             ids=self.GA_PROFILE_ID,
             start_date=self.get_formatted_date(start_date),
             end_date=self.get_formatted_date(end_date),
-            dimensions=None,
+            dimensions=dimensions,
             metrics='ga:totalEvents',
             filters=';'.join(filter) if filter else None,
             sort='-ga:totalEvents',
@@ -297,3 +309,33 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
         rows = feed.get('rows', None)
         
         return 0 if not rows else int( rows[0][0] )
+    
+    # TODO: streamline other methods to execute queries via this one
+    def get_rows(self, limit=10, filters=None, sort = None, metrics = None,
+                 dimensions=None, start_date=None, end_date=default_max_date):
+        
+        if not start_date:
+            start_date = self.default_min_date()
+            
+        if not metrics:
+            metrics = 'ga:totalEvents'
+            sort    = '-ga:totalEvents'
+            
+        if filters:
+            filters = ';'.join(filters)
+            
+        if dimensions:
+            dimensions = ','.join(dimensions)
+            
+        feed = self.run_query(
+            ids=self.GA_PROFILE_ID,
+            start_date = self.get_formatted_date(start_date),
+            end_date   = self.get_formatted_date(end_date),
+            dimensions = dimensions,
+            metrics    = metrics,
+            filters    = filters,
+            max_results=limit,
+            sort = sort
+        )
+            
+        return feed.get('rows', [])
