@@ -33,7 +33,8 @@ class Dashboard:
         return {'charts': self.charts}
     
     def sales(self):
-        sales = UserPurchasedItems.objects.all().count()
+        start_date = ga.default_min_date()
+        sales = UserPurchasedItems.objects.filter(Date__gte = start_date).count()
         
         chart = Chart('Metric', 'Sales')
         chart.data = sales
@@ -228,13 +229,15 @@ class Dashboard:
         ga_hours = ga.get_rows(limit=24, filters=(action,), dimensions=(hour,))
         if ga_hours:
             ga_hours  = sorted(ga_hours, key=lambda k:k[1])
-            peak_hour = (int)(ga_hours[-1][0])
-            
-            #the system is simple because only hour value is tracked,
-            end_bound = peak_hour + 1 if (peak_hour < 23) else 0
-            
-            prime_time = (peak_hour, end_bound)
-            chart.data = "%s:00 - %s:00" % prime_time
+            try:
+                peak_hour = (int)(ga_hours[-1][0])
+                #the system is simple because only hour value is tracked,
+                end_bound = peak_hour + 1 if (peak_hour < 23) else 0
+                
+                prime_time = (peak_hour, end_bound)
+                chart.data = "%s:00 - %s:00" % prime_time
+            except ValueError:
+                pass
         
         return chart
     
