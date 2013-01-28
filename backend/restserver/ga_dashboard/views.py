@@ -223,17 +223,18 @@ class Dashboard:
         chart = Chart('Metric', 'Prime Time')
         chart.data = 'Undefined'
         
-        event = ga.get_event_filter('timeslot_play')
-        ga_timeslot_ids = ga.get_top_timeslots(limit=1, filter=(event,))
-        if len(ga_timeslot_ids)>0:
-            try:
-                timeslot = TimeSlots.objects.get(TimeSlotsId=ga_timeslot_ids[0])
-            except TimeSlots.DoesNotExist:
-                timeslot = None
+        action = "%s==%s" % ('ga:eventAction', 'Play')
+        hour = ga.custom_vars['client_hour']
+        ga_hours = ga.get_rows(limit=24, filters=(action,), dimensions=(hour,))
+        if ga_hours:
+            ga_hours  = sorted(ga_hours, key=lambda k:k[1])
+            peak_hour = (int)(ga_hours[-1][0])
             
-            if timeslot:
-                chart.data = ( timeslot.StartTime.strftime( '%H:%M' )
-                               + ' - ' + timeslot.EndTime.strftime( '%H:%M' ) )
+            #the system is simple because only hour value is tracked,
+            end_bound = peak_hour + 1 if (peak_hour < 23) else 0
+            
+            prime_time = (peak_hour, end_bound)
+            chart.data = "%s:00 - %s:00" % prime_time
         
         return chart
     
@@ -344,12 +345,6 @@ def index(request):
             
     else:
         dashboard.charts = Dashboard._chartList
-        
-    
-#        for chart_name in _chartList:
-#            chart_factory = getattr(dashboard, chart_name)
-#            dashboard.charts.append( chart_factory() )
-                
         dashboard=dashboard.toDict()
         return render_to_response('admin/pipture/dashboard.html', {'dashboard': dashboard},
                                   context_instance=RequestContext(request))
