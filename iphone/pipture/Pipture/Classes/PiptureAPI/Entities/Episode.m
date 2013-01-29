@@ -90,7 +90,7 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
         NSString* albumEmailScreenshot = [jsonData objectForKey:JSON_PARAM_ALBUM_EMAIL_SCREENSHOT];
         
         NSString* seriesTitle = [jsonData objectForKey:JSON_PARAM_SERIES_TITLE];
-        NSInteger seriesId = [jsonData intValueForKey:JSON_PARAM_SERIES_ID defaultIfEmpty:0];
+        NSInteger seriesId = [jsonData intValueForKey:JSON_PARAM_SERIES_ID defaultIfEmpty:self.album.series.seriesId];
         
         if (seriesTitle || seriesId || albumTitle || albumSeason || albumEmailScreenshot)
         {
