@@ -40,6 +40,8 @@
 			},
 			error:function(){
 				if (err_count>load_attempts-1){
+					$('#msg_container').show();
+					$('<li/>', {text: chart }).appendTo('#msg_container ul');
 					console.log('Error: ' + chart + ' chart failed');
 					draw_chart_by_index(++index, charts); //draw next chart					
 				} else {
