@@ -23,7 +23,7 @@
 
 {% block breadcrumbs %}
 	<div class="breadcrumbs">
-		<a href="#" onclick="history.back();">{% trans 'Back' %}</a>
+		<a href="{% url admin:index %}">{% trans 'Back' %}</a>
 	</div>
 {% endblock %}
 
