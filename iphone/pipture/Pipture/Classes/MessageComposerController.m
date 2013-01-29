@@ -28,7 +28,7 @@ static NSString* const MESSAGE_PLACEHOLDER = @"Enter your message here";
 }
 - (void)setEmptyMessagePlaceholderIfNeeded
 {
-    if ([self isMessageEmpty]) {        
+    if ([self isMessageEmpty] || [MESSAGE_PLACEHOLDER isEqualToString:[self textView].text] ) {
         textView.text = MESSAGE_PLACEHOLDER;
         textView.textColor = [UIColor grayColor];
         doneButton.enabled = NO;
