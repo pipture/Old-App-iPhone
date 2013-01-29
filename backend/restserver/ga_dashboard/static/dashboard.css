@@ -36,3 +36,17 @@ table td:first-child
 {
 	text-align: center;
 }
+
+#msg_container
+{
+	display: none;
+    border: 1px solid red;
+    border-radius: 5px 5px 5px 5px;
+    padding: 5px 15px;
+    color: red;
+}
+
+#msg_container li
+{
+	padding: 0;
+}

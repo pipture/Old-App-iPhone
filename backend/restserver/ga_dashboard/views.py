@@ -29,7 +29,6 @@ class Dashboard:
         self.charts = []
         
     def toDict(self):
-#        charts = [chart.toDict() for chart in self.charts]
         return {'charts': self.charts}
     
     def sales(self):
