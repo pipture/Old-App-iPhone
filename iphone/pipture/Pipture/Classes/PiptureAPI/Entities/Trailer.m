@@ -31,6 +31,8 @@ static NSString* const JSON_PARAM_ALBUM_TITLE = @"AlbumTitle";
 static NSString* const JSON_PARAM_ALBUM_SEASON = @"AlbumSeason";
 static NSString* const JSON_PARAM_ALBUM_SELL_STATUS = @"SellStatus";
 static NSString* const JSON_PARAM_ALBUM_SERIES_TITLE = @"SeriesTitle";
+static NSString* const JSON_PARAM_SERIES_ID = @"SeriesId";
+static NSString* const JSON_PARAM_ALBUM_ID = @"AlbumId";
 
 
 - (void)dealloc {
@@ -75,9 +77,11 @@ static NSString* const JSON_PARAM_ALBUM_SERIES_TITLE = @"SeriesTitle";
         self.trailerEmailScreenshot = [jsonData objectForKey:JSON_PARAM_EMAIL_SCREENSHOT];                    
 
         self.album = [[Album alloc] init];
+        self.album.albumId = [jsonData intValueForKey:JSON_PARAM_ALBUM_ID defaultIfEmpty:self.album.albumId];
         self.album.title = [jsonData objectForKey:JSON_PARAM_ALBUM_TITLE];
         self.album.season = [jsonData objectForKey:JSON_PARAM_ALBUM_SEASON];
         self.album.sellStatus = [jsonData intValueForKey:JSON_PARAM_ALBUM_SELL_STATUS defaultIfEmpty:self.album.sellStatus];
+        self.album.series.seriesId = [jsonData intValueForKey:JSON_PARAM_SERIES_ID defaultIfEmpty:self.album.series.seriesId];
         self.album.series.title = [jsonData objectForKey:JSON_PARAM_ALBUM_SERIES_TITLE];
     }
     return self;

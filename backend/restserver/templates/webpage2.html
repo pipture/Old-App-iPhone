@@ -21,7 +21,18 @@
     <script type="text/javascript" src="{{ STATIC_URL }}webpage_files/webpage.js"></script>
     <script type="text/javascript">
     	var production = {{ is_production }};
-    	var video_id = {{ video_id }};
+    	var video_name = '{{ video.Title }}';
+    	var album_id   = '{{ video.AlbumId.AlbumId }}';
+    	var series_id  = '{{ video.AlbumId.SeriesId.SeriesId }}';
+    	
+    	{% ifequal 'Episodes' video_type %}
+    		var video_id = '{{ video.EpisodeId }}';
+    	{% else %}
+    		var video_id = '{{ video.TrailerId }}';
+    	{% endifequal %}
+    	
+    	__status_list = { 'N':'NotForSale', 'B':'BuyAlbum', 'P':'AlbumPass' }
+    	album_purchase_status = __status_list['{{ video.AlbumId.PurchaseStatus }}']
     </script>
 	<script type="text/javascript" src="{{ STATIC_URL }}ga.js"></script>
     <link href="{{ STATIC_URL }}webpage_files/webpageMoz.css" type="text/css" rel="stylesheet">
@@ -185,11 +196,14 @@
           </div>
 
 
-		{% if views_limit > 1 %}
 			<div id="id11" style="height: 27px; left: 442px; position: absolute; top: 388px; width: 486px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
 				<div class="text-content graphic_textbox_layout_style_default_External_486_27" style="padding: 0px; ">
 					<div class="graphic_textbox_layout_style_default">
+					{% if views_limit > 1 %}
 						<p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_6">At {{views_limit}} views, this video will have reached its maximum views.</p>
+					{% else %}
+						<p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_6">This video can be viewed unlimited number of times.</p>
+					{% endif %}
 					</div>
 				</div>
 			</div>
@@ -200,7 +214,6 @@
 					</div>
 				</div>
 			</div>
-		{% endif%}
 
         {% if views_limit == -1 %}
             <div id="id13" style="position: absolute; top: 412px; left: 440px; z-index: 100; width: 250px;">

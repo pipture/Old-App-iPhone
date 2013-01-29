@@ -15,6 +15,7 @@
 #import "MailComposerController.h"
 #import "Appirater.h"
 #import "AlbumDetailInfoController.h"
+#import "iVersion.h"
 
 @implementation PiptureAppDelegate
 @synthesize busyView;
@@ -106,8 +107,30 @@ static PiptureAppDelegate *instance;
         [purchases loadStore];
         
         gaTracker = [GANTracker sharedTracker];
+        [self setupIVersion];
     }
     return self;
+}
+
+-(void)setupIVersion{
+    [iVersion sharedInstance].appStoreID = APPIRATER_APP_ID;
+    [iVersion sharedInstance].appStoreCountry = @"US";
+    [iVersion sharedInstance].checkPeriod = 1;
+    
+    [iVersion sharedInstance].remoteVersionsPlistURL = nil;
+    [iVersion sharedInstance].localVersionsPlistPath = nil;
+    [iVersion sharedInstance].useAllAvailableLanguages = NO;
+    [iVersion sharedInstance].showOnFirstLaunch = NO;
+    [iVersion sharedInstance].displayAppUsingStorekitIfAvailable = NO;
+    
+    [iVersion sharedInstance].updateAvailableTitle = @"Update Available";
+    [iVersion sharedInstance].downloadButtonLabel = @"Upgrade";
+    [iVersion sharedInstance].remindButtonLabel = @"Later";
+    [iVersion sharedInstance].ignoreButtonLabel = nil;
+    
+//    [iVersion sharedInstance].checkAtLaunch = YES;
+//    [iVersion sharedInstance].verboseLogging = YES;
+//    [iVersion sharedInstance].applicationVersion = @"0.1";
 }
 
 - (BOOL)homeViewVisible {
@@ -414,6 +437,16 @@ static PiptureAppDelegate *instance;
     }
 }
 
+-(void)adjustBackgroundLogo{
+    UIImage * image = nil;
+    if (IS_IPHONE_5){
+        image = [UIImage imageNamed:@"Default-568h@2x.png"];
+    } else {
+        image = [UIImage imageNamed:@"Default.png"];
+    }
+    [[self backgroundImage] setImage:image];
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
 
@@ -450,6 +483,8 @@ static PiptureAppDelegate *instance;
                    GA_NO_VARS);
     
     [self trackPageviewToGoogleAnalytics:@"/app_entry_point"];
+
+    [self adjustBackgroundLogo];
     
     // Observe the kNetworkReachabilityChangedNotification. When that notification is posted, the
     // method "reachabilityChanged" will be called. 
@@ -788,10 +823,11 @@ NSInteger networkActivityIndecatorCount;
     HomeViewController * vc = [self getHomeView];
     if (vc) {
         switch ([sender tag]) {
-            case TABBARITEM_CHANNEL: 
-                if ([channelButton imageForState:UIControlStateNormal] != [UIImage imageNamed:@"nav-button-channel-active.png"]) {
-                    [vc setHomeScreenMode:HomeScreenMode_Last]; 
-                }
+            case TABBARITEM_CHANNEL:
+                //commented out since #21917
+//                if ([channelButton imageForState:UIControlStateNormal] != [UIImage imageNamed:@"nav-button-channel-active.png"]) {
+                    [vc setHomeScreenMode:HomeScreenMode_Last];
+//                }
                 break;
                 
             case TABBARITEM_LIBRARY: 
@@ -956,6 +992,12 @@ NSInteger networkActivityIndecatorCount;
 
 -(void)authenticationFailed {
     NSLog(@"auth failed!");
+}
+
+-(NSString*)currentHour{
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *date = [calendar components: NSHourCalendarUnit fromDate: [NSDate date]];
+    return [NSString stringWithFormat: @"%d", [date hour] ];
 }
 
 @end

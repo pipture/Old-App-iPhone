@@ -20,6 +20,7 @@ enum TimeslotStatus{
 
 @property(assign, nonatomic) NSInteger timeslotId;
 @property(assign, nonatomic) NSInteger albumId;
+@property(assign, nonatomic) NSInteger seriesId;
 @property(retain, nonatomic) NSDate* startTime;
 @property(retain, nonatomic) NSDate* endTime;
 @property(retain, nonatomic) NSDate* startLocalTime;

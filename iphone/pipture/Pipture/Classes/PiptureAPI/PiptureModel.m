@@ -640,7 +640,7 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
 
 -(BOOL)getAlbumsForReciever:(NSObject<AlbumsReceiver>*)receiver {
     
-    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_ALBUMS_REQUEST]];
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithString:GET_ALBUMS_REQUEST]];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url 
                                                                callback:^(NSDictionary* jsonResult,
@@ -674,7 +674,7 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
 }
 
 -(BOOL)getSellableAlbumsForReceiver:(NSObject<SellableAlbumsReceiver>*)receiver {
-    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_SELLABLE_ALBUMS_REQUEST]];
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithString:GET_SELLABLE_ALBUMS_REQUEST]];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url
                                                                callback:^(NSDictionary* jsonResult,
@@ -1107,7 +1107,7 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
 }
 
 -(BOOL)getUnusedMessageViews:(NSObject<UnreadMessagesReceiver>*)receiver {
-    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:GET_UNREADED_MESSAGES]];
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithString:GET_UNREADED_MESSAGES]];
     
     DataRequest*request = [dataRequestFactory_ createDataRequestWithURL:url
                                                                callback:^(NSDictionary* jsonResult,
@@ -1216,7 +1216,7 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
 
 -(BOOL)deactivateMessageViews:(NSNumber *)periodId 
                      receiver:(NSObject<BalanceReceiver>*)receiver {
-    NSURL* url = [self buildURLWithRequest:[NSString stringWithFormat:SEND_DEACTIVATE_MESSAGES]];
+    NSURL* url = [self buildURLWithRequest:[NSString stringWithString:SEND_DEACTIVATE_MESSAGES]];
     
     NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@", 
                         REST_PARAM_API, 
@@ -1376,16 +1376,13 @@ static NSString* const JSON_PARAM_FREE_VIEWERS_FOR_EPISODE = @"FreeViewersForEpi
     
     if (sendKey && [sessionKey length]>0)
     {
-        finalURL = [finalURL stringByAppendingFormat:[NSString stringWithFormat:@"&%@=%@",
-                                                      REST_PARAM_SESSION_KEY, sessionKey]];
+        finalURL = [finalURL stringByAppendingFormat:@"&%@=%@", REST_PARAM_SESSION_KEY, sessionKey];
     }
 
     if (timeZone)
     {
         NSDateFormatter *date_formater=[[NSDateFormatter alloc]init];
-        finalURL = [finalURL stringByAppendingFormat:[NSString stringWithFormat:@"&%@=%@",
-                                                      REST_PARAM_TIMEZONE,
-                                                      [NSString stringWithString:(NSString *) [[date_formater timeZone] name]]]];
+        finalURL = [finalURL stringByAppendingFormat: @"&%@=%@", REST_PARAM_TIMEZONE, [[date_formater timeZone] name]];
         [date_formater release];
     }
 

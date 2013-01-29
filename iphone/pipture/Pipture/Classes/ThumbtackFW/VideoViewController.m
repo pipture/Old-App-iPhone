@@ -281,10 +281,10 @@ static NSString* const tooltipFlag = @"hideTooltip";
         NSMutableArray* ga_vars = [item getCustomGAVariables:nil];
         
         NSString *_timeslotId = [NSString stringWithFormat: @"%@", self.timeslotId];
-        [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_TIMESLOT_ITEM,
-                                            @"timeslotId",
+        [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_CLIENT_TIME_AND_TIMESLOT_ITEM,
+                                            [[PiptureAppDelegate instance] currentHour],
                                             _timeslotId)];
-        GA_TRACK_EVENT(GA_EVENT_TIMESLOT_PLAY, 
+        GA_TRACK_EVENT(GA_EVENT_TIMESLOT_PLAY,
                        item.videoName, 
                        GA_NO_VALUE, 
                        ga_vars);

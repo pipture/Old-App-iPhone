@@ -20,8 +20,6 @@ enum ComposeType {
     COMPOSETYPE_TWEET = 1,
     };
 
-static const char *composeTypeStr[] = { "Email", "Tweet"};
-
 @interface MailComposerController : UIViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
 
 {

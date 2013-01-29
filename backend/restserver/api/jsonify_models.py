@@ -150,6 +150,7 @@ class JsonifyModels(object):
                 album = episode.AlbumId
                 episode_json.update({
                     "AlbumId": album.AlbumId,
+                    "SeriesId": album.SeriesId.SeriesId,
                     "AlbumTitle": album.Title,
                     "AlbumSeason": album.Season,
                     "AlbumSquareThumbnail": album.SquareThumbnail,
@@ -189,6 +190,7 @@ class JsonifyModels(object):
             "ScheduleDescription": timeslot.ScheduleDescription,
             "Title": timeslot.AlbumId.SeriesId.Title,
             "AlbumId": timeslot.AlbumId.AlbumId,
+            "SeriesId": timeslot.AlbumId.SeriesId.SeriesId,
             "CloseupBackground": timeslot.AlbumId.CloseUpBackground,
             "TimeslotStatus": timeslot.get_status(),
         }

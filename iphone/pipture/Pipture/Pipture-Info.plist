@@ -43,7 +43,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.0</string>
+	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -97,11 +97,11 @@
 	<key>Rest Send message</key>
 	<string>sendMessage</string>
 	<key>Rest end point</key>
-	<string>http://54.243.135.128/</string>
+	<string>http://192.168.9.85:8000/</string>
 	<key>Rest end point Martin</key>
 	<string>http://54.243.135.128/</string>
 	<key>Rest end point local</key>
-	<string>http://192.168.9.235:8000/</string>
+	<string>http://192.168.9.85:8000/</string>
 	<key>Rest end point thumbtack</key>
 	<string>http://ec2-67-202-46-61.compute-1.amazonaws.com/</string>
 	<key>UIPrerenderedIcon</key>

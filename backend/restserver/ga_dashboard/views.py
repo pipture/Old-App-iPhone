@@ -14,12 +14,12 @@ from api.ga_v3_service import PiptureGAClient
 from api.errors import ServiceUnavailable, NotFound
 from django.utils import simplejson
 
-from restserver.pipture.models import Videos, Albums, Series, UserPurchasedItems, TimeSlots
+from restserver.pipture.models import Episodes, Albums, Series, UserPurchasedItems, TimeSlots
 
 ga = PiptureGAClient(exception_class=ServiceUnavailable)
 
 class Dashboard:
-    _chartList = ('store_vs_free', 'views_among_bases', 'video_distribution',
+    _chartList = ('store_vs_free', 'views_among_bases', 'distribution',
                           'sales', 'prime_time', 'schedule_adoption', 'videos_among_albums', 
                           'top_50_video', 'top_50_video_in_app', 'top_5_albums', 'top_5_series',
                           'worst_albums', 'worst_series')
@@ -29,11 +29,11 @@ class Dashboard:
         self.charts = []
         
     def toDict(self):
-#        charts = [chart.toDict() for chart in self.charts]
         return {'charts': self.charts}
     
     def sales(self):
-        sales = UserPurchasedItems.objects.all().count()
+        start_date = ga.default_min_date()
+        sales = UserPurchasedItems.objects.filter(Date__gte = start_date).count()
         
         chart = Chart('Metric', 'Sales')
         chart.data = sales
@@ -41,9 +41,9 @@ class Dashboard:
         return chart
     
     def store_vs_free(self):
-        all   = Albums.objects.all().count()
-        free = Albums.objects.filter(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE).count()
+        all  = Albums.objects.all().count()
         
+        free = Albums.objects.filter(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE,HiddenAlbum=False).count()
         chart = Chart('PieChart', 'Store vs Free')
         chart.data = [
             ['Album type', 'Count'],
@@ -61,21 +61,31 @@ class Dashboard:
         for ga_album in ga_albums:
             id, views = ga_album
             try:   
-                album_title = Albums.objects.get(Title=id).SeriesId.Title
-            except Albums.DoesNotExist:
-                album_title = "Album is undefined"
+                album = Albums.objects.get(AlbumId=id)
+            except (ValueError, Albums.DoesNotExist):
+                album = "Undefined"
                 
-            rows.append( [views, '[%s] %s' % (id, album_title)] )
+            rows.append( [views, str(album)] )
         
         chart.data = {'rows':rows, 'columns':columns}
         return chart
         
     def worst_albums(self):
-        ga_albums = ga.get_most_popular_albums(limit=None, reversed=True)
+        video_type = ga.custom_vars['video_type']
+        type  = '%s==EpisodeId' % (video_type)
+        event = ga.get_event_filter('video_play')
+        
+        ga_albums = ga.get_most_popular_albums(limit=None, reversed=True, filter=(event, type))
+        
         return self.albums_table('Worst Albums', ga_albums)
     
     def top_5_albums(self):
-        ga_albums = ga.get_most_popular_albums(limit=5)
+        video_type = ga.custom_vars['video_type']
+        type  = '%s==EpisodeId' % (video_type)
+        event = ga.get_event_filter('video_play')
+        
+        ga_albums = ga.get_most_popular_albums(limit=5, filter=(event, type))
+        
         return self.albums_table('Top 5 Albums', ga_albums)
     
     
@@ -86,14 +96,13 @@ class Dashboard:
         columns = [ {'type':'string', 'name':'Views'}, {'type':'string', 'name':'Series title'} ]
         
         for ga_seria in ga_series:
-            title, views = ga_seria
-            title = urllib2.unquote(title)
+            id, views = ga_seria
             try:   
-                series_id = Series.objects.get(Title=title).SeriesId
-            except Series.DoesNotExist:
-                series_id = 'undefined'
+                seria = Series.objects.get(SeriesId=id)
+            except (ValueError, Series.DoesNotExist):
+                seria = 'Undefined'
                 
-            rows.append( [views, '[%s] %s' % (series_id, title)] )
+            rows.append( [views, str(seria)] )
             
         chart.data = {'rows':rows, 'columns':columns}
         return chart
@@ -116,12 +125,12 @@ class Dashboard:
         
         for ga_video in ga_videos:
             type, id, views = ga_video
-            try:   
-                video_title = Videos.objects.get(VideoId=id).VideoDescription
-            except Videos.DoesNotExist:
-                video_title = 'Video is undefined'
-                
-            rows.append( [views, '[%s] %s' % (id,video_title)] )
+            try:
+                video = Episodes.objects.get(EpisodeId=id)
+            except (ValueError, Episodes.DoesNotExist):
+                video = 'Undefined'
+            
+            rows.append( [views, str(video)] )
         
         chart.data = {'rows':rows, 'columns':columns}
         return chart
@@ -130,9 +139,10 @@ class Dashboard:
         event = ga.get_event_filter('video_play')
         video_type = ga.custom_vars['video_type']
         type = '%s==EpisodeId' % (video_type)
-        source = '%s==%s' % ('ga:source','(direct)')
+        app        = 'ga:browser==%s'  % ga.app_browser_name
+        mobile     = 'ga:isMobile==%s' % 'Yes'
         
-        ga_videos = ga.get_most_popular_videos(limit=50, filter=(event, type, source), dimensions=[video_type,])
+        ga_videos = ga.get_most_popular_videos(limit=50, filter=(event, type, app, mobile), dimensions=[video_type,])
         return self.video_table('Top 50 Videos In The App', ga_videos)
            
     def top_50_video(self):
@@ -144,28 +154,29 @@ class Dashboard:
         return self.video_table('Top 50 Videos', ga_videos)
     
     def videos_among_albums(self):
-        ga_albums = ga.get_most_popular_albums(limit=5)
         
         chart = Chart('Tables', 'Top 5 videos 5 most watched albums')
         chart.data = []
         
+        album_id   = ga.custom_vars['album_id']
+        video_type = ga.custom_vars['video_type']
+        type  = '%s==EpisodeId' % (video_type)
+        event = ga.get_event_filter('video_play')
+
+        ga_albums = ga.get_most_popular_albums(limit=5, filter=(event, type))
+        
         for ga_album in ga_albums:
             id, views = ga_album
             try:   
-                album_title = Albums.objects.get(Title=id).SeriesId.Title
-            except Albums.DoesNotExist:
-                album_title = "Album is undefined"
+                album = Albums.objects.get(AlbumId=id)
+            except (ValueError, Albums.DoesNotExist):
+                continue
             
-            table_name = '(%s views) [%s] %s' % (views, id, album_title)     
+            album_filter = '%s==%s' % (album_id, album.AlbumId)
+            ga_videos = ga.get_most_popular_videos(limit=5, filter=(event, type, album_filter), dimensions=[video_type,])
             
-            event = ga.get_event_filter('video_play')
-            video_type = ga.custom_vars['video_type']
-            type  = '%s==EpisodeId' % (video_type)
-            album = '%s==%s' % (ga.custom_vars['album_id'], id)
-            
-            ga_videos = ga.get_most_popular_videos(limit=5, filter=(event, type, album), dimensions=[video_type,])
-            
-            subchart = self.video_table(table_name, ga_videos)
+            title = '[%s views] %s' % (views, str(album))
+            subchart = self.video_table(title, ga_videos)
             chart.data.append(subchart)
     
         return chart
@@ -210,37 +221,39 @@ class Dashboard:
     
     def prime_time(self):
         chart = Chart('Metric', 'Prime Time')
+        chart.data = 'Undefined'
         
-        event = ga.get_event_filter('timeslot_play')
-        ga_timeslot_ids = ga.get_top_timeslots(limit=1, filter=(event,))
-        try:
-            timeslot = TimeSlots.objects.get(TimeSlotsId=ga_timeslot_ids[0])
-        except TimeSlots.DoesNotExist:
-            timeslot = None
-        
-        if timeslot:
-            chart.data = ( timeslot.StartTime.strftime( '%H:%M' )
-                           + ' - ' + timeslot.EndTime.strftime( '%H:%M' ) )
-        else:
-            chart.data = 'Undefined'
+        action = "%s==%s" % ('ga:eventAction', 'Play')
+        hour = ga.custom_vars['client_hour']
+        ga_hours = ga.get_rows(limit=24, filters=(action,), dimensions=(hour,))
+        if ga_hours:
+            ga_hours  = sorted(ga_hours, key=lambda k:k[1])
+            try:
+                peak_hour = (int)(ga_hours[-1][0])
+                #the system is simple because only hour value is tracked,
+                end_bound = peak_hour + 1 if (peak_hour < 23) else 0
+                
+                prime_time = (peak_hour, end_bound)
+                chart.data = "%s:00 - %s:00" % prime_time
+            except ValueError:
+                pass
         
         return chart
     
     def views_among_bases(self):
-        video_id   = 'ga:eventLabel'
         app        = 'ga:browser==%s'  % ga.app_browser_name
         browser    = 'ga:browser!=%s'  % ga.app_browser_name
         mobile     = 'ga:isMobile==%s' % 'Yes'
         not_mobile = 'ga:isMobile==%s' % 'No'
-    #    twitter_views = ga.get_views()
+    #    twitter_views = ga.get_count()
     
         event = ga.get_event_filter('video_play')
-        library_views = ga.get_views(filter=(event, app, mobile))
-        web_mobile_views = ga.get_views(filter=(event, browser, mobile))
-        web_desktop_views = ga.get_views(filter=(event, browser, not_mobile))
+        library_views = ga.get_count(filter=(event, app, mobile))
+        web_mobile_views = ga.get_count(filter=(event, browser, mobile))
+        web_desktop_views = ga.get_count(filter=(event, browser, not_mobile))
         
         event = ga.get_event_filter('timeslot_play')
-        pwrbtn_views = ga.get_views(filter=(event,))
+        pwrbtn_views = ga.get_count(filter=(event,))
         
         chart = Chart('PieChart', 'Views')
         chart.data = [
@@ -252,20 +265,31 @@ class Dashboard:
         ]
         return chart
     
-    def video_distribution(self):
-        video_id   = 'ga:eventLabel'
+    def distribution(self):
         event = ga.get_event_filter('video_send')
+        purchase_status = ga.custom_vars['purcahse_status']
+        message_limit = ga.custom_vars['message_limit']
+        
         twitter = 'ga:eventLabel==%s' % ga.twitter_msg
         email   = 'ga:eventLabel==%s' % ga.email_msg
         
-        tweet_count = ga.get_views(filter=(event, twitter))
-        email_count = ga.get_views(filter=(event, email))
+        common    = '%s!=%s' % (purchase_status, 'Purchased')
+        exclusive = '%s==%s' % (purchase_status, 'Purchased')
+        infinite  = '%s==%s' % (message_limit, '-1')
+        limited   = '%s!=%s' % (message_limit, '-1')
+        
+        tweet = ga.get_count(filter=(event, twitter))
+        email_exclusive = ga.get_count(filter=(event, email, exclusive))
+        email_limited   = ga.get_count(filter=(event, email, common, limited))
+        email_infinite  = ga.get_count(filter=(event, email, common, infinite))
         
         chart = Chart('PieChart', 'Distribution')
         chart.data = [
             ['Type', 'Count'],
-            ['Email', email_count],
-            ['Twitter' , tweet_count]
+            ['Twitter' , tweet],
+            ['Email Exclusive', email_exclusive],
+            ['Email Limited', email_limited],
+            ['Email Infinite', email_infinite],
         ]
         return chart
 
@@ -292,7 +316,7 @@ class Chart:
         elif (type == 'Metric'):
             self.options['width'] = '12%'
         else:
-            self.options['width'] = '23%'
+            self.options['width'] = '24%'
         
     def toDict(self):
         data = None
@@ -323,12 +347,6 @@ def index(request):
             
     else:
         dashboard.charts = Dashboard._chartList
-        
-    
-#        for chart_name in _chartList:
-#            chart_factory = getattr(dashboard, chart_name)
-#            dashboard.charts.append( chart_factory() )
-                
         dashboard=dashboard.toDict()
         return render_to_response('admin/pipture/dashboard.html', {'dashboard': dashboard},
                                   context_instance=RequestContext(request))

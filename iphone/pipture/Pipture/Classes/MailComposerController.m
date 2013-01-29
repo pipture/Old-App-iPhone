@@ -30,6 +30,8 @@
 #define DEFAULT_NUMBER_OF_VIEWS 1
 #define NOT_CONFIRMABLE_NUMBER_OF_VIEWS 50
 
+static const char *composeTypeStr[] = { "Email", "Tweet"};
+
 @interface ScreenshotsReceiverWraper : NSObject<ScreenshotCollectionReceiver> {
     NSObject<ScreenshotCollectionReceiver>* wrappedObject_;
 }
@@ -662,6 +664,10 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_MESSAGE_LENGTH_AND_VIEWS,
                                         _messageLength,
                                         _viewsCount)];
+    NSString *sellStatusName = @"PurchaseStatus";
+    [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_ALBUM_SELL_STATUS,
+                                        sellStatusName,
+                                        [self.playlistItem.album formatSellStatus])];
     
     GA_TRACK_EVENT(event,
                    [NSString stringWithCString:composeTypeStr[composeType] encoding:NSUTF8StringEncoding] ,
