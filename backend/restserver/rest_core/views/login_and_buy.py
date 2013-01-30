@@ -80,7 +80,7 @@ class GetBalance(GetView, PurchaserValidationMixin):
 
         try:
             self.episode = episode_id and self.caching.get_episode(episode_id)
-            if self.episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE:
+            if not self.episode or self.episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE:
                 self.episode = None
         except ValueError:
             raise WrongParameter(parameter='EpisodeId')
