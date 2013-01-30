@@ -96,9 +96,13 @@
     self.noAlbumsLabel.hidden = !((filteredAlbums.count == 0) && filterOnPurchasedAlbums);
     
     int rows = ([filteredAlbums count] + (3 - 1)) / 3;
-    int hightRows = MAX(2, rows);
+    int hightRows = MAX(1, rows);
+    
+    float calculatedHeight = ITEM_HEIGHT * hightRows + libraryCardHeight + OFFSET_FROM_LIB_CARD;
+    float minHeight = [[UIScreen mainScreen] bounds].size.height - libraryCardHeight;
+    
     scrollView.contentSize = CGSizeMake(rect.size.width,
-                                        ITEM_HEIGHT * hightRows + libraryCardHeight + OFFSET_FROM_LIB_CARD + 8); 
+                                        MAX(calculatedHeight, minHeight));
     
     int i = 0;
     
@@ -194,7 +198,7 @@
 }
 
 -(void)fixLibraryCardOffsetIfNeeded {
-    if (!libraryCardVisible && (scrollView.contentOffset.y < libraryCardHeight)){
+    if (!libraryCardVisible && (scrollView.contentOffset.y < libraryCardHeight - 5)){
         [self setLibraryCardVisibility:YES withAnimation:YES];
     } else if (libraryCardVisible)
     {
