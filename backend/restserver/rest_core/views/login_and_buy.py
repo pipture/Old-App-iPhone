@@ -18,9 +18,8 @@ from api.validation_mixins import PurchaserValidationMixin
 from restserver.pipture.models import AppleProducts, PurchaseItems,\
                                       UserPurchasedItems, Transactions, \
                                       PipUsers, Purchasers, Episodes, \
-                                      FreeMsgViewers, PiptureSettings
+                                      FreeMsgViewers, PiptureSettings, Albums
 
-from annoying.functions import get_object_or_None
 from apiclient.errors import HttpError
 
 
@@ -81,6 +80,8 @@ class GetBalance(GetView, PurchaserValidationMixin):
 
         try:
             self.episode = episode_id and self.caching.get_episode(episode_id)
+            if self.episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE:
+                self.episode = None
         except ValueError:
             raise WrongParameter(parameter='EpisodeId')
         except Episodes.DoesNotExist:
@@ -90,15 +91,12 @@ class GetBalance(GetView, PurchaserValidationMixin):
         free_viewers = None
 
         if self.episode:
-            free_viewers = get_object_or_None(FreeMsgViewers,
-                                              Purchaser=self.user.Purchaser,
-                                              EpisodeId=self.episode)
-            if free_viewers:
-                free_viewers = int(free_viewers.Rest)
-            elif self.caching.is_episode_purchased(self.episode):
-                free_viewers = settings.MESSAGE_VIEWS_LOWER_LIMIT
+            free_viewers, created = FreeMsgViewers.objects.get_or_create(Purchaser=self.user.Purchaser,
+                                         EpisodeId=self.episode)
+            free_viewers = int(free_viewers.Rest)
 
         return free_viewers
+
 
     def get_context_data(self):
         return dict(Balance=str(self.user.Purchaser.Balance),
