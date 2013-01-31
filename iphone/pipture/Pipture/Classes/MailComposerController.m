@@ -370,9 +370,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
             if (buttonIndex == 1){
                 [[PiptureAppDelegate instance] buyViews];
             }
-            else{
-                [self onCancel:nil];
-            }
+//            else{
+//                [self onCancel:nil];
+//            }
             break;
     }
 }
