@@ -41,7 +41,7 @@ class Dashboard:
         return chart
     
     def store_vs_free(self):
-        all  = Albums.objects.all().count()
+        all  = Albums.objects.filter(HiddenAlbum=False).count()
         
         free = Albums.objects.filter(PurchaseStatus=Albums.PURCHASE_TYPE_NOT_FOR_SALE,HiddenAlbum=False).count()
         chart = Chart('PieChart', 'Store vs Free')
