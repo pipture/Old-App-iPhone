@@ -110,7 +110,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
 }
 
 - (void)setupSubtitles:(PlaylistItem*) item {
-    sendButton.hidden = fromStore && [item class] != [Trailer class];
+    hideTooltip = sendButton.hidden = (fromStore && [item class] != [Trailer class]);
     
     SubRip * newsubtitles = [[SubRip alloc] initWithString:item.videoSubs];
     [subtitles release];
@@ -458,7 +458,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
     [pauseButton setImage:[UIImage imageNamed:@"Button-Pause.png"] forState:UIControlStateNormal];
     [pauseButton setImage:[UIImage imageNamed:@"Button-Pause-press.png"] forState:UIControlStateHighlighted];
     
-    sendButton.hidden = fromStore;
+    hideTooltip = tooltip.hidden = fromStore;
     
     [self destroyNextItem];
     
