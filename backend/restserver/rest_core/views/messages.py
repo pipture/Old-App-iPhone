@@ -191,27 +191,27 @@ class DeactivateMessageViews(PostView, PurchaserValidationMixin,
         weekdate = datetime.utcnow() - timedelta(7)
         group = 0
 
-        try:
-            purchased_episodes = self.caching.get_purchased_episodes()
-        except NoContent:
-            purchased_episodes = None
+#        try:
+#            purchased_episodes = self.caching.get_purchased_episodes()
+#        except NoContent:
+#            purchased_episodes = None
             
-        if purchased_episodes is not None:
-            for message in self.messages:
-                if self.period == 0 or \
-                        (message.Timestamp >= weekdate and self.period == 1) or \
-                        (message.Timestamp < weekdate and self.period == 2):
-    
-                    cnt = 0
-                    if purchased_episodes.filter(EpisodeId=message.LinkId):
-                        rest = message.ViewsLimit - max(message.ViewsCount,
-                                                        message.FreeViews)
-                        if rest > 0:
-                            cnt = rest
-    
-                    group += cnt
-                    if cnt > 0:
-                        self.update_message(message)
+#        if purchased_episodes is not None:
+        for message in self.messages:
+            if self.period == 0 or \
+                    (message.Timestamp >= weekdate and self.period == 1) or \
+                    (message.Timestamp < weekdate and self.period == 2):
+
+                cnt = 0
+#                if purchased_episodes.filter(EpisodeId=message.LinkId):
+                rest = message.ViewsLimit - max(message.ViewsCount,
+                                                message.FreeViews)
+                if rest > 0:
+                    cnt = rest
+
+                group += cnt
+                if cnt > 0:
+                    self.update_message(message)
 
         if group > 0:
             self.user.Purchaser.Balance += group
