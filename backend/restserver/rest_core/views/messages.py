@@ -147,25 +147,24 @@ class GetUnusedMessageViews(GetView, PurchaserValidationMixin,
         group1, group2 = 0, 0
 
 
-        try:
-            purchased_episodes = self.caching.get_purchased_episodes()
-        except NoContent:
-            purchased_episodes = None
+#        try:
+#            purchased_episodes = self.caching.get_purchased_episodes()
+#        except NoContent:
+#            purchased_episodes = None
             
-        if purchased_episodes is not None:
-            for message in self.messages:
-                cnt = 0
-                if purchased_episodes.filter(EpisodeId=message.LinkId):
-                    rest = message.ViewsLimit - max(message.ViewsCount,
-                                                    message.FreeViews)
-                    if rest > 0:
-                        cnt = rest
-    
-                if message.Timestamp is not None:
-                    if message.Timestamp >= week_date:
-                        group1 += cnt
-                    else:
-                        group2 += cnt
+#        if purchased_episodes is not None:
+        for message in self.messages:
+            cnt = 0
+            rest = message.ViewsLimit - max(message.ViewsCount,
+                                            message.FreeViews)
+            if rest > 0:
+                cnt = rest
+
+            if message.Timestamp is not None:
+                if message.Timestamp >= week_date:
+                    group1 += cnt
+                else:
+                    group2 += cnt
         return group1, group2
 
     def get_context_data(self):
