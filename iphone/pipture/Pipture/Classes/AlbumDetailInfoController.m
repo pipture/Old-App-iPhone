@@ -51,7 +51,7 @@
 @synthesize numberOfViewsLabel;
 @synthesize scheduleLabel;
 @synthesize scheduleLabelView;
-@synthesize fromHotNews;
+@synthesize notFromStore;
 @synthesize noVideosLabel;
 @synthesize progressLabel;
 
@@ -749,13 +749,13 @@
 - (BOOL)isFromStore {
     BOOL sellable = album.sellStatus == AlbumSellStatus_Buy ||
                     album.sellStatus == AlbumSellStatus_Pass;
-    return sellable && !fromHotNews;
+    return sellable && !notFromStore;
 }
 
 - (BOOL)isSellableFromHotNews {
     BOOL sellable = album.sellStatus == AlbumSellStatus_Buy ||
                     album.sellStatus == AlbumSellStatus_Pass;
-    return sellable && fromHotNews;
+    return sellable && notFromStore;
 }
 
 - (NSString*)albumSchedule {

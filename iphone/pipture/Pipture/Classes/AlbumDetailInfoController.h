@@ -38,7 +38,7 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) ScheduleModel* scheduleModel;
 @property (retain, nonatomic) IBOutlet UIView *purchasedInfoView;
 @property (assign, nonatomic) NSInteger timeslotId;
-@property (assign, nonatomic) BOOL fromHotNews;
+@property (assign, nonatomic) BOOL notFromStore;
 @property (assign, nonatomic) UIBarButtonItem *store;
 
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;

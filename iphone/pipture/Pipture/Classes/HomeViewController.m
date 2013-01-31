@@ -823,7 +823,9 @@
               album:(Album*)album 
          timeslotId:(NSInteger)timeslotId {
     PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
-    BOOL isFromHotNews = homeScreenMode == HomeScreenMode_Cover;
+    BOOL isNotFromStore
+        = homeScreenMode == HomeScreenMode_Cover
+        || homeScreenMode == HomeScreenMode_PlayingNow;
     [appDelegate putHomescreenState:HomeScreenMode_Cover];
     
     NSLog(@"details open");
@@ -841,7 +843,7 @@
         adic.timeslotId = timeslotId;
         adic.scheduleModel = scheduleModel;
         adic.store = [[UIBarButtonItem alloc] initWithCustomView:storeButton];
-        adic.fromHotNews = isFromHotNews;
+        adic.notFromStore = isNotFromStore;
         
         [self.navigationController pushViewController:adic animated:YES];
         [[PiptureAppDelegate instance] tabbarVisible:YES slide:YES];
