@@ -302,7 +302,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
             numberOfFreeViews = FREE_NUMBER_OF_VIEWS;
         }
         
-        purchViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)? purchViews - numberOfFreeViews: purchViews;
+        purchViews = (ep.album.sellStatus != AlbumSellStatus_NotSellable)? purchViews - numberOfFreeViews: purchViews;
         
         if (purchViews < NOT_CONFIRMABLE_NUMBER_OF_VIEWS) {
             [self sendMessageURLRequest:COMPOSETYPE_EMAIL];

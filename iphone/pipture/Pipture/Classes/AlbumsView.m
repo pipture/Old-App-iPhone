@@ -158,7 +158,6 @@
         }
     }
     
-    [self setLibraryCardVisibility:NO withAnimation:NO];
     if (needToUpdate) {
         for (int i = 0; i < albums.count; i++) {
             AlbumItemViewController * item = [[AlbumItemViewController alloc] initWithNibName:@"AlbumItemView"
@@ -175,6 +174,7 @@
     
     [self filterOnPurchasedAlbums:filterOnPurchasedAlbums];
     needToUpdate_ = NO;
+    [self setLibraryCardVisibility:NO withAnimation:YES];
 }
 
 
