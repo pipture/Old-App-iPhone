@@ -58,6 +58,7 @@
     [back release];
     
     asyncImageViews = [[NSMutableDictionary alloc] init];
+    [searchField becomeFirstResponder];
 }
 
 
