@@ -830,7 +830,7 @@ NSInteger networkActivityIndecatorCount;
             case TABBARITEM_CHANNEL:
                 //commented out since #21917
 //                if ([channelButton imageForState:UIControlStateNormal] != [UIImage imageNamed:@"nav-button-channel-active.png"]) {
-                    [vc setHomeScreenMode:HomeScreenMode_Last];
+                    [vc setHomeScreenMode:HomeScreenMode_Cover];
 //                }
                 break;
                 
