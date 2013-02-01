@@ -824,7 +824,8 @@
          timeslotId:(NSInteger)timeslotId {
     PiptureAppDelegate *appDelegate = [PiptureAppDelegate instance];
     BOOL isNotFromStore
-        = homeScreenMode == HomeScreenMode_Cover
+         = homeScreenMode == HomeScreenMode_Cover
+        || homeScreenMode == HomeScreenMode_Schedule
         || homeScreenMode == HomeScreenMode_PlayingNow;
     [appDelegate putHomescreenState:HomeScreenMode_Cover];
     
