@@ -686,13 +686,13 @@
                 break;
             case HomeScreenMode_Albums:
                 // Commented out since #21362
-                [appDelegate 
-                 showWelcomeScreenWithTitle:@"About Pipture Library."
-                 message: @"Browse videos in your Library to discover\nnew installments of scheduled series\nas they appear in their albums.\n\nView exclusive video programs at\ntheir scheduled times - or purchase an\nalbum pass to access them via our store.\n\nAdd Viewers to your Library Card and send\nvideos from exclusive albums to your\nfriends at only $0.0099 per viewer."
-                 storeKey:@"LibraryWelcomeShown"
-                 image:NO
-                 tag:WELCOMESCREEN_LIBRARY
-                 delegate:self];
+//                [appDelegate 
+//                 showWelcomeScreenWithTitle:@"About Pipture Library."
+//                 message: @"Browse videos in your Library to discover\nnew installments of scheduled series\nas they appear in their albums.\n\nView exclusive video programs at\ntheir scheduled times - or purchase an\nalbum pass to access them via our store.\n\nAdd Viewers to your Library Card and send\nvideos from exclusive albums to your\nfriends at only $0.0099 per viewer."
+//                 storeKey:@"LibraryWelcomeShown"
+//                 image:NO
+//                 tag:WELCOMESCREEN_LIBRARY
+//                 delegate:self];
                 
                 [tabbarContainer addSubview:albumsView];
 //                [UIView transitionWithView:tabbarContainer duration:1.0
