@@ -432,11 +432,12 @@ static PiptureAppDelegate *instance;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    if ([[PiptureAppDelegate instance] getHomescreenState] == HomeScreenMode_Albums){
+    if ([[PiptureAppDelegate instance] getHomescreenState] == HomeScreenMode_Albums
+        && ![purchases isInProcess])
+    {
         HomeViewController * vc = [[PiptureAppDelegate instance] getHomeView];
         if (vc)
             [vc.albumsView removeFromSuperview];
-        
     }
     
 }
