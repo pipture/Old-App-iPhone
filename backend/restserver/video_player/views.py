@@ -248,6 +248,7 @@ def index(request, u_url):
             'cover_pic': cover_pic,
             'sent_date': sent_date,
             'from': "%s" % urs_instance.UserName,
+            'seo' : True if (limit == -1 and video.__class__.__name__ == 'Episodes') else False,
             'is_production':int(PRODUCTION)}
     return render_to_response(template_h, data,
                               context_instance=RequestContext(request))
