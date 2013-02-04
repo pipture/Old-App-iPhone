@@ -72,5 +72,6 @@ enum DetailAlbumViewType {
 -(void)setLibraryCardVisibility:(BOOL)visibility withAnimation:(BOOL)animation;
 
 -(BOOL)isFromStore;
+-(BOOL)isSellable;
 
 @end

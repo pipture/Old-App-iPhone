@@ -412,7 +412,8 @@
             [[PiptureAppDelegate instance] showVideo:playlist
                                               noNavi:YES 
                                           timeslotId:nil
-                                           fromStore:[self isFromStore]];
+                                           fromStore:[self isFromStore]
+                                             forSale:[self isSellable]];
             //[[PiptureAppDelegate instance] getVideoURL:episode forTimeslotId:nil receiver:self];
             
         }
@@ -533,7 +534,8 @@
     [[PiptureAppDelegate instance] showVideo:playlist 
                                       noNavi:YES 
                                   timeslotId:nil
-                                   fromStore:[self isFromStore]];
+                                   fromStore:[self isFromStore]
+                                     forSale:[self isSellable]];
 }
 
 -(void)videoNotPurchased:(PlaylistItem*)playlistItem {
@@ -697,7 +699,8 @@
         [[PiptureAppDelegate instance] showVideo:playlist
                                           noNavi:YES
                                       timeslotId:nil
-                                       fromStore:[self isFromStore]];
+                                       fromStore:[self isFromStore]
+                                         forSale:NO];
     }
 }
 
@@ -747,9 +750,11 @@
 }
 
 - (BOOL)isFromStore {
-    BOOL sellable = album.sellStatus == AlbumSellStatus_Buy ||
-                    album.sellStatus == AlbumSellStatus_Pass;
-    return sellable && !notFromStore;
+    return [self isSellable] && !notFromStore;
+}
+
+- (BOOL)isSellable {
+    return album.sellStatus == AlbumSellStatus_Buy || album.sellStatus == AlbumSellStatus_Pass;
 }
 
 - (BOOL)isSellableFromHotNews {

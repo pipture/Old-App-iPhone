@@ -194,7 +194,9 @@
         [[PiptureAppDelegate instance] showVideo:playlist
                                           noNavi:YES
                                       timeslotId:nil
-                                       fromStore:[episode isFromStore]];
+                                       fromStore:[episode isFromStore]
+                                         forSale:[episode isSellable]
+         ];
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -263,7 +265,8 @@
     [[PiptureAppDelegate instance] showVideo:playlist 
                                       noNavi:YES
                                   timeslotId:nil
-                                   fromStore:NO];//TODO: maybe should check for sellable status
+                                   fromStore:NO
+                                     forSale:NO];//TODO: maybe should check for sellable status
 }
 
 -(void)authenticationFailed {

@@ -634,7 +634,7 @@ static PiptureAppDelegate *instance;
 }
 
 
-- (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId fromStore:(BOOL)fromStore{
+- (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId fromStore:(BOOL)fromStore forSale:(BOOL)forSale{
     
     if ([self videoViewVisible]) return;
     
@@ -650,6 +650,7 @@ static PiptureAppDelegate *instance;
     videoViewController.wantsFullScreenLayout = YES;
     videoViewController.simpleMode = noNavi;
     videoViewController.fromStore = fromStore;
+    videoViewController.forSale = forSale;
     
     [self.window setRootViewController:videoViewController];
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];

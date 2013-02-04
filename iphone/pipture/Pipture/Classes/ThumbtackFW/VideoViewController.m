@@ -33,6 +33,7 @@
 @synthesize navigationItem;
 @synthesize timeslotId;
 @synthesize fromStore;
+@synthesize forSale;
 @synthesize tooltip;
 
 static NSString* const tooltipFlag = @"hideTooltip";
@@ -110,7 +111,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
 }
 
 - (void)setupSubtitles:(PlaylistItem*) item {
-    hideTooltip = sendButton.hidden = (fromStore && [item class] != [Trailer class]);
+    hideTooltip = sendButton.hidden = (forSale && [item class] != [Trailer class]);
     
     SubRip * newsubtitles = [[SubRip alloc] initWithString:item.videoSubs];
     [subtitles release];
@@ -132,7 +133,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
         float position = CMTimeGetSeconds(player.currentItem.currentTime);
 
         PlaylistItem * item = [playlist objectAtIndex:pos];
-        BOOL preview = fromStore && [item class] != [Trailer class];
+        BOOL preview = forSale && [item class] != [Trailer class];
         if (preview && position > 10)  {
             [self nextVideo];
             return;
@@ -143,7 +144,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
             NSLog(@"Precaching");
             
             PlaylistItem * item = [playlist objectAtIndex:pos + 1];
-            BOOL preview = fromStore && [item class] != [Trailer class];
+            BOOL preview = forSale && [item class] != [Trailer class];
             [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId getPreview:preview receiver:self];
             precacheBegin = YES;
         }
@@ -352,7 +353,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
         PlaylistItem * item = [playlist objectAtIndex:pos];
         //because in nextvideo it will be incremented
         pos--;
-        BOOL preview = fromStore && [item class] != [Trailer class];
+        BOOL preview = forSale && [item class] != [Trailer class];
         [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId getPreview:preview receiver:self];
     }
 }
@@ -368,7 +369,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
                 PlaylistItem * item = [playlist objectAtIndex:pos + 1];
                 waitForNext = YES;
                 [self enableControls:NO];
-                BOOL preview = fromStore && [item class] != [Trailer class];
+                BOOL preview = forSale && [item class] != [Trailer class];
                 [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId getPreview:preview receiver:self];
             }
         } else {
@@ -458,7 +459,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
     [pauseButton setImage:[UIImage imageNamed:@"Button-Pause.png"] forState:UIControlStateNormal];
     [pauseButton setImage:[UIImage imageNamed:@"Button-Pause-press.png"] forState:UIControlStateHighlighted];
     
-    hideTooltip = tooltip.hidden = fromStore;
+    hideTooltip = tooltip.hidden = forSale;
     
     [self destroyNextItem];
     

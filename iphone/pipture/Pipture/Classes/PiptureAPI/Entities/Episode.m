@@ -187,9 +187,11 @@ static NSString* const VIDEO_KEY_NAME = @"EpisodeId";
 }
 
 - (BOOL)isFromStore {
-    BOOL sellable = self.album.sellStatus == AlbumSellStatus_Buy ||
-    self.album.sellStatus == AlbumSellStatus_Pass;
-    return sellable;
+    return [self isSellable];
+}
+
+- (BOOL)isSellable {
+    return self.album.sellStatus == AlbumSellStatus_Buy || self.album.sellStatus == AlbumSellStatus_Pass;
 }
 
 @end

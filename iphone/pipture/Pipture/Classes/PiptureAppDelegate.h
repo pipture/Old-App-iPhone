@@ -111,7 +111,7 @@
 - (IBAction)onStoreClick:(id)sender;
 
 - (void)openHome;
-- (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId fromStore:(BOOL)fromStore;
+- (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId fromStore:(BOOL)fromStore forSale:(BOOL)forSale;
 - (void)openMailComposer:(PlaylistItem*)playlistItem timeslotId:(NSNumber*)timeslotId fromViewController:(UIViewController*)viewController;
 - (void)closeMailComposer;
 

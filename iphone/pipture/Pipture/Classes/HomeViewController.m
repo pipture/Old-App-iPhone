@@ -766,7 +766,8 @@
             [[PiptureAppDelegate instance] showVideo:playList
                                               noNavi:NO
                                           timeslotId:timeslotId
-                                           fromStore:NO];
+                                           fromStore:NO
+                                             forSale:NO];
             /*        reqTimeslotId = slot.timeslotId;
              [[[PiptureAppDelegate instance] model] getPlaylistForTimeslot:[NSNumber numberWithInt:reqTimeslotId] receiver:self];*/
         
