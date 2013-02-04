@@ -344,14 +344,14 @@ static PiptureAppDelegate *instance;
     if (loggedIn) {
         [self unsuspendPlayer];
 
-//        if ([self homeViewVisible]) {
+        if ([self homeViewVisible]) {
             [[self getHomeView] setHomeScreenMode:HomeScreenMode_Update];
-//        }
+        }
     }
     else if (registrationRequired)
     {
         [model_ registerWithReceiver:self];
-    } 
+    }
     else
     {
         self.uuid = [self loadUserUUID];        
@@ -433,7 +433,8 @@ static PiptureAppDelegate *instance;
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     if ([[PiptureAppDelegate instance] getHomescreenState] == HomeScreenMode_Albums
-        && ![purchases isInProcess])
+        && ![purchases isInProcess]
+        && [self homeViewVisible])
     {
         HomeViewController * vc = [[PiptureAppDelegate instance] getHomeView];
         if (vc)
