@@ -735,7 +735,7 @@
 
 -(void)showScrollingHintIfNeeded {
     
-    if (!scrollingHintController) {
+    if (self.album.sellStatus != AlbumSellStatus_NotSellable && !scrollingHintController) {
         scrollingHintController = [[ScrollingHintPopupController alloc] initWithNibName:@"ScrollHintPopup"
                                                                                  bundle:nil 
                                                                              screenName:@"B8"
