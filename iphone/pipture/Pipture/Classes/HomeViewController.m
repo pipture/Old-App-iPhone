@@ -308,8 +308,10 @@
                                                  name:ALBUM_PURCHASED_NOTIFICATION
                                                object:nil];
     // Dirty hack for #21392
-    [self doFlip];
-    [self doFlip];
+    if (IS_IPHONE_5) {
+        [self doFlip];
+        [self doFlip];
+    }
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
