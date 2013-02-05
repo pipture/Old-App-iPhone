@@ -19,7 +19,7 @@ enum DetailAlbumViewType {
     DetailAlbumViewType_Credits = 10,
 };
 
-@interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource, VideoURLReceiver, AlbumDetailsReceiver>
+@interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource, VideoURLReceiver, AlbumDetailsReceiver, AlbumsReceiver>
 {
     enum DetailAlbumViewType viewType;
     BOOL detailsReceived;

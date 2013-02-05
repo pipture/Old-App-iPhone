@@ -117,6 +117,10 @@
                                              selector:@selector(onNewBalance:)
                                                  name:VIEWS_PURCHASED_NOTIFICATION
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onAlbumPurchase:)
+                                                 name:ALBUM_PURCHASED_NOTIFICATION
+                                               object:nil];
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     [UIApplication sharedApplication].statusBarHidden = NO;
@@ -218,6 +222,11 @@
                                              selector:@selector(onPurchaseConfirmed:)
                                                  name:PURCHASE_CONFIRMED_NOTIFICATION
                                                object:[PiptureAppDelegate instance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onAlbumPurchase:)
+                                                 name:ALBUM_PURCHASED_NOTIFICATION
+                                               object:[PiptureAppDelegate instance]];
+    
     
     detailsReceived = NO;
     [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
@@ -379,16 +388,15 @@
             [[NSBundle mainBundle] loadNibNamed:@"DetailTableItemView" owner:self options:nil];
             cell = videoTableCell;
             videoTableCell = nil;
-            
-            UIButton * sendButton = (UIButton*) [cell viewWithTag:6];
-            
-            [sendButton addTarget:self action:@selector(sendButtonTouchDown:)       forControlEvents:UIControlEventTouchDown];
-            [sendButton addTarget:self action:@selector(sendButtonTouchUpInside:)   forControlEvents:UIControlEventTouchUpInside];
-            [sendButton addTarget:self action:@selector(sendButtonTouchUpOutside:)  forControlEvents:UIControlEventTouchUpOutside];
-            
-            sendButton.hidden = (self.album.sellStatus == AlbumSellStatus_Buy ||
-                                 self.album.sellStatus == AlbumSellStatus_Pass);
         }
+        UIButton * sendButton = (UIButton*) [cell viewWithTag:6];
+        
+        [sendButton addTarget:self action:@selector(sendButtonTouchDown:)       forControlEvents:UIControlEventTouchDown];
+        [sendButton addTarget:self action:@selector(sendButtonTouchUpInside:)   forControlEvents:UIControlEventTouchUpInside];
+        [sendButton addTarget:self action:@selector(sendButtonTouchUpOutside:)  forControlEvents:UIControlEventTouchUpOutside];
+        
+        sendButton.hidden = (self.album.sellStatus == AlbumSellStatus_Buy ||
+                             self.album.sellStatus == AlbumSellStatus_Pass);
         [self fillCell:[indexPath row] cell:cell];
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:kDivCellID];
@@ -565,6 +573,11 @@
     }
 }
 
+- (void) onAlbumPurchase:(NSNotification *) notification {
+    album.detailsLoaded = NO;
+    [self updateDetails];
+}
+
 -(void)setNumberOfViews:(NSInteger)numberOfViews {
     NSString* text = [NSString stringWithFormat:@"%d",numberOfViews,nil];
     if (prompt1Label.frame.origin.y == prompt2Label.frame.origin.y) {
@@ -729,6 +742,8 @@
     [[PiptureAppDelegate instance] powerButtonEnable:([scheduleModel albumIsPlayingNow:album.albumId])];        
 
     [self updateScheduleLabel];
+    [videosTable reloadData];
+
 }
 
 -(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album {
