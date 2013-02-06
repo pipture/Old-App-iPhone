@@ -5,6 +5,9 @@
 
     <meta name="viewport" content="width=640">
     <meta property="og:image" content="{{image_url}}">
+    {% if seo %}
+    	<meta name="keywords" content="{{video.Keywords}}">
+    {% endif %}
     <title>PIPTURE VIDEO MESSAGE</title>
 
 	<script src="{{ STATIC_URL }}date.js"></script>
