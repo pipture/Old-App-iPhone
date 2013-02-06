@@ -612,7 +612,10 @@
 
                 [self setFullScreenMode];
                 //commented out since #22294
-//                [self adjustHeightForSubview:newsView withTabbarOffset:NO];
+                if (!fitToScreen) {
+                    [self adjustHeightForSubview:newsView withTabbarOffset:NO];
+                    fitToScreen = YES;
+                }
                 
                 [appDelegate tabbarVisible:YES slide:YES];
                 [appDelegate tabbarSelect:TABBARITEM_CHANNEL];
