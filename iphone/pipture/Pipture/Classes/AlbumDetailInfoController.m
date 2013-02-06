@@ -61,22 +61,27 @@
 #pragma mark - View lifecycle
 
 - (void)updateDetails {
-    self.noVideosLabel.hidden = YES;
-    progressLabel.text = @"Album is loading";
-    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:NO];
     if (self.album) {
         NSLog(@"Details update by Album, %@", self.album);
         if (album.detailsLoaded) {
             [self albumDetailsReceived:self.album];
         }
+        [self showSpinner];
         [[[PiptureAppDelegate instance] model] getDetailsForAlbum:self.album
                                                          receiver:self];
     } else {
         NSLog(@"Details update by TimeslotId");
+        [self showSpinner];
         [[[PiptureAppDelegate instance] model] getAlbumDetailsForTimeslotId:self.timeslotId
                                                                    receiver:self];
     }
     [self setLibraryCardVisibility:NO withAnimation:NO];
+}
+
+-(void)showSpinner {
+    self.noVideosLabel.hidden = YES;
+    progressLabel.text = @"Album is loading";
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
