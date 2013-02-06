@@ -32,7 +32,6 @@
     int lastHS_mode;
     
     NSInteger clicksOnPowerButton;
-    BOOL fitToScreen;
 }
 
 //returns current visible page in scrollview

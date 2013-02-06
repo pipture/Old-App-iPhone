@@ -307,6 +307,22 @@
                                              selector:@selector(onAlbumPurchased:)
                                                  name:ALBUM_PURCHASED_NOTIFICATION
                                                object:nil];
+    [self adjustToScreen];
+}
+
+-(void)adjustToScreen {
+    [self adjustHeightForSubview:newsView withTabbarOffset:NO];
+    [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
+    [self adjustHeightForSubview:albumsView withTabbarOffset:YES];
+}
+
+- (void)adjustHeightForSubview:(UIView*)subview withTabbarOffset:(BOOL)tabbar{
+    subview.frame = CGRectMake(tabbarContainer.bounds.origin.x,
+                               tabbarContainer.bounds.origin.y,
+                               tabbarContainer.bounds.size.width,
+                               tabbarContainer.bounds.size.height
+                               - (tabbar ? [PiptureAppDelegate instance].tabViewBaseHeight : 0)
+                               );
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
@@ -588,12 +604,6 @@
             [[appDelegate model] cancelCurrentRequest];
         }
         
-        if (!fitToScreen) {
-            [self adjustHeightForSubview:newsView withTabbarOffset:NO];
-            [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
-            [self adjustHeightForSubview:albumsView withTabbarOffset:YES];
-            fitToScreen = YES;
-        }
         switch (mode) {
             case HomeScreenMode_Cover:
                 [appDelegate 
@@ -715,17 +725,6 @@
     }
     [self defineScheduleButtonVisibility];
     [self defineFlipButtonVisibility];
-}
-
-
-
-- (void)adjustHeightForSubview:(UIView*)subview withTabbarOffset:(BOOL)tabbar{
-    subview.frame = CGRectMake(tabbarContainer.bounds.origin.x,
-                               tabbarContainer.bounds.origin.y,
-                               tabbarContainer.bounds.size.width,
-                               tabbarContainer.bounds.size.height
-                               - (tabbar ? [PiptureAppDelegate instance].tabViewBaseHeight : 0)
-                            );
 }
 
 - (void)doUpdateWithCallback:(DataRequestCallback)callback{
