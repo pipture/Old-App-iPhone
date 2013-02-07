@@ -717,6 +717,7 @@
                 [appDelegate tabbarVisible:YES slide:YES];
                 
                 [appDelegate putHomescreenState:mode];
+                [self adjustHeightForSubview:albumsView withTabbarOffset:YES];
                 break;
             default: break;
         }        
