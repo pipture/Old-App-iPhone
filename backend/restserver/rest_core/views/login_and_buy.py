@@ -181,14 +181,16 @@ class Buy(PostView, PurchaserValidationMixin):
         if new_purchaser == former_purchaser:
             return True
 
-        new_purchaser.Balance += former_purchaser.Balance
-        new_purchaser.save()
-
-        former_purchaser.Balance = 0
-        former_purchaser.save()
 
         original_transaction.Purchaser = new_purchaser
         original_transaction.save()
+        
+        if not former_purchaser.purchased_items.count():
+            new_purchaser.Balance += former_purchaser.Balance
+            new_purchaser.save()
+    
+            former_purchaser.Balance = 0
+            former_purchaser.save()
 
         return True
 
