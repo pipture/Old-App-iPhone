@@ -176,6 +176,7 @@
                                         self.view.frame.size.height-heightOffset);
    
     [self updateDetails];
+    [self updateScheduleLabel];
 }
 
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer {
