@@ -223,7 +223,7 @@ class GetAllCategories(GetView, PurchaserValidationMixin):
                     jsonify=jsonify,
                     ga=self.ga)
 
-    @cache_result(timeout=60 * 5)
+#    @cache_result(timeout=60 * 5)
     def get_cover(self):
         try:
             pipture_settings = PiptureSettings.get()
