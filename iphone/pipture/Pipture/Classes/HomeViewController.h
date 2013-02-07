@@ -19,7 +19,8 @@
                                                   UIAlertViewDelegate,
                                                   UITabBarDelegate,
                                                   HomeScreenDelegate,
-                                                  WelcomeScreenProtocol> {
+                                                  WelcomeScreenProtocol>
+{
     enum HomeScreenMode homeScreenMode;
     
     NSTimer *changeTimer;

@@ -111,7 +111,8 @@ static NSString* const tooltipFlag = @"hideTooltip";
 }
 
 - (void)setupSubtitles:(PlaylistItem*) item {
-    hideTooltip = sendButton.hidden = (forSale && [item class] != [Trailer class]);
+    sendButton.hidden = (forSale && [item class] != [Trailer class]);
+    tooltip.hidden = hideTooltip || sendButton.hidden;
     
     SubRip * newsubtitles = [[SubRip alloc] initWithString:item.videoSubs];
     [subtitles release];
@@ -459,7 +460,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
     [pauseButton setImage:[UIImage imageNamed:@"Button-Pause.png"] forState:UIControlStateNormal];
     [pauseButton setImage:[UIImage imageNamed:@"Button-Pause-press.png"] forState:UIControlStateHighlighted];
     
-    hideTooltip = tooltip.hidden = forSale;
+    tooltip.hidden = hideTooltip || forSale;
     
     [self destroyNextItem];
     
@@ -618,7 +619,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
     controlsPanel.hidden = controlsHidden;
     navigationBar.hidden = controlsHidden;
     volumeView.hidden = controlsHidden;
-    tooltip.hidden = hideTooltip || controlsHidden;
+    tooltip.hidden = hideTooltip || sendButton.hidden || controlsHidden;
 }
 
 - (void)updateControlsAnimated:(BOOL)animated {
@@ -626,7 +627,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
         controlsPanel.hidden = NO;
         navigationBar.hidden = NO;
         volumeView.hidden = NO;
-        tooltip.hidden = hideTooltip;
+        tooltip.hidden = sendButton.hidden || hideTooltip;
     } else {
         [self resetControlHider];
     }
@@ -639,22 +640,23 @@ static NSString* const tooltipFlag = @"hideTooltip";
         [UIApplication sharedApplication].statusBarHidden = controlsHidden;
         controlsPanel.alpha = (controlsHidden) ? 0 : 0.8;
         navigationBar.alpha = (controlsHidden) ? 0 : 1;
-        if (!hideTooltip) {
+        if (!hideTooltip && !sendButton.hidden) {
             tooltip.alpha = (controlsHidden) ? 0 : 1;
         }
         
         [UIView commitAnimations];        
     } else {
         [UIApplication sharedApplication].statusBarHidden = controlsHidden;
-        controlsPanel.alpha = 0.8;
-        navigationBar.alpha = 1;
-        if (!hideTooltip) {
-            tooltip.alpha = 1;
-        }
         controlsPanel.hidden = controlsHidden;
         navigationBar.hidden = controlsHidden;
         volumeView.hidden = controlsHidden;
         tooltip.hidden = hideTooltip || controlsHidden;
+        
+        controlsPanel.alpha = 0.8;
+        navigationBar.alpha = 1;
+        if (!tooltip.hidden) {
+            tooltip.alpha = 1;
+        }
     }
 }
 

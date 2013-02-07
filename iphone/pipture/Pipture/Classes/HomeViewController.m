@@ -307,11 +307,22 @@
                                              selector:@selector(onAlbumPurchased:)
                                                  name:ALBUM_PURCHASED_NOTIFICATION
                                                object:nil];
-    // Dirty hack for #21392
-    if (IS_IPHONE_5) {
-        [self doFlip];
-        [self doFlip];
-    }
+    [self adjustToScreen];
+}
+
+-(void)adjustToScreen {
+    [self adjustHeightForSubview:newsView withTabbarOffset:NO];
+    [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
+    [self adjustHeightForSubview:albumsView withTabbarOffset:YES];
+}
+
+- (void)adjustHeightForSubview:(UIView*)subview withTabbarOffset:(BOOL)tabbar{
+    subview.frame = CGRectMake(tabbarContainer.bounds.origin.x,
+                               tabbarContainer.bounds.origin.y,
+                               tabbarContainer.bounds.size.width,
+                               tabbarContainer.bounds.size.height
+                               - (tabbar ? [PiptureAppDelegate instance].tabViewBaseHeight : 0)
+                               );
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
@@ -387,11 +398,9 @@
             [UIView setAnimationDelegate:self];
             [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
             if (homeScreenMode == HomeScreenMode_Cover) {
-                [self adjustHeightForSubview:newsView withTabbarOffset:NO];
                 newsView.alpha = 1;
             }
             if (homeScreenMode == HomeScreenMode_PlayingNow) {
-                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
                 scheduleView.alpha = 1;
             }
             
@@ -434,11 +443,9 @@
         case HomeScreenMode_Cover:
             if (homeScreenMode == HomeScreenMode_Cover) {
                 newsView.alpha = 0;
-//                [self adjustHeightForSubview:newsView withTabbarOffset:NO];
             }
             if (homeScreenMode == HomeScreenMode_PlayingNow) {
                 scheduleView.alpha = 0;
-//                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
             }
             [self.navigationController setNavigationBarHidden:YES animated:NO];
             [[PiptureAppDelegate instance] tabbarVisible:NO slide:NO];
@@ -611,7 +618,6 @@
                 if (flipAction) [UIView commitAnimations];
 
                 [self setFullScreenMode];
-                [self adjustHeightForSubview:newsView withTabbarOffset:NO];
                 
                 [appDelegate tabbarVisible:YES slide:YES];
                 [appDelegate tabbarSelect:TABBARITEM_CHANNEL];
@@ -641,7 +647,6 @@
                 [scheduleModel updateTimeslots];
 
                 [self setFullScreenMode];
-                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
                 homeScreenMode = mode;
                 [appDelegate tabbarVisible:YES slide:YES];
                 
@@ -685,8 +690,6 @@
                         break;
                     default:break;    
                 }
-                [self adjustHeightForSubview:scheduleView withTabbarOffset:NO];
-
                 
                 break;
             case HomeScreenMode_Albums:
@@ -709,7 +712,6 @@
                 [self updateAlbums];
                 [self setFullScreenMode];
                 [self setNavBarMode];
-                [self adjustHeightForSubview:albumsView withTabbarOffset:YES];
                 
                 [appDelegate tabbarSelect:TABBARITEM_LIBRARY];
                 [appDelegate tabbarVisible:YES slide:YES];
@@ -723,17 +725,6 @@
     }
     [self defineScheduleButtonVisibility];
     [self defineFlipButtonVisibility];
-}
-
-
-
-- (void)adjustHeightForSubview:(UIView*)subview withTabbarOffset:(BOOL)tabbar{
-    subview.frame = CGRectMake(tabbarContainer.bounds.origin.x,
-                               tabbarContainer.bounds.origin.y,
-                               tabbarContainer.bounds.size.width,
-                               tabbarContainer.bounds.size.height
-                               - (tabbar ? [PiptureAppDelegate instance].tabViewBaseHeight : 0)
-                            );
 }
 
 - (void)doUpdateWithCallback:(DataRequestCallback)callback{
