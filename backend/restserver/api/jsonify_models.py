@@ -5,7 +5,7 @@ from django.utils import simplejson
 
 from api.time_utils import TimeUtils
 from api.middleware.threadlocals import LocalUserMiddleware
-from pipture.models import PiptureSettings
+from pipture.models import PiptureSettings, Albums
 from restserver.s3.fields import CustomFieldFile
 
 
@@ -32,7 +32,9 @@ class Utils(object):
     @classmethod
     def get_sell_status(cls, album):
         is_purchased = cls.is_purchased(album)
-        purchase_status = 'purchased' if is_purchased else album.PurchaseStatus
+        sellable = album.PurchaseStatus != Albums.PURCHASE_TYPE_NOT_FOR_SALE
+        # add'l condition "sellable" is needed to prevent controversial cases (bug #22276)
+        purchase_status = 'purchased' if (is_purchased and sellable) else album.PurchaseStatus
         return album.SELL_STATUS_FROM_PURCHASE.get(purchase_status, 0)
 
     @classmethod
