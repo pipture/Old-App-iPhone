@@ -66,12 +66,12 @@
         if (album.detailsLoaded) {
             [self albumDetailsReceived:self.album];
         }
-        [self showSpinner];
+//        [self showSpinner];
         [[[PiptureAppDelegate instance] model] getDetailsForAlbum:self.album
                                                          receiver:self];
     } else {
         NSLog(@"Details update by TimeslotId");
-        [self showSpinner];
+//        [self showSpinner];
         [[[PiptureAppDelegate instance] model] getAlbumDetailsForTimeslotId:self.timeslotId
                                                                    receiver:self];
     }
