@@ -1,3 +1,5 @@
+MySQL-python==1.2.4
+distribute==0.6.34
 jsonpickle
 south
 sqlalchemy
@@ -10,3 +12,4 @@ pyOpenSSL==0.13
 python-gflags==2.0
 pytz==2012d
 wsgiref==0.1.2
+django-annoying
