@@ -1,8 +1,7 @@
-<!--?xml version="1.0" encoding="UTF-8"?-->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<!DOCTYPE html>
+<html>
+	<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=640">
     <meta property="og:image" content="{{image_url}}">
     {% if seo %}
@@ -16,9 +15,9 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}mediaelementplayer.css" />
 
 
-    <link rel="stylesheet" type="text/css" media="screen,print" href="{{ STATIC_URL }}webpage_files/webpage.css">
-    <!--[if lt IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='{{ STATIC_URL }}webpage_files/webpageIE.css'/><![endif]-->
-    <!--[if gte IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='{{ STATIC_URL }}webpage_files/IE8.css'/><![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen,print" href="{{ STATIC_URL }}css/all.css">
+    <!--[if lt IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='{{ STATIC_URL }}css/all.ie.css'/><![endif]-->
+    <!--[if gte IE 8]><link rel='stylesheet' type='text/css' media='screen,print' href='{{ STATIC_URL }}css/all.ie8.css'/><![endif]-->
     <script type="text/javascript" src="{{ STATIC_URL }}webpage_files/iWebSite.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}webpage_files/iWebImage.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}webpage_files/webpage.js"></script>
@@ -51,223 +50,124 @@
     </style>
     </head>
 
-  <body style="background: none repeat scroll 0% 0% rgb(0, 0, 0); margin: 0pt;">
-    <div style="text-align: center; ">
-      <div style="margin-bottom: 0px; margin-left: auto; margin-right: auto; margin-top: 0px; overflow: hidden; position: relative; word-wrap: break-word;  background: rgb(0, 0, 0); text-align: left; width: 960px; " id="body_content">
-        <div style="float: left; margin-left: 0px; position: relative; width: 960px; z-index: 0; " id="nav_layer">
-          <div style="height: 0px; line-height: 0px; " class="bumper">&nbsp;</div>
-          <div style="clear: both; height: 0px; line-height: 0px; " class="spacer">&nbsp;</div>
-        </div>
-        <div style="float: left; height: 0px; line-height: 0px; margin-left: 0px; position: relative; width: 960px; z-index: 10; " id="header_layer">
-          <div style="height: 0px; line-height: 0px; " class="bumper">&nbsp;</div>
-        </div>
-        <div style="margin-left: 0px; position: relative; width: 960px; z-index: 5; " id="body_layer">
-          <div style="height: 0px; line-height: 0px; " class="bumper">&nbsp;</div>
-          <div id="id2" style="height: 600px; left: 420px; position: absolute; top: 60px; width: 520px; z-index: 1; " class="style_SkipStroke_1 shape-with-text">
-            <div class="text-content graphic_shape_layout_style_default_External_520_600" style="padding: 0px; ">
-              <div class="graphic_shape_layout_style_default"></div>
-            </div>
+  <body class="page">
+      <div class="page__inner" id="body_content">
+
+        <div class="header cf">
+          <div class="logo">
+              <a href="http://www.pipture.com">
+                <img src="{{ STATIC_URL }}webpage_files/logowhite-innershadows30.png" alt="" style="border: medium none; height: 35px; width: 105px;">
+              </a>
           </div>
-
-		  {% if not message_empty and not message_blocked %}
-           <div style="height: 92px; width: 501px;  height: 90px; left: 442px; position: absolute; top: 243px; width: 480px; z-index: 1; " class="tinyText shadow_1"><canvas style="position: absolute; top: -1px; left: -20px;" height="101" width="510"></canvas>
-             <div style="position: relative; width: 480px; ">
-               <img src="{{ STATIC_URL }}webpage_files/shapeimage_3.png" alt="" style="height: 92px; left: 0px; margin-left: -20px; margin-top: -1px; position: absolute; top: 0px; width: 501px;">
-             </div>
-           </div>
-      	 {% endif %}
-
-          <div style="height: 600px; width: 400px; left: 20px; position: absolute; top: 60px; z-index: 1; ">
-            <div style="position: relative; width: 400px; height: 600px">
-            	{% if message_blocked %}
-            	<img src="{{image_url}}" width="400" height="600" alt="" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px;">
-            	{% else %}
-              	<video id="video" preload="none" width="400" height="600" poster="{{image_url}}" fullscreen="false">
-    				<source type="video/mp4" src="{{video_url}}" />
-    				<object width="400" height="600" type="application/x-shockwave-flash" data="{{ STATIC_URL }}flashmediaelement.swf">
-        				<param name="movie" value="{{ STATIC_URL }}flashmediaelement.swf" />
-        				<param name="flashvars" value="controls=true&file={{video_url}}" />
-        			</object>
-				</video>
-              	{% endif %}
-            </div>
-          </div>
-
-
-          <div style="height: 30px; width: 57px; top: 14px; left: 704px; position: absolute; z-index: 1; font-size: 15px; font-family: 'Arial-BoldMT','Arial',sans-serif; font-size: 15px; text-align: justify; font-weight: bold" class="style">
-              App for &nbsp;iPhone
-          </div>
-
-          <div style="height: 30px; width: 250px;  height: 30px; left: 690px; position: absolute; top: 17px; width: 250px; z-index: 1; " class="tinyText">
-            <a  class="download_app_link" href="http://www.pipture.com/iphoneapp/">
-              <span class="download_button" />
+          <div class="iphone-app">
+            <a href="http://www.pipture.com/iphoneapp/">
+              <span class="download-button"></span>
             </a>
+            App for<br />iPhone
+          </div>
+        </div>
+
+        <div class="content">
+
+          <div class="video">
+
+            {% if message_blocked %}
+              <img src="{{image_url}}" width="400" height="600" alt="" style="height: 600px; left: 0px; position: absolute; top: 0px; width: 400px;">
+            {% else %}
+              <video id="video" preload="none" width="400" height="600" poster="{{image_url}}" fullscreen="false">
+                <source type="video/mp4" src="{{video_url}}" />
+                <object width="400" height="600" type="application/x-shockwave-flash" data="{{ STATIC_URL }}flashmediaelement.swf">
+                    <param name="movie" value="{{ STATIC_URL }}flashmediaelement.swf" />
+                    <param name="flashvars" value="controls=true&file={{video_url}}" />
+                  </object>
+              </video>
+            {% endif %}
+
           </div>
 
-		  {% if not message_empty and not message_blocked %}
-          <div id="id3" style="height: 48px; left: 455px; position: absolute; top: 246px; width: 447px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
-            <div class="text-content graphic_textbox_layout_style_default_External_447_48" style="padding: 0px; ">
-              <div class="graphic_textbox_layout_style_default">
-              	{% autoescape off %}
-                <p class="Body">{{text_2}}</p>
+          <div class="message">
+
+            <div class="greeting">
+              <img src="{{ STATIC_URL }}img/balloon.png" alt="" width="38" class="greeting__balloon" />
+              HI, YOU’VE RECEIVED A MESSAGE VIA <span class="greeting__app-name">PIPTURE APP FOR iPHONE</span>
+            </div>
+
+            <div class="message-meta">
+              <div class="message-sender">From <span class="message-sender__name">{{from}}</span></div>
+              <span id="sentdate" class="message-date"></span>
+            </div>
+
+            {% if message_blocked %}
+              <div class="message-blocked">
+                <h3>VIDEO AND MESSAGE NO LONGER ACCESSIBLE</h3>
+                <p>It has reached the maximum amount of views</p>
+              </div>
+            {% endif %}
+
+            <div class="message-text">
+              {% if not message_empty and not message_blocked %}
+                {% autoescape off %}
+                  <p>{{text_2}}</p>
                 {% endautoescape %}
+              {% endif %}
+            </div>
+
+            <div class="views">
+              <div class="views__count">
+                <span id="viewcounter">{{views_count}}</span>
               </div>
+              {% if views_limit > 1 %}
+                <p>At {{views_limit}} views, this video will have reached its maximum views.</p>
+              {% else %}
+                <p>This video can be viewed unlimited number of times.</p>
+              {% endif %}
             </div>
-          </div>
-          {% endif %}
 
-          <div id="id4" style="height: 95px; left: 442px; position: absolute; top: 134px; width: 249px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
-            <div class="text-content graphic_textbox_layout_style_default_External_249_95" style="padding: 0px; ">
-              <div class="graphic_textbox_layout_style_default">
-                <p style="padding-top: 0pt; " class="paragraph_style"><span class="style">From</span> <span class="style_1">{{from}}</span><br></p>
-                <p id="sentdate" style="padding-bottom: 0pt;" class="paragraph_style_1"></p>
+            {% if views_limit == -1 %}
+                <div class="like-buttons">
+                  {% include "like_buttons.html" %}
+                </div>
+            {% endif %}
+            
+            {% if show_info %}
+              <div class="about-video">
+                <div class="about-video__cover">
+                  <img src="{{ cover_pic }}" alt="" height="150" />
+                </div>
+                  <p>Did you see the series {{seriesname}} on <a href="http://www.pipture.com/iphoneapp/">Pipture</a>?</p>
+                  <p>{{ disclaimer }}</p>
+
+                <div class="video-meta">
+                  <h3>About the video:</h3>
+                  <p>{{ title }}</p>
+                  <p>{{ seriesname }}</p>
+                  <p>{{ info_line }}</p>
+                  <p>{{ released_date }}</p>
+                </div>
+
               </div>
-            </div>
+            {% endif %}
+
           </div>
 
-		{% if show_info %}
-		  <div style="height: 200px; width: 480px;  height: 200px; left: 440px; position: absolute; top: 450px; width: 480px; z-index: 1; " class="tinyText">
-            <div style="position: relative; width: 480px; ">
-              <img src="{{ STATIC_URL }}webpage_files/shapeimage_1.png" alt="" style="height: 200px; left: 0px; position: absolute; top: 0px; width: 480px;">
-            </div>
-          </div>
-
-          <div id="id5" style="height: 108px; left: 563px; position: absolute; top: 520px; width: 205px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
-            <div class="text-content style_External_205_108" style="padding: 0px; ">
-              <div class="style_2">
-                <p style="padding-top: 0pt; " class="paragraph_style_2">About the video:<br /></p>
-                <p class="paragraph_style_3">{{ title }}<br /></p>
-                <p class="paragraph_style_3">{{ seriesname }}<br /></p>
-                <p class="paragraph_style_3">{{ info_line }} <br /></p>
-                <p style="padding-bottom: 0pt; " class="paragraph_style_3">{{ released_date }}</p>
-              </div>
-            </div>
-          </div>
-
-          <div id="id6" style="height: 45px; left: 563px; position: absolute; top: 475px; width: 321px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
-            <div class="text-content graphic_textbox_layout_style_default_External_321_45" style="padding: 0px; ">
-              <div class="graphic_textbox_layout_style_default">
-                <p style="padding-top: 0pt; " class="paragraph_style_4">Did you see the series {{seriesname}} on
-                	<a href="http://www.pipture.com/iphoneapp/">
-                		<span class="style_3">Pipture</span></a>?  <br />
-                </p>
-                <p style="padding-bottom: 0pt; " class="paragraph_style_4">{{ disclaimer }}</p>
-              </div>
-            </div>
-          </div>
-
-          <div style="height: 150px; width: 89px;  height: 150px; left: 460px; position: absolute; top: 476px; width: 89px; z-index: 1; " class="tinyText">
-            <div style="position: relative; width: 89px; ">
-              <img src="{{ cover_pic }}" alt="" style="height: 150px; left: 0px; position: absolute; top: 0px; width: 89px;">
-            </div>
-          </div>
-		{% endif %}
-
-
-          <div style="height: 38px; width: 38px;  height: 38px; left: 441px; position: absolute; top: 80px; width: 38px; z-index: 1; " class="tinyText style_SkipStroke_3 stroke_0">
-            <img src="{{ STATIC_URL }}webpage_files/WhiteTee100o.png" alt="" style="border: medium none; height: 38px; width: 38px;">
-          </div>
-
-
-
-          <div id="id7" style="height: 24px; left: 481px; position: absolute; top: 85px; width: 439px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
-            <div class="text-content graphic_textbox_layout_style_default_External_439_24" style="padding: 0px; ">
-              <div class="graphic_textbox_layout_style_default">
-                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_4">HI, YOU’VE RECEIVED A MESSAGE VIA <span class="style_4">PIPTURE APP FOR iPHONE</span></p>
-              </div>
-            </div>
-          </div>
-
-{% comment %}
-          <div id="id8" style="height: 24px; left: 701px; position: absolute; top: 20px; width: 227px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
-            <div class="text-content graphic_textbox_layout_style_default_External_227_24" style="padding: 0px; ">
-              <div class="graphic_textbox_layout_style_default">
-              	<a href="http://www.pipture.com/iphoneapp/">
-                	<p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_5">DOWNLOAD THE FREE iPHONE APP</p>
-                </a>
-              </div>
-            </div>
-          </div>
-{% endcomment %}
-
-
-
-          <div style="height: 35px; width: 105px;  height: 35px; left: 19px; position: absolute; top: 14px; width: 105px; z-index: 1; " class="tinyText style_SkipStroke_3 stroke_0">
-          	<a href="http://www.pipture.com">
-            	<img src="{{ STATIC_URL }}webpage_files/logowhite-innershadows30.png" alt="" style="border: medium none; height: 35px; width: 105px;">
-            </a>
-          </div>
-
-
-			<div id="id11" style="height: 27px; left: 442px; position: absolute; top: 388px; width: 486px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
-				<div class="text-content graphic_textbox_layout_style_default_External_486_27" style="padding: 0px; ">
-					<div class="graphic_textbox_layout_style_default">
-					{% if views_limit > 1 %}
-						<p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_6">At {{views_limit}} views, this video will have reached its maximum views.</p>
-					{% else %}
-						<p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_6">This video can be viewed unlimited number of times.</p>
-					{% endif %}
-					</div>
-				</div>
-			</div>
-			<div id="id12" style="height: 54px; left: 802px; position: absolute; top: 349px; width: 121px; z-index: 1; " class="style_SkipStroke_2 shape-with-text">
-				<div class="text-content graphic_textbox_layout_style_default_External_121_54" style="padding: 0px; ">
-					<div class="graphic_textbox_layout_style_default">
-						<p id="viewcounter" style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_7">{{views_count}}</p>
-					</div>
-				</div>
-			</div>
-
-        {% if views_limit == -1 %}
-            <div id="id13" style="position: absolute; top: 412px; left: 440px; z-index: 100; width: 250px;">
-              {% include "like_buttons.html" %}
-            </div>
-        {% endif %}
-
-		{% if message_blocked %}
-          <div id="id9" style="height: 44px; left: 488px; position: absolute; top: 185px; width: 383px; z-index: 1; " class="style_SkipStroke_31 shape-with-text">
-            <div class="text-content graphic_textbox_layout_style_default_External_383_44" style="padding: 0px; ">
-              <div class="graphic_textbox_layout_style_default">
-                <p style="padding-top: 0pt; " class="paragraph_style_8">VIDEO AND MESSAGE NO LONGER ACCESSIBLE<br /></p>
-                <p style="padding-bottom: 0pt; " class="paragraph_style_9">It has reached the maximum amount of views</p>
-              </div>
-            </div>
-          </div>
-		{% endif %}
-
-		{% if not message_empty and not message_blocked %}
-		  <div style="height: 92px; width: 501px;  height: 90px; left: 442px; position: absolute; top: 243px; width: 480px; z-index: 1; " class="tinyText shadow_0">
-            <div style="position: relative; width: 480px; ">
-              <img src="{{ STATIC_URL }}webpage_files/shapeimage_5_nolonger.png" alt="" style="height: 92px; left: 0px; margin-left: -20px; margin-top: -1px; position: absolute; top: 0px; width: 501px; " />
-            </div>
-          </div>
-        {% endif %}
-
-          <div style="height: 800px; line-height: 800px; " class="spacer">&nbsp;</div>
         </div>
-        <div style="height: 0px; line-height: 0px; margin-left: 0px; position: relative; width: 960px; z-index: 15; " id="footer_layer">
-          <div style="height: 0px; line-height: 0px; " class="bumper">&nbsp;</div>
-        </div>
-      </div>
+
     </div>
 
-<script type="text/javascript">
-jQuery(document).ready(function(){
+    <script type="text/javascript">
+      jQuery(document).ready(function(){
 
-	jQuery('video,audio').mediaelementplayer({
-		videoWidth: 400,
-		videoHeight: 600,
-		features: ['playpause','progress','volume'],
-		});
+        jQuery('video,audio').mediaelementplayer({
+          videoWidth: 400,
+          videoHeight: 600,
+          features: ['playpause','progress','volume'],
+          });
 
-	var d1 = new Date({{sent_date}}*1000);
-	dstr = d1.toString('MMMM dd') + ' at ' + d1.toString('hh:mmtt');
-	jQuery("#sentdate").text(dstr);
-});
-
-
-
-</script>
+        var d1 = new Date({{sent_date}}*1000);
+        dstr = d1.toString('MMMM dd') + ' at ' + d1.toString('hh:mmtt');
+        jQuery("#sentdate").text(dstr);
+      });
+    </script>
 
   </body>
 </html>
