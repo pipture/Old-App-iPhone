@@ -26,3 +26,7 @@ li div div.inline-block a img {
 img {
     -ms-interpolation-mode: bicubic;
 }
+
+.cf {
+    *zoom: 1;
+}
