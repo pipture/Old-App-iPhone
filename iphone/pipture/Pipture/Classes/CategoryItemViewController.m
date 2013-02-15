@@ -28,7 +28,8 @@ static NSInteger const MARGIN_RIGHT = 11;
     [[PiptureAppDelegate instance] showVideo:playlist
                                       noNavi:YES
                                   timeslotId:nil
-                                   fromStore:NO];
+                                   fromStore:NO
+                                     forSale:NO];
 }
 
 -(void)prepareWithX:(int)x withY:(int)y withOffset:(int)offset {

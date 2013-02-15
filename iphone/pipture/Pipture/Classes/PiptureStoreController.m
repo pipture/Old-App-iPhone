@@ -327,7 +327,6 @@ static NSString* const BUY_PRICE_TAG = @"BUY One ALBUM for $%@";
 }
 
 - (void)fixLayout {
-    NSLog(@"bounds---->%@", NSStringFromCGSize([[UIScreen mainScreen] bounds].size));
     if (self.view.frame.origin.y == 0 && self.navigationController.navigationBar.hidden != YES)
         self.view.frame = CGRectMake(0, -64,
                                      [[UIScreen mainScreen] bounds].size.width,

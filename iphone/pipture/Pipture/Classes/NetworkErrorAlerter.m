@@ -56,7 +56,7 @@
     {
         case DRErrorCouldNotConnectToServer:            
         case DRErrorNoInternet:
-            title = @"Turn Off Airplane Mode or Use Wi-Fi to Access Data";
+            title = @"Please tap Home button and set correct settings. Turn Off Airplane Mode or Use Wi-Fi to Access Data";
             message = @"";
             
             if (tag == MY_ALERT_TAG) {
@@ -105,12 +105,12 @@
             va_end(vargs);
         }
         
-        switch (error.errorCode) {
-            case DRErrorCouldNotConnectToServer:
-            case DRErrorNoInternet:
-                [requestIssuesAlert addButtonWithTitle:@"Settings"];
-                break;
-        }
+//        switch (error.errorCode) {
+//            case DRErrorCouldNotConnectToServer:
+//            case DRErrorNoInternet:
+//                [requestIssuesAlert addButtonWithTitle:@"Settings"];
+//                break;
+//        }
         
         requestIssuesAlert.tag = newTag;
         result = [self showAlert:requestIssuesAlert 
@@ -170,9 +170,6 @@
                 [requestIssuesAlert release];
             }
                 break;
-            case 1:
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs://"]];
-                break;    
             default:
                 break;
         }

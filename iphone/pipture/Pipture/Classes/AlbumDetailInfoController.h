@@ -19,7 +19,7 @@ enum DetailAlbumViewType {
     DetailAlbumViewType_Credits = 10,
 };
 
-@interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource, VideoURLReceiver, AlbumDetailsReceiver>
+@interface AlbumDetailInfoController : UIViewController<UITableViewDelegate, UITableViewDataSource, VideoURLReceiver, AlbumDetailsReceiver, AlbumsReceiver>
 {
     enum DetailAlbumViewType viewType;
     BOOL detailsReceived;
@@ -38,7 +38,7 @@ enum DetailAlbumViewType {
 @property (retain, nonatomic) ScheduleModel* scheduleModel;
 @property (retain, nonatomic) IBOutlet UIView *purchasedInfoView;
 @property (assign, nonatomic) NSInteger timeslotId;
-@property (assign, nonatomic) BOOL fromHotNews;
+@property (assign, nonatomic) BOOL notFromStore;
 @property (assign, nonatomic) UIBarButtonItem *store;
 
 @property (retain, nonatomic) IBOutlet UIView *subViewContainer;
@@ -72,5 +72,6 @@ enum DetailAlbumViewType {
 -(void)setLibraryCardVisibility:(BOOL)visibility withAnimation:(BOOL)animation;
 
 -(BOOL)isFromStore;
+-(BOOL)isSellable;
 
 @end

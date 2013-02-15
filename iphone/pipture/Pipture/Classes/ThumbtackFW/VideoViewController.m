@@ -33,6 +33,7 @@
 @synthesize navigationItem;
 @synthesize timeslotId;
 @synthesize fromStore;
+@synthesize forSale;
 @synthesize tooltip;
 
 static NSString* const tooltipFlag = @"hideTooltip";
@@ -110,7 +111,8 @@ static NSString* const tooltipFlag = @"hideTooltip";
 }
 
 - (void)setupSubtitles:(PlaylistItem*) item {
-    sendButton.hidden = fromStore && [item class] != [Trailer class];
+    sendButton.hidden = (forSale && [item class] != [Trailer class]);
+    tooltip.hidden = hideTooltip || sendButton.hidden;
     
     SubRip * newsubtitles = [[SubRip alloc] initWithString:item.videoSubs];
     [subtitles release];
@@ -132,7 +134,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
         float position = CMTimeGetSeconds(player.currentItem.currentTime);
 
         PlaylistItem * item = [playlist objectAtIndex:pos];
-        BOOL preview = fromStore && [item class] != [Trailer class];
+        BOOL preview = forSale && [item class] != [Trailer class];
         if (preview && position > 10)  {
             [self nextVideo];
             return;
@@ -143,7 +145,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
             NSLog(@"Precaching");
             
             PlaylistItem * item = [playlist objectAtIndex:pos + 1];
-            BOOL preview = fromStore && [item class] != [Trailer class];
+            BOOL preview = forSale && [item class] != [Trailer class];
             [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId getPreview:preview receiver:self];
             precacheBegin = YES;
         }
@@ -352,7 +354,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
         PlaylistItem * item = [playlist objectAtIndex:pos];
         //because in nextvideo it will be incremented
         pos--;
-        BOOL preview = fromStore && [item class] != [Trailer class];
+        BOOL preview = forSale && [item class] != [Trailer class];
         [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId getPreview:preview receiver:self];
     }
 }
@@ -368,7 +370,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
                 PlaylistItem * item = [playlist objectAtIndex:pos + 1];
                 waitForNext = YES;
                 [self enableControls:NO];
-                BOOL preview = fromStore && [item class] != [Trailer class];
+                BOOL preview = forSale && [item class] != [Trailer class];
                 [[PiptureAppDelegate instance] getVideoURL:item forTimeslotId:timeslotId getPreview:preview receiver:self];
             }
         } else {
@@ -458,7 +460,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
     [pauseButton setImage:[UIImage imageNamed:@"Button-Pause.png"] forState:UIControlStateNormal];
     [pauseButton setImage:[UIImage imageNamed:@"Button-Pause-press.png"] forState:UIControlStateHighlighted];
     
-    sendButton.hidden = fromStore;
+    tooltip.hidden = hideTooltip || forSale;
     
     [self destroyNextItem];
     
@@ -617,7 +619,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
     controlsPanel.hidden = controlsHidden;
     navigationBar.hidden = controlsHidden;
     volumeView.hidden = controlsHidden;
-    tooltip.hidden = hideTooltip || controlsHidden;
+    tooltip.hidden = hideTooltip || sendButton.hidden || controlsHidden;
 }
 
 - (void)updateControlsAnimated:(BOOL)animated {
@@ -625,7 +627,7 @@ static NSString* const tooltipFlag = @"hideTooltip";
         controlsPanel.hidden = NO;
         navigationBar.hidden = NO;
         volumeView.hidden = NO;
-        tooltip.hidden = hideTooltip;
+        tooltip.hidden = sendButton.hidden || hideTooltip;
     } else {
         [self resetControlHider];
     }
@@ -638,22 +640,23 @@ static NSString* const tooltipFlag = @"hideTooltip";
         [UIApplication sharedApplication].statusBarHidden = controlsHidden;
         controlsPanel.alpha = (controlsHidden) ? 0 : 0.8;
         navigationBar.alpha = (controlsHidden) ? 0 : 1;
-        if (!hideTooltip) {
+        if (!hideTooltip && !sendButton.hidden) {
             tooltip.alpha = (controlsHidden) ? 0 : 1;
         }
         
         [UIView commitAnimations];        
     } else {
         [UIApplication sharedApplication].statusBarHidden = controlsHidden;
-        controlsPanel.alpha = 0.8;
-        navigationBar.alpha = 1;
-        if (!hideTooltip) {
-            tooltip.alpha = 1;
-        }
         controlsPanel.hidden = controlsHidden;
         navigationBar.hidden = controlsHidden;
         volumeView.hidden = controlsHidden;
         tooltip.hidden = hideTooltip || controlsHidden;
+        
+        controlsPanel.alpha = 0.8;
+        navigationBar.alpha = 1;
+        if (!tooltip.hidden) {
+            tooltip.alpha = 1;
+        }
     }
 }
 

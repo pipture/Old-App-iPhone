@@ -10,6 +10,9 @@ from api.view import PostView, GetView
 from api.validation_mixins import PurchaserValidationMixin, \
                                         EpisodeAndTrailerValidationMixin
 
+from annoying.functions import get_object_or_None
+                                        
+
 
 class SendMessageView(PostView, PurchaserValidationMixin,
                       EpisodeAndTrailerValidationMixin):
@@ -78,7 +81,9 @@ class SendMessageView(PostView, PurchaserValidationMixin,
     def perform_episode_operations(self):
         episode = self._clean_episode()
 
-        episode_free_viewers = self.get_free_viewers(episode)
+        episode_free_viewers = get_object_or_None(FreeMsgViewers,
+                                                  Purchaser=self.user.Purchaser,
+                                                  EpisodeId=episode)
 
         message_cost, message_free_views = \
                 self.get_message_attrs(episode_free_viewers)
@@ -111,21 +116,6 @@ class SendMessageView(PostView, PurchaserValidationMixin,
 
         return message_cost, message_free_viewers
 
-    def get_free_viewers(self, episode):
-        is_purchased = self.caching.is_episode_purchased(episode)
-        if not is_purchased:
-            return None
-
-        # Don't use get_or_create here because we save model
-        # only when there are no errors
-        try:
-            views = FreeMsgViewers.objects.get(Purchaser=self.user.Purchaser,
-                                               EpisodeId=episode)
-        except FreeMsgViewers.DoesNotExist:
-            views = FreeMsgViewers(Purchaser=self.user.Purchaser, EpisodeId=episode)
-
-        return views
-
     def get_context_data(self):
         self.perform_operations()
         video_host = PiptureSettings.get().VideoHost
@@ -157,25 +147,24 @@ class GetUnusedMessageViews(GetView, PurchaserValidationMixin,
         group1, group2 = 0, 0
 
 
-        try:
-            purchased_episodes = self.caching.get_purchased_episodes()
-        except NoContent:
-            purchased_episodes = None
+#        try:
+#            purchased_episodes = self.caching.get_purchased_episodes()
+#        except NoContent:
+#            purchased_episodes = None
             
-        if purchased_episodes is not None:
-            for message in self.messages:
-                cnt = 0
-                if purchased_episodes.filter(EpisodeId=message.LinkId):
-                    rest = message.ViewsLimit - max(message.ViewsCount,
-                                                    message.FreeViews)
-                    if rest > 0:
-                        cnt = rest
-    
-                if message.Timestamp is not None:
-                    if message.Timestamp >= week_date:
-                        group1 += cnt
-                    else:
-                        group2 += cnt
+#        if purchased_episodes is not None:
+        for message in self.messages:
+            cnt = 0
+            rest = message.ViewsLimit - max(message.ViewsCount,
+                                            message.FreeViews)
+            if rest > 0:
+                cnt = rest
+
+            if message.Timestamp is not None:
+                if message.Timestamp >= week_date:
+                    group1 += cnt
+                else:
+                    group2 += cnt
         return group1, group2
 
     def get_context_data(self):
@@ -202,27 +191,27 @@ class DeactivateMessageViews(PostView, PurchaserValidationMixin,
         weekdate = datetime.utcnow() - timedelta(7)
         group = 0
 
-        try:
-            purchased_episodes = self.caching.get_purchased_episodes()
-        except NoContent:
-            purchased_episodes = None
+#        try:
+#            purchased_episodes = self.caching.get_purchased_episodes()
+#        except NoContent:
+#            purchased_episodes = None
             
-        if purchased_episodes is not None:
-            for message in self.messages:
-                if self.period == 0 or \
-                        (message.Timestamp >= weekdate and self.period == 1) or \
-                        (message.Timestamp < weekdate and self.period == 2):
-    
-                    cnt = 0
-                    if purchased_episodes.filter(EpisodeId=message.LinkId):
-                        rest = message.ViewsLimit - max(message.ViewsCount,
-                                                        message.FreeViews)
-                        if rest > 0:
-                            cnt = rest
-    
-                    group += cnt
-                    if cnt > 0:
-                        self.update_message(message)
+#        if purchased_episodes is not None:
+        for message in self.messages:
+            if self.period == 0 or \
+                    (message.Timestamp >= weekdate and self.period == 1) or \
+                    (message.Timestamp < weekdate and self.period == 2):
+
+                cnt = 0
+#                if purchased_episodes.filter(EpisodeId=message.LinkId):
+                rest = message.ViewsLimit - max(message.ViewsCount,
+                                                message.FreeViews)
+                if rest > 0:
+                    cnt = rest
+
+                group += cnt
+                if cnt > 0:
+                    self.update_message(message)
 
         if group > 0:
             self.user.Purchaser.Balance += group

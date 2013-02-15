@@ -139,28 +139,26 @@
 		              	</video>
 		            </td></tr>
 			    {% endif %}
-				{% if views_limit > 1 %}
-				    <tr><td width="403" height="54">
-					    <div id="id11" style="height: 54px; width: 403px; z-index: 1; text-align: right;" class="style_SkipStroke_3 shape-with-text">
-				            <div class="text-content graphic_textbox_layout_style_default_External_121_54" style="padding: 0px; ">
-				              <div class="graphic_textbox_layout_style_default">
-				                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_7">{{views_count}}</p>
-				              </div>
-				            </div>
-				        </div>
-	       			</td></tr>
-	       			<tr><td width="403" height="27">
-	       				<div id="id10" style="height: 27px; width: 402px; z-index: 1; text-align: right;" class="style_SkipStroke_3 shape-with-text">
-				            <div class="text-content graphic_textbox_layout_style_default_External_402_27" style="padding: 0px; ">
-				              <div class="graphic_textbox_layout_style_default">
-				                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_6">At {{views_limit}} views, this video will have reached its maximum views.</p>
-				              </div>
-				            </div>
-			          	</div>
-			        </td></tr>
-			    {% endif %}
+			    <tr><td width="403" height="54">
+				    <div id="id11" style="height: 54px; width: 403px; z-index: 1; text-align: right;" class="style_SkipStroke_3 shape-with-text">
+			            <div class="text-content graphic_textbox_layout_style_default_External_121_54" style="padding: 0px; ">
+			              <div class="graphic_textbox_layout_style_default">
+			                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_7">{{views_count}}</p>
+			              </div>
+			            </div>
+			        </div>
+       			</td></tr>
+       			<tr><td width="403" height="27">
+       				<div id="id10" style="height: 27px; width: 402px; z-index: 1; text-align: right;" class="style_SkipStroke_3 shape-with-text">
+			            <div class="text-content graphic_textbox_layout_style_default_External_402_27" style="padding: 0px; ">
+			              <div class="graphic_textbox_layout_style_default">
+			                <p style="padding-bottom: 0pt; padding-top: 0pt; " class="paragraph_style_6">At {{views_limit}} views, this video will have reached its maximum views.</p>
+			              </div>
+			            </div>
+		          	</div>
+		        </td></tr>
 
-                {% if views_limit == -1 %}
+                {% if views_limit == 'infinite' %}
                   <tr>
                     <td>
                       <div id="id13" style="margin-bottom: 7px;">

@@ -6,7 +6,9 @@ from api.errors import ParameterExpected
 from api.validation_mixins import PurchaserValidationMixin
 from api.view import GetView
 
-from stemming import porter2
+from pipture.models import Episodes
+
+from stemming import lovins
 
 
 class GetSearchResult(GetView, PurchaserValidationMixin):
@@ -16,15 +18,18 @@ class GetSearchResult(GetView, PurchaserValidationMixin):
         if not query:
             raise ParameterExpected(parameter='query')
 
-        self.search_query = porter2.stem(query)
+        self.search_query = lovins.stem(query)
 
     def do_search(self):
         query = self.search_query
-
+        
         title_filter = Q(Title__icontains=query)
-        keywords_filter = Q(Keywords__icontains=query)
         series_name_filter = Q(AlbumId__SeriesId__Title__icontains=query)
-
+        
+        keywords_filter = Q()
+        for word in query.split():
+            keywords_filter |= Q(Keywords__icontains=word)
+            
         available_episodes = self.caching.get_available_episodes()
         episodes = available_episodes.filter(title_filter |
                                              keywords_filter |

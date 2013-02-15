@@ -37,6 +37,7 @@ enum ComposeType {
     ScrollingHintPopupController *scrollingHintController;
     NSDictionary *tableCellsHeightMap;
     UITextField *activeField;
+    BOOL alarmFlag;
 }
 
 @property (retain, nonatomic) IBOutlet UIView *picturePlaceholder;

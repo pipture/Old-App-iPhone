@@ -76,6 +76,7 @@
 
 @property (assign, nonatomic) BOOL simpleMode;
 @property (assign, nonatomic) BOOL fromStore;
+@property (assign, nonatomic) BOOL forSale;
 @property (retain, nonatomic) IBOutlet UIView *tooltip;
 
 

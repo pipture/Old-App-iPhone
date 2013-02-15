@@ -30,6 +30,9 @@
 #define DEFAULT_NUMBER_OF_VIEWS 1
 #define NOT_CONFIRMABLE_NUMBER_OF_VIEWS 50
 
+#define INSUFFICIENT_ALERT_TAG  1
+#define DEBIT_ALERT_TAG 2
+
 static const char *composeTypeStr[] = { "Email", "Tweet"};
 
 @interface ScreenshotsReceiverWraper : NSObject<ScreenshotCollectionReceiver> {
@@ -299,7 +302,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
             numberOfFreeViews = FREE_NUMBER_OF_VIEWS;
         }
         
-        purchViews = (ep.album.sellStatus == AlbumSellStatus_Purchased)? purchViews - numberOfFreeViews: purchViews;
+        purchViews = (ep.album.sellStatus != AlbumSellStatus_NotSellable)? purchViews - numberOfFreeViews: purchViews;
         
         if (purchViews < NOT_CONFIRMABLE_NUMBER_OF_VIEWS) {
             [self sendMessageURLRequest:COMPOSETYPE_EMAIL];
@@ -307,6 +310,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
             NSString*alertmessage = [NSString stringWithFormat:@"Debit %d viewers?",purchViews,nil ];
             
             UIAlertView *alertView =[[UIAlertView alloc] initWithTitle:@"Confirm Message" message:alertmessage delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];
+            alertView.tag = DEBIT_ALERT_TAG;
             [alertView show];
             [alertView release];
         }
@@ -327,6 +331,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (IBAction)onConfirmMessageTap:(id)sender {
+    alarmFlag = NO;
    
     if ([nameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
         [self moveView:FROM_EDITING_SCROLL_OFFSET];        
@@ -355,8 +360,20 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 -(void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        [self sendMessageURLRequest:composeType];
+    switch (alertView.tag){
+        case DEBIT_ALERT_TAG:
+            if (buttonIndex == 1) {
+                [self sendMessageURLRequest:composeType];
+            }
+            break;
+        case INSUFFICIENT_ALERT_TAG:
+            if (buttonIndex == 1){
+                [[PiptureAppDelegate instance] buyViews];
+            }
+//            else{
+//                [self onCancel:nil];
+//            }
+            break;
     }
 }
 
@@ -550,6 +567,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    alarmFlag = YES;
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     
@@ -986,6 +1004,17 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
 -(void) onFreeViewersUpdated:(NSNotification *) notification {
     self.numberOfFreeViewsForEpisode = [[notification.userInfo valueForKey:@"FreeViewers"] intValue];
+    if (alarmFlag && !self.numberOfFreeViewsForEpisode && ![[PiptureAppDelegate instance] getBalance]){
+        alarmFlag = NO;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Library Card"
+                                                        message:@"Add views to your card."
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                              otherButtonTitles:@"Continue", nil];
+        alert.tag = INSUFFICIENT_ALERT_TAG;
+        [alert show];
+        [alert release];
+    }
     if (self.numberOfFreeViewsForEpisode == 10){
         maxViewsLabel.text = @"100 max. Send up to 10 for free.";
     }

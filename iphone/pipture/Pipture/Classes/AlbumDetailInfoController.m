@@ -51,7 +51,7 @@
 @synthesize numberOfViewsLabel;
 @synthesize scheduleLabel;
 @synthesize scheduleLabelView;
-@synthesize fromHotNews;
+@synthesize notFromStore;
 @synthesize noVideosLabel;
 @synthesize progressLabel;
 
@@ -61,22 +61,27 @@
 #pragma mark - View lifecycle
 
 - (void)updateDetails {
-    self.noVideosLabel.hidden = YES;
-    progressLabel.text = @"Album is loading";
-    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:NO];
     if (self.album) {
         NSLog(@"Details update by Album, %@", self.album);
         if (album.detailsLoaded) {
             [self albumDetailsReceived:self.album];
         }
+//        [self showSpinner];
         [[[PiptureAppDelegate instance] model] getDetailsForAlbum:self.album
                                                          receiver:self];
     } else {
         NSLog(@"Details update by TimeslotId");
+//        [self showSpinner];
         [[[PiptureAppDelegate instance] model] getAlbumDetailsForTimeslotId:self.timeslotId
                                                                    receiver:self];
     }
     [self setLibraryCardVisibility:NO withAnimation:NO];
+}
+
+-(void)showSpinner {
+    self.noVideosLabel.hidden = YES;
+    progressLabel.text = @"Album is loading";
+    [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -116,6 +121,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onNewBalance:)
                                                  name:VIEWS_PURCHASED_NOTIFICATION
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onAlbumPurchase:)
+                                                 name:ALBUM_PURCHASED_NOTIFICATION
                                                object:nil];
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
@@ -167,6 +176,7 @@
                                         self.view.frame.size.height-heightOffset);
    
     [self updateDetails];
+    [self updateScheduleLabel];
 }
 
 - (void)tapResponder:(UITapGestureRecognizer *)recognizer {
@@ -218,6 +228,11 @@
                                              selector:@selector(onPurchaseConfirmed:)
                                                  name:PURCHASE_CONFIRMED_NOTIFICATION
                                                object:[PiptureAppDelegate instance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onAlbumPurchase:)
+                                                 name:ALBUM_PURCHASED_NOTIFICATION
+                                               object:[PiptureAppDelegate instance]];
+    
     
     detailsReceived = NO;
     [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
@@ -379,16 +394,15 @@
             [[NSBundle mainBundle] loadNibNamed:@"DetailTableItemView" owner:self options:nil];
             cell = videoTableCell;
             videoTableCell = nil;
-            
-            UIButton * sendButton = (UIButton*) [cell viewWithTag:6];
-            
-            [sendButton addTarget:self action:@selector(sendButtonTouchDown:)       forControlEvents:UIControlEventTouchDown];
-            [sendButton addTarget:self action:@selector(sendButtonTouchUpInside:)   forControlEvents:UIControlEventTouchUpInside];
-            [sendButton addTarget:self action:@selector(sendButtonTouchUpOutside:)  forControlEvents:UIControlEventTouchUpOutside];
-            
-            sendButton.hidden = (self.album.sellStatus == AlbumSellStatus_Buy ||
-                                 self.album.sellStatus == AlbumSellStatus_Pass);
         }
+        UIButton * sendButton = (UIButton*) [cell viewWithTag:6];
+        
+        [sendButton addTarget:self action:@selector(sendButtonTouchDown:)       forControlEvents:UIControlEventTouchDown];
+        [sendButton addTarget:self action:@selector(sendButtonTouchUpInside:)   forControlEvents:UIControlEventTouchUpInside];
+        [sendButton addTarget:self action:@selector(sendButtonTouchUpOutside:)  forControlEvents:UIControlEventTouchUpOutside];
+        
+        sendButton.hidden = (self.album.sellStatus == AlbumSellStatus_Buy ||
+                             self.album.sellStatus == AlbumSellStatus_Pass);
         [self fillCell:[indexPath row] cell:cell];
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:kDivCellID];
@@ -412,7 +426,8 @@
             [[PiptureAppDelegate instance] showVideo:playlist
                                               noNavi:YES 
                                           timeslotId:nil
-                                           fromStore:[self isFromStore]];
+                                           fromStore:[self isFromStore]
+                                             forSale:[self isSellable]];
             //[[PiptureAppDelegate instance] getVideoURL:episode forTimeslotId:nil receiver:self];
             
         }
@@ -533,7 +548,8 @@
     [[PiptureAppDelegate instance] showVideo:playlist 
                                       noNavi:YES 
                                   timeslotId:nil
-                                   fromStore:[self isFromStore]];
+                                   fromStore:[self isFromStore]
+                                     forSale:[self isSellable]];
 }
 
 -(void)videoNotPurchased:(PlaylistItem*)playlistItem {
@@ -561,6 +577,11 @@
         [self setNumberOfViews:[[PiptureAppDelegate instance] getBalance]];
         [self showScrollingHintIfNeeded];
     }
+}
+
+- (void) onAlbumPurchase:(NSNotification *) notification {
+    album.detailsLoaded = NO;
+    [self updateDetails];
 }
 
 -(void)setNumberOfViews:(NSInteger)numberOfViews {
@@ -697,7 +718,8 @@
         [[PiptureAppDelegate instance] showVideo:playlist
                                           noNavi:YES
                                       timeslotId:nil
-                                       fromStore:[self isFromStore]];
+                                       fromStore:[self isFromStore]
+                                         forSale:NO];
     }
 }
 
@@ -726,6 +748,8 @@
     [[PiptureAppDelegate instance] powerButtonEnable:([scheduleModel albumIsPlayingNow:album.albumId])];        
 
     [self updateScheduleLabel];
+    [videosTable reloadData];
+
 }
 
 -(void)detailsCantBeReceivedForUnknownAlbum:(Album*)album {
@@ -735,7 +759,7 @@
 
 -(void)showScrollingHintIfNeeded {
     
-    if (!scrollingHintController) {
+    if (self.album.sellStatus != AlbumSellStatus_NotSellable && !scrollingHintController) {
         scrollingHintController = [[ScrollingHintPopupController alloc] initWithNibName:@"ScrollHintPopup"
                                                                                  bundle:nil 
                                                                              screenName:@"B8"
@@ -747,15 +771,17 @@
 }
 
 - (BOOL)isFromStore {
-    BOOL sellable = album.sellStatus == AlbumSellStatus_Buy ||
-                    album.sellStatus == AlbumSellStatus_Pass;
-    return sellable && !fromHotNews;
+    return [self isSellable] && !notFromStore;
+}
+
+- (BOOL)isSellable {
+    return album.sellStatus == AlbumSellStatus_Buy || album.sellStatus == AlbumSellStatus_Pass;
 }
 
 - (BOOL)isSellableFromHotNews {
     BOOL sellable = album.sellStatus == AlbumSellStatus_Buy ||
                     album.sellStatus == AlbumSellStatus_Pass;
-    return sellable && fromHotNews;
+    return sellable && notFromStore;
 }
 
 - (NSString*)albumSchedule {

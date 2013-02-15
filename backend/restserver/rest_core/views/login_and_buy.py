@@ -18,9 +18,8 @@ from api.validation_mixins import PurchaserValidationMixin
 from restserver.pipture.models import AppleProducts, PurchaseItems,\
                                       UserPurchasedItems, Transactions, \
                                       PipUsers, Purchasers, Episodes, \
-                                      FreeMsgViewers, PiptureSettings
+                                      FreeMsgViewers, PiptureSettings, Albums
 
-from annoying.functions import get_object_or_None
 from apiclient.errors import HttpError
 
 
@@ -81,6 +80,8 @@ class GetBalance(GetView, PurchaserValidationMixin):
 
         try:
             self.episode = episode_id and self.caching.get_episode(episode_id)
+            if not self.episode or self.episode.AlbumId.PurchaseStatus == Albums.PURCHASE_TYPE_NOT_FOR_SALE:
+                self.episode = None
         except ValueError:
             raise WrongParameter(parameter='EpisodeId')
         except Episodes.DoesNotExist:
@@ -90,15 +91,12 @@ class GetBalance(GetView, PurchaserValidationMixin):
         free_viewers = None
 
         if self.episode:
-            free_viewers = get_object_or_None(FreeMsgViewers,
-                                              Purchaser=self.user.Purchaser,
-                                              EpisodeId=self.episode)
-            if free_viewers:
-                free_viewers = int(free_viewers.Rest)
-            elif self.caching.is_episode_purchased(self.episode):
-                free_viewers = settings.MESSAGE_VIEWS_LOWER_LIMIT
+            free_viewers, created = FreeMsgViewers.objects.get_or_create(Purchaser=self.user.Purchaser,
+                                         EpisodeId=self.episode)
+            free_viewers = int(free_viewers.Rest)
 
         return free_viewers
+
 
     def get_context_data(self):
         return dict(Balance=str(self.user.Purchaser.Balance),
@@ -171,34 +169,28 @@ class Buy(PostView, PurchaserValidationMixin):
         self.user.Purchaser.save()
 
     def restore_purchased_item(self):
-        old_purchaser = self.user.Purchaser
-
         try:
             original_transaction = UserPurchasedItems.objects.get(
                     AppleTransactionId=self.original_transaction_id)
         except UserPurchasedItems.DoesNotExist:
             return False
 
-        if original_transaction.Purchaser == self.user.Purchaser:
+        new_purchaser    = self.user.Purchaser
+        former_purchaser = original_transaction.Purchaser
+
+        if new_purchaser == former_purchaser:
             return True
 
-        new_users_items = self.user.Purchaser.purchased_items.all()
-        new_users = self.user.Purchaser.users.all()
 
-        if not new_users:
-            raise Conflict(message='There must be at least one (current) user in selection.')
-
-        original_transaction.Purchaser.Balance += old_purchaser.Balance
-        original_transaction.Purchaser.save()
-
-        old_purchaser.Balance = 0
-        old_purchaser.save()
-
-        for obj in chain(new_users_items, new_users):
-            obj.Purchaser = original_transaction.Purchaser
-            obj.save()
-
-        self.user.Purchaser = original_transaction.Purchaser
+        original_transaction.Purchaser = new_purchaser
+        original_transaction.save()
+        
+        if not former_purchaser.purchased_items.count():
+            new_purchaser.Balance += former_purchaser.Balance
+            new_purchaser.save()
+    
+            former_purchaser.Balance = 0
+            former_purchaser.save()
 
         return True
 

@@ -347,11 +347,11 @@ static PiptureAppDelegate *instance;
         if ([self homeViewVisible]) {
             [[self getHomeView] setHomeScreenMode:HomeScreenMode_Update];
         }
-    } 
+    }
     else if (registrationRequired)
     {
         [model_ registerWithReceiver:self];
-    } 
+    }
     else
     {
         self.uuid = [self loadUserUUID];        
@@ -429,12 +429,18 @@ static PiptureAppDelegate *instance;
 - (void)applicationWillResignActive:(UIApplication *)application {
     [self dismissModalBusy]; 
     [videoViewController setSuspended:YES];
-    if ([[PiptureAppDelegate instance] getHomescreenState] == HomeScreenMode_Albums){
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    if ([[PiptureAppDelegate instance] getHomescreenState] == HomeScreenMode_Albums
+        && ![purchases isInProcess]
+        && [self homeViewVisible])
+    {
         HomeViewController * vc = [[PiptureAppDelegate instance] getHomeView];
         if (vc)
-           [vc.albumsView removeFromSuperview];
-        
+            [vc.albumsView removeFromSuperview];
     }
+    
 }
 
 -(void)adjustBackgroundLogo{
@@ -628,7 +634,7 @@ static PiptureAppDelegate *instance;
 }
 
 
-- (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId fromStore:(BOOL)fromStore{
+- (void)showVideo:(NSArray*)playlist noNavi:(BOOL)noNavi timeslotId:(NSNumber*)timeslotId fromStore:(BOOL)fromStore forSale:(BOOL)forSale{
     
     if ([self videoViewVisible]) return;
     
@@ -644,6 +650,7 @@ static PiptureAppDelegate *instance;
     videoViewController.wantsFullScreenLayout = YES;
     videoViewController.simpleMode = noNavi;
     videoViewController.fromStore = fromStore;
+    videoViewController.forSale = forSale;
     
     [self.window setRootViewController:videoViewController];
     [[self.window layer] addAnimation:animation forKey:@"SwitchToView1"];
@@ -826,7 +833,7 @@ NSInteger networkActivityIndecatorCount;
             case TABBARITEM_CHANNEL:
                 //commented out since #21917
 //                if ([channelButton imageForState:UIControlStateNormal] != [UIImage imageNamed:@"nav-button-channel-active.png"]) {
-                    [vc setHomeScreenMode:HomeScreenMode_Last];
+                    [vc setHomeScreenMode:HomeScreenMode_Cover];
 //                }
                 break;
                 

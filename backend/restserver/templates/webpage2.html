@@ -105,14 +105,10 @@
               <div class="views__count">
                 <span id="viewcounter">{{views_count}}</span>
               </div>
-              {% if views_limit > 1 %}
                 <p>At {{views_limit}} views, this video will have reached its maximum views.</p>
-              {% else %}
-                <p>This video can be viewed unlimited number of times.</p>
-              {% endif %}
             </div>
 
-            {% if views_limit == -1 %}
+            {% if views_limit == 'infinite' %}
                 <div class="like-buttons">
                   {% include "like_buttons.html" %}
                 </div>
@@ -145,8 +141,16 @@
 
     <script type="text/javascript">
       jQuery(document).ready(function(){
+<<<<<<< HEAD
 
         jQuery('video,audio').mediaelementplayer({
+=======
+      	var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
+      	if (!flashEnabled) alert('You should install Adobe Flash Player to watch the video. Folow the link below:\n\nhttp://www.adobe.com/software/flash/about/');
+
+        jQuery('video,audio').mediaelementplayer({
+          mode: 'shim',
+>>>>>>> develop
           videoWidth: 400,
           videoHeight: 600,
           features: ['playpause','progress','volume'],

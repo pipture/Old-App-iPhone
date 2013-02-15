@@ -189,7 +189,7 @@ def index(request, u_url):
 
     if urs_instance.ViewsCount < urs_instance.ViewsLimit or urs_instance.ViewsLimit == -1:
         message_blocked = False
-
+    
     if not message_blocked:
         if isMobile:
             video_url, subs_url, error = get_video_url_from_episode_or_trailer(id=urs_instance.LinkId,
@@ -206,7 +206,7 @@ def index(request, u_url):
             urs_instance.ViewsCount += 1
             urs_instance.save()
         request.session["Pipture"+u_url] = storeDateTime(float(todaySeconds()))
-
+    
     if isMobile:
         #template_h = 'video_mobile.html'
         template_h = 'mobilepage.html'
@@ -219,8 +219,8 @@ def index(request, u_url):
     message_empty = len(text_m) == 0
 
     limit = urs_instance.ViewsLimit
-#    if urs_instance.ViewsLimit == -1:
-#        limit = "infinite"
+    if urs_instance.ViewsLimit == -1:
+        limit = "infinite"
 
     if not message_empty:
         from django.utils.html import urlize
