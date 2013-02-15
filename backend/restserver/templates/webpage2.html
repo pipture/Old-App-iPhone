@@ -105,14 +105,10 @@
               <div class="views__count">
                 <span id="viewcounter">{{views_count}}</span>
               </div>
-              {% if views_limit > 1 %}
                 <p>At {{views_limit}} views, this video will have reached its maximum views.</p>
-              {% else %}
-                <p>This video can be viewed unlimited number of times.</p>
-              {% endif %}
             </div>
 
-            {% if views_limit == -1 %}
+            {% if views_limit == 'infinite' %}
                 <div class="like-buttons">
                   {% include "like_buttons.html" %}
                 </div>
