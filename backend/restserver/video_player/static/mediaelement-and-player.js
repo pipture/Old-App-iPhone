@@ -743,7 +743,7 @@ mejs.MediaElementDefaults = {
 	// native: forces HTML5 playback
 	// shim: disallows HTML5, will attempt either Flash or Silverlight
 	// none: forces fallback view
-	mode: 'shim',//'auto',
+	mode: 'auto',
 	// remove or reorder to change plugin priority and availability
 	plugins: ['flash','silverlight','youtube','vimeo'],
 	// shows debug errors on screen
