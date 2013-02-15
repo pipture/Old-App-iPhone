@@ -36,19 +36,8 @@
     	__status_list = { 'N':'NotForSale', 'B':'BuyAlbum', 'P':'AlbumPass' }
     	album_purchase_status = __status_list['{{ video.AlbumId.PurchaseStatus }}']
     </script>
-	<script type="text/javascript" src="{{ STATIC_URL }}ga.js"></script>
-    <link href="{{ STATIC_URL }}webpage_files/webpageMoz.css" type="text/css" rel="stylesheet">
-    <style>
-      .download_app_link .download_button
-      {
-        background-image:url({{ STATIC_URL }}webpage_files/Download-button.png);
-      }
-      .download_app_link:hover .download_button
-      {
-        background-image:url({{ STATIC_URL }}webpage_files/Download-button-rollover.png);
-      }
-    </style>
-    </head>
+	<script src="{{ STATIC_URL }}ga.js"></script>
+  </head>
 
   <body class="page">
       <div class="page__inner" id="body_content">
