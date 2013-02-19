@@ -145,7 +145,7 @@
       	if (!flashEnabled) alert('You should install Adobe Flash Player to watch the video. Folow the link below:\n\nhttp://www.adobe.com/software/flash/about/');
 
         jQuery('video,audio').mediaelementplayer({
-          mode: 'shim',
+          mode: navigator.userAgent.match('Chrom') ? 'shim' : 'auto',
           videoWidth: 400,
           videoHeight: 600,
           features: ['playpause','progress','volume'],
