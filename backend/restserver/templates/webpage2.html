@@ -93,12 +93,14 @@
               </div>
             {% endif %}
 
-            <div class="message-text">
-              {% if not message_empty and not message_blocked %}
+            <div class="message-text"
+				{% if message_empty or message_blocked %}
+					style="visibility: hidden"
+				{% endif %}
+            >
                 {% autoescape off %}
                   <p>{{text_2}}</p>
                 {% endautoescape %}
-              {% endif %}
             </div>
 
             <div class="views">
