@@ -143,11 +143,15 @@
 
     <script type="text/javascript">
       jQuery(document).ready(function(){
-      	var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
-      	if (!flashEnabled) alert('You should install Adobe Flash Player to watch the video. Folow the link below:\n\nhttp://www.adobe.com/software/flash/about/');
+      	var flash_forcing = navigator.userAgent.match('Chrom');
+      	
+      	if (flash_forcing){
+	      	var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
+	      	if (!flashEnabled) alert('You should install Adobe Flash Player to watch the video. Folow the link below:\n\nhttp://www.adobe.com/software/flash/about/');
+      	}
 
         jQuery('video,audio').mediaelementplayer({
-          mode: navigator.userAgent.match('Chrom') ? 'shim' : 'auto',
+          mode: flash_forcing ? 'shim' : 'auto',
           videoWidth: 400,
           videoHeight: 600,
           features: ['playpause','progress','volume'],
