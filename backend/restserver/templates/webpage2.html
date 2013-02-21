@@ -143,7 +143,10 @@
 
     <script type="text/javascript">
       jQuery(document).ready(function(){
-      	var flash_forcing = navigator.userAgent.match('Chrom');
+		var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+		var isChrome = !isSafari && testCSS('WebkitTransform');  // Chrome 1+
+      	
+      	var flash_forcing = isChrome;
       	
       	if (flash_forcing){
 	      	var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
