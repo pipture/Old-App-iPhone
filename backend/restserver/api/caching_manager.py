@@ -71,7 +71,7 @@ class CachingManager(object):
 
         if date_released > today:
             return False
-        if date_released < today:
+        if date_released <= today:
             return True
 
         timeslot_videos = self._get_timeslot_videos(episode)
