@@ -86,8 +86,10 @@ class PiptureGAClient(GoogleAnalyticsV3Client):
         'message_limit' : 'ga:customVarValue5',
     }
     
-    twitter_msg = 'Tweet'
-    email_msg = 'Email'
+    email_msg    = 'Email'
+    twitter_msg  = 'Tweet'
+    facebook_msg = 'Facebook'
+    
     app_browser_name ='GoogleAnalytics'
     
     default_max_date = datetime(2100, 1, 1, 0, 0)
