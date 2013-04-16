@@ -33,8 +33,6 @@
 #define INSUFFICIENT_ALERT_TAG  1
 #define DEBIT_ALERT_TAG 2
 
-static const char *composeTypeStr[] = { "Email", "Tweet"};
-
 @interface ScreenshotsReceiverWraper : NSObject<ScreenshotCollectionReceiver> {
     NSObject<ScreenshotCollectionReceiver>* wrappedObject_;
 }
@@ -96,6 +94,22 @@ static const char *composeTypeStr[] = { "Email", "Tweet"};
 static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
 static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
+
+
+-(NSString*) composeTypeEnumToString:(ComposeType)enumVal
+{
+    NSArray *_array = [[NSArray alloc] initWithObjects:composeTypeArray];
+    return [_array objectAtIndex:enumVal];
+}
+
+// A method to retrieve the int value from the NSArray of NSStrings
+-(ComposeType) composeTypeStringToEnum:(NSString*)strVal
+{
+    NSArray *_array = [[NSArray alloc] initWithObjects:composeTypeArray];
+    NSUInteger n = [_array indexOfObject:strVal];
+    if(n < 1) n = COMPOSETYPE_EMAIL;
+    return (ComposeType) n;
+}
 
 -(BOOL)isPlaylistItemFree: (PlaylistItem*)playlistItem{
     return playlistItem.class == [Trailer class] || playlistItem.album.sellStatus == AlbumSellStatus_NotSellable;
@@ -286,7 +300,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [inactiveBtn setImage:img forState:UIControlStateNormal];
 }
 
--(void)sendMessageURLRequest:(enum ComposeType)type {
+-(void)sendMessageURLRequest:(ComposeType)type {
     composeType = type;
     [[[PiptureAppDelegate instance] model] sendMessage:message_ ? message_ : @"" playlistItem:self.playlistItem timeslotId:timeslotId screenshotImage:screenshotImage_ ? screenshotImage_.imageURL : self.playlistItem.emailScreenshot userName:nameTextField.text viewsCount:[NSNumber numberWithInt:(infiniteViews? -1 : numberOfViews)] receiver:self];
 }
@@ -318,15 +332,20 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    switch (buttonIndex) {
-        case 0://Tweet
-            [self sendMessageURLRequest:COMPOSETYPE_TWEET];
-            break;
-        case 1://Email
-            [self sendEmail];
-            break;
-        default://Cancel
-            break;
+    if (buttonIndex != actionSheet.cancelButtonIndex){
+        switch ([self composeTypeStringToEnum: [actionSheet buttonTitleAtIndex: buttonIndex] ]) {
+            case COMPOSETYPE_TWEET://Tweet
+                [self sendMessageURLRequest:COMPOSETYPE_TWEET];
+                break;
+            case COMPOSETYPE_EMAIL://Email
+                [self sendEmail];
+                break;
+            case COMPOSETYPE_FB://Facebook
+                [self sendMessageURLRequest:COMPOSETYPE_FB];
+                break;
+            default://Cancel
+                break;
+        }
     }
 }
 
@@ -344,14 +363,37 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 
     [[PiptureAppDelegate instance] putUserName:nameTextField.text];
     
+    NSString *email_item = [self composeTypeEnumToString:COMPOSETYPE_EMAIL];
+    NSMutableArray *options = [[NSMutableArray alloc] initWithObjects:email_item, nil];
+    
+    if ([TWTweetComposeViewController canSendTweet]){
+        NSString *twitter_item = [self composeTypeEnumToString:COMPOSETYPE_TWEET];
+        [options addObject:twitter_item];
+    }
+    
+    if ([[self fbAccounts] count] > 0){
+        NSString *facebook_item = [self composeTypeEnumToString:COMPOSETYPE_FB];
+        [[PiptureAppDelegate instance] openSessionWithAllowLoginUI:YES];
+        [options addObject:facebook_item];
+    }
+    
+    [options addObject:@"Cancel"];
+    
     if (self.playlistItem) {
-        if (infiniteViews && [TWTweetComposeViewController canSendTweet]) {
-            [[[UIActionSheet alloc] initWithTitle:nil
+        if (infiniteViews && [options count] > 2) {
+            UIActionSheet* sending_options = [[UIActionSheet alloc] initWithTitle:@""
                                          delegate:self
-                                cancelButtonTitle:@"Cancel"
+                                cancelButtonTitle:nil
                            destructiveButtonTitle:nil
-                                otherButtonTitles:@"Tweet", @"Email", nil]
-             showInView:self.view];
+                                otherButtonTitles:nil];
+            
+            for (NSString *title in options){
+                [sending_options addButtonWithTitle:title];
+            }
+            sending_options.cancelButtonIndex = sending_options.numberOfButtons-1;
+            
+            [sending_options showInView:self.view];
+            
         } else {
             [self sendEmail];
         }
@@ -686,11 +728,9 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     [ga_vars addObject:GA_PAGE_VARIABLE(GA_INDEX_ALBUM_SELL_STATUS,
                                         sellStatusName,
                                         [self.playlistItem.album formatSellStatus])];
+
+    GA_TRACK_EVENT(event, [self composeTypeEnumToString:composeType], [message length], ga_vars);
     
-    GA_TRACK_EVENT(event,
-                   [NSString stringWithCString:composeTypeStr[composeType] encoding:NSUTF8StringEncoding] ,
-                   [message length],
-                   ga_vars);
     switch (composeType) {
         case COMPOSETYPE_EMAIL: {
             NSString *snippet = [[NSBundle mainBundle] pathForResource:@"snippet" ofType:@"html"];
@@ -738,6 +778,39 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 //                {
 //                }
             };
+        }
+            break;
+            
+        case COMPOSETYPE_FB: {
+            NSString *message_url = newUrl;
+            NSString *screenshot_url = screenshotImage_ ? screenshotImage_.imageURLLQ : self.playlistItem.emailScreenshot;
+            NSString *email_subject = self.playlistItem.emailSubject;
+            
+            NSString *descr = [self.playlistItem script];
+            if ([descr length] > 60){
+                descr = [[descr substringToIndex: 60] stringByAppendingString:@"..."];
+            }
+            
+            NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                           [[NSBundle mainBundle] objectForInfoDictionaryKey:@"FacebookAppID"], @"app_id",
+                                           message, @"message",
+                                           message_url, @"link",
+                                           screenshot_url, @"picture",
+                                           email_subject, @"name",
+                                           descr, @"description",
+                                           nil];
+            
+            [ [PiptureAppDelegate instance] publishUsingFeedDialogWithAccounts:[self fbAccounts]
+                                                                     andParams:params
+                                                                   andDelegate:self
+                                                                   andCallback:
+                 ^(NSDictionary* jsonResult,DataRequestError* error)
+                {
+                    [self clearMessage];
+                    [[PiptureAppDelegate instance] closeMailComposer];
+                }
+            ];
+            
         }
             break;
     }
@@ -1025,6 +1098,40 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 -(void)updateFreeViewersForEpisodeLabel {
     [cardSectionViewController setNumberOfFreeViews:numberOfFreeViewsForEpisode];
 }
+
+- (NSArray*)fbAccounts{
+    ACAccountStore *accountStore = [[NSClassFromString(@"ACAccountStore") alloc] init];
+    ACAccountType *accountType;
+    if (accountStore &&
+        (accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook]) &&
+        [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+    {
+        return [accountStore accountsWithAccountType:accountType];
+    } else
+        return [NSArray array];
+}
+
+
+- (void)dialogDidComplete:(FBDialog *)dialog{
+    [self clearMessage];
+    [[PiptureAppDelegate instance] closeMailComposer];
+}
+
+- (void)dialogCompleteWithUrl:(NSURL *)url{
+    [self clearMessage];
+    [[PiptureAppDelegate instance] closeMailComposer];
+}
+
+- (void) dialogDidNotComplete:(FBDialog *)dialog{
+}
+- (void) dialogDidNotCompleteWithUrl:(NSURL *)url{
+}
+- (void)dialog:(FBDialog*)dialog didFailWithError:(NSError *)error{
+}
+- (BOOL)dialog:(FBDialog*)dialog shouldOpenURLInExternalBrowser:(NSURL *)url{
+    return false;
+}
+
 @end
 
 
