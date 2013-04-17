@@ -90,6 +90,7 @@
 @synthesize infiniteRadioButtonsGroupView;
 @synthesize numberOfFreeViewsForEpisode;
 @synthesize tableCellsHeightMap;
+@synthesize progressLabel;
 
 static NSString* const HTML_MACROS_MESSAGE_URL = @"#MESSAGE_URL#";
 static NSString* const HTML_MACROS_EMAIL_SCREENSHOT = @"#EMAIL_SCREENSHOT#";
@@ -233,6 +234,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
                                          [NSNumber numberWithFloat:fromCell.frame.size.height], @"from",
                                          [NSNumber numberWithFloat:screenshotCell.frame.size.height], @"screenshots",
                                          nil];
+    
+    
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -371,9 +374,8 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         [options addObject:twitter_item];
     }
     
-    if ([[self fbAccounts] count] > 0){
+    if ([[FBSession activeSession] isOpen]){
         NSString *facebook_item = [self composeTypeEnumToString:COMPOSETYPE_FB];
-        [[PiptureAppDelegate instance] openSessionWithAllowLoginUI:YES];
         [options addObject:facebook_item];
     }
     
@@ -800,16 +802,23 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
                                            descr, @"description",
                                            nil];
             
-            [ [PiptureAppDelegate instance] publishUsingFeedDialogWithAccounts:[self fbAccounts]
-                                                                     andParams:params
+            [ [PiptureAppDelegate instance] publishUsingFeedDialogWithParams:params
                                                                    andDelegate:self
-                                                                   andCallback:
-                 ^(NSDictionary* jsonResult,DataRequestError* error)
+                                                                   onSuccess:
+                 ^()
                 {
                     [self clearMessage];
                     [[PiptureAppDelegate instance] closeMailComposer];
+                    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
+                }
+                                                                   onFailure:
+                ^()
+                {
+                    [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
                 }
             ];
+            progressLabel.text = @"Posting the message...";
+            [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
             
         }
             break;
@@ -860,6 +869,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 }
 
 - (void) onBuyViews:(NSNotification *) notification {
+    progressLabel.text = @"Purchase in progress";
     [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
 }
 
@@ -1098,19 +1108,6 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
 -(void)updateFreeViewersForEpisodeLabel {
     [cardSectionViewController setNumberOfFreeViews:numberOfFreeViewsForEpisode];
 }
-
-- (NSArray*)fbAccounts{
-    ACAccountStore *accountStore = [[NSClassFromString(@"ACAccountStore") alloc] init];
-    ACAccountType *accountType;
-    if (accountStore &&
-        (accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook]) &&
-        [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
-    {
-        return [accountStore accountsWithAccountType:accountType];
-    } else
-        return [NSArray array];
-}
-
 
 - (void)dialogDidComplete:(FBDialog *)dialog{
     [self clearMessage];

@@ -65,6 +65,7 @@ typedef enum {
 @property (retain, nonatomic) IBOutlet UILabel *clippedMessage;
 @property (retain, nonatomic) IBOutlet UIButton *cancelButton;
 @property (retain, nonatomic) IBOutlet UIView *progressView;
+@property (retain, nonatomic) IBOutlet UILabel *progressLabel;
 @property (retain, nonatomic) NSDictionary *tableCellsHeightMap;
 
 - (IBAction)onCancel:(id)sender;

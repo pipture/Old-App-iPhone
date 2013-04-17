@@ -144,5 +144,5 @@ extern NSString *const FBSessionStateChangedNotification;
 - (void)setCover:(NSDictionary*)params;
 - (NSString*)currentHour;
 - (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI;
-- (void) publishUsingFeedDialogWithAccounts:(NSArray*)accounts andParams:(NSMutableDictionary*)params andDelegate: (id <FBDialogDelegate>)delegate andCallback:(DataRequestCallback)callback;
+- (void) publishUsingFeedDialogWithParams:(NSMutableDictionary*)params andDelegate: (id <FBDialogDelegate>)delegate onSuccess:(void(^)(void))on_success onFailure:(void(^)(void))on_failure;
 @end

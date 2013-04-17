@@ -49,6 +49,10 @@ static NSString* const USERNAME_KEY = @"UserName";
 static NSString* const HOMESCREENSTATE_KEY = @"HSState";
 static NSString* const SUBSSTATE_KEY = @"SubsState";
 static NSString* const CHANNEL_CATEGORIES_ORDER = @"ChannelCategoriesOrder";
+static NSString* const FB_LOGIN_CANCELLED_KEY = @"SystemLoginCancelled";
+
+static NSString* const FB_LOGIN_FAILED_REASON = @"com.facebook.sdk:ErrorLoginFailedReason";
+static NSString* const FB_SYSTEM_LOGIN_CANCELLED = @"com.facebook.sdk:SystemLoginCancelled";
 
 enum {
     INSUFFICIENT_FUND_ALERT = 1,
@@ -59,6 +63,7 @@ enum {
 UIAlertView * alert;
 BOOL registrationRequired = NO;
 BOOL loggedIn = NO;
+BOOL FB_PUBLISHING_2ND_ATTEMPT = NO;
 
 NSString *const FBSessionStateChangedNotification = @"516527245071195:FBSessionStateChangedNotification";
 
@@ -465,6 +470,12 @@ static PiptureAppDelegate *instance;
     // We need to properly handle activation of the application with regards to Facebook Login
     // (e.g., returning from iOS 6.0 Login Dialog or from fast app switching).
     [FBSession.activeSession handleDidBecomeActive];
+
+    if (   ![[NSUserDefaults standardUserDefaults] boolForKey:FB_LOGIN_CANCELLED_KEY]
+        && ![FBSession.activeSession isOpen]
+        &&  [[self facebookAccounts] count]){
+        [self openSessionWithAllowLoginUI:YES];
+    }
 }
 
 //Called by Reachability whenever status changes.
@@ -497,8 +508,6 @@ static PiptureAppDelegate *instance;
     [self trackPageviewToGoogleAnalytics:@"/app_entry_point"];
 
     [self adjustBackgroundLogo];
-    
-    [self requestAccessToFB];
     
     // Observe the kNetworkReachabilityChangedNotification. When that notification is posted, the
     // method "reachabilityChanged" will be called. 
@@ -947,7 +956,7 @@ NSInteger networkActivityIndecatorCount;
         
         [[self window] bringSubviewToFront:busyView.view];
     }
-    completion();
+    if (completion) completion();
 }
 
 - (void)dismissModalBusy {
@@ -1041,6 +1050,10 @@ NSInteger networkActivityIndecatorCount;
         case FBSessionStateClosedLoginFailed:
             [FBSession.activeSession closeAndClearTokenInformation];
             self.facebook = nil;
+            if (error && [[[error userInfo] objectForKey:FB_LOGIN_FAILED_REASON] isEqualToString:FB_SYSTEM_LOGIN_CANCELLED]){
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:FB_LOGIN_CANCELLED_KEY];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
             break;
         default:
             break;
@@ -1050,15 +1063,15 @@ NSInteger networkActivityIndecatorCount;
      postNotificationName:FBSessionStateChangedNotification
      object:session];
     
-    if (error) {
-        UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:@"Error"
-                                  message:error.localizedDescription
-                                  delegate:nil
-                                  cancelButtonTitle:@"OK"
-                                  otherButtonTitles:nil];
-        [alertView show];
-    }
+//    if (error) {
+//        UIAlertView *alertView = [[UIAlertView alloc]
+//                                  initWithTitle:@"Error"
+//                                  message:error.localizedDescription
+//                                  delegate:nil
+//                                  cancelButtonTitle:@"OK"
+//                                  otherButtonTitles:nil];
+//        [alertView show];
+//    }
 }
 
 /*
@@ -1088,7 +1101,8 @@ NSInteger networkActivityIndecatorCount;
     return [FBSession.activeSession handleOpenURL:url];
 }
 
-- (void) publishUsingFeedDialogWithAccounts:(NSArray*)accounts andParams:(NSMutableDictionary*)params andDelegate: (id <FBDialogDelegate>)delegate andCallback:(DataRequestCallback)callback{
+- (void) publishUsingFeedDialogWithParams:(NSMutableDictionary*)params andDelegate: (id <FBDialogDelegate>)delegate onSuccess:(void(^)(void))on_success onFailure:(void(^)(void))on_failure{
+    NSArray *accounts = [NSArray arrayWithArray:[self facebookAccounts]];
     // If we don't have access to users Facebook account, the account store will return an empty array.
     if (accounts.count == 0)
         return;
@@ -1118,42 +1132,27 @@ NSInteger networkActivityIndecatorCount;
         NSString *error_code = [[[responseDictionary objectForKey:@"error"] objectForKey:@"code"] stringValue];
         if (error_code){
             [FBSession.activeSession requestNewPublishPermissions:@[@"publish_actions"] defaultAudience:FBSessionDefaultAudienceFriends completionHandler:^(FBSession *session, NSError *error){
-                if (!error){
-                    [self publishUsingFeedDialogWithAccounts:accounts andParams:params andDelegate:delegate andCallback:callback];
+                if (!error && !FB_PUBLISHING_2ND_ATTEMPT){
+                    FB_PUBLISHING_2ND_ATTEMPT = YES;
+                    [self publishUsingFeedDialogWithParams:params andDelegate:delegate onSuccess:(void(^)(void))on_success onFailure:(void(^)(void))on_failure];
+                } else {
+                    FB_PUBLISHING_2ND_ATTEMPT = NO;
+                    if (on_failure)
+                        on_failure();
                 }
                 
             }];
         } else {
-            callback(responseDictionary, nil);
+            if (on_success)
+                on_success();
         }
     }];
 }
 
-- (void)requestAccessToFB{
+- (NSArray*)facebookAccounts{
     ACAccountStore *accountStore = [[NSClassFromString(@"ACAccountStore") alloc] init];
-    
     ACAccountType *facebookAccountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-    
-    NSDictionary *options = @{ACFacebookAppIdKey : [[NSBundle mainBundle] objectForInfoDictionaryKey:@"FacebookAppID"],
-                              ACFacebookPermissionsKey : @[@"publish_actions"],
-                              ACFacebookAudienceKey:ACFacebookAudienceOnlyMe};
-    
-    // Request access to the Facebook account.
-    [accountStore requestAccessToAccountsWithType:facebookAccountType
-                                          options:options
-                                       completion:^(BOOL granted, NSError *error) {
-                                           if (granted)
-                                           {
-                                               // At this point we can assume that we have access to the Facebook account
-                                               NSArray *accounts = [accountStore accountsWithAccountType:facebookAccountType];
-                                               // Optionally save the account
-                                               [accountStore saveAccount:[accounts lastObject] withCompletionHandler:nil];
-                                           }
-                                           else
-                                           {
-                                               NSLog(@"Failed to grant access\n%@", error);
-                                           }
-                                       }];
+    return [accountStore accountsWithAccountType:facebookAccountType];
 }
 
 @end
