@@ -374,7 +374,7 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
         [options addObject:twitter_item];
     }
     
-    if ([[FBSession activeSession] isOpen]){
+    if ([PiptureAppDelegate instance].fbLoggedIn){
         NSString *facebook_item = [self composeTypeEnumToString:COMPOSETYPE_FB];
         [options addObject:facebook_item];
     }
