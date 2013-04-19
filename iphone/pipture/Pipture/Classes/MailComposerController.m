@@ -369,12 +369,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
     NSString *email_item = [self composeTypeEnumToString:COMPOSETYPE_EMAIL];
     NSMutableArray *options = [[NSMutableArray alloc] initWithObjects:email_item, nil];
     
-    if ([TWTweetComposeViewController canSendTweet]){
+    if (infiniteViews && [TWTweetComposeViewController canSendTweet]){
         NSString *twitter_item = [self composeTypeEnumToString:COMPOSETYPE_TWEET];
         [options addObject:twitter_item];
     }
     
-    if ([PiptureAppDelegate instance].fbLoggedIn){
+    if (infiniteViews && [PiptureAppDelegate instance].fbLoggedIn){
         NSString *facebook_item = [self composeTypeEnumToString:COMPOSETYPE_FB];
         [options addObject:facebook_item];
     }
@@ -788,9 +788,12 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
             NSString *screenshot_url = screenshotImage_ ? screenshotImage_.imageURLLQ : self.playlistItem.emailScreenshot;
             NSString *email_subject = self.playlistItem.emailSubject;
             
-            NSString *descr = [self.playlistItem script];
-            if ([descr length] > 60){
-                descr = [[descr substringToIndex: 60] stringByAppendingString:@"..."];
+            NSString *descr = @"";
+            if ([self.playlistItem isKindOfClass:[Episode class]]){
+                descr = [self.playlistItem script];
+                if  ([descr length] > 60){
+                    descr = [[descr substringToIndex: 60] stringByAppendingString:@"..."];
+                }
             }
             
             NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -810,15 +813,18 @@ static NSString* const HTML_MACROS_FROM_NAME = @"#FROM_NAME#";
                     [self clearMessage];
                     [[PiptureAppDelegate instance] closeMailComposer];
                     [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
+                    self.cancelButton.enabled = YES;
                 }
                                                                    onFailure:
                 ^()
                 {
                     [[PiptureAppDelegate instance] hideCustomSpinner:progressView];
+                    self.cancelButton.enabled = YES;
                 }
             ];
             progressLabel.text = @"Posting the message...";
             [[PiptureAppDelegate instance] showCustomSpinner:progressView asBlocker:YES];
+            self.cancelButton.enabled = NO;
             
         }
             break;
