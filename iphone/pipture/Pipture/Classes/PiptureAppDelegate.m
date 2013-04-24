@@ -42,12 +42,19 @@
 @synthesize albumForCover;
 @synthesize uuid;
 @synthesize activeSpinner;
+@synthesize facebook = _facebook;
+@synthesize fbLoggedIn;
 
 static NSString* const UUID_KEY = @"UserUID";
 static NSString* const USERNAME_KEY = @"UserName";
 static NSString* const HOMESCREENSTATE_KEY = @"HSState";
 static NSString* const SUBSSTATE_KEY = @"SubsState";
 static NSString* const CHANNEL_CATEGORIES_ORDER = @"ChannelCategoriesOrder";
+static NSString* const FB_LOGIN_CANCELLED_KEY = @"SystemLoginCancelled";
+static NSInteger const FB_LOGIN_CANCELLED = 7;
+
+//static NSString* const FB_LOGIN_FAILED_REASON = @"com.facebook.sdk:ErrorLoginFailedReason";
+//static NSString* const FB_SYSTEM_LOGIN_CANCELLED = @"com.facebook.sdk:SystemLoginCancelled";
 
 enum {
     INSUFFICIENT_FUND_ALERT = 1,
@@ -58,6 +65,9 @@ enum {
 UIAlertView * alert;
 BOOL registrationRequired = NO;
 BOOL loggedIn = NO;
+
+
+//NSString *const FBSessionStateChangedNotification = @"516527245071195:FBSessionStateChangedNotification";
 
 static PiptureAppDelegate *instance;
 
@@ -459,6 +469,11 @@ static PiptureAppDelegate *instance;
     //Every time app become active we need to check if authentification is passed. If not - login or register.
     //It is needed for case when connection were missed on first try.    
     [self processAuthentication];
+    // We need to properly handle activation of the application with regards to Facebook Login
+    // (e.g., returning from iOS 6.0 Login Dialog or from fast app switching).
+//    [FBSession.activeSession handleDidBecomeActive];
+    
+    [self fbRequireAccessForBasic];
 }
 
 //Called by Reachability whenever status changes.
@@ -509,6 +524,9 @@ static PiptureAppDelegate *instance;
     [Appirater appEnteredForeground:YES];
 }
 
+-(void)applicationWillTerminate:(UIApplication *)application {
+//    [FBSession.activeSession close];
+}
 
 + (PiptureAppDelegate*) instance {
     return instance;
@@ -936,7 +954,7 @@ NSInteger networkActivityIndecatorCount;
         
         [[self window] bringSubviewToFront:busyView.view];
     }
-    completion();
+    if (completion) completion();
 }
 
 - (void)dismissModalBusy {
@@ -1005,6 +1023,178 @@ NSInteger networkActivityIndecatorCount;
     NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *date = [calendar components: NSHourCalendarUnit fromDate: [NSDate date]];
     return [NSString stringWithFormat: @"%d", [date hour] ];
+}
+
+/*
+ * Callback for session changes.
+ */
+//- (void)sessionStateChanged:(FBSession *)session
+//                      state:(FBSessionState) state
+//                      error:(NSError *)error
+//{
+//    switch (state) {
+//        case FBSessionStateOpen:
+//            if (!error) {
+//                // We have a valid session
+//                NSLog(@"User session found");
+//                if (nil == self.facebook) {
+//                    self.facebook = [[Facebook alloc]
+//                                     initWithAppId:FBSession.activeSession.appID
+//                                     andDelegate:nil];
+//                }
+//            }
+//            break;
+//        case FBSessionStateClosed:
+//        case FBSessionStateClosedLoginFailed:
+//            [FBSession.activeSession closeAndClearTokenInformation];
+//            self.facebook = nil;
+//            if (error && [[[error userInfo] objectForKey:FB_LOGIN_FAILED_REASON] isEqualToString:FB_SYSTEM_LOGIN_CANCELLED]){
+//                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:FB_LOGIN_CANCELLED_KEY];
+//                [[NSUserDefaults standardUserDefaults] synchronize];
+//            }
+//            break;
+//        default:
+//            break;
+//    }
+//    
+//    [[NSNotificationCenter defaultCenter]
+//     postNotificationName:FBSessionStateChangedNotification
+//     object:session];
+//    
+////    if (error) {
+////        UIAlertView *alertView = [[UIAlertView alloc]
+////                                  initWithTitle:@"Error"
+////                                  message:error.localizedDescription
+////                                  delegate:nil
+////                                  cancelButtonTitle:@"OK"
+////                                  otherButtonTitles:nil];
+////        [alertView show];
+////    }
+//}
+
+/*
+ * Opens a Facebook session and optionally shows the login UX.
+ */
+//- (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI {
+//    return [FBSession openActiveSessionWithReadPermissions:nil
+//                                              allowLoginUI:allowLoginUI
+//                                         completionHandler:^(FBSession *session,
+//                                                             FBSessionState state,
+//                                                             NSError *error) {
+//                                             [self sessionStateChanged:session
+//                                                                 state:state
+//                                                                 error:error];
+//                                         }];
+//}
+
+/*
+ * If we have a valid session at the time of openURL call, we handle
+ * Facebook transitions by passing the url argument to handleOpenURL
+ */
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    // attempt to extract a token from the url
+//    return [FBSession.activeSession handleOpenURL:url];
+}
+
+- (void) publishUsingFeedDialogWithParams:(NSMutableDictionary*)params andDelegate: (id <FBDialogDelegate>)delegate onSuccess:(void(^)(void))on_success onFailure:(void(^)(void))on_failure{
+    NSArray *accounts = [NSArray arrayWithArray:[self facebookAccounts]];
+    // If we don't have access to users Facebook account, the account store will return an empty array.
+    if (accounts.count == 0)
+        return;
+    
+    // Since there's only one Facebook account, grab the last object
+    ACAccount *account = [accounts lastObject];
+    
+    NSURL *URL = [NSURL URLWithString:@"https://graph.facebook.com/me/feed"];
+    
+    // Create request
+    SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeFacebook
+                                            requestMethod:SLRequestMethodPOST
+                                                      URL:URL
+                                               parameters:params];
+    
+    // Since we are performing a method that requires authorization we can simply
+    // add the ACAccount to the SLRequest
+    [request setAccount:account];
+    
+    // Perform request
+    [self fbRequireAccessForPublishOnFailure:(void(^)(void))on_failure onSuccess:^{
+        [request performRequestWithHandler:^(NSData *respData, NSHTTPURLResponse *urlResp, NSError *error) {
+            NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:respData
+                                                                               options:kNilOptions
+                                                                                 error:&error];
+            
+            // Check for errors in the responseDictionary
+            NSString *error_code = [[[responseDictionary objectForKey:@"error"] objectForKey:@"code"] stringValue];
+            if (error_code){
+                ACAccountStore *accountStore = [[NSClassFromString(@"ACAccountStore") alloc] init];
+                [accountStore renewCredentialsForAccount:account completion:^(ACAccountCredentialRenewResult renewResult, NSError *error) {
+                    //we don't actually need to inspect renewResult or error.
+                    if (renewResult == ACAccountCredentialRenewResultRenewed){
+                        [self publishUsingFeedDialogWithParams:params andDelegate:delegate onSuccess:on_success onFailure:on_failure];
+                    }else{
+                        on_failure();
+                    }
+                }];
+            } else {
+                if (on_success)
+                    on_success();
+            }
+        }];
+        
+    }];
+}
+
+- (NSArray*)facebookAccounts{
+    ACAccountStore *accountStore = [[NSClassFromString(@"ACAccountStore") alloc] init];
+    ACAccountType *facebookAccountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+    return [accountStore accountsWithAccountType:facebookAccountType];
+}
+
+- (void) requireAccessForFacebookAccountOn:(NSArray*)permissions withCallback:(ACAccountStoreRequestAccessCompletionHandler)callback{
+    ACAccountStore *accountStore = [[NSClassFromString(@"ACAccountStore") alloc] init];
+    ACAccountType *facebookAccountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+
+    NSDictionary *options = @{
+                              @"ACFacebookAppIdKey" : [[NSBundle mainBundle] objectForInfoDictionaryKey:@"FacebookAppID"],
+                              @"ACFacebookPermissionsKey" : permissions,
+                              @"ACFacebookAudienceKey" : ACFacebookAudienceEveryone}; // Needed only when write permissions are requested
+    
+    [accountStore requestAccessToAccountsWithType:facebookAccountType options:options
+                                  completion:callback];
+    
+}
+
+-(void)fbRequireAccessForBasic{
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:FB_LOGIN_CANCELLED_KEY]){
+        [self requireAccessForFacebookAccountOn:@[@"email"] withCallback:^(BOOL granted, NSError *error)
+         {
+             if (granted){
+                 self.fbLoggedIn = YES;
+             } else {
+                 if ([error code] == FB_LOGIN_CANCELLED){
+                     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:FB_LOGIN_CANCELLED_KEY];
+                     [[NSUserDefaults standardUserDefaults] synchronize];
+                 }
+             }
+         }];
+    }
+}
+
+-(void)fbRequireAccessForPublishOnFailure:(void(^)(void))on_failure onSuccess:(void(^)(void))on_success{
+    [self requireAccessForFacebookAccountOn:@[@"publish_actions"] withCallback:^(BOOL granted, NSError *error)
+     {
+         if (granted){
+             if (on_success)
+                 on_success();
+         } else {
+             if (on_failure)
+                 on_failure();
+         }
+     }];
 }
 
 @end
