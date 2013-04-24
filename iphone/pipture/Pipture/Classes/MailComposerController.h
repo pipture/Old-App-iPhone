@@ -14,13 +14,17 @@
 #import "AsyncImageView.h"
 #import "LibraryCardController.h"
 #import "ScrollingHintPopupController.h"
+#import "Facebook.h"
 
-enum ComposeType {
+typedef enum {
     COMPOSETYPE_EMAIL = 0,
     COMPOSETYPE_TWEET = 1,
-    };
+    COMPOSETYPE_FB    = 2,
+    } ComposeType;
 
-@interface MailComposerController : UIViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
+#define composeTypeArray @"Email", @"Tweet", @"Facebook", nil
+
+@interface MailComposerController : UIViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate, SendMessageDelegate,UITableViewDelegate, UITableViewDataSource, ScreenshotCollectionReceiver, UIGestureRecognizerDelegate, UIAlertViewDelegate, UIActionSheetDelegate, FBDialogDelegate>
 
 {
     @private
@@ -30,7 +34,7 @@ enum ComposeType {
     PlaylistItem* playlistItem_;
     AsyncImageView * lastScreenshotView;
     BOOL infiniteViews;
-    enum ComposeType composeType;
+    ComposeType composeType;
     NSInteger numberOfViews;
     NSArray* screenshotImages_;    
     NSNumberFormatter * viewsNumberFormatter;
@@ -61,6 +65,7 @@ enum ComposeType {
 @property (retain, nonatomic) IBOutlet UILabel *clippedMessage;
 @property (retain, nonatomic) IBOutlet UIButton *cancelButton;
 @property (retain, nonatomic) IBOutlet UIView *progressView;
+@property (retain, nonatomic) IBOutlet UILabel *progressLabel;
 @property (retain, nonatomic) NSDictionary *tableCellsHeightMap;
 
 - (IBAction)onCancel:(id)sender;
@@ -70,7 +75,6 @@ enum ComposeType {
 @property (retain, nonatomic) PlaylistItem * playlistItem;
 @property (assign, nonatomic) NSNumber * timeslotId;
 @property (assign, nonatomic) NSInteger numberOfFreeViewsForEpisode;
-
 
 - (IBAction)onTableTap:(id)sender;
 - (void) setScreenshotImage:(ScreenshotImage*)screenshotImage;

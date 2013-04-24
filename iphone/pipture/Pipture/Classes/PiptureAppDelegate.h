@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
+#import <Social/Social.h>
 #import "VideoViewController.h"
 #import "PiptureModel.h"
 #import "DataRequest.h"
@@ -19,7 +20,7 @@
 #import "PiptureStoreModel.h"
 #import "PiptureStoreController.h"
 #import "GANTracker.h"
-
+#import "Facebook.h" 
 
 #define PLACEHOLDER1 @"default.png"
 
@@ -37,6 +38,7 @@
 #define IS_IPOD   ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPod touch" ] )
 #define IS_IPHONE_5 ( IS_IPHONE && IS_WIDESCREEN )
 
+//extern NSString *const FBSessionStateChangedNotification;
 
 @interface PiptureAppDelegate : UIResponder <UIApplicationDelegate,DataRequestProgress, AuthenticationDelegate, BalanceReceiver, UINavigationControllerDelegate, UIAlertViewDelegate>
 {
@@ -46,7 +48,7 @@
     NetworkConnection curConnection;
     NetworkConnectionInformer *wifiConnection;
     GANTracker *gaTracker;
-//    BOOL activeSpinner;
+    BOOL fbLoggedIn;
 }
 
 @property (assign, nonatomic) BOOL userPurchasedViewsSinceAppStart;
@@ -77,6 +79,9 @@
 @property (readonly, nonatomic) Album *albumForCover;
 
 @property (retain, nonatomic) NSString *uuid;
+
+@property (nonatomic, retain) Facebook *facebook;
+@property (assign, nonatomic) BOOL fbLoggedIn;
 
 +(PiptureAppDelegate*) instance;
 
@@ -139,5 +144,6 @@
 
 - (void)setCover:(NSDictionary*)params;
 - (NSString*)currentHour;
-
+//- (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI;
+- (void) publishUsingFeedDialogWithParams:(NSMutableDictionary*)params andDelegate: (id <FBDialogDelegate>)delegate onSuccess:(void(^)(void))on_success onFailure:(void(^)(void))on_failure;
 @end

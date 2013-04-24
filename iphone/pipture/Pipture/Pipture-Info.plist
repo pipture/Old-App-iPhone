@@ -47,7 +47,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>86</string>
+	<string>91</string>
 	<key>CreditesProductId</key>
 	<string>com.pipture.Pipture.credits</string>
 	<key>LSApplicationCategoryType</key>
@@ -109,6 +109,17 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>FacebookAppID</key>
+	<string>516527245071195</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb516527245071195</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>

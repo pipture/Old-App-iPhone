@@ -270,8 +270,9 @@ class Dashboard:
         purchase_status = ga.custom_vars['purcahse_status']
         message_limit = ga.custom_vars['message_limit']
         
-        twitter = 'ga:eventLabel==%s' % ga.twitter_msg
-        email   = 'ga:eventLabel==%s' % ga.email_msg
+        email    = 'ga:eventLabel==%s' % ga.email_msg
+        twitter  = 'ga:eventLabel==%s' % ga.twitter_msg
+        facebook = 'ga:eventLabel==%s' % ga.facebook_msg
         
         common    = '%s!=%s' % (purchase_status, 'Purchased')
         exclusive = '%s==%s' % (purchase_status, 'Purchased')
@@ -279,6 +280,7 @@ class Dashboard:
         limited   = '%s!=%s' % (message_limit, '-1')
         
         tweet = ga.get_count(filter=(event, twitter))
+        fb    = ga.get_count(filter=(event, facebook))
         email_exclusive = ga.get_count(filter=(event, email, exclusive))
         email_limited   = ga.get_count(filter=(event, email, common, limited))
         email_infinite  = ga.get_count(filter=(event, email, common, infinite))
@@ -287,6 +289,7 @@ class Dashboard:
         chart.data = [
             ['Type', 'Count'],
             ['Twitter' , tweet],
+            ['Facebook' , fb],
             ['Email Exclusive', email_exclusive],
             ['Email Limited', email_limited],
             ['Email Infinite', email_infinite],
