@@ -143,8 +143,18 @@
 
     <script type="text/javascript">
       jQuery(document).ready(function(){
-		var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-		var isChrome = !isSafari && testCSS('WebkitTransform');  // Chrome 1+
+      	var isSafari
+      	try{
+			isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+		} catch (e){
+			isSafari = false;
+		}
+		var isChrome
+      	try{
+			isChrome = !isSafari && /chrome/.test(navigator.userAgent.toLowerCase());  // Chrome 1+
+		} catch (e) {
+			isChrome = false;
+		}
       	
       	var flash_forcing = isChrome;
       	
