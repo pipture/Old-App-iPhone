@@ -18,7 +18,7 @@ class GetSearchResult(GetView, PurchaserValidationMixin):
         if not query:
             raise ParameterExpected(parameter='query')
 
-        self.search_query = lovins.stem(query)
+        self.search_query = lovins.remove_ending(query)
 
     def do_search(self):
         query = self.search_query
@@ -28,7 +28,7 @@ class GetSearchResult(GetView, PurchaserValidationMixin):
         
         keywords_filter = Q()
         for word in query.split():
-            keywords_filter |= Q(Keywords__icontains=word)
+            keywords_filter |= Q(Keywords__icontains=lovins.remove_ending(word))
             
         available_episodes = self.caching.get_available_episodes()
         episodes = available_episodes.filter(title_filter |
