@@ -1,0 +1,15 @@
+.days-picker ul, .days-picker li {
+  list-style-type: none;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.days-picker li input {
+  margin-right: 5px;
+}
+.days-picker .master-choice,
+.days-picker .custom-choice {
+  float: left;
+}
+.days-picker .custom-choice {
+  margin-left: 30px !important;
+}

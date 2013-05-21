@@ -254,6 +254,8 @@ class TimeSlots(models.Model):
                                            max_length=50,
                                            verbose_name="Schedule description")
 
+    days = models.CharField(max_length=7, default='0123456')
+
     class Meta:
         verbose_name = "Time slot"
         verbose_name_plural = "Time slots"

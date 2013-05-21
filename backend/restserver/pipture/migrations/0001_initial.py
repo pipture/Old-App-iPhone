@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
-from uuid import UUID
+import uuid
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -127,8 +127,8 @@ class Migration(SchemaMigration):
 
         # Adding model 'PipUsers'
         db.create_table('pipture_pipusers', (
-            ('UserUID', self.gf('django.db.models.fields.CharField')(default=UUID('d80e2a51-19db-11e2-8ec2-3c07545a5b2f'), max_length=36, primary_key=True)),
-            ('Token', self.gf('django.db.models.fields.CharField')(default=UUID('d819a6ab-19db-11e2-ac0e-3c07545a5b2f'), unique=True, max_length=36)),
+            ('UserUID', self.gf('django.db.models.fields.CharField')(default=uuid.UUID('d80e2a51-19db-11e2-8ec2-3c07545a5b2f'), max_length=36, primary_key=True)),
+            ('Token', self.gf('django.db.models.fields.CharField')(default=uuid.UUID('d819a6ab-19db-11e2-ac0e-3c07545a5b2f'), unique=True, max_length=36)),
             ('RegDate', self.gf('django.db.models.fields.DateField')(default=datetime.datetime.now)),
             ('Purchaser', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pipture.Purchasers'], null=True, on_delete=models.SET_NULL)),
         ))
@@ -381,8 +381,8 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['RegDate']", 'object_name': 'PipUsers'},
             'Purchaser': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['pipture.Purchasers']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
             'RegDate': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime.now'}),
-            'Token': ('django.db.models.fields.CharField', [], {'default': "UUID('d821dc78-19db-11e2-8a34-3c07545a5b2f')", 'unique': 'True', 'max_length': '36'}),
-            'UserUID': ('django.db.models.fields.CharField', [], {'default': "UUID('d821d7a1-19db-11e2-811d-3c07545a5b2f')", 'max_length': '36', 'primary_key': 'True'})
+            'Token': ('django.db.models.fields.CharField', [], {'default': "uuid.UUID('d821dc78-19db-11e2-8a34-3c07545a5b2f')", 'unique': 'True', 'max_length': '36'}),
+            'UserUID': ('django.db.models.fields.CharField', [], {'default': "uuid.UUID('d821d7a1-19db-11e2-811d-3c07545a5b2f')", 'max_length': '36', 'primary_key': 'True'})
         },
         'pipture.purchaseitems': {
             'Description': ('django.db.models.fields.CharField', [], {'max_length': '100'}),

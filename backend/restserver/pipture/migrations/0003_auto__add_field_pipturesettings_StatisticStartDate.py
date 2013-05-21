@@ -3,6 +3,7 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+import uuid
 
 
 class Migration(SchemaMigration):
@@ -126,8 +127,8 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['RegDate']", 'object_name': 'PipUsers'},
             'Purchaser': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'users'", 'to': "orm['pipture.Purchasers']"}),
             'RegDate': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime.now'}),
-            'Token': ('django.db.models.fields.CharField', [], {'default': "UUID('8cb431ce-7691-11e2-bb53-0017318449fa')", 'unique': 'True', 'max_length': '36'}),
-            'UserUID': ('django.db.models.fields.CharField', [], {'default': "UUID('8cb38198-7691-11e2-bb53-0017318449fa')", 'max_length': '36', 'primary_key': 'True'})
+            'Token': ('django.db.models.fields.CharField', [], {'default': "uuid.UUID('8cb431ce-7691-11e2-bb53-0017318449fa')", 'unique': 'True', 'max_length': '36'}),
+            'UserUID': ('django.db.models.fields.CharField', [], {'default': "uuid.UUID('8cb38198-7691-11e2-bb53-0017318449fa')", 'max_length': '36', 'primary_key': 'True'})
         },
         'pipture.purchaseitems': {
             'Description': ('django.db.models.fields.CharField', [], {'max_length': '100'}),

@@ -3,6 +3,7 @@
 from django.http import HttpResponseRedirect
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
+from pipture.forms import AdminTimeSlotsForm
 
 from restserver.pipture.models import Videos, Trailers, Series, Albums, Episodes, TimeSlots, TimeSlotVideos,\
                                       PiptureSettings, PipUsers, AppleProducts,Transactions, PurchaseItems,\
@@ -97,7 +98,7 @@ class ButtonableModelAdmin(admin.ModelAdmin):
         return patterns('', *(url(r'^(\d+)/(%s)/$' %  but[0], wrap(self.button_view_dispatcher)) for but in self.buttons)) + super(ButtonableModelAdmin, self).get_urls()
 
 class TimeSlotsAdmin(ButtonableModelAdmin):
-#    form = AdminTimeSlotsForm
+    form = AdminTimeSlotsForm
 
     def manager(self, request, obj):
         return obj.manager_call(request)

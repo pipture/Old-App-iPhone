@@ -5,24 +5,19 @@ from south.v2 import SchemaMigration
 from django.db import models
 import uuid
 
-
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding field 'TimeSlots.days'
+        db.add_column('pipture_timeslots', 'days',
+                      self.gf('django.db.models.fields.CharField')(default='0123456', max_length=7),
+                      keep_default=False)
 
-        # Changing field 'UserPurchasedItems.Purchaser'
-        db.alter_column('pipture_userpurchaseditems', 'Purchaser_id', self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['pipture.Purchasers']))
-
-        # Changing field 'PipUsers.Purchaser'
-        db.alter_column('pipture_pipusers', 'Purchaser_id', self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['pipture.Purchasers']))
 
     def backwards(self, orm):
+        # Deleting field 'TimeSlots.days'
+        db.delete_column('pipture_timeslots', 'days')
 
-        # Changing field 'UserPurchasedItems.Purchaser'
-        db.alter_column('pipture_userpurchaseditems', 'Purchaser_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pipture.Purchasers'], null=True, on_delete=models.SET_NULL))
-
-        # Changing field 'PipUsers.Purchaser'
-        db.alter_column('pipture_pipusers', 'Purchaser_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['pipture.Purchasers'], null=True, on_delete=models.SET_NULL))
 
     models = {
         'auth.group': {
@@ -123,6 +118,7 @@ class Migration(SchemaMigration):
             'Cover': ('restserver.s3.fields.S3EnabledFileField', [], {'max_length': '100', 'blank': 'True'}),
             'Meta': {'object_name': 'PiptureSettings'},
             'PremierePeriod': ('django.db.models.fields.IntegerField', [], {}),
+            'StatisticStartDate': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime.now'}),
             'VideoHost': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
@@ -130,8 +126,8 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "['RegDate']", 'object_name': 'PipUsers'},
             'Purchaser': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'users'", 'to': "orm['pipture.Purchasers']"}),
             'RegDate': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime.now'}),
-            'Token': ('django.db.models.fields.CharField', [], {'default': "uuid.UUID('c6ecd65c-19e6-11e2-8b90-3c07545a5b2f')", 'unique': 'True', 'max_length': '36'}),
-            'UserUID': ('django.db.models.fields.CharField', [], {'default': "uuid.UUID('c6ecd100-19e6-11e2-8014-3c07545a5b2f')", 'max_length': '36', 'primary_key': 'True'})
+            'Token': ('django.db.models.fields.CharField', [], {'default': "uuid.UUID('fc2d717c-c1d3-11e2-ac63-1c6f65cf043b')", 'unique': 'True', 'max_length': '36'}),
+            'UserUID': ('django.db.models.fields.CharField', [], {'default': "uuid.UUID('fc2d27ee-c1d3-11e2-ac63-1c6f65cf043b')", 'max_length': '36', 'primary_key': 'True'})
         },
         'pipture.purchaseitems': {
             'Description': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -154,8 +150,8 @@ class Migration(SchemaMigration):
             'Purchaser': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['pipture.Purchasers']"}),
             'ScreenshotURL': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'Text': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'Timestamp': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'Url': ('django.db.models.fields.CharField', [], {'default': "'ZSxAP3E5Qt6hIDiHw1IczQ'", 'max_length': '36', 'primary_key': 'True'}),
+            'Timestamp': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.utcnow'}),
+            'Url': ('django.db.models.fields.CharField', [], {'default': "'d5bOEBXdSFWPEfZ95dNSGA'", 'max_length': '36', 'primary_key': 'True'}),
             'UserName': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'ViewsCount': ('django.db.models.fields.IntegerField', [], {}),
             'ViewsLimit': ('django.db.models.fields.IntegerField', [], {})
@@ -173,7 +169,8 @@ class Migration(SchemaMigration):
             'ScheduleDescription': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'StartDate': ('django.db.models.fields.DateField', [], {}),
             'StartTime': ('django.db.models.fields.TimeField', [], {}),
-            'TimeSlotsId': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+            'TimeSlotsId': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'days': ('django.db.models.fields.CharField', [], {'default': "'0123456'", 'max_length': '7'})
         },
         'pipture.timeslotvideos': {
             'AutoMode': ('django.db.models.fields.IntegerField', [], {'max_length': '1'}),

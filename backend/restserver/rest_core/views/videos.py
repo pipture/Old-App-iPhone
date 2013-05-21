@@ -26,10 +26,12 @@ class GetTimeslots(GetView, TimezoneValidationMixin):
     @cache_queryset(timeout=60 * 30)
     def get_available_timeslots(self):
         today_utc = TimeUtils.user_now()
+        weekday = str(today_utc.weekday())
         return TimeSlots.objects.select_related(depth=2)\
-                                     .filter(EndDate__gte=today_utc,
-                                             StartDate__lte=today_utc)\
-                                     .order_by('StartTime')
+                                .filter(EndDate__gte=today_utc,
+                                        StartDate__lte=today_utc,
+                                        days__contains=weekday)\
+                                .order_by('StartTime')
 
     def get_context_data(self):
         timeslots = self.get_available_timeslots()
