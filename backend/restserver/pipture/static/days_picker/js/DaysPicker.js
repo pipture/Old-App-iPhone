@@ -1,5 +1,7 @@
 function DaysPickerCtrl($scope) {
-    var dayNames = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi',
+    var dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday',
+                    'Friday', 'Saturday', 'Sunday'];
+    var dayNamesFr = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi',
                     'Vendredi', 'Samedi', 'Dimanche'];
     $scope.master = {
         model: null,
@@ -38,6 +40,12 @@ function DaysPickerCtrl($scope) {
             days.split('').forEach(function(value) {
                 $scope.dayModels[parseInt(value)].model = true;
             });
+        }
+    };
+
+    $scope.changeDayNames = function() {
+        for (var i = 0, len = $scope.dayModels.length; i < len; i++) {
+            $scope.dayModels[i].name = dayNamesFr[i];
         }
     };
 

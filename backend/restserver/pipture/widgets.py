@@ -23,7 +23,7 @@ class DaysPicker(forms.TextInput):
                             value="{{ choice.value }}">{{ choice.label }}</label>
                     </li>
                 </ul>
-                <ul class="custom-choice"
+                <ul class="custom-choice" ng-dblclick="changeDayNames()"
                     ng-show="master.model == master.choices.custom.value">
                     <li ng-repeat="day in dayModels">
                         <label><input type="checkbox"
